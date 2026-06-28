@@ -1,9 +1,8 @@
 """End-to-end tests for task submission flow."""
 from __future__ import annotations
 
-from datetime import UTC, datetime
 from typing import Any
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import Mock, patch
 from uuid import uuid4
 
 import pytest
@@ -55,8 +54,6 @@ def authenticated_client(client: TestClient, container: Any) -> TestClient:
 def test_search_task_end_to_end(authenticated_client: TestClient, container: Any) -> None:
     """Test end-to-end task submission through dispatch endpoint."""
     from sovereignai.shared.capability_api import CapabilityAPI
-    from sovereignai.shared.types import CapabilityCategory, CapabilityDeclaration
-    from uuid import uuid4
 
     # Mock the capability API
     capability_api_mock = Mock()

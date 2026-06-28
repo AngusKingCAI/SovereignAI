@@ -21,9 +21,10 @@ from web.main import app
 @pytest.fixture
 def mock_container() -> Mock:
     """Create a mock DI container with all required dependencies."""
-    from sovereignai.shared.auth import AuthMiddleware
     from typing import Any
-    
+
+    from sovereignai.shared.auth import AuthMiddleware
+
     container = Mock()
 
     # Mock ICapabilityIndex
