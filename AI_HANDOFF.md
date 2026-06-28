@@ -2,429 +2,277 @@
 
 ## Project Overview
 
-SovereignAI is a local-first, modular AI assistant framework built for a single user. It runs locally by default, escalates to cloud when the task demands it, and is designed to absorb whatever models, adapters, skills, and memory paradigms arrive over the next decade without forcing rewrites.
+SovereignAI is a local-first, modular AI assistant framework for a single user. Runs locally by default, escalates to cloud when needed, designed to absorb new models/adapters/skills/memory backends without rewrites.
 
-**Core philosophy**: Strong, robust, modular, simple core. Wire as you go. UIs are separate processes consuming the core's capability API. Fundamentally modular and flexible — every adapter, skill, memory backend, and model is interchangeable. The orchestrator hosts the LLM's reasoning — we don't code the reasoning, we prompt the model.
+**Philosophy**: Strong modular core. Wire as you go. UIs are separate processes consuming the core's capability API. Every adapter, skill, memory backend, and model is interchangeable. We prompt the model's reasoning — we don't code it.
 
-**Canonical vision**: `project-vision-Rev5.md` (locked). This is the single document all architecture must comply with. 14 principles, 40 success criteria, 10 open questions for Plan 1 to resolve.
+**Canonical vision**: `project-vision-Rev5.md` (locked). 14 principles, 40 success criteria, 10 open questions for Plan 1. All architecture must comply.
 
-**Stack**: Python for v1, Rust-migratable later. Contracts are language-agnostic. v1 targets Windows only; cross-platform deferred.
+**Stack**: Python v1, Rust-migratable later. Contracts are language-agnostic. v1 targets Windows only.
 
 ---
 
 ## How to use this document
 
-This handoff is the **static process guide** for the Architect role. It tells the Architect how to make plans, how the Round Table review operates, and how plans are structured. It does NOT carry dynamic state (baselines, completed prompts, next-queue) — that lives in `PLANS.md`. It does NOT carry failure patterns — that lives in `LANDMINES.md`.
+This is the **static process guide** for the Architect role — how to make plans, how Round Table review works, how plans are structured. Dynamic state (baselines, queue) → `PLANS.md`. Failure patterns → `LANDMINES.md`.
 
-**If you are a new Architect chat** receiving this handoff + an Executor execution log:
-
-1. Clone the repo: `git clone https://github.com/AngusKingCAI/SovereignAI.git` (to `/home/z/my-project/sovereignai-review/` or your preferred path)
+**New Architect chat** (receiving handoff + execution log):
+1. Clone: `git clone https://github.com/AngusKingCAI/SovereignAI.git` → `/home/z/my-project/sovereignai-review/`
 2. Read this handoff end-to-end
-3. Read the following in order:
-   - `project-vision-Rev5.md` — canonical design
-   - `PLANS.md` — current state (baselines, completed prompts, next-5-queue)
-   - `LANDMINES.md` — failure patterns (note: L1–L23 inherited from sovereign-ai, the predecessor project; new landmines start at L24)
-   - `DECISIONS.md` — architectural decisions record
-   - `DEBT.md` — deferred items register
-4. Start the Architect workflow (see "Architect Workflow" section below)
+3. Read in order: `project-vision-Rev5.md` → `PLANS.md` → `LANDMINES.md` (L1–L23 inherited from sovereign-ai; new start at L24) → `DECISIONS.md` → `DEBT.md`
+4. Start Architect Workflow below
 
-**If you are starting the project fresh** (no execution log yet, just setting up):
-- The repo should already have `prompt-0` (bootstrap commit with governance docs only, no code)
-- Begin drafting Plans 1–4 (first batch) per the batch plan process
+**Starting fresh** (no execution log): repo should have `prompt-0` (governance docs only, no code). Begin drafting Plans 1–4.
 
 ---
 
 ## Roles
 
-Three actors collaborate on this project. Each has a distinct job — do not cross the lines.
-
 | Actor | Job | Tools |
 |---|---|---|
-| **User** | Pastes Executor's execution log to the Architect after each plan. Bridges the Round Table: sends plan files + brief to the panel, pastes findings back. Copies the Architect's deliverables to the Executor's working tree. After `/close` completes, copies the chat log to `logs/execution-log-prompt-{N}.md` and asks the Executor to commit and push it. | IM chat with Architect; file copy on Executor's machine. |
-| **Architect** | 7-step post-execution workflow. Creates plans, context briefs, and revised plans. **Never edits the repo directly** — produces files in `/home/z/my-project/download/` for the user to copy. | `git fetch origin`, `git show`, `git log` (read-only on the review clone). No push, no commit, no tool runs. |
-| **Executor** | Executes plans. Runs `/open`, `/verify`, `/close`, `/scan` workflows. Runs tests, ruff, mypy, bandit, pip-audit, vulture, custom AR checks. Commits, tags, pushes. Updates CHANGELOG, PLANS, LANDMINES, DEBT, proposes rules via C9. | Git Bash on Windows; the repo's working tree at `C:/SovereignAI/`. |
+| **User** | Pastes Executor log to Architect. Bridges Round Table (sends plan files + brief, pastes findings back). Copies Architect deliverables to Executor's working tree. After `/close`, copies chat log to `logs/execution-log-prompt-{N}.md` and asks Executor to commit/push it. | IM chat; file copy |
+| **Architect** | 7-step post-execution workflow. Creates plans, context briefs, revised plans. **Never edits repo directly** — produces files in `/home/z/my-project/download/`. Read-only git (`git fetch origin`, `git show`, `git log`). No push, no commit, no tool runs. | Read-only review clone |
+| **Executor** | Executes plans. Runs `/open`, `/verify`, `/close`, `/scan`. Runs tests, ruff, mypy, bandit, pip-audit, vulture, custom AR checks. Commits, tags, pushes. Updates CHANGELOG, PLANS, LANDMINES, DEBT. Proposes rules via C9. | Git Bash; `C:/SovereignAI/` |
 
-**Key separation rule**: The Architect does NOT commit to or push to the repo. The Executor does NOT create plans or briefs. The User is the bridge — copies files between the Architect's download folder and the Executor's working tree, and bridges the Round Table.
+**Key separation**: Architect never commits/pushes. Executor never creates plans/briefs. User is the bridge.
 
 ---
 
-## Repository bootstrap
+## Repository Bootstrap
 
-- **Repo**: https://github.com/AngusKingCAI/SovereignAI
-- **Default branch**: `main`
-- **Tags**: `prompt-{N}` for each completed plan (e.g., `prompt-1`). Tag-push gate is mandatory. `prompt-0` is the bootstrap commit (governance docs only, no code).
-- **Executor's working tree**: `C:/SovereignAI/` (Windows)
-- **Architect review clone**: `/home/z/my-project/sovereignai-review/` (Linux sandbox, read-only)
+- **Repo**: https://github.com/AngusKingCAI/SovereignAI · **Branch**: `main`
+- **Tags**: `prompt-{N}` per completed plan. `prompt-0` = bootstrap (governance docs only, no code). Tag-push gate mandatory.
+- **Executor tree**: `C:/SovereignAI/` · **Architect review clone**: `/home/z/my-project/sovereignai-review/` (read-only)
 - **Plan files**: `C:/SovereignAI/prompts/plan-{N}-Rev{n}.md` (flat directory, no decade subfolders)
-- **All paths use `/`** (forward slash) — the User's keyboard doesn't have `\`, and Windows accepts both.
+- **All paths use `/`** — Windows accepts both; User's keyboard lacks `\`
 
 ---
 
 ## Architect Workflow
 
-When the User pastes an Executor execution log, the Architect follows these 7 steps in order. Do not skip steps. Do not improvise.
+7 steps in order after the User pastes an execution log. Do not skip. Do not improvise.
 
-### Step 1 — Read the execution logs end-to-end
+**Step 1 — Read execution logs end-to-end.** Extract: actual test counts for ALL suites, ruff/mypy/bandit/pip-audit/vulture counts, STOP conditions triggered, C9 rule proposals, deviations from plan. If a new test suite was introduced, include it — the count list is not fixed.
 
-Read every line of the logs, Extract: actual test counts for ALL test suites, ruff/mypy/bandit/pip-audit/vulture counts, any STOP conditions triggered, any C9 rule proposals the Executor submitted, any deviations from the plan. If a new test suite was introduced, include it — the test count list is not fixed.
+**Step 2 — Verify repo state.** `git fetch origin` → tag exists on origin → CHANGELOG entry matches → commit stat matches plan scope (no scope creep) → `PLANS.md` updated (completed row, baselines, queue shift). Flag mismatches to User.
 
-### Step 2 — Verify the repo state
+**Step 3 — Re-read `LANDMINES.md` and `project-vision-Rev5.md`.** Refresh on failure patterns and principles before drafting. Do NOT re-read this handoff (you're already in it). Do NOT re-read `AGENTS.md` (Executor reads that; Architect references it only if a rule is ambiguous).
 
-`git fetch origin` → check the prompt's tag exists on origin → check the CHANGELOG entry matches → check the commit stat matches the plan's scope (no scope creep) → check `PLANS.md` was updated (completed prompts row, baselines, queue shift). If anything doesn't match, flag to the User.
+**Step 4 — Review C9 proposals and scan for patterns.** Architect is the rule authority — Executor proposes, Architect disposes.
+- Read Executor's C9 proposals (if any)
+- Independently scan the log for patterns the Executor may have missed: scope creep, repeated failures, workarounds, multi-attempt steps
+- Cross-reference `LANDMINES.md` — already captured? No new rule needed. Not captured? Consider proposing one
+- Cross-reference `AGENTS.md` — rule already exists but wasn't followed? Enforcement problem, not a new rule. No rule? Propose one
+- New rule → include in next plan's S0 instructions (Executor adds to `AGENTS.md` at `/open` step 4, with source: "Source: L{n}" or "Source: Round Table Rev{n}")
+- Reject C9 proposals if redundant/unnecessary — document rejection in context brief
 
-### Step 3 — Re-read LANDMINES.md and project-vision-Rev5.md
+**Step 5 — Make plan files + context brief.** N individual files at `/home/z/my-project/download/plan-{N}-Rev1.md` + one shared brief at `/home/z/my-project/download/plan-{X1}-{X4}-batch-Rev1-context-brief.md`. Rev{n} notation: one file per plan per revision. Context brief created for Rev1 only — Rev2+ brief not required. All Revs kept forever. Plan files contain ONLY what the Executor needs (S0, body, STOP conditions, file lists, closing, header lines). Briefs follow the 3-part scaffold below.
 
-Refresh on failure patterns and principles before drafting. The Architect does NOT re-read this handoff (circular — you're already reading it). The Architect does NOT re-read AGENTS.md (the Executor reads that; the Architect references it only if a rule is ambiguous).
+**Step 6 — Pause for Round Table review.** User sends plan files + brief (Rev1) or revised files only (Rev2+) to Round Table, then pastes findings back. Round Table reviews only — does not create or edit files. Wait for User's paste. Apply findings at Architect's discretion.
 
-### Step 4 — Review C9 rule proposals and scan for patterns
-
-The Architect is the rule authority. The Executor proposes; the Architect disposes.
-
-- Read the Executor's C9 proposals (if any) from the execution log
-- **Independently scan the log for recurring patterns the Executor might have missed**: scope creep, repeated test failures, workarounds, deviations from the plan, anything that took multiple attempts
-- Cross-reference with `LANDMINES.md` — is this pattern already captured? If yes, no new rule needed. If no, consider proposing a rule
-- Cross-reference with existing `AGENTS.md` rules — is there already a rule that should have prevented this? If yes, the rule exists but wasn't followed (enforcement problem, not a new rule). If no, propose a new rule
-- If the Architect decides a new rule is warranted, include it in the next plan's S0 instructions — tell the Executor to add it to `AGENTS.md` at `/open` step 4, with source reference (e.g., "Source: L24" for a landmine-graduated rule, or "Source: Round Table Rev {n}" for a round-table-derived rule)
-- The Architect can reject the Executor's C9 proposal if redundant or unnecessary — document the rejection in the plan's context brief
-
-### Step 5 — Make the plan files + context brief
-
-For a batch of N plans: N individual files at `/home/z/my-project/download/plan-{N}-Rev1.md` (the plans the Executor executes) and one shared brief at `/home/z/my-project/download/plan-{X1}-{X4}-batch-Rev1-context-brief.md` (the review guide for the Round Table).
-
-**Each iteration uses Rev{n} notation**: Rev1, Rev2, Rev3, etc. — one file per plan per revision (e.g., `plan-1-Rev1.md`, `plan-1-Rev2.md`). Context brief is only created for Rev1. Rev2+ revisions do not need a new brief — the Round Table reviews the revised files directly.
-
-**All Revs are kept forever** — no deletion. The `prompts/` directory accumulates the full history.
-
-**Plan files contain ONLY what the Executor needs** — S0 opening, body, STOP conditions, files WILL create/edit/NOT edit, closing, header lines. The Architect's reasoning, Round Table findings, and process documentation live elsewhere (brief, execution log).
-
-**Briefs follow the 3-part scaffold** (defined below in "Brief Scaffold" section).
-
-### Step 6 — Pause for Round Table review
-
-The User bridges: they send the plan files + context brief (Rev1 only) or just the revised plan files (Rev2+) to the Round Table, then paste the Round Table's findings back to the Architect. The Round Table reviews only — does not create or edit plan files, only identifies issues and improvements. Wait for the User's paste. Apply findings at the Architect's discretion.
-
-### Step 7 — Deliver the final plan
-
-Tell the User: "Copy `plan-{N}-Rev{n}.md` to `C:/SovereignAI/prompts/plan-{N}.md` and point the Executor at it."
+**Step 7 — Deliver.** Tell User: "Copy `plan-{N}-Rev{n}.md` to `C:/SovereignAI/prompts/plan-{N}.md` and point the Executor at it."
 
 ---
 
 ## Brief Scaffold
 
-All briefs follow this 3-part scaffold. The scaffold is defined once here; briefs reference it ("per the scaffold in AI_HANDOFF.md") and do not re-describe it.
+All briefs follow this 3-part scaffold. Briefs reference it ("per the scaffold in AI_HANDOFF.md") and do not re-describe it.
 
-### Part 1: Roles/Rules (~5 lines)
+**Part 1 — Roles/Rules (~5 lines)**
+- Reviewer's role: "Your job is to find issues, not rewrite the plan"
+- Adversarial framing: "Assume this plan will fail — identify how"
+- Proof requirement: "Each issue must include a concrete failure scenario"
+- Sign-off (GR3): "End with `**Panelist**: <name/model>`. Anonymous responses flagged but adjudicated; named preferred."
 
-- State the reviewer's role: "Your job is to find issues, not rewrite the plan"
-- State adversarial framing: "Assume this plan will fail — identify how"
-- State proof requirement: "Each issue must include a concrete failure scenario"
-- State sign-off requirement (GR3): "End your response with `**Panelist**: <your name/model>`. Anonymous responses will be flagged but still adjudicated; named responses are preferred for accountability."
-
-### Part 2: Context (~30-40 lines)
-
-- Plan scope summary (what files, what components)
-- Key dependencies (what existing modules this builds on)
-- **Author's reasoning (clearly labeled, to mitigate anchoring bias)**: "My reasoning for this design: [X]. Attack this reasoning — don't ratify the conclusion."
-- Named open questions for the reviewer to engage with — as many as pertinent, but each must be specific and substantive. Vague or confirmatory questions are banned
+**Part 2 — Context (~30–40 lines)**
+- Plan scope summary (files, components)
+- Key dependencies (existing modules this builds on)
+- **Author's reasoning (clearly labeled)**: "My reasoning: [X]. Attack this reasoning — don't ratify the conclusion."
+- Named open questions — specific and substantive; vague or confirmatory questions banned
 - Architect's confidence level on key decisions (e.g., "65% confident on the filesystem layout")
-- **For architecture-affecting plans**: explicit reference to which `project-vision-Rev5.md` principles this plan satisfies or violates (cross-reference the plan's `Vision principles:` header line)
+- For architecture-affecting plans: which `project-vision-Rev5.md` principles this plan satisfies or violates (cross-reference `Vision principles:` header line)
 
-### Part 3: Answer Format (~5 lines)
-
-- Specify the response structure (flexible, not rigid boxes)
-- ALWAYS include an "other concerns" open field so unexpected issues can surface
+**Part 3 — Answer Format (~5 lines)**
+- Specify response structure (flexible, not rigid boxes)
+- ALWAYS include an "other concerns" open field
 - Permit "No issues found" — do not force the reviewer to invent problems
 
-### Anti-sycophancy measures
-
+**Anti-sycophancy measures**
 - Open with pre-mortem frame: "Assume this plan failed in 6 months. List the most plausible reasons."
-- Explicitly permit "No issues found" — don't pad with false concerns
-- Require proof before reporting: each issue must cite a concrete failure scenario and evidence from the codebase
-- Ban style/formatting/speculative-future/feature-request comments — substance only
+- Permit "No issues found" explicitly
+- Require proof: each issue must cite a concrete failure scenario and evidence from the codebase
+- Ban style/formatting/speculative-future/feature-request comments
 
-### Anchoring mitigation
-
-- State the Architect's reasoning in a clearly labeled block
+**Anchoring mitigation**
+- State Architect's reasoning in a clearly labeled block
 - Instruct reviewer: "Criticize my reasoning, not my conclusion"
-- Disclose the Architect's confidence explicitly ("I'm 65% confident on step 3")
-- This gives the reviewer a target without forcing agreement
+- Disclose confidence explicitly ("I'm 65% confident on step 3")
 
 ---
 
 ## Round Table Review Process
 
-### What goes to the Round Table
+**What goes to Round Table**: All plans except scan prompts. Scan prompts (5, 10, 15…) are mechanical — no architectural decisions, no design review needed. Go straight to Executor.
 
-**All plans go to the Round Table, EXCEPT scan prompts.**
+**Composition**: Referred to collectively as "the Round Table." No fixed composition — User chooses who to send each brief to. No quorum — adjudicate whatever responses come back. Panelist sign-off mandatory by default (GR3); User can override to accept anonymous responses.
 
-- **Regular plans** (Plans 1-4, 6-9, 11-14, etc.): Round Table reviews
-- **Scan prompts** (Plan 5, 10, 15, etc.): Skip Round Table — they're mechanical (verify baselines, fix accumulated issues, reconcile state), no architectural decisions, no code changes that need design review. Go straight to the Executor.
-
-### Round Table composition
-
-- Referred to collectively as **"the Round Table"** — not by individual model names
-- **No fixed composition** — could be 1, could be 100. The User chooses who to send each brief to
-- **No quorum** — adjudicate whatever responses come back
-- **Panelist sign-off is mandatory by default** (GR3): every response ends with `**Panelist**: <name/model>`. The User can override (accept anonymous responses) at their discretion. When overriding, the Architect still adjudicates the response — it's just flagged as "anonymous, user-accepted"
-
-### Process
-
-1. Architect drafts plan(s) + context brief
-2. User bridges to the Round Table (sends plan files + brief + short read-me-first prompt)
+**Process**:
+1. Architect drafts plans + brief
+2. User bridges to Round Table (files + brief + short read-me-first prompt)
 3. Round Table reviews, returns findings (with sign-off)
-4. Architect judges responses, adopts highest-scoring recommendations
-5. **Architect's commitment**: commits to adopting the highest-scoring recommendation — even if it contradicts the Architect's original position. This is what makes the pattern work
-6. **For roadmap-level decisions** (philosophy changes, feature arc launches, architecture decisions): User reviews the Architect's judgment before final decision
-7. **User can override CRITICAL with explicit sign-off + documented accepted risk** (the carve-out used for the in-process Security Guard in Rev 5 vision). CRITICAL issues formally "block clean pass — no exceptions, no overrides," but in practice the User is the final authority and can accept the risk with documentation
+4. Architect judges, adopts highest-scoring recommendations — even if it contradicts Architect's original position
+5. For roadmap-level decisions (philosophy changes, feature arc launches, architecture decisions): User reviews Architect's judgment before final decision
+6. User can override CRITICAL with explicit sign-off + documented accepted risk
 
-### Severity rubric
+**Severity rubric**:
+- **CRITICAL**: Data loss, security vulnerability, or irreversible damage. Blocks clean pass — no exceptions (formally; User override with documented accepted risk in practice)
+- **HIGH**: Would cause Executor STOP, test failure, broken build, or Windows incompatibility. Blocks clean pass; must be resolved or explicitly overruled with User sign-off
+- **MEDIUM**: Degraded functionality, poor UX, or tech debt. Should be addressed; if accepted, document reasoning in adjudication log
+- **LOW**: Style, naming, speculative features, unvalidated perf optimisations. Accept/reject at Architect discretion with one-paragraph reasoning
 
-- **CRITICAL**: Issues that would cause data loss, security vulnerability, or irreversible system damage. Any panelist may flag an issue as CRITICAL with a concrete failure scenario. CRITICAL issues block clean pass and must be resolved before Executor execution — no exceptions, no overrides (formally; User override with documented accepted risk in practice)
-- **HIGH**: Issues that would cause an Executor STOP condition, test failure, broken build, or Windows incompatibility. HIGH issues block clean pass and must be resolved or explicitly overruled with User sign-off
-- **MEDIUM**: Issues that would cause degraded functionality, poor user experience, or technical debt that should be addressed before execution but won't necessarily cause failure. MEDIUM issues should be addressed; if accepted, document reasoning in adjudication log
-- **LOW**: Style, formatting, naming preferences, speculative future features, or performance optimizations without measured impact. LOW items may be accepted or rejected at Architect discretion, with one-paragraph reasoning documented in the brief's adjudication log
+If panelist and Architect disagree on severity, treat as the higher severity until resolved.
 
-If a panelist and the Architect disagree on severity, the issue is treated as the higher severity until resolved.
+**Clean pass**: (a) No unaddressed substantiated CRITICAL or HIGH; (b) remaining MEDIUM/LOW documented as accepted/rejected with reasoning in adjudication log.
 
-### Clean pass definition
-
-A clean pass requires:
-- (a) No panelist reports a substantiated CRITICAL or HIGH issue that hasn't been addressed
-- (b) Any remaining MEDIUM/LOW items are documented as accepted/rejected with reasoning in the brief's adjudication log
-
-### Adjudication (GR4)
-
-The Architect must **explicitly accept or reject every Round Table finding with reasoning**. No silent dismissals. The adjudication is recorded in:
-- The brief's adjudication log (for Rev1 briefs)
-- A separate adjudication section in the revised plan file (for Rev2+ where no new brief is created)
+**Adjudication (GR4)**: Architect must explicitly accept or reject every finding with reasoning. No silent dismissals. Recorded in: brief's adjudication log (Rev1) or a separate adjudication section in the revised plan file (Rev2+).
 
 ---
 
 ## Batch Plan Process
 
-### Structure
+**Structure**: Batches of 4 plans, drafted as individual files from the start. 1 shared batch context brief. Scan every 5 plans (5, 10, 15…). Plan 1 is a regular plan — no special "Architecture Decision Plan" treatment.
 
-- **Batches of 4 plans**, drafted as individual files from the start (no combined batch file, no split step)
-- **1 shared batch context brief** covering all 4 plans
-- **Scan every 5 plans** (Plan 5, 10, 15, ...) — verifies baselines, fixes accumulated issues, reconciles state
-- **Plan 1 is a regular plan** — no special "Architecture Decision Plan" treatment. Architecture emerges plan by plan, just like the vision emerged round by round (per the vision's "wire as you go" principle)
+**Cadence**: Plans 1–4 → Scan 5 → Plans 6–9 → Scan 10 → Plans 11–14 → Scan 15 → …
 
-### Cadence
+**Why separate files**: The combined-file + split approach from sovereign-ai introduced mechanical transformation bugs (stale references, missing sections). Separate files eliminate this — what the Round Table reviews IS what the Executor executes.
 
-- Plans 1-4 → Scan 5 → Plans 6-9 → Scan 10 → Plans 11-14 → Scan 15 → ...
-
-### Why separate files?
-
-The combined-file + split approach (used in sovereign-ai's early days) introduced a mechanical transformation (split) that could introduce bugs — stale references to other plan numbers, leftover batch header text, missing S0/Closing sections. Drafting separately eliminates this overhead: what the Round Table reviews IS what the Executor executes.
-
-### Step 1 — Draft individual plan files
-
-Create N individual files (one per plan in the batch):
-
+**Step 1 — Draft individual plan files.** N files, one per plan:
 ```
 /home/z/my-project/download/plan-{X1}-Rev1.md
 /home/z/my-project/download/plan-{X2}-Rev1.md
 /home/z/my-project/download/plan-{X3}-Rev1.md
 /home/z/my-project/download/plan-{X4}-Rev1.md
 ```
+Each file is self-contained: S0 Opening, body, STOP conditions, Files WILL create/edit/NOT edit, Closing, header lines (`Depends on:`, `Vision principles:`, `Open questions resolved:`).
 
-Each file is self-contained: S0 Opening, body, STOP condition, Files WILL create/edit/NOT edit, Closing, header lines (`Depends on:`, `Vision principles:`, `Open questions resolved:`). Reads as a standalone Executor prompt.
-
-### Step 2 — Draft the batch context brief
-
-Create ONE shared brief covering all plans in the batch:
-
+**Step 2 — Draft batch context brief.** One shared file:
 ```
 /home/z/my-project/download/plan-{X1}-{X4}-batch-Rev1-context-brief.md
 ```
+Follows the 3-part scaffold, plus: cross-plan dependency map, sequencing risks, Architect's confidence by plan, named open questions, vision principle compliance by plan.
 
-The brief follows the 3-part scaffold (see "Brief Scaffold" section), with these additions:
-- **Cross-plan dependency map**: which plans depend on the output of a prior plan
-- **Sequencing risks**: what happens if plans execute out of order
-- **Author's confidence by plan**: e.g., "Plans 6–7: 80% confident. Plans 8–9: 65% confident — attack these hardest"
-- **Named open questions**: as many as pertinent, but each must be specific and substantive
-- **Vision principle compliance**: explicit note on which `project-vision-Rev5.md` principles each plan satisfies
+**Step 3 — Round Table review.** User sends N individual files + 1 brief. Architect collects all responses, judges, applies substantiated findings to individual files.
 
-### Step 3 — Round Table review
+**Step 4 — Fix and re-review.** Revise individual files as needed (`plan-{X1}-Rev2.md`, etc.). Rev2+ needs no new brief unless revisions are substantial (new architecture, changed dependencies). Repeat until clean pass.
 
-Batch plans are reviewed by the Round Table (no exceptions, per "What goes to the Round Table" above).
-
-The User sends the N individual files + 1 batch context brief to the Round Table. The Architect collects all responses and judges them. Apply all substantiated findings to the individual files.
-
-### Step 4 — Fix and re-review
-
-Revise individual files as needed (one file per plan per revision):
-
-```
-/home/z/my-project/download/plan-{X1}-Rev2.md
-/home/z/my-project/download/plan-{X2}-Rev2.md
-...
-```
-
-Rev2+ files do not need a new context brief — the Round Table reviews the revised files directly. However, if revisions are substantial (new architecture, changed dependencies), update the batch brief to reflect the new state.
-
-Repeat (Rev3, Rev4…) until the Round Table's response is a clean pass.
-
-### Execution failure within a batch
-
-If the Executor hits a STOP condition on Plan {Xn}, subsequent plans that depend on {Xn} — directly or transitively — must also STOP. Dependency is determined by each plan's `Depends on:` line, not by User judgment. Plans with no dependency on {Xn} may proceed, but only if their prerequisite tags are confirmed present on origin.
-
-**Partial outputs:** If Plan {Xn} completed some but not all of its intended outputs, dependent plans must still STOP. The binary rule is: if Plan Y lists Plan X in `Depends on:`, and Plan X STOPped, Plan Y STOPs. No partial-dependency exceptions.
-
-**Revised plan review:** After a STOP, the Architect revises the failed plan and any dependent plans. Revisions must undergo Round Table review before re-execution.
+**Execution failure within a batch**: If Executor hits STOP on Plan {Xn}, all plans with `Depends on: {Xn}` (directly or transitively) must also STOP. Dependency is determined by `Depends on:` header — not User judgment. Plans with no dependency on {Xn} may proceed if their prerequisite tags are confirmed on origin. Partial outputs do not lift the dependency STOP — it's binary. After a STOP, Architect revises the failed plan and any dependents; revisions must go through Round Table before re-execution.
 
 ---
 
 ## Scan Prompt
 
-Scan prompts occur every 5 plans (5, 10, 15, ...) to verify baselines, fix accumulated issues, and reconcile state before the next batch begins.
+Scan prompts occur every 5 plans (5, 10, 15…) — verify baselines, fix accumulated issues, reconcile state before the next batch.
 
-### Purpose
+**Purpose**: After 4 plans, the repo accumulates small inconsistencies (stale imports, minor type errors, outdated docstrings, uncaptured LANDMINES, suppressed ruff warnings). Scan cleans them before the next batch.
 
-After 4 plans execute, the repo accumulates small inconsistencies: stale imports, minor type errors that scraped past mypy, outdated docstrings, LANDMINES.md patterns not yet codified as rules, minor ruff warnings suppressed rather than fixed. The scan prompt cleans all of this up before the next batch begins.
+**Drafting order constraint**: Next batch must NOT be drafted or Round Table-reviewed until the scan prompt completes and its changes (including any C9 rules) are committed to origin. Ensures the batch is drafted against the post-scan state.
 
-The scan prompt is queued after Plan X4 in `PLANS.md` and executes before the next batch's Plan X1 begins.
+**Batch failure interaction**: Scan must not execute until all plans in the current batch have completed. Running scan on a partial batch produces false positives.
 
-**Drafting order constraint:** The next batch (e.g., 6–9) must not be drafted or Round Table-reviewed until the scan prompt has completed and its changes (including any new AR/OR rules proposed via C9) are committed to origin. This ensures the next batch is drafted against the post-scan repo state.
-
-**Batch failure interaction:** If a batch fails partially (e.g., Plan 3 STOPs, halting 4), the scan must not execute until the failure is resolved and all plans 1–4 have completed. The scan verifies the full batch's output; running it on a partial batch would produce false positives.
-
-### Scan prompt structure
-
-Scan prompts use the standard S0 opening and `/close` closing. They get their own `prompt-{N}` tag. The scan workflow is defined in `.devin/workflows/scan.md` — the scan prompt file just tells the Executor to run `/scan`.
-
-**Scan prompts skip the Round Table** — they're mechanical, no architectural decisions.
+**Structure**: Standard S0 opening + `/close` closing. Gets its own `prompt-{N}` tag. Scan workflow is in `.devin/workflows/scan.md` — the scan prompt just tells the Executor to run `/scan`. Skips Round Table.
 
 ---
 
 ## Architect Operating Discipline
 
-The Architect maintains discipline via GR rules (GR = General Rules, mirroring the AR/OR scheme for the Executor).
+GR rules (General Rules) mirror the AR/OR scheme for the Executor.
 
-### GR1 — Vision principle compliance
+**GR1 — Vision principle compliance.** Every plan MUST include `Vision principles:` in its header listing which of the 14 principles the plan satisfies or affects. If a plan violates a principle: `Vision principles: violates 3 (no provider lock-in) — justification: <reason>`. Round Table uses this line to verify architectural fidelity.
 
-Every plan the Architect drafts MUST include a `Vision principles:` line in its header listing which of the 14 principles in `project-vision-Rev5.md` the plan satisfies or affects. Example: `Vision principles: 1 (sacred core), 7 (modular core), 8 (UIs separate processes)`. If a plan violates a principle, the header must say so explicitly: `Vision principles: violates 3 (no provider lock-in) — justification: <reason>`. The Round Table uses this line to verify architectural decisions remain faithful to the vision.
+**GR2 — Open questions resolved.** Every plan header MUST include `Open questions resolved:` listing which Q1–Q34 the plan resolves. If none: `Open questions resolved: none`.
 
-### GR2 — Open questions resolved
+**GR3 — Brief sign-off requirement.** Every brief MUST include the panelist sign-off requirement in Part 1: "End with `**Panelist**: <name/model>`. Anonymous flagged but adjudicated; named preferred." User can override.
 
-Every plan header MUST include an `Open questions resolved:` line listing which open questions (Q1–Q34 in `project-vision-Rev5.md`) the plan resolves. Example: `Open questions resolved: Q1 (adapter contract), Q33 (capability API protocol)`. If none, write `Open questions resolved: none`. This lets the Architect track which open questions are still outstanding and which are resolved.
-
-### GR3 — Brief sign-off requirement
-
-Every brief the Architect drafts MUST include the panelist sign-off requirement in Part 1 (Roles/Rules). The brief states: "End your response with `**Panelist**: <your name/model>`. Anonymous responses will be flagged but still adjudicated; named responses are preferred for accountability." The User can override (accept anonymous responses) at their discretion.
-
-### GR4 — Explicit adjudication
-
-The Architect MUST explicitly accept or reject every Round Table finding with reasoning. No silent dismissals. The adjudication is recorded in:
-- The brief's adjudication log (for Rev1 briefs)
-- A separate adjudication section in the revised plan file (for Rev2+ where no new brief is created)
-
-Format for each finding:
+**GR4 — Explicit adjudication.** Architect MUST explicitly accept or reject every Round Table finding with reasoning. No silent dismissals. Format:
 ```
 Finding: <description> — Severity: <CRITICAL/HIGH/MEDIUM/LOW> — Panelist: <name>
 Adjudication: <ACCEPTED/REJECTED/PARTIALLY ACCEPTED>
 Reasoning: <one paragraph>
-Action: <what was changed in the plan, or "no change — reasoning above">
+Action: <what changed, or "no change — reasoning above">
 ```
 
 ---
 
 ## Plan Template
 
-The Architect copies this structure into every plan file. The plan file is the Executor's instruction manual — it contains ONLY what the Executor needs.
+Architect copies this into every plan file. Plan file = Executor's instruction manual. Contains ONLY what the Executor needs.
 
-### Header lines
-
+**Header lines**:
 ```
-Depends on: <prerequisite plan numbers, or empty if independent>
+Depends on: <prerequisite plan numbers, or empty>
 Vision principles: <which of the 14 principles this plan satisfies/affects>
 Open questions resolved: <which open questions this plan resolves, or "none">
 ```
 
-### Opening (S0)
+**S0 — Opening**:
+- **S0.1**: Run `/open` — verifies previous prompt's tag on origin, confirms working copy is clean and on `main`. If missing or fails, STOP and report.
+- **S0.2**: Read `AGENTS.md` in full. Every file edit MUST comply. If a rule is ambiguous, read `LANDMINES.md` for diagnostic context. L1–L23 are inherited from sovereign-ai and are equally binding.
+- **S0.2.5**: If resuming after a governance patch that added new rules to `AGENTS.md`, re-read `AGENTS.md` NOW before S1. Rules added by the patch were not present at S0.2.
+- **S0.3**: Add any new rules the Architect specified for this plan and commit before any coding step.
 
-**S0.1 — Run `/open`** — verifies previous prompt's tag on origin and confirms working copy is clean and on `main`. If the workflow is missing or fails, STOP and report.
+**Plan body (S1–Sn)**: Execute all steps in the plan file. After each file edit, run `/verify`. If a step has a STOP condition, pause and report to User before proceeding.
 
-**S0.2 — Read AGENTS.md in full.** AGENTS.md is always-on — every file edit in this plan MUST comply with its rules. If an AGENTS.md rule's application is ambiguous, read `LANDMINES.md` for the trigger and diagnostic context behind the rule. Note: Landmines L1–L23 are inherited from sovereign-ai; they are just as binding as new landmines.
-
-**S0.2.5 — Re-read AGENTS.md after governance patches.** If this plan is resuming after a governance patch that added new rules to AGENTS.md, re-read AGENTS.md NOW before S1. The rules added by the patch were not in AGENTS.md when you originally read it at S0.2. Do not skip this re-read.
-
-**S0.3 — Add any new rules the Architect specified for this plan and commit** before any coding step. Then proceed to the plan body (S1 onward).
-
-### Plan body (S1-Sn)
-
-Execute all steps specified in the plan file. After each file edit, run `/verify`. If any step has a STOP condition, pause and report to the User before proceeding.
-
-### Closing
-
-**Run `/close`** — handles test suite, ruff, mypy, bandit, pip-audit, vulture, custom AR checks, commit, tag, CHANGELOG, PLANS.md, LANDMINES.md (if new pattern), DEBT.md (if deferred), rule proposal (C9), docs commit, push, post-push verification, chat-log reminder, Git Bash cleanup. If the workflow is missing or fails, STOP and report.
-
-The workflow files (`.devin/workflows/*.md`) are the source of truth for the workflow steps. The Architect reads them from the repo to verify the Executor's execution at Architect Workflow Step 2.
+**Closing**: Run `/close` — handles test suite, ruff, mypy, bandit, pip-audit, vulture, custom AR checks, commit, tag, CHANGELOG, PLANS.md, LANDMINES.md (if new pattern), DEBT.md (if deferred), rule proposal (C9), docs commit, push, post-push verification, chat-log reminder, Git Bash cleanup. If missing or fails, STOP and report. Workflow files (`.devin/workflows/*.md`) are the source of truth — Architect reads them from the repo at Workflow Step 2.
 
 ---
 
 ## Document Relationships
 
-Twelve documents govern this project. Each has a single responsibility — do not duplicate content across them (SSOT).
+Twelve documents govern this project. Each has a single responsibility — no content duplication (SSOT).
 
-| Document | Responsibility | Who writes it | When it changes |
+| Document | Responsibility | Who writes | When |
 |---|---|---|---|
-| `AI_HANDOFF.md` (this file) | Static process guide — how to make plans, workflow, plan template, document relationships | Architect | Only when the workflow itself changes |
-| `project-vision-Rev5.md` | Canonical vision — principles, capability surface, non-goals, success criteria, open questions. The document all architecture must comply with | User (with Architect assistance) | Only when principles change. Open questions get crossed off (not deleted) as plans resolve them |
-| `PLANS.md` | Dynamic project state — baselines, completed prompts, next-5-queue | Executor (at `/close`) | Every plan |
-| `LANDMINES.md` | Known failure patterns — trigger and impact only. Append-only. L1–L23 inherited from sovereign-ai; new landmines start at L24 | Executor (at `/close`) | When a new pattern is captured (append-only) |
-| `CHANGELOG.md` | Chronological change log — one entry per plan, append-only | Executor (at `/close`) | Every plan |
-| `AGENTS.md` | Executor's always-on rules — environment, edit discipline, git discipline, scope discipline. AR (Architecture Rules) + OR (Operational Rules). Rules reference their source landmine (e.g., "Source: L{n}") | Executor (at `/open` S0.3, when the Architect specifies new rules) | When new rules are added |
-| `DECISIONS.md` | Architectural decisions record — context, options considered, decision, rationale, trade-offs. Append-only | Executor (at `/close`, when a decision is codified) | When a new architectural decision is made |
-| `DEBT.md` | Deferred items register — what's been pushed to later, why, trigger condition, target plan | Executor (at `/close`, when an item is deferred or addressed) | When item deferred or addressed |
-| `.devin/workflows/open.md` | `/open` workflow — steps the Executor runs at the start of every plan | Architect | When workflow changes |
-| `.devin/workflows/verify.md` | `/verify` workflow — steps the Executor runs after each file edit | Architect | When workflow changes |
-| `.devin/workflows/close.md` | `/close` workflow — steps the Executor runs at the end of every plan | Architect | When workflow changes |
-| `.devin/workflows/scan.md` | `/scan` workflow — steps the Executor runs at scan prompts (5, 10, 15, ...) | Architect | When workflow changes |
+| `AI_HANDOFF.md` | Static process guide — workflow, plan template, document relationships | Architect | Workflow changes only |
+| `project-vision-Rev5.md` | Canonical vision — principles, capability surface, non-goals, success criteria, open questions | User (with Architect) | Principles change; open questions crossed off (not deleted) as resolved |
+| `PLANS.md` | Dynamic state — baselines, completed prompts, next-5-queue | Executor (`/close`) | Every plan |
+| `LANDMINES.md` | Known failure patterns — trigger and impact only. Append-only. L1–L23 from sovereign-ai; new start at L24 | Executor (`/close`) | New pattern captured |
+| `CHANGELOG.md` | Chronological change log — one entry per plan, append-only | Executor (`/close`) | Every plan |
+| `AGENTS.md` | Executor's always-on rules — AR + OR. Rules reference source landmine | Executor (`/open` S0.3) | New rules added |
+| `DECISIONS.md` | Architectural decisions record — context, options, decision, rationale, trade-offs. Append-only | Executor (`/close`) | New architectural decision |
+| `DEBT.md` | Deferred items — what, why, trigger condition, target plan | Executor (`/close`) | Item deferred or addressed |
+| `.devin/workflows/open.md` | `/open` workflow | Architect | Workflow changes |
+| `.devin/workflows/verify.md` | `/verify` workflow | Architect | Workflow changes |
+| `.devin/workflows/close.md` | `/close` workflow | Architect | Workflow changes |
+| `.devin/workflows/scan.md` | `/scan` workflow | Architect | Workflow changes |
 
-### Single source of truth (SSOT)
+**SSOT mapping** — each fact lives in exactly one document:
+- Environment details → `AGENTS.md`
+- Current baselines → `PLANS.md`
+- Process/workflow/plan template → `AI_HANDOFF.md`
+- Known failure patterns → `LANDMINES.md`
+- Per-plan change record → `CHANGELOG.md`
+- Architectural decisions → `DECISIONS.md`
+- Deferred items → `DEBT.md`
+- Vision/principles/open questions → `project-vision-Rev5.md`
+- Workflow steps → `.devin/workflows/*.md`
 
-Each fact lives in exactly one document. Other documents reference it, don't copy it.
-
-- Environment details → `AGENTS.md` only (this handoff carries just the bootstrap minimum)
-- Current baselines → `PLANS.md` only (this handoff doesn't carry baselines)
-- Process/workflow/plan template → `AI_HANDOFF.md` only (`PLANS.md` doesn't carry process docs)
-- Known failure patterns → `LANDMINES.md` only (this handoff doesn't carry landmines)
-- Per-plan change record → `CHANGELOG.md` only (`PLANS.md` carries the summary row, not the full change log)
-- Architectural decisions → `DECISIONS.md` only
-- Deferred items → `DEBT.md` only
-- Vision / principles / open questions → `project-vision-Rev5.md` only
-- Workflow steps → `.devin/workflows/*.md` only (this handoff references them, doesn't duplicate)
-
-### Read order
-
+**Read order**:
 - **Architect (new chat)**: `AI_HANDOFF.md` → `project-vision-Rev5.md` → `PLANS.md` → `LANDMINES.md` → `DECISIONS.md` → `DEBT.md` → start workflow
-- **Executor (S0.2)**: `AGENTS.md` (always-on rules; consult `LANDMINES.md` if a rule is ambiguous)
+- **Executor (S0.2)**: `AGENTS.md` (consult `LANDMINES.md` if a rule is ambiguous)
 
 ---
 
 ## Bootstrap Sequence
 
-This project starts from an empty repo. The bootstrap sequence is:
-
-1. **`prompt-0`** (bootstrap commit): initial commit containing all 12 governance docs (`AI_HANDOFF.md`, `AGENTS.md`, `LANDMINES.md`, `PLANS.md`, `CHANGELOG.md`, `DECISIONS.md`, `DEBT.md`, `project-vision-Rev5.md`, `.devin/workflows/open.md`, `.devin/workflows/verify.md`, `.devin/workflows/close.md`, `.devin/workflows/scan.md`). No code. Tag: `prompt-0`.
-
-2. **Plans 1–4** (first batch): the Architect drafts 4 individual plan files + 1 batch context brief. Round Table reviews. Architect revises to clean pass. User copies final files to `C:/SovereignAI/prompts/`. Executor executes each plan, tagging `prompt-1` through `prompt-4`. Plan 1 scaffolds the core because that's what the project needs first — it's a regular plan, not a special Architecture Decision Plan.
-
-3. **Scan 5** (first scan prompt): the Architect drafts the scan prompt. Skip Round Table (scan prompts are mechanical). User copies to Executor. Executor runs `/scan`, tags `prompt-5`.
-
-4. **Plans 6–9** (second batch): same process as Plans 1–4, drafted against the post-scan repo state.
-
-5. **Scan 10**: second scan.
-
-6. **Plans 11+**: continue per batch process.
+1. **`prompt-0`**: Initial commit — all 12 governance docs, no code. Tag: `prompt-0`.
+2. **Plans 1–4**: Architect drafts 4 plan files + 1 batch brief. Round Table reviews. Architect revises to clean pass. User copies finals to `C:/SovereignAI/prompts/`. Executor tags `prompt-1` through `prompt-4`. Plan 1 scaffolds the core — it's a regular plan, not a special Architecture Decision Plan.
+3. **Scan 5**: Architect drafts scan prompt. Skip Round Table. Executor runs `/scan`, tags `prompt-5`.
+4. **Plans 6–9**: Same as Plans 1–4, drafted against post-scan repo state.
+5. **Scan 10**: Second scan.
+6. **Plans 11+**: Continue per batch process.
 
 ---
 
 ## Closing
 
-This handoff is the operating manual for the Architect role. It is intentionally lean — every section has a single responsibility, and SSOT is enforced throughout. The Architect reads this handoff once per chat session, then references the other governance docs as needed.
-
-The project starts with `prompt-0` (governance docs only) and proceeds through Plans 1–4, Scan 5, Plans 6–9, Scan 10, etc. The vision is locked at Rev 5 — no more Round Table review of the vision. The next Round Table review is for Plan 1 (the first batch's first plan).
-
-If the process isn't working, amend this handoff. It's a living document — change it when something doesn't work, not before.
+This handoff is the operating manual for the Architect role — intentionally lean, one responsibility per section, SSOT enforced throughout. Read once per chat session, reference other governance docs as needed. If the process isn't working, amend this handoff — it's a living document.
