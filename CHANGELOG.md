@@ -137,3 +137,32 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - No prompts/ files deleted — Rev-suffixed plan files (plan-0.1-Rev1.md, plan-0.2-Rev1.md) are kept per AI_HANDOFF.md line 96 ("All Revs are kept forever — no deletion. The prompts/ directory accumulates the full history.").
 - Observation (no action): prompts/plan-0.md lacks Rev suffix while plan-0.1-Rev1.md and plan-0.2-Rev1.md have suffixes. Handoff has internally conflicting guidance (line 58 says Rev suffix; line 108 says strip suffix on copy). User should decide which interpretation is canonical before Plan 1 starts.
 - No Round Table review (scan-prompt exemption per AI_HANDOFF.md).
+
+## prompt-0.4 — Mypy filtering + kill bash at start
+
+**Date**: 2026-06-28
+**Plan file**: prompts/plan-0.4-Rev1.md
+
+**Files changed**:
+- AGENTS.md (added OR47; updated landmine-to-rule table with L31)
+- .devin/workflows/open.md (added step 1: kill orphaned bash.exe processes from previous sessions; renumbered subsequent steps 2-8)
+- .devin/workflows/close.md (updated step 3: mypy filters to .py files only per OR47; updated step 21: stronger mandatory language with STOP CONDITION)
+- LANDMINES.md (appended L31; updated header; updated process section header)
+
+**Results**:
+- Tests: N/A (no code, no tests/test_*.py files)
+- Ruff: 0 errors
+- Mypy: N/A (no .py files edited this plan — per OR47, mypy is not invoked on markdown files)
+- Bandit: 0 findings
+- pip-audit: 0 CVEs (txt/requirements.txt still empty)
+- Vulture: N/A (no Python code)
+- Detect-secrets: pass (baseline unchanged)
+
+**Notes**:
+- Mechanical cleanup plan addressing issues discovered during prompt-0.3 execution.
+- 1 new OR rule: OR47 (mypy is invoked on .py files only — never markdown or other non-Python files).
+- 1 new landmine: L31 (mypy fails when passed markdown files).
+- /open workflow: added step 1 (kill orphaned bash.exe from previous sessions). Subsequent steps renumbered 2-8. Kill bash at start cleans orphans from crashed/interrupted previous sessions; kill bash at /close step 21 cleans current session. Both are mandatory.
+- /close step 3 fix: mypy now filters edited files to .py only via `git diff --name-only HEAD~1 | grep '\.py$'`. If no .py files were edited, mypy is N/A.
+- /close step 21 fix: stronger language — "STOP CONDITION: the plan is NOT complete until this step executes. Do not report 'Plan X Complete' until step 21 has run."
+- No Round Table review (scan-prompt exemption per AI_HANDOFF.md).

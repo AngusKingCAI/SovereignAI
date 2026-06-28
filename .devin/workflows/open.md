@@ -4,21 +4,29 @@ Run at the start of every plan.
 
 ## Steps
 
-1. Verify previous plan's tag on origin:
+1. Kill orphaned bash.exe processes from previous sessions (Windows-specific):
+   ```
+   taskkill //F //IM bash.exe 2>&1 || true
+   ```
+   This kills all `bash.exe` processes, including the current session. The Executor's agent process is not affected — it spawns a fresh bash session for the next command automatically. This step cleans up orphans from previous sessions that may have crashed, been interrupted, or skipped `/close` step 21. The `|| true` ensures the workflow continues even if no bash.exe processes are running (taskkill exits non-zero when no processes match). Do NOT skip this step — orphaned bash processes accumulate across sessions and consume system resources.
+   
+   Note: a second `taskkill //F //IM bash.exe` runs at `/close` step 21 to clean up the current session's bash processes. Both are mandatory.
+
+2. Verify previous plan's tag on origin:
    ```
    git fetch origin
    git ls-remote --tags origin | grep "prompt-{N-1}"
    ```
    If missing, STOP. Skip if Plan 1.
 
-2. Confirm working copy is clean and on main:
+3. Confirm working copy is clean and on main:
    ```
    git status -s | tail -n 10
    git branch --show-current
    ```
    If dirty (excluding governance docs/plan files) or not on main, STOP.
 
-3. Verify the project-local venv exists (per OR45). If `.venv/` does not exist, create it and install dev dependencies:
+4. Verify the project-local venv exists (per OR45). If `.venv/` does not exist, create it and install dev dependencies:
    ```
    if [ ! -d ".venv" ]; then
      py -3.11 -m venv .venv
@@ -34,15 +42,15 @@ Run at the start of every plan.
    
    Note: per OR46, all subsequent commands in this plan and in `/close` use absolute venv paths (`.venv/Scripts/python.exe`, `.venv/Scripts/ruff.exe`, etc.). Do not rely on `source .venv/Scripts/activate` — it does not reliably persist in Git Bash on Windows (L30).
 
-4. Read `AGENTS.md` in full.
+5. Read `AGENTS.md` in full.
 
-5. Add any new rules the plan specifies to `AGENTS.md`. Commit:
+6. Add any new rules the plan specifies to `AGENTS.md`. Commit:
    ```
    git add AGENTS.md
    git commit -m "docs: add rules for prompt-{N}"
    ```
 
-6. Check for untracked governance docs or plan files:
+7. Check for untracked governance docs or plan files:
    ```
    git status -s | grep -E "AGENTS.md|AI_HANDOFF.md|PLANS.md|CHANGELOG.md|LANDMINES.md|DECISIONS.md|CONTEXT.md|DEBT.md|project-vision|prompts/"
    ```
@@ -53,4 +61,4 @@ Run at the start of every plan.
    git tag docs-cleanup-{N}
    ```
 
-7. Proceed to plan body (S1 onward). Run `/verify` after each file edit.
+8. Proceed to plan body (S1 onward). Run `/verify` after each file edit.

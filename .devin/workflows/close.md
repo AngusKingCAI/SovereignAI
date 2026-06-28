@@ -20,11 +20,20 @@ Run at the end of every plan. Do not pause between steps — run straight throug
    ```
    If errors, STOP.
 
-3. Run mypy (use absolute venv path per OR46):
-   - At scan prompts (5, 10, 15...): `.venv/Scripts/mypy.exe . --ignore-missing-imports`
-   - At regular prompts: `.venv/Scripts/mypy.exe <files-edited-this-plan> --ignore-missing-imports`
+3. Run mypy on Python files only (per OR47 — never pass markdown or other non-Python files to mypy):
+   - At scan prompts (5, 10, 15...): `.venv/Scripts/mypy.exe . --ignore-missing-imports` (scans whole repo, naturally skips non-Python files)
+   - At regular prompts: filter edited files to `.py` only, then run mypy:
+     ```
+     EDITED_PY_FILES=$(git diff --name-only HEAD~1 | grep '\.py$' | tr '\n' ' ')
+     if [ -n "$EDITED_PY_FILES" ]; then
+       .venv/Scripts/mypy.exe $EDITED_PY_FILES --ignore-missing-imports 2>&1 | tail -n 3
+     else
+       echo "mypy: N/A (no Python files edited this plan)"
+     fi
+     ```
+     If no `.py` files were edited, mypy is N/A — report "N/A (no Python files edited)" in the final summary (step 20) and continue to step 4. Do NOT pass markdown or other non-Python files to mypy — it will fail with "Duplicate module named __main__" or similar errors (L31).
    
-   Pipe through `tail -n 3`. If errors, STOP.
+   If mypy reports errors on `.py` files, STOP.
 
 4. Run bandit (use absolute venv path per OR46):
    ```
@@ -184,9 +193,10 @@ Run at the end of every plan. Do not pause between steps — run straight throug
     4. Ask the Executor to commit and push it (e.g., "commit and push the execution log for prompt-{N}")
     ```
 
-21. Close Git Bash sessions (Windows-specific). This step is mandatory even for docs-only plans — do not skip:
+21. Close Git Bash sessions (Windows-specific). **STOP CONDITION: the plan is NOT complete until this step executes.** Do not report "Plan X Complete" in step 20's final summary until step 21 has run. If you find yourself about to end the session after step 20, STOP — you have not finished. Run step 21 now:
     ```
-    taskkill //F //IM bash.exe
+    taskkill //F //IM bash.exe 2>&1 || true
     ```
-    No output expected. Kills all `bash.exe` processes including the current session. This is the final step — no further commands will execute.
-    If any prior step was skipped because its result was N/A (e.g., no Python code to test), this step still runs. N/A results are reported in the final summary (step 20), not used as a reason to skip subsequent steps.
+    The `|| true` ensures the step succeeds even if no bash.exe processes are running. This kills all `bash.exe` processes including the current session — no further commands will execute after this step. 
+    
+    This step is mandatory for ALL plans, including docs-only plans. N/A results from prior steps (e.g., "Tests: N/A") do NOT make this step N/A — this step always runs. A second `taskkill` runs at the START of the next plan's `/open` step 1 to clean up any orphans if this step was somehow skipped.

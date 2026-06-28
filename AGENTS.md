@@ -238,6 +238,7 @@ This section maps landmines to their corresponding rules. L1–L23 are inherited
 | L28 | OR44 | sed used on workflow files after Edit-tool failures |
 | L29 | OR45 | python and pip resolve to different interpreters on Windows |
 | L30 | OR46 | source .venv/Scripts/activate does not persist in Git Bash on Windows |
+| L31 | OR47 | Mypy fails when passed markdown or other non-Python files |
 
 ---
 

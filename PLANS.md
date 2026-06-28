@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-28 (prompt-0.2)
+**Last updated**: 2026-06-28 (prompt-0.4)
 
 This document tracks the dynamic state of the SovereignAI project: baselines, completed prompts, and the next-5-prompt queue. It is the canonical source for test counts, static analysis baselines, and which prompt is currently active. The Executor updates this document at every `/close`. The Architect reads it at every session start. Do not duplicate content from this file into other documents — this is the SSOT for baselines and queue state.
 
@@ -48,6 +48,7 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 | prompt-0.1 | `prompt-0.1` | Post-execution cleanup — OR40-OR43, L24-L27, workflow fixes, repo hygiene | N/A | N/A | N/A | 2026-06-28 |
 | prompt-0.2 | `prompt-0.2` | Environment + doc drift cleanup — OR44-OR45, L28-L29, venv setup, ruff config fix | N/A | 0 | N/A | 2026-06-28 |
 | prompt-0.3 | `prompt-0.3` | Venv path + repo hygiene cleanup — OR46, L30, workflow files use absolute venv paths | N/A | 0 | N/A | 2026-06-28 |
+| prompt-0.4 | `prompt-0.4` | Mypy filtering + kill bash at start — OR47, L31, /open step 1 kill orphans, /close step 3 mypy .py filter, /close step 21 stronger language | N/A | 0 | N/A | 2026-06-28 |
 
 *Plans 1–4 rows will be added here at each `/close`.*
 

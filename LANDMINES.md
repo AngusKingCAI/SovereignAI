@@ -1,6 +1,6 @@
 # LANDMINES.md — SovereignAI Failure Patterns
 
-Append-only. Selected landmines (L1–L9, L11, L12, L17) inherited from sovereign-ai (predecessor project) — these are the entries referenced in `AGENTS.md`'s landmine-to-rule table. L10, L13–L16, L18–L23 were not graduated to rules in SovereignAI and are not carried forward. SovereignAI-specific landmines L24–L27 captured during Plan 0 execution; L28–L29 captured during prompt-0.1 execution; L30 captured during prompt-0.2 execution. New landmines for SovereignAI continue from L31.
+Append-only. Selected landmines (L1–L9, L11, L12, L17) inherited from sovereign-ai (predecessor project) — these are the entries referenced in `AGENTS.md`'s landmine-to-rule table. L10, L13–L16, L18–L23 were not graduated to rules in SovereignAI and are not carried forward. SovereignAI-specific landmines L24–L27 captured during Plan 0 execution; L28–L29 captured during prompt-0.1 execution; L30 captured during prompt-0.2 execution; L31 captured during prompt-0.3 execution. New landmines for SovereignAI continue from L32.
 
 Entries below are placeholder records for the inherited landmines referenced in `AGENTS.md`'s landmine-to-rule table. Each entry records the inherited trigger pattern and impact; SovereignAI-specific triggers will be appended as they occur. Per AGENTS.md: "Keep entries concise — trigger and impact only. No narrative."
 
@@ -101,9 +101,14 @@ Entries below are placeholder records for the inherited landmines referenced in 
 **Impact**: Executor fell back to absolute paths (`.venv/Scripts/python.exe`, `.venv/Scripts/pip.exe`) for all subsequent commands. This worked but required verbose command syntax. If `/open` workflow relied on `source activate` (as prompt-0.2's S1.6 originally specified but was skipped), every subsequent plan would hit the same activation issue.
 **Graduated to**: OR46 (workflow commands use absolute venv paths, not source activate).
 
+## L31 — Mypy fails when passed markdown or other non-Python files
+**Trigger**: prompt-0.3, `/close` step 3, Executor ran `mypy AGENTS.md CHANGELOG.md LANDMINES.md PLANS.md .devin/workflows/*.md prompts/*.md --ignore-missing-imports` and got "Duplicate module named __main__" error.
+**Impact**: Executor skipped mypy entirely with "N/A (no Python code)." This was technically correct for prompt-0.3 (no Python files existed), but the pattern would skip mypy on real Python files in Plan 1+ if any markdown files were also edited. Plan 1 will edit both Python files (sovereignai/*.py) and markdown files (PLANS.md, CHANGELOG.md) — passing all to mypy would fail on the markdown files.
+**Graduated to**: OR47 (mypy is invoked on .py files only — never markdown, YAML, TOML, or other non-Python files).
+
 ---
 
-## Process for capturing new landmines (L31+)
+## Process for capturing new landmines (L32+)
 
 At `/close` step 11, if a new failure pattern was discovered during the plan, append an entry in this format:
 
