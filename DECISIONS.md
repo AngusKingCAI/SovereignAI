@@ -40,6 +40,18 @@ Append-only. Each entry: context, options considered, decision, rationale, trade
 
 ---
 
+## D4 — Single file instantiates all core components explicitly (Q26 resolution)
+
+**Context**: Q26 asked whether core components should be instantiated in a single file (main.py) or via runtime magic/auto-discovery.
+**Options considered**: A) Single file (main.py) instantiates all components explicitly in topological order; B) Runtime magic (reflection, auto-discovery, plugins); C) Hybrid (some explicit, some auto).
+**Decision**: Option A — main.py build_container() instantiates all 9 components explicitly.
+**Rationale**: Explicit wiring is transparent, debuggable, and aligns with AR4 (no global mutable state, DI container for shared state). Runtime magic obscures dependency graph and makes testing harder. Per A3, this decision is confirmed at Plan 4 /close.
+**Trade-offs**: More verbose than auto-discovery. Requires manual updates when adding components. Acceptable given the small component count (9) and the benefit of clarity.
+**Status**: Active. All 9 components wired: TraceEmitter, EventBus, CapabilityGraph, LifecycleManager, RoutingEngine, TaskStateMachine, AuthMiddleware, CapabilityAPI, RelayPlaceholder.
+**Source**: `project-vision-Rev5.md` Q26 (resolved at Plan 4).
+
+---
+
 ## How to add a new decision
 
 At `/close` step (when a decision is codified), append an entry in the format above. Do not edit or remove existing entries — DECISIONS.md is append-only.

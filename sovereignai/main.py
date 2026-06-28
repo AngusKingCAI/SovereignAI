@@ -73,6 +73,48 @@ def build_container() -> DIContainer:
     container.register_singleton(TaskStateMachine, state_machine)
     container.register_singleton(ITaskStateQuery, state_machine)  # type: ignore[type-abstract]
 
+    # 7. AuthMiddleware — depends on TraceEmitter, singleton (Plan 4)
+    from sovereignai.shared.auth import AuthMiddleware
+    auth = AuthMiddleware(trace=trace)
+    container.register_singleton(AuthMiddleware, auth)
+
+    # 8. CapabilityAPI — depends on AuthMiddleware + ICapabilityIndex
+    #    + ITaskStateQuery + TaskStateMachine
+    # Rev2 per Finding 1: passes the concrete TaskStateMachine so submit_task
+    # can call submit() (the ITaskStateQuery protocol is query-only).
+    from sovereignai.shared.capability_api import CapabilityAPI
+    from sovereignai.shared.capability_graph import ICapabilityIndex
+    from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
+    api = CapabilityAPI(
+        auth=auth,
+        capability_index=container.retrieve(ICapabilityIndex),  # type: ignore[type-abstract]
+        task_state_query=container.retrieve(ITaskStateQuery),  # type: ignore[type-abstract]
+        state_machine=container.retrieve(TaskStateMachine),
+        trace=trace,
+    )
+    container.register_singleton(CapabilityAPI, api)
+
+    # 9. RelayPlaceholder — depends on TraceEmitter, singleton (Plan 4)
+    # Real relay server deferred to a post-batch plan per A4.
+    from sovereignai.shared.relay_placeholder import RelayPlaceholder
+    relay = RelayPlaceholder(trace=trace)
+    container.register_singleton(RelayPlaceholder, relay)
+
+    # === Q26 CONFIRMATION ===
+    # Per A3: Q26 ("single file instantiates all core components explicitly")
+    # is confirmed at Plan 4 /close. As of this plan, main.py wires:
+    #   1. TraceEmitter (Plan 1)
+    #   2. EventBus (Plan 1)
+    #   3. CapabilityGraph + ICapabilityIndex (Plan 2)
+    #   4. LifecycleManager (Plan 3)
+    #   5. RoutingEngine (Plan 3)
+    #   6. TaskStateMachine + ITaskStateQuery (Plan 3)
+    #   7. AuthMiddleware (Plan 4)
+    #   8. CapabilityAPI (Plan 4)
+    #   9. RelayPlaceholder (Plan 4 — real relay deferred per A4)
+    # All 9 components instantiated explicitly in topological order.
+    # No runtime magic, no auto-discovery (per Q26 resolution).
+
     return container
 
 

@@ -276,3 +276,40 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Circuit breaker: 50 errors/10s triggers CIRCUIT_BROKEN (AR16). Verified by test_record_error_at_threshold_circuit_breaks.
 - Event bus in-order delivery verified for task state transitions (A9, test_transitions_published_in_order).
 - DAG validator prevents composite tasks with cycles or type mismatches from entering the state machine (A6, P9).
+
+## prompt-4 — Interface layer (Auth middleware, Capability API, Relay placeholder, Q26 audit)
+
+**Date**: 2026-06-28
+**Plan file**: prompts/plan-4-Rev8.md
+
+**Files changed**:
+- sovereignai/shared/types.py (extended: SessionToken, AuthError, CapabilityQuery, CapabilityResponse, RelayNotSupportedError, CapabilityAPIError; fixed trailing whitespace per ruff; changed str+Enum to StrEnum; removed unused Enum import)
+- sovereignai/shared/auth.py (new — PBKDF2 hashing, constant-time comparison, 8h token TTL, thread via Lock)
+- sovereignai/shared/capability_api.py (new — public API for UI processes; validates tokens; depends on ICapabilityIndex + ITaskStateQuery protocols + concrete TaskStateMachine; submit_task stub with DAGSpec support; wraps lower-level errors in CapabilityAPIError per Rev3 Finding 9)
+- sovereignai/shared/relay_placeholder.py (new — raises RelayNotSupportedError, emits WARN trace)
+- sovereignai/main.py (extended: registers AuthMiddleware, CapabilityAPI, RelayPlaceholder; Q26 audit comment confirming all 9 components wired)
+- tests/test_auth.py (new — 8 tests: registration, login, validation, error cases)
+- tests/test_capability_api.py (new — 9 tests: query, submit, state retrieval, error handling; fixtures fixed for CapabilityGraph.register() signature)
+- tests/test_ar7_no_core_imports_in_ui.py (new — 5 tests: Capability API import check + 4 UI directory parametrized tests; prefix matching per Rev5 Finding 3; TraceEmitter allowed per Rev7 Finding 3; types allowed per Rev5 Finding 4)
+- tests/test_relay_placeholder.py (new — 3 tests: error, trace, no socket)
+- tests/test_composition_root.py (extended — 7 new tests: AuthMiddleware, CapabilityAPI, RelayPlaceholder registration + wiring + Q26 AST audit)
+- DECISIONS.md (appended D4 — Q26 resolution)
+- PLANS.md (updated test baseline to 107 tests; promoted Plan 4 to completed; promoted Scan 5 to queue slot 1; struck Q26 from open questions)
+
+**Results**:
+- Tests: 107 passed (75 from Plans 1-3 + 32 new)
+- Ruff: 0 errors
+- Mypy: 0 errors (file-scoped per OR47)
+- Bandit: 0 findings
+- pip-audit: 0 CVEs
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- AR7 enforcement: Capability API imports only protocols (ICapabilityIndex, ITaskStateQuery), never concrete classes. Static-import test verifies this and will enforce for UI directories when code exists.
+- AuthMiddleware: PBKDF2 with 100k iterations, constant-time comparison via secrets.compare_digest, 8h token TTL. Passwords stored as salted hashes (never plaintext).
+- CapabilityAPI: submit_task is a stub — tasks enter RECEIVED state but routing to workers is deferred (post-batch). Validates capability exists before accepting task (NoActiveProviderError).
+- RelayPlaceholder: Real relay server deferred per A4. Placeholder raises RelayNotSupportedError so callers can distinguish "not supported" from other errors.
+- Q26 resolved: main.py build_container() instantiates all 9 components explicitly in topological order. No runtime magic, no auto-discovery. AST test verifies this.
+- Test baseline: 107 tests (6 event_bus + 6 trace_emitter + 6 di_container + 21 composition_root + 8 manifest_parser + 6 capability_graph + 7 lifecycle_manager + 5 routing_engine + 11 task_state_machine + 6 dag_validator + 8 auth + 9 capability_api + 5 ar7 + 3 relay_placeholder).
+

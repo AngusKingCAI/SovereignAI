@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from enum import Enum, StrEnum
+from enum import StrEnum
 from typing import NewType
 from uuid import UUID, uuid4
 
@@ -191,12 +191,12 @@ class DAGValidationError(Exception):
 @dataclass(frozen=True)
 class DAGSpec:
     """Specification of a composite skill's directed acyclic graph.
-    
+
     Per Rev3 Finding 6: defined here so TaskStateMachine.submit() can
     accept it as a typed parameter. Frozen so the spec is immutable
     once constructed — a composite skill's DAG cannot be mutated after
     submission.
-    
+
     Attributes:
         nodes: Tuple of skill node IDs (e.g. ("open_browser", "register_email")).
         edges: Tuple of (source, target) pairs meaning source's output
@@ -214,7 +214,7 @@ class DAGSpec:
 # Task types (used by task state machine in S4)
 # ============================================================================
 
-class TaskState(str, Enum):
+class TaskState(StrEnum):
     """Lifecycle state of a single task, from receipt to completion.
 
     The task state machine transitions: RECEIVED → QUEUED → EXECUTING
@@ -263,7 +263,7 @@ class Task:
 # Lifecycle types (used by Lifecycle Manager in S3)
 # ============================================================================
 
-class ComponentStatus(str, Enum):
+class ComponentStatus(StrEnum):
     """Health status of a registered component, used by the routing engine.
 
     The Lifecycle Manager tracks status; the Routing Engine queries it
@@ -282,3 +282,96 @@ class ComponentStatus(str, Enum):
         CIRCUIT_BROKEN and STOPPED are never available.
         """
         return self is ComponentStatus.ACTIVE
+
+
+# ============================================================================
+# Auth types (used by AuthMiddleware in S2)
+# ============================================================================
+
+@dataclass(frozen=True)
+class SessionToken:
+    """Token issued to a UI process after successful authentication.
+
+    Frozen so tokens cannot be mutated after issuance. The token
+    carries the user it represents and an expiry timestamp. UIs attach
+    the token to every request; AuthMiddleware validates it.
+    """
+    token: str                # opaque string (e.g. UUID4 hex)
+    username: str             # who authenticated
+    issued_at: datetime       # UTC, timezone-aware (per OR20)
+    expires_at: datetime      # UTC, timezone-aware (per OR20)
+
+
+class AuthError(Exception):
+    """Raised when a request lacks a valid session token."""
+
+
+# ============================================================================
+# Capability API types (used by CapabilityAPI in S3)
+# ============================================================================
+
+@dataclass(frozen=True)
+class CapabilityQuery:
+    """Request from a UI process asking what the system can do right now.
+
+    Frozen so queries are immutable once submitted. The Capability API
+    returns a CapabilityResponse with the matching providers.
+    """
+    category: CapabilityCategory
+    name: str
+
+
+@dataclass(frozen=True)
+class CapabilityResponse:
+    """Reply from the Capability API listing providers for a query.
+
+    Frozen so the response cannot be mutated after the API builds it.
+    Contains only public-facing fields — never internal component
+    state (AR7 enforcement).
+    """
+    query: CapabilityQuery
+    providers: tuple[ComponentId, ...]    # component IDs that provide this capability
+
+
+class RelayNotSupportedError(Exception):
+    """Raised when a caller attempts to use the relay before it is implemented.
+
+    Per Finding 5 (Rev2): the relay placeholder raises this exception
+    instead of returning a plain string. Callers catch it programmatically
+    to distinguish "relay not supported" from other errors.
+    """
+
+    def __init__(
+        self,
+        message: str = "Remote transport not yet supported "
+        "(relay server deferred per Plan 1-4 scope adjudication A4)",
+    ) -> None:
+        """Create a relay-not-supported error with a descriptive message.
+
+        Args:
+            message: Human-readable explanation of why the relay is not available.
+        """
+        super().__init__(message)
+
+
+# NoActiveProviderError already defined by Plan 3 S1.1 — no action needed.
+
+
+class CapabilityAPIError(Exception):
+    """Raised when the Capability API encounters an internal error.
+
+    Per Rev3 Finding 9: wraps lower-level errors (DAGValidationError,
+    InvalidStateTransitionError, UnknownTaskError) so callers get a
+    single typed exception from the API rather than propagating core
+    internals.
+    """
+
+    def __init__(self, message: str, cause: Exception | None = None) -> None:
+        """Create a CapabilityAPIError wrapping an optional cause.
+
+        Args:
+            message: Human-readable explanation of what failed.
+            cause: The underlying exception, if any.
+        """
+        self.cause = cause
+        super().__init__(message)

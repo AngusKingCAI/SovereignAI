@@ -7,10 +7,13 @@ from __future__ import annotations
 import subprocess
 
 from sovereignai.main import build_container
+from sovereignai.shared.auth import AuthMiddleware
+from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.capability_graph import CapabilityGraph, ICapabilityIndex
 from sovereignai.shared.container import DIContainer
 from sovereignai.shared.event_bus import EventBus
 from sovereignai.shared.lifecycle_manager import LifecycleManager
+from sovereignai.shared.relay_placeholder import RelayPlaceholder
 from sovereignai.shared.routing_engine import RoutingEngine
 from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
 from sovereignai.shared.trace_emitter import TraceEmitter
@@ -158,3 +161,99 @@ def test_routing_engine_has_lifecycle_wired() -> None:
     router = container.retrieve(RoutingEngine)
     lifecycle = container.retrieve(LifecycleManager)
     assert router._lifecycle is lifecycle
+
+
+def test_auth_middleware_registered() -> None:
+    """Verify that AuthMiddleware is registered in the container and retrievable."""
+    container = build_container()
+    auth = container.retrieve(AuthMiddleware)
+    assert isinstance(auth, AuthMiddleware)
+
+
+def test_capability_api_registered() -> None:
+    """Verify that CapabilityAPI is registered in the container and retrievable."""
+    container = build_container()
+    api = container.retrieve(CapabilityAPI)
+    assert isinstance(api, CapabilityAPI)
+
+
+def test_relay_placeholder_registered() -> None:
+    """Verify that RelayPlaceholder is registered in the container and retrievable."""
+    container = build_container()
+    relay = container.retrieve(RelayPlaceholder)
+    assert isinstance(relay, RelayPlaceholder)
+
+
+def test_capability_api_has_auth_wired() -> None:
+    """Verify that CapabilityAPI has the registered AuthMiddleware wired as its _auth."""
+    container = build_container()
+    api = container.retrieve(CapabilityAPI)
+    auth = container.retrieve(AuthMiddleware)
+    assert api._auth is auth
+
+
+def test_capability_api_has_capability_index_wired() -> None:
+    """Verify that CapabilityAPI has the registered CapabilityGraph wired as its _index."""
+    container = build_container()
+    api = container.retrieve(CapabilityAPI)
+    graph = container.retrieve(CapabilityGraph)
+    assert api._index is graph
+
+
+def test_capability_api_has_task_state_query_wired() -> None:
+    """Verify that CapabilityAPI has the registered TaskStateMachine wired as its _tasks."""
+    container = build_container()
+    api = container.retrieve(CapabilityAPI)
+    state_machine = container.retrieve(TaskStateMachine)
+    assert api._tasks is state_machine
+
+
+def test_q26_all_components_instantiated_in_main() -> None:
+    """Verify that all 9 components are instantiated in main.py build_container() (Q26 audit).
+
+    Per A3: Q26 ("single file instantiates all core components explicitly")
+    is confirmed at Plan 4 /close. This test parses main.py via AST and verifies
+    that all component classes are instantiated in build_container().
+    """
+    import ast
+
+    main_path = "sovereignai/main.py"
+    with open(main_path) as f:
+        tree = ast.parse(f.read())
+
+    # Find the build_container function
+    build_container_func = None
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FunctionDef) and node.name == "build_container":
+            build_container_func = node
+            break
+
+    assert build_container_func is not None, "build_container function not found"
+
+    # Collect all class instantiations in the function
+    instantiations = set()
+    for node in ast.walk(build_container_func):
+        if isinstance(node, ast.Call):
+            # Get the type being instantiated
+            if isinstance(node.func, ast.Name):
+                instantiations.add(node.func.id)
+            elif isinstance(node.func, ast.Attribute):
+                instantiations.add(node.func.attr)
+
+    # Verify all 9 components are instantiated
+    expected_components = {
+        "DIContainer",
+        "TraceEmitter",
+        "EventBus",
+        "CapabilityGraph",
+        "LifecycleManager",
+        "RoutingEngine",
+        "TaskStateMachine",
+        "AuthMiddleware",
+        "CapabilityAPI",
+        "RelayPlaceholder",
+    }
+
+    for component in expected_components:
+        assert component in instantiations, f"{component} not instantiated in build_container()"
+

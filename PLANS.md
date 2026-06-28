@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-28 (prompt-3)
+**Last updated**: 2026-06-28 (prompt-4)
 
 This document tracks the dynamic state of the SovereignAI project: baselines, completed prompts, and the next-5-prompt queue. It is the canonical source for test counts, static analysis baselines, and which prompt is currently active. The Executor updates this document at every `/close`. The Architect reads it at every session start. Do not duplicate content from this file into other documents — this is the SSOT for baselines and queue state.
 
@@ -14,11 +14,13 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 
 **Plan 3**: Execution layer — test baseline updated to 75 tests. Delta from expected: +6 tests (task_state_machine has 11 tests vs expected 8; added test_get_state_unknown_returns_none, test_list_tasks_returns_insertion_order, test_transition_unknown_task_raises_unknown_task_error per implementation requirements).
 
+**Plan 4**: Interface layer — test baseline updated to 107 tests. Delta from expected: +32 tests (8 auth + 9 capability_api + 5 ar7 + 3 relay_placeholder + 7 composition_root).
+
 ---
 
 ## Test Baseline
 
-**Current baseline**: 75 tests (Plan 3 `/close`). Breakdown: 6 event_bus + 6 trace_emitter + 6 di_container + 14 composition_root + 8 manifest_parser + 6 capability_graph + 7 lifecycle_manager + 5 routing_engine + 11 task_state_machine + 6 dag_validator.
+**Current baseline**: 107 tests (Plan 4 `/close`). Breakdown: 6 event_bus + 6 trace_emitter + 6 di_container + 21 composition_root + 8 manifest_parser + 6 capability_graph + 7 lifecycle_manager + 5 routing_engine + 11 task_state_machine + 6 dag_validator + 8 auth + 9 capability_api + 5 ar7 + 3 relay_placeholder.
 
 **Tolerance**: ±5 tests (variance acceptable due to parameterised fixtures and environment variation)
 
@@ -54,8 +56,9 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 | prompt-1 | `prompt-1` | Core scaffold — Event Bus, TraceEmitter, DI container, Composition Root, test baseline | 22 | 0 | 0 | 2026-06-28 |
 | prompt-2 | `prompt-2` | Discovery layer — manifest parser, capability graph, ICapabilityIndex | 40 | 0 | 0 | 2026-06-28 |
 | prompt-3 | `prompt-3` | Execution layer — routing, lifecycle, task state machine, DAG validator, ITaskStateQuery | 75 | 0 | 0 | 2026-06-28 |
+| prompt-4 | `prompt-4` | Interface layer — Auth middleware, Capability API, Relay placeholder, Q26 audit | 107 | 0 | 0 | 2026-06-28 |
 
-*Plans 4+ rows will be added here at each `/close`.*
+*Plans 5+ rows will be added here at each `/close`.*
 
 ---
 
@@ -69,8 +72,8 @@ None — awaiting next plan.
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 4 | Auth middleware, Capability API, Relay server stub | Plan 3 | ⏳ Pending Plan 3 |
-| 2 | Scan 5 | First scan — verify baselines, fix accumulated issues | Plans 1–4 | ⏳ Pending Plans 1–4 |
+| 1 | Scan 5 | First scan — verify baselines, fix accumulated issues | Plans 1–4 | ⏳ Pending Plans 1–4 |
+| 2 | TBD | Future plan | TBD | ⏳ Pending |
 | 3 | TBD | Future plan | TBD | ⏳ Pending |
 | 4 | TBD | Future plan | TBD | ⏳ Pending |
 | 5 | TBD | Future plan | TBD | ⏳ Pending |
@@ -93,6 +96,7 @@ The following open questions from `project-vision-Rev5.md` remain unresolved. Pl
 | ~~Q14~~ | ~~Persistence story — many stores, crash recovery via trace replay~~ | ~~Resolved at Plan 3 (in-memory only; durable backends deferred to DEBT)~~ |
 | Q31 | Packaging and distribution — Windows-first, PyInstaller vs native | Deferred (post Plan 4) |
 | ~~Q32~~ | ~~Debt register format — where it lives, who maintains it, trigger conditions~~ | ~~Resolved at Plan 1 (DEBT.md scaffold)~~ |
+| ~~Q26~~ | ~~Single file instantiates all core components explicitly~~ | ~~Resolved at Plan 4 (main.py build_container() wires all 9 components; no runtime magic, no auto-discovery)~~ |
 
 ---
 
