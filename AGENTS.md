@@ -223,6 +223,10 @@ This section maps landmines to their corresponding rules. L1–L23 are inherited
 | L11 | OR32 | Bypassed pre-commit hooks with --no-verify |
 | L12 | OR33 | Hiding type errors by excluding files from hooks |
 | L17 | OR34 | Plan steps executed/marked complete out of order |
+| L24 | OR41, OR43 | Shell redirection and echo-to-file fail in Git Bash on Windows |
+| L25 | OR42 | Multi-line git commit messages fail in Git Bash on Windows |
+| L26 | OR40 | detect-secrets --all-files scans .venv/ despite .gitignore |
+| L27 | (workflow fix only — /close step 21 + Steps header) | Executor skipped /close steps when expected result was N/A |
 
 ---
 

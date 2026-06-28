@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: Bootstrap (pre-Plan 1) — 2026-06-28
+**Last updated**: 2026-06-28
 
 This document tracks the dynamic state of the SovereignAI project: baselines, completed prompts, and the next-5-prompt queue. It is the canonical source for test counts, static analysis baselines, and which prompt is currently active. The Executor updates this document at every `/close`. The Architect reads it at every session start. Do not duplicate content from this file into other documents — this is the SSOT for baselines and queue state.
 
@@ -45,6 +45,7 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 | Prompt | Tag | Description | Tests | Ruff | Mypy | Date |
 |---|---|---|---|---|---|---|
 | prompt-0 | `prompt-0` | Bootstrap commit — governance docs only, no code | N/A | N/A | N/A | 2026-06-28 |
+| prompt-0.1 | `prompt-0.1` | Post-execution cleanup — OR40-OR43, L24-L27, workflow fixes, repo hygiene | N/A | N/A | N/A | 2026-06-28 |
 
 *Plans 1–4 rows will be added here at each `/close`.*
 
@@ -54,7 +55,7 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 
 **Plan 1** — awaiting execution.
 
-Plan 1 file: `prompts/plan-1-Rev1.md` (to be created by Architect, copied by User)
+Plan 1 file: prompts/plan-1.md (to be created by Architect, copied by User)
 
 ---
 

@@ -4,6 +4,8 @@ Run at the end of every plan. Do not pause between steps — run straight throug
 
 ## Steps
 
+**N/A handling**: When a step's result is N/A (e.g., no Python code to test, no new landmines discovered), the Executor runs the step, observes the N/A result, and reports it in the final summary (step 20). The Executor does NOT skip the step. Skipping steps because "the result would be N/A" is an OR34 violation. The only steps that may be skipped are those explicitly marked "skip if N/A" in this workflow file.
+
 1. Run full test suite:
    ```
    python -m pytest tests/ -vvv
@@ -47,12 +49,12 @@ Run at the end of every plan. Do not pause between steps — run straight throug
    If exit code != 0, STOP — a new secret was introduced. Either update the baseline (if false positive) or remove the secret. Do not commit until this passes.
 
 8. Run custom static analysis checks (AR rules). Each is a separate command. STOP on any violation:
-   - No globals in `core/`
-   - Constructor arg cap (15) in `core/`
-   - No context bags in `core/`
+   - No globals in `sovereignai/`
+   - Constructor arg cap (15) in `sovereignai/`
+   - No context bags in `sovereignai/`
    - Docstring verb-first, ≥10 words on first line
    - No hard-coded component names in `web/`, `cli/`, `tui/`, `phone/`
-   - UI changes don't touch `core/` (check `git diff --name-only HEAD~1`)
+   - UI changes don't touch `sovereignai/` (check `git diff --name-only HEAD~1`)
 
 9. Update `CHANGELOG.md` — append entry to END:
    ```
@@ -180,8 +182,9 @@ Run at the end of every plan. Do not pause between steps — run straight throug
     4. Ask the Executor to commit and push it (e.g., "commit and push the execution log for prompt-{N}")
     ```
 
-21. Close Git Bash sessions (Windows-specific):
+21. Close Git Bash sessions (Windows-specific). This step is mandatory even for docs-only plans — do not skip:
     ```
     taskkill //F //IM bash.exe
     ```
     No output expected. Kills all `bash.exe` processes including the current session. This is the final step — no further commands will execute.
+    If any prior step was skipped because its result was N/A (e.g., no Python code to test), this step still runs. N/A results are reported in the final summary (step 20), not used as a reason to skip subsequent steps.

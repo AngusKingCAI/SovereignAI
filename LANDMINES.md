@@ -1,6 +1,6 @@
 # LANDMINES.md — SovereignAI Failure Patterns
 
-Append-only. Selected landmines (L1–L9, L11, L12, L17) inherited from sovereign-ai (predecessor project) — these are the entries referenced in `AGENTS.md`'s landmine-to-rule table. L10, L13–L16, L18–L23 were not graduated to rules in SovereignAI and are not carried forward. New landmines for SovereignAI start at L24.
+Append-only. Selected landmines (L1–L9, L11, L12, L17) inherited from sovereign-ai (predecessor project) — these are the entries referenced in `AGENTS.md`'s landmine-to-rule table. L10, L13–L16, L18–L23 were not graduated to rules in SovereignAI and are not carried forward. SovereignAI-specific landmines L24–L27 captured during Plan 0 execution. New landmines for SovereignAI continue from L28.
 
 Entries below are placeholder records for the inherited landmines referenced in `AGENTS.md`'s landmine-to-rule table. Each entry records the inherited trigger pattern and impact; SovereignAI-specific triggers will be appended as they occur. Per AGENTS.md: "Keep entries concise — trigger and impact only. No narrative."
 
@@ -66,9 +66,29 @@ Entries below are placeholder records for the inherited landmines referenced in 
 **Impact**: Step marked complete based on work done in a different section. Required replan.
 **Graduated to**: OR34.
 
+## L24 — Shell redirection and echo-to-file fail in Git Bash on Windows
+**Trigger**: Plan 0, S4.4 (detect-secrets scan > txt/.secrets.baseline) and S4.3 (mkdir -p X && echo "" > X/.gitkeep for 16 directories). Both patterns errored.
+**Impact**: Executor fell back to Edit tool for file creation and unredirected command output for scan results. Required multiple workaround commands and added ~10 extra Edit operations to the execution log.
+**Graduated to**: OR41 (Edit tool for empty files), OR43 (tee instead of redirect).
+
+## L25 — Multi-line git commit messages fail in Git Bash on Windows
+**Trigger**: Plan 0, S8, `git commit -m "title\n\n- bullet 1\n..."` errored.
+**Impact**: Executor fell back to single-line commit message: "prompt-0: Bootstrap governance docs and infrastructure - Fix master->main, add governance docs, README, .gitignore, pyproject.toml, requirements.txt, .pre-commit-config.yaml, directory structure, fix Rev5 metadata, update PLANS.md". Lost the structured 10-line body the plan specified. The CHANGELOG.md file was created separately with full content, so the audit trail survived, but the git log lost structure.
+**Graduated to**: OR42 (multi-line commit via -m -m).
+
+## L26 — detect-secrets --all-files scans .venv/ despite .gitignore
+**Trigger**: Plan 0, S4.4, baseline scan flagged false positive in `.venv/Lib/site-packages/pip/_vendor/urllib3/util/url.py` (Basic Auth Credentials pattern in vendored pip code).
+**Impact**: Executor manually edited the JSON baseline to remove the false positive instead of running `detect-secrets audit`. Manual JSON edit broke the baseline's signature. Required follow-up commit `41b9326` ("fix: update secrets baseline with self-filter and timestamp") to add the `is_baseline_file` filter properly via the audit tool.
+**Graduated to**: OR40 (detect-secrets --exclude patterns).
+
+## L27 — Executor skipped /close steps when expected result was N/A
+**Trigger**: Plan 0, Closing section, Executor skipped `/close` steps 15-21 (commit, tag, push, verify, final summary, kill bash) reasoning "most steps are N/A for docs-only plan."
+**Impact**: User had to prompt "why did you stop at 14? you should complete all closing steps." Executor then completed remaining steps. Wasted a round-trip and risked leaving the session in an inconsistent state (bash processes not killed, final summary not produced).
+**Graduated to**: No new rule — workflow file fix only (S2.2 and S2.3 add explicit "mandatory even for docs-only plans" language to `/close` step 21 and the Steps header).
+
 ---
 
-## Process for capturing new landmines (L24+)
+## Process for capturing new landmines (L28+)
 
 At `/close` step 11, if a new failure pattern was discovered during the plan, append an entry in this format:
 
