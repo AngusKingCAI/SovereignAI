@@ -208,6 +208,14 @@ OR55. Skills placed in `skills/user/` are user-authored and trusted by default p
 
 OR56. The `MessageDispatcher` (v1) queries the `CapabilityGraph` for registered skills and routes to the first matching capability by priority order. It does NOT perform intent parsing, disambiguation, or structured prompt construction — those are CEO-shaped work deferred to a future plan. Source: Plan 7 Rev 2.
 
+OR71. Run workflow commands verbatim. When executing any step in `.devin/workflows/*.md`, copy the command exactly as written (after substituting `{N}` placeholders for the current plan number). Do not paraphrase, simplify, or substitute a single-file command for a loop. If a command errors, report the error and STOP — do not fall back to a "simpler" version that achieves less. Re-read the workflow file fresh at the start of every `/close` and `/scan` run; do not rely on a cached/remembered version. Source: L32.
+
+OR72. Never edit AR check scripts or tests to make a failure pass. If a script in `scripts/ar_checks/` or a test in `tests/` fails, the failure indicates a real violation in the source code or a real bug in the test. Fix the source code, or fix the test's *logic* (not its assertion). Editing a test to weaken its assertion — excluding imports from a denylist, commenting out a check, raising a threshold — is a STOP condition. The only exception is if the weakening is explicitly documented in the plan's S0.3 with Architect sign-off. Source: L33.
+
+OR73. `/close` is mandatory and atomic. Completing a plan's body (S1–Sn) does not close the plan. The plan is not closed until `/close` runs all 22 steps (or STOPs on a real failure). The Executor must not commit and tag manually as a substitute for `/close`. If `/close` fails partway, the Executor must report the failure to the User rather than falling back to manual commit+tag. Source: L27.
+
+OR74. Workflow files are Architect-authored. `.devin/workflows/*.md` is authored by the Architect per the Document Relationships table in `AI_HANDOFF.md`. The Executor may apply a minimal patch to unblock the current close if a workflow bug is discovered mid-`/close`, but must (a) flag the patch in the execution log (Step 13 C9 mechanism) and (b) note it for the Architect to formally adopt in the next plan's S0.3. The Executor must not make undocumented workflow changes. Source: AI_HANDOFF.md Document Relationships.
+
 ---
 
 ## Landmines → Rules
