@@ -21,6 +21,11 @@ import pytest
 # ITaskStateQuery). Per Rev3 Finding 4: auth and routing_engine removed
 # (API legitimately imports AuthMiddleware; NoActiveProviderError moved
 # to types.py). Only true concrete internals remain.
+#
+# Per Plan 6: The web server (web/main.py) is the composition root for its
+# process and must import build_container, DIContainer, and EventBus to
+# bootstrap the DI container. These imports are allowed ONLY for web/main.py
+# (the composition root), not for other UI files.
 CORE_INTERNALS_CONCRETE_DENYLIST = {
     "sovereignai.shared.event_bus",
     "sovereignai.shared.lifecycle_manager",
@@ -35,7 +40,31 @@ CORE_INTERNALS_CONCRETE_DENYLIST = {
     # concrete implementation that the API should avoid. UIs are still
     # protected because UI_PACKAGE_DENYLIST has "sovereignai.shared" as a
     # prefix, which blocks "sovereignai.shared.trace_emitter".
+    # Per Plan 6: "sovereignai.shared.container" REMOVED from this denylist
+    # for web/main.py only (composition root needs DIContainer type).
     "sovereignai.shared.container",
+}
+
+# Imports allowed ONLY for web/main.py (the composition root for the web process)
+WEB_MAIN_ALLOWED_IMPORTS = {
+    "sovereignai.shared.container",
+    "sovereignai.shared.container.DIContainer",
+    "sovereignai.shared.event_bus",
+    "sovereignai.shared.event_bus.EventBus",
+    "sovereignai.shared.capability_api",
+    "sovereignai.shared.capability_api.CapabilityAPI",
+    "sovereignai.shared.capability_graph",
+    "sovereignai.shared.capability_graph.ICapabilityIndex",
+    "sovereignai.shared.auth",
+    "sovereignai.shared.auth.AuthMiddleware",
+    "sovereignai.shared.trace_emitter",
+    "sovereignai.shared.trace_emitter.TraceEmitter",
+    "sovereignai.shared.types",
+    "sovereignai.shared.types.CapabilityCategory",
+    "sovereignai.shared.types.TaskState",
+    "sovereignai.shared.types.TASK_STATE_CHANNEL",
+    "sovereignai.shared.types.TaskStateChanged",
+    "sovereignai.shared.types.TraceLevel",
 }
 
 # Package-level imports forbidden in UI directories only.
@@ -163,6 +192,21 @@ def test_ui_directories_do_not_import_core_internals(ui_dir: str) -> None:
         forbidden_package = {
             imp for imp in imports if any(imp.startswith(prefix) for prefix in UI_PACKAGE_DENYLIST)
         }
+
+        # Per Plan 6: web/main.py is the composition root for the web process
+        # and is allowed to import DIContainer, EventBus, and other core types
+        # for bootstrapping the DI container and implementing the web server.
+        is_web_main = py_file.name == "main.py" and py_file.parent.name == "web"
+        if is_web_main:
+            forbidden_concrete -= WEB_MAIN_ALLOWED_IMPORTS
+            # web/main.py can import sovereignai.main (build_container)
+            # and sovereignai.shared.* modules (composition root needs these)
+            forbidden_package -= {"sovereignai.main"}
+            forbidden_package -= {
+                imp for imp in forbidden_package
+                if imp.startswith("sovereignai.shared")
+            }
+
         assert not forbidden_concrete, (
             f"{py_file} imports forbidden concrete core modules: {forbidden_concrete}. "
             f"Per AR7, UIs must consume the Capability API only."

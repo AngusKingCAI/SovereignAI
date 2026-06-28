@@ -1,0 +1,193 @@
+/* SovereignAI web UI styles - dark theme */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+    min-width: 320px;
+}
+
+#app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: #2d2d2d;
+    border-bottom: 1px solid #3d3d3d;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+}
+
+#app-header h1 {
+    font-size: 20px;
+    margin: 0;
+    color: #ffffff;
+}
+
+#connection-status {
+    font-size: 14px;
+    color: #888;
+}
+
+#main-content {
+    padding-top: 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#main-content h2 {
+    color: #ffffff;
+    border-bottom: 1px solid #3d3d3d;
+    padding-bottom: 10px;
+}
+
+#capability-list {
+    list-style: none;
+    padding: 0;
+}
+
+#capability-list li {
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 8px;
+}
+
+#task-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#task-section h2 {
+    color: #ffffff;
+    border-bottom: 1px solid #3d3d3d;
+    padding-bottom: 10px;
+}
+
+#task-form {
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+#task-form div {
+    margin-bottom: 15px;
+}
+
+#task-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #b0b0b0;
+}
+
+#task-form select,
+#task-form input,
+#task-form textarea {
+    width: 100%;
+    padding: 8px;
+    background-color: #1a1a1a;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    color: #e0e0e0;
+    box-sizing: border-box;
+}
+
+#task-form button {
+    background-color: #4a9eff;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#task-form button:hover {
+    background-color: #3a8eef;
+}
+
+#task-status {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#task-status h2 {
+    color: #ffffff;
+    border-bottom: 1px solid #3d3d3d;
+    padding-bottom: 10px;
+}
+
+#task-status-content {
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    padding: 15px;
+    min-height: 50px;
+}
+
+#log-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background-color: #2d2d2d;
+    border-top: 1px solid #3d3d3d;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+#log-toggle {
+    background-color: #3d3d3d;
+    color: #e0e0e0;
+    border: none;
+    border-bottom: 1px solid #4d4d4d;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#log-toggle:hover {
+    background-color: #4d4d4d;
+}
+
+#log-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.trace-error {
+    color: #ff6b6b;
+}
+
+.trace-warn {
+    color: #ffd93d;
+}
+
+.trace-info {
+    color: #ffffff;
+}
+
+.trace-debug {
+    color: #888888;
+}
+
+.trace-trace {
+    color: #666666;
+}
