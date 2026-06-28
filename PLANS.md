@@ -8,19 +8,28 @@ Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts,
 
 ## Baseline Reconciliation Notes
 
-**Plan 1**: First code plan. Established baseline at 22 tests. Delta: 0.
-**Plan 2**: Discovery layer. Baseline → 40 tests. Delta: +3 (manifest_parser has 8 vs expected 6; added test_parse_missing_capability_field_raises and test_parse_invalid_priority_raises per Findings 2 and 12).
-**Plan 3**: Execution layer. Baseline → 75 tests. Delta: +6 (task_state_machine has 11 vs expected 8; added test_get_state_unknown_returns_none, test_list_tasks_returns_insertion_order, test_transition_unknown_task_raises_unknown_task_error).
-**Plan 4**: Interface layer. Baseline → 107 tests. Delta: +32 (8 auth + 9 capability_api + 5 ar7 + 3 relay_placeholder + 7 composition_root).
-**Plan 5**: Scan 5. Baseline → 106 tests. Delta: -1 (added test_register_equal_priority_stable_sort and test_register_cleanup_old_capabilities_on_reregistration to capability_graph, but net count decreased by 1 due to test skip changes).
+Full explanations live in `CHANGELOG.md` (one entry per plan) — this section tracks only the running delta, per OR17. Going forward, write one line per plan (`**Plan N**: Baseline → X tests. Delta: ±Y — see CHANGELOG prompt-N.`); do not restate the per-test reasoning here.
+
+**Plan 1**: Baseline → 22 tests. Delta: 0.
+**Plan 2**: Baseline → 40 tests. Delta: +3 — see CHANGELOG prompt-2.
+**Plan 3**: Baseline → 75 tests. Delta: +6 — see CHANGELOG prompt-3.
+**Plan 4**: Baseline → 107 tests. Delta: +32 — see CHANGELOG prompt-4.
+**Plan 5**: Baseline → 106 tests. Delta: -1 — see CHANGELOG prompt-5.
 
 ---
 
 ## Test Baseline
 
 **Current**: 106 tests (Plan 5 `/close` — Scan 5)
-Breakdown: 6 event_bus + 6 trace_emitter + 6 di_container + 21 composition_root + 8 manifest_parser + 7 capability_graph + 7 lifecycle_manager + 5 routing_engine + 11 task_state_machine + 6 dag_validator + 8 auth + 9 capability_api + 5 ar7 + 3 relay_placeholder.
-**Tolerance**: ±5 tests. If count at plan start differs from baseline, update this entry and note the delta in CHANGELOG.
+Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
+```
+.venv/Scripts/python.exe -m pytest tests/ --collect-only -q | tail -n 1
+```
+If a per-suite count is needed for debugging, generate it on demand rather than maintaining it here:
+```
+.venv/Scripts/python.exe -m pytest tests/ --collect-only -q | grep -oE '^[^:]+\.py' | sort | uniq -c
+```
+**Tolerance**: ±5 tests. If count at plan start differs from baseline, update this entry and add one line to Baseline Reconciliation Notes (delta only — full reasoning goes in CHANGELOG, not both places).
 
 ---
 
@@ -76,21 +85,11 @@ None — awaiting next plan.
 
 ---
 
-## Open Questions Outstanding
+## Open Questions
 
-| Q# | Question | Target plan |
-|---|---|---|
-| Q1 | Adapter contract — manifest format and interface contract | Plan 2 |
-| Q2 | Skill discovery and registration — directory scan + manifest | Plan 2 |
-| ~~Q3~~ | ~~Memory abstraction — capability-based backend routing~~ | ~~Resolved Plan 3 (interface defined; impl deferred to DEBT)~~ |
-| ~~Q4~~ | ~~Core routing between adapters without knowing them~~ | ~~Resolved Plan 3 (capability-based via ICapabilityIndex + LifecycleManager)~~ |
-| Q8 | Adapter/skill/memory versioning — semver + capability negotiation | Plan 2 |
-| ~~Q9~~ | ~~Test strategy~~ | ~~Resolved Plan 1~~ |
-| Q13 | Learning and improvement — retrospective trace skill | Deferred post Plan 4 |
-| ~~Q14~~ | ~~Persistence story — crash recovery via trace replay~~ | ~~Resolved Plan 3 (in-memory only; durable backends deferred)~~ |
-| Q31 | Packaging and distribution — Windows-first, PyInstaller vs native | Deferred post Plan 4 |
-| ~~Q32~~ | ~~Debt register format~~ | ~~Resolved Plan 1 (DEBT.md scaffold)~~ |
-| ~~Q26~~ | ~~Single file instantiates all core components explicitly~~ | ~~Resolved Plan 4 (main.py build_container() — no runtime magic)~~ |
+Tracked solely in `project-vision-Rev5.md` (SSOT) — do not duplicate the full table here, and do not log resolutions in this file. `project-vision-Rev5.md` strikes resolved questions and notes the resolving plan; that's the only place this happens now.
+
+**Snapshot** (refreshed at each scan, per `scan.md` step 4 — may lag the vision doc by up to one batch): 5 open (Q1, Q2, Q8, Q13, Q31), 6 resolved (Q3, Q4, Q9, Q14, Q26, Q32 — see `project-vision-Rev5.md` for resolving plans).
 
 ---
 
@@ -114,7 +113,7 @@ None — awaiting next plan.
 ## How to Update
 
 1. **After every plan**: Add row to Completed Prompts. Move active plan out of queue; promote next to Active.
-2. **Baseline changes**: Update Test Baseline or Static Analysis Baseline with new counts, source plan, and delta reason.
-3. **Reconciliation note**: Add entry to Baseline Reconciliation Notes: `**Plan N**: <what changed, why, delta>`.
-4. **Open question resolved**: Strike from Open Questions table; note resolving plan. Update `project-vision-Rev5.md` too.
+2. **Baseline changes**: Update Test Baseline using the generated count (`pytest --collect-only -q`), not a hand-summed breakdown. Update Static Analysis Baseline with new counts and source plan.
+3. **Reconciliation note**: Add a one-line delta to Baseline Reconciliation Notes: `**Plan N**: Baseline → X tests. Delta: ±Y — see CHANGELOG prompt-N.` The "why" goes in CHANGELOG only — don't duplicate it here.
+4. **Open question resolved**: Do NOT edit this file's Open Questions section beyond the snapshot count. Strike the question and note the resolving plan in `project-vision-Rev5.md` only — that's the sole place resolutions are recorded. Refresh the snapshot count here at the next scan (per `scan.md` step 4).
 5. **Edit tool only** — never `sed`, `Set-Content`, or shell redirection (OR7).

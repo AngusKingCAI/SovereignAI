@@ -98,7 +98,7 @@ OR12. Append to END only. Never insert at top. Oldest entry at top, newest at bo
 
 OR13. Use temp-file pattern (not here-strings). Append via `cat >>`. After appending, DELETE the temp file. (Source: L4)
 
-OR14. Simplified format: ~10–15 lines per entry. Title, changed files, results, test count. No fluff.
+OR14. Hard cap: 15 lines per entry — title, changed files, results, test count, ≤3 Notes bullets. Implementation rationale and design trade-offs do NOT belong in CHANGELOG; log them in `DECISIONS.md` and reference the decision ID (`See DECISIONS.md D{n}`) instead of re-explaining. (Amended 2026-06-28, governance review — see DECISIONS.md D5)
 
 ### Scope discipline
 OR15. Pre-declare scope before editing. List files you WILL edit and files you will NOT edit. Any file outside the "will edit" list requires STOP and Architect authorization.
@@ -193,6 +193,8 @@ OR45. Project-local venv at `.venv/` is canonical. Create once via `py -3.11 -m 
 OR46. Workflow commands use absolute venv paths, not `source activate`. Git Bash on Windows does not reliably persist `source .venv/Scripts/activate`. All workflow files and plan steps must use: `.venv/Scripts/python.exe -m pytest`, `.venv/Scripts/ruff.exe`, `.venv/Scripts/mypy.exe`, `.venv/Scripts/bandit.exe`, `.venv/Scripts/pip-audit.exe`, `.venv/Scripts/vulture.exe`, `.venv/Scripts/detect-secrets.exe`. If `.venv/` is missing, create it per OR45 first. (Source: L30)
 
 OR47. Mypy is invoked on `.py` files only — never markdown, YAML, TOML, or other non-Python files. Filter the file list before passing to mypy. If no `.py` files were edited this plan, mypy is N/A — report "N/A (no Python files edited)" and continue. Canonical invocation: `git diff --name-only HEAD~1 | grep '\.py$' | xargs .venv/Scripts/mypy.exe --ignore-missing-imports`. At scan prompts (5, 10, 15…), `mypy .` scans the whole repo and naturally skips non-Python files. (Source: L31)
+
+OR48. Custom AR static analysis checks (AR4, AR5, AR6, AR9, AR21) are committed scripts in `scripts/ar_checks/`, never re-derived ad hoc at `/close` or `/scan`. If a check has no script yet, write one, commit it with the current plan, and use it from then on. Each script documents which AR rule it enforces via `--help`. Changing a check's behaviour means editing the script (reviewable diff), not silently changing what gets caught. (Source: governance review 2026-06-28 — see DECISIONS.md D5)
 
 ---
 

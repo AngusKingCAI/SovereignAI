@@ -4,24 +4,17 @@ Run at scan prompts (Plan 5, 10, 15, 20, ...). Whole-repo scan. No new features.
 
 ## Steps
 
-1. Run all scan tools in full, one at a time (parallel execution corrupts output streams per OR3). Use absolute venv paths per OR46:
-   - `.venv/Scripts/python.exe -m pytest tests/ -vvv` (full verbose, no piping)
-   - `.venv/Scripts/ruff.exe check . 2>&1 | tail -n 3`
-   - `.venv/Scripts/mypy.exe . --ignore-missing-imports 2>&1 | tail -n 3` (full repo at scan prompts)
-   - `.venv/Scripts/bandit.exe -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache 2>&1 | tail -n 5`
-   - `.venv/Scripts/pip-audit.exe --strict --requirement txt/requirements.txt 2>&1 | tail -n 5` (scan requirements file only per OR39)
-   - `.venv/Scripts/vulture.exe . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,htmlcov 2>&1 | tail -n 5` (compare against `txt/vulture-whitelist.txt`)
-   - `.venv/Scripts/detect-secrets.exe scan --baseline txt/.secrets.baseline`
-   - Custom AR static analysis checks (same as `/close` step 8)
-   - **Auto-discovered tools**: any test suite or static analysis tool configured in `pyproject.toml`, `pytest.ini`, `.pre-commit-config.yaml`, or similar. Run them all automatically.
-   
+1. Run `/close` steps 1–8 (tests, ruff, mypy — full repo per the scan-prompt branch of `/close` step 3 — bandit, pip-audit, vulture, detect-secrets, custom AR checks). `/close` is the single source of truth for these commands, flags, and absolute venv paths (OR46); do not restate them here. If a tool invocation ever needs to change, change it once in `close.md` — `scan.md` inherits the fix automatically.
+
+   Additionally, run **auto-discovered tools**: any test suite or static analysis tool configured in `pyproject.toml`, `pytest.ini`, `.pre-commit-config.yaml`, or similar, that isn't already covered by `/close` steps 1–8.
+
    If any tool reports new findings, STOP.
 
 2. Scan `LANDMINES.md` — for any landmine without a corresponding rule in `AGENTS.md`, propose the missing rule via C9.
 
 3. Scan `CHANGELOG.md` — verify every plan in the completed batch has an entry.
 
-4. Scan `PLANS.md` — verify baselines are current and next-5-queue reflects actual state. Update if stale.
+4. Scan `PLANS.md` — verify baselines are current and next-5-queue reflects actual state. Update if stale. Refresh the Open Questions snapshot count against `project-vision-Rev5.md` (PLANS.md is allowed to lag the vision doc by up to one batch; scan is when it resyncs — see PLANS.md Open Questions section).
 
 5. Scan all docstrings for references to removed/renamed modules. Fix stale references mechanically.
 

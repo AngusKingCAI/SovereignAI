@@ -55,13 +55,17 @@ Compare against `txt/vulture-whitelist.txt`. STOP on new findings.
 ```
 STOP if exit code != 0. If false positive, run `detect-secrets audit txt/.secrets.baseline` per OR40 — do NOT manually edit the JSON.
 
-**Step 8 — Custom AR static analysis checks** (each a separate command — STOP on any violation)
-- No globals in `sovereignai/`
-- Constructor arg cap (15) in `sovereignai/`
-- No context bags in `sovereignai/`
-- Docstring verb-first, ≥10 words on first line
-- No hard-coded component names in `web/`, `cli/`, `tui/`, `phone/`
-- UI changes don't touch `sovereignai/` (`git diff --name-only HEAD~1`)
+**Step 8 — Custom AR static analysis checks**
+Run the committed check scripts in `scripts/ar_checks/` (each a separate command — STOP on any violation). Do not re-derive these checks from memory; if a script is missing for a check, write it now, commit it with this plan's changes, and use it from then on (Source: OR48).
+```
+.venv/Scripts/python.exe scripts/ar_checks/no_globals.py sovereignai/
+.venv/Scripts/python.exe scripts/ar_checks/constructor_arg_cap.py sovereignai/ --max-args 15
+.venv/Scripts/python.exe scripts/ar_checks/no_context_bags.py sovereignai/
+.venv/Scripts/python.exe scripts/ar_checks/docstring_discipline.py sovereignai/
+.venv/Scripts/python.exe scripts/ar_checks/no_hardcoded_component_names.py web/ cli/ tui/ phone/
+.venv/Scripts/python.exe scripts/ar_checks/ui_does_not_touch_core.py
+```
+Each script's `--help` documents what it checks and which AR rule it enforces.
 
 **Step 9 — Update `CHANGELOG.md`** (append to END, temp-file pattern per OR13)
 ```
@@ -82,18 +86,23 @@ STOP if exit code != 0. If false positive, run `detect-secrets audit txt/.secret
 - Detect-secrets: pass/fail
 
 **Notes**:
-- {observations}
+- {observation, max 3 bullets}
 ```
+Hard cap: 15 lines per entry (OR14). Implementation rationale and design trade-offs do NOT go in Notes — log them in `DECISIONS.md` and write `See DECISIONS.md D{n}` here instead. If Notes needs more than 3 bullets to explain something, that's the signal it belongs in `DECISIONS.md`.
+
 Write to `temp/changelog-entry-{N}.md`, `cat >> CHANGELOG.md`, delete temp.
 
 **Step 10 — Update `PLANS.md`**
-- Update baselines (test count, ruff, mypy, bandit, vulture, detect-secrets, coverage %)
+- Update Test Baseline using the generated count (`pytest --collect-only -q | tail -n 1`) — do not hand-sum a per-suite breakdown.
+- Update Static Analysis Baseline (ruff, mypy, bandit, vulture, detect-secrets, coverage %)
 - Add completed prompt row
+- Add a one-line Baseline Reconciliation Notes entry if the count changed: `**Plan N**: Baseline → X tests, delta ±Y — see CHANGELOG prompt-N for why.` Full explanation goes in CHANGELOG only, not here.
 - Update Active Plan → none; shift next-5-queue
+- Do NOT add or edit the Open Questions table — that lives solely in `project-vision-Rev5.md` (see PLANS.md Open Questions section)
 
 **Step 11 — Update `LANDMINES.md`** if a new failure pattern was discovered. Append-only. New landmines start at L32.
 
-**Step 12 — Update `DEBT.md`** if any items deferred this plan:
+**Step 12 — Update `DEBT.md`** if any items deferred this plan. Before appending, check existing entries for the same underlying item (see DEBT.md's "How to add a new deferred item" for the duplicate-check procedure):
 ```
 ## Deferred: {item name}
 **Deferred at**: prompt-{N}

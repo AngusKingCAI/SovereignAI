@@ -222,7 +222,7 @@ Open questions resolved: <which open questions this plan resolves, or "none">
 
 **Plan body (S1–Sn)**: Execute all steps in the plan file. After each file edit, run `/verify`. If a step has a STOP condition, pause and report to User before proceeding.
 
-**Closing**: Run `/close` — handles test suite, ruff, mypy, bandit, pip-audit, vulture, custom AR checks, commit, tag, CHANGELOG, PLANS.md, LANDMINES.md (if new pattern), DEBT.md (if deferred), rule proposal (C9), docs commit, push, post-push verification, chat-log reminder, Git Bash cleanup. If missing or fails, STOP and report. Workflow files (`.devin/workflows/*.md`) are the source of truth — Architect reads them from the repo at Workflow Step 2.
+**Closing**: Run `/close` — handles test suite, ruff, mypy, bandit, pip-audit, vulture, custom AR checks (committed scripts in `scripts/ar_checks/`, per OR48 — mechanics live in `close.md`, not here), commit, tag, CHANGELOG, PLANS.md, LANDMINES.md (if new pattern), DEBT.md (if deferred), rule proposal (C9), docs commit, push, post-push verification, chat-log reminder, Git Bash cleanup. If missing or fails, STOP and report. Workflow files (`.devin/workflows/*.md`) are the source of truth — Architect reads them from the repo at Workflow Step 2.
 
 ---
 

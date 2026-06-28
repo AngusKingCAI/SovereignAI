@@ -52,6 +52,18 @@ Append-only. Each entry: context, options considered, decision, rationale, trade
 
 ---
 
+## D5 — Governance documentation optimization (SSOT cleanup + script externalization)
+
+**Context**: A documentation review found duplicate maintenance burden across the governance docs: `scan.md` restated `close.md`'s tool commands verbatim; open questions were tracked in both `PLANS.md` and `project-vision-Rev5.md`; the Test Baseline's per-suite breakdown was hand-summed and had already drifted once (Plan 5); Custom AR checks (`/close` step 8) were free-text prose re-derived from memory each close instead of committed code; CHANGELOG entries were exceeding OR14's line guidance with implementation rationale that duplicated DECISIONS.md's purpose; DEBT.md had logged the same Q8 versioning deferral twice.
+**Options considered**: A) Leave as-is — duplication is explicit and intentional caching; B) Fix each instance individually, converting prose-duplicated facts to single-source pointers and prose-duplicated commands to committed scripts; C) Full rewrite of governance doc structure.
+**Decision**: Option B — targeted fixes, no structural rewrite.
+**Rationale**: The underlying document-responsibility design (one fact, one writer) stated in `AI_HANDOFF.md`'s SSOT mapping was already correct; the duplication was drift from that design, not a design flaw. Minimal targeted fixes restore the original intent without requiring re-validation of the whole governance system.
+**Trade-offs**: `scan.md` is now less self-contained — a reader must open `close.md` to see the actual commands. Accepted: the alternative (restating commands) is what caused the drift being fixed. Custom AR check scripts (`scripts/ar_checks/`) need to be validated against the real `sovereignai/` codebase before they're trustworthy — they're committed as a starting point, not verified against the actual source tree in this pass.
+**Status**: Active. Affects: `scan.md` step 1 (now references `/close`), `close.md` steps 8/9/10/12, `AGENTS.md` OR14 (amended) and OR48 (new), `PLANS.md` (Open Questions → pointer, Test Baseline → generated count, Reconciliation Notes → delta-only), `DEBT.md` (duplicate-check requirement + cross-reference note for the Q8 duplicate).
+**Source**: Governance review, prompt-5 follow-up, 2026-06-28.
+
+---
+
 ## How to add a new decision
 
 At `/close` step (when a decision is codified), append an entry in the format above. Do not edit or remove existing entries — DECISIONS.md is append-only.

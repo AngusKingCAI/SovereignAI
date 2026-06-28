@@ -106,4 +106,14 @@ Append-only. Each entry: deferred at, reason, trigger condition, target plan.
 
 ## How to add a new deferred item
 
-At `/close` step 12, if an item is deferred, append an entry in the format above. When a deferred item is addressed, do not remove the entry — add a "Resolved at: prompt-{N}" line below it. DEBT.md is append-only.
+**Before appending**: scan existing entries for the same underlying item by topic, not exact wording (e.g. "Full Q8 versioning" was logged twice — prompt-0 and prompt-2 — before this check existed; see the cross-reference note below). If a matching entry exists, do not duplicate it — append a short note instead: `## Note: duplicate of "{existing entry name}" — see entry above, dated {prompt-N}.`
+
+At `/close` step 12, if an item is genuinely new, append an entry in the format above. When a deferred item is addressed, do not remove the entry — add a "Resolved at: prompt-{N}" line below it. DEBT.md is append-only.
+
+---
+
+## Note: duplicate entry — Full Q8 versioning / capability negotiation
+
+**Logged at**: prompt-5 (governance review)
+**Issue**: This item was logged twice under near-identical wording — once at prompt-0 (bootstrap, generic Plan 1–4 scope adjudication) and again at prompt-2 (Plan 2 scope adjudication). Both describe the same deferred capability-negotiation work; the prompt-0 entry's trigger condition and the prompt-2 entry's reason are restatements of each other.
+**Resolution**: Track resolution against the prompt-0 entry only. When Q8 negotiation work begins, add a single "Resolved at" line to the prompt-0 entry and reference it from the prompt-2 entry rather than resolving both independently.
