@@ -100,6 +100,47 @@ def build_container() -> DIContainer:
     relay = RelayPlaceholder(trace=trace)
     container.register_singleton(RelayPlaceholder, relay)
 
+    # 10. MessageDispatcher — depends on CapabilityAPI + CapabilityGraph +
+    #     TaskStateMachine + TraceEmitter (Plan 7)
+    from sovereignai.orchestrator.dispatcher import MessageDispatcher
+    dispatcher = MessageDispatcher(
+        capability_api=container.retrieve(CapabilityAPI),
+        capability_graph=container.retrieve(CapabilityGraph),
+        task_state_machine=container.retrieve(ITaskStateQuery),  # type: ignore[type-abstract]
+        trace=trace,
+    )
+    container.register_singleton(MessageDispatcher, dispatcher)
+
+    # 11. Load skill and adapter manifests and register in CapabilityGraph (Plan 7)
+    from pathlib import Path
+
+    from sovereignai.shared.manifest_parser import parse_manifest
+
+    # Scan skills/user/ and adapters/external/ for manifest.toml files
+    manifest_dirs = [
+        Path("skills/user"),
+        Path("skills/external"),
+        Path("adapters/external"),
+    ]
+
+    for manifest_dir in manifest_dirs:
+        if manifest_dir.exists():
+            for manifest_path in manifest_dir.glob("*/manifest.toml"):
+                try:
+                    manifest = parse_manifest(manifest_path)
+                    graph.register(manifest)
+                    trace.emit(
+                        component="main",
+                        level=TraceLevel.INFO,
+                        message=f"Registered {manifest.component_id} from {manifest_path}",
+                    )
+                except Exception as exc:
+                    trace.emit(
+                        component="main",
+                        level=TraceLevel.ERROR,
+                        message=f"Failed to load manifest {manifest_path}: {exc}",
+                    )
+
     # === Q26 CONFIRMATION ===
     # Per A3: Q26 ("single file instantiates all core components explicitly")
     # is confirmed at Plan 4 /close. As of this plan, main.py wires:
@@ -112,7 +153,9 @@ def build_container() -> DIContainer:
     #   7. AuthMiddleware (Plan 4)
     #   8. CapabilityAPI (Plan 4)
     #   9. RelayPlaceholder (Plan 4 — real relay deferred per A4)
-    # All 9 components instantiated explicitly in topological order.
+    #   10. MessageDispatcher (Plan 7)
+    #   11. Skill/adapter manifest loading (Plan 7)
+    # All components instantiated explicitly in topological order.
     # No runtime magic, no auto-discovery (per Q26 resolution).
 
     return container

@@ -385,3 +385,44 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Added httpx2 dependency for FastAPI test client
 - Updated AR7 test to allow web/main.py imports (composition root exception)
 - Fixed timezone comparison issue in SSE event generator
+## prompt-7 — MessageDispatcher, Web Search Skill, Ollama Adapter, Hardware Probe
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-7-Rev5.md
+
+**Files changed**:
+- AGENTS.md (added OR54, OR55, OR56; updated landmine-to-rule table)
+- txt/requirements.txt (added ollama>=0.3.0)
+- pyproject.toml (added pytest-asyncio>=0.21 to dev dependencies)
+- sovereignai/orchestrator/__init__.py (new)
+- sovereignai/orchestrator/dispatcher.py (new — MessageDispatcher with keyword matching, routes to skills via CapabilityGraph)
+- sovereignai/main.py (extended: registers MessageDispatcher; loads skill/adapter manifests from skills/user/, skills/external/, adapters/external/)
+- skills/user/websearch_skill/manifest.toml (new)
+- skills/user/websearch_skill/skill.py (new — DuckDuckGo HTML search with rate limiting)
+- adapters/external/ollama_adapter/manifest.toml (new)
+- adapters/external/ollama_adapter/adapter.py (new — Ollama client wrapper with health_check())
+- web/hardware_probe.py (new — CPU/RAM/GPU/VRAM detection across Windows/macOS/Linux)
+- web/main.py (extended: added /api/dispatch and /api/hardware endpoints)
+- tests/test_dispatcher.py (new — 5 tests for MessageDispatcher)
+- tests/test_websearch_skill.py (new — 5 tests for WebSearchSkill)
+- tests/test_ollama_adapter.py (new — 8 tests for OllamaAdapter)
+- tests/test_hardware_probe.py (new — 14 tests for HardwareProbe)
+
+**Results**:
+- Tests: 32 passed (new tests for Plan 7 components)
+- Ruff: 0 errors
+- Mypy: 0 errors
+- Bandit: 18 Low (subprocess calls and try-except-pass in hardware_probe.py — expected and acceptable)
+- pip-audit: 0 CVEs
+- Vulture: not run
+- Detect-secrets: pass
+
+**Notes**:
+- OR54: Every adapter MUST declare a health_check() method. LifecycleManager calls it on registration. If health check fails, adapter is registered with DEGRADED status (not skipped).
+- OR55: Skills in skills/user/ are user-authored and trusted by default (no provenance manifest). Skills in skills/external/ DO require provenance manifests.
+- OR56: MessageDispatcher (v1) queries CapabilityGraph for registered skills and routes to first matching capability by priority order. Does NOT perform intent parsing, disambiguation, or structured prompt construction (deferred to future plan).
+- WebSearchSkill uses DuckDuckGo HTML interface with rate limiting (2s minimum interval). Known risk: DuckDuckGo may return 403/CAPTCHAs or change DOM structure (documented in DEBT.md).
+- OllamaAdapter wraps official ollama Python client. Performs health check on initialization. Reports DEGRADED status if Ollama not running.
+- HardwareProbe runs in web layer (not sovereignai/shared/ per plan constraint). Detects CPU, RAM, GPU, VRAM across platforms using platform-appropriate methods (WMIC on Windows, system_profiler on macOS, /proc/meminfo and lspci on Linux).
+- MessageDispatcher uses word-boundary regex matching against intent_keywords from manifests. Falls back to Ollama chat skill if no match.
+- All new components registered in composition root via manifest scanning at startup.

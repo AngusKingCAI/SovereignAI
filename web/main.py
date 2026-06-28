@@ -26,6 +26,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.responses import StreamingResponse
 
 from sovereignai.main import build_container
+from sovereignai.orchestrator.dispatcher import MessageDispatcher
 from sovereignai.shared.auth import AuthMiddleware
 from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.capability_graph import ICapabilityIndex
@@ -191,6 +192,63 @@ async def get_task(request: Request, task_id: str) -> TaskResponseDTO:
         result=None,
         error=None,
     )
+
+
+@app.post("/api/dispatch")
+async def dispatch(request: Request) -> TaskResponseDTO:
+    """Submit a natural language message to the MessageDispatcher.
+
+    Per Finding 2 (Rev5): Extract session cookie as token for CapabilityAPI.submit_task().
+    Retrieve MessageDispatcher from container, call dispatch(message, token),
+    return TaskResponseDTO with the submitted task.
+    """
+    from sovereignai.shared.task_state_machine import ITaskStateQuery
+
+    container: Any = request.app.state.container
+    dispatcher: Any = container.retrieve(MessageDispatcher)
+    task_state_query: Any = container.retrieve(ITaskStateQuery)  # type: ignore[type-abstract]
+    token = get_session_token(request)
+
+    data = await request.json()
+    message = data.get("message", "")
+
+    try:
+        task = await dispatcher.dispatch(message, token=token)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    # Retrieve the task state from the state machine
+    state = task_state_query.get_state(task.task_id)
+    if state is None:
+        state = TaskState.RECEIVED
+
+    return TaskResponseDTO(
+        task_id=str(task.task_id),
+        state=state.value,
+        result=None,
+        error=None,
+    )
+
+
+@app.get("/api/hardware")
+async def get_hardware(request: Request) -> dict:
+    """Return current hardware probe results.
+
+    Retrieve HardwareProbe, call probe_async(), return hardware info dict.
+    """
+    from web.hardware_probe import HardwareProbe
+
+    probe = HardwareProbe()
+    info = await probe.probe_async()
+
+    return {
+        "cpu_count": info.cpu_count,
+        "cpu_freq_mhz": info.cpu_freq_mhz,
+        "ram_total_mb": info.ram_total_mb,
+        "ram_available_mb": info.ram_available_mb,
+        "gpu_name": info.gpu_name,
+        "gpu_vram_mb": info.gpu_vram_mb,
+    }
 
 
 @app.get("/api/traces/stream")
