@@ -14,7 +14,6 @@ import asyncio
 import html.parser
 import time
 from dataclasses import dataclass
-from typing import Optional
 
 import httpx
 
@@ -47,7 +46,7 @@ class DuckDuckGoHTMLParser(html.parser.HTMLParser):
         self._current_url = ""
         self._in_link = False
 
-    def handle_starttag(self, tag: str, attrs: list[tuple[str, Optional[str]]]) -> None:
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         """Handle opening HTML tags to detect result containers."""
         attrs_dict = dict(attrs)
         class_attr = attrs_dict.get("class", "")

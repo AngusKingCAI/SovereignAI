@@ -21,6 +21,9 @@ from web.main import app
 @pytest.fixture
 def mock_container() -> Mock:
     """Create a mock DI container with all required dependencies."""
+    from sovereignai.shared.auth import AuthMiddleware
+    from typing import Any
+    
     container = Mock()
 
     # Mock ICapabilityIndex
@@ -42,11 +45,19 @@ def mock_container() -> Mock:
             content_hash="abc123",
         ),
     ]
-    container.retrieve.side_effect = (
-        lambda cls: capability_index
-        if cls.__name__ == "ICapabilityIndex"
-        else Mock()
-    )
+
+    # Mock AuthMiddleware with _password_hashes attribute
+    auth_mock = Mock(spec=AuthMiddleware)
+    auth_mock._password_hashes = {"test": "hash"}
+
+    def retrieve_side_effect(cls: Any) -> Any:
+        if cls.__name__ == "ICapabilityIndex":
+            return capability_index
+        if cls is AuthMiddleware:
+            return auth_mock
+        return Mock()
+
+    container.retrieve.side_effect = retrieve_side_effect
 
     return container
 

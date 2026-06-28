@@ -6,8 +6,6 @@ graph on startup and reports DEGRADED status if Ollama is not running.
 """
 from __future__ import annotations
 
-from typing import Optional
-
 import ollama
 
 from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel

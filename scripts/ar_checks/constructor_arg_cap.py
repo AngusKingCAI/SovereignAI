@@ -24,9 +24,10 @@ def is_dataclass(node: ast.ClassDef) -> bool:
 def is_pure_dto(node: ast.ClassDef) -> bool:
     """Return True if a dataclass has no methods beyond dunders (i.e. no behaviour)."""
     for stmt in node.body:
-        if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            if not (stmt.name.startswith("__") and stmt.name.endswith("__")):
-                return False
+        if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)) and not (
+            stmt.name.startswith("__") and stmt.name.endswith("__")
+        ):
+            return False
     return True
 
 

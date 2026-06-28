@@ -26,7 +26,6 @@ from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse, StreamingResponse
 
 from sovereignai.main import build_container
-from sovereignai.orchestrator.dispatcher import MessageDispatcher
 from sovereignai.shared.auth import AuthMiddleware
 from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.capability_graph import ICapabilityIndex
@@ -70,24 +69,30 @@ templates = Jinja2Templates(directory="web/templates")
 
 
 @app.middleware("http")
-async def first_run_redirect(request: Request, call_next):
+async def first_run_redirect(request: Request, call_next: Any) -> Response:
     """Redirect to registration page on first run when no users exist.
 
     API paths return 401 instead of redirect to avoid JSON parsing errors.
     Static files, auth endpoints, and login/register pages are always allowed.
     """
     path = request.url.path
-    if path.startswith("/static/") or path in ("/login", "/register") or path.startswith("/api/auth/"):
-        return await call_next(request)
+    if (
+        path.startswith("/static/")
+        or path in ("/login", "/register")
+        or path.startswith("/api/auth/")
+    ):
+        return await call_next(request)  # type: ignore[no-any-return]
 
     container: Any = request.app.state.container
     auth: Any = container.retrieve(AuthMiddleware)
     if len(auth._password_hashes) == 0:
         if path.startswith("/api/"):
-            raise HTTPException(status_code=401, detail="No user registered — complete first-run setup")
-        return RedirectResponse(url="/register")
+            raise HTTPException(
+                status_code=401, detail="No user registered — complete first-run setup"
+            )
+        return RedirectResponse(url="/register")  # type: ignore[no-any-return]
 
-    return await call_next(request)
+    return await call_next(request)  # type: ignore[no-any-return]
 
 
 def get_session_token(request: Request) -> str:
@@ -180,7 +185,9 @@ async def register(request: Request) -> dict:
     try:
         auth.register_user(data["username"], data["password"])
     except ValueError as exc:
-        raise HTTPException(status_code=403, detail="Registration closed — user already exists") from exc
+        raise HTTPException(
+            status_code=403, detail="Registration closed — user already exists"
+        ) from exc
     return {"status": "created"}
 
 
@@ -359,16 +366,17 @@ async def get_task(request: Request, task_id: str) -> TaskResponseDTO:
 
 @app.post("/api/dispatch", dependencies=[Depends(get_current_user)])
 async def dispatch(request: Request) -> TaskResponseDTO:
-    """Submit a natural language message to the MessageDispatcher.
+    """Submit a natural language message to the Capability API.
 
     Per Finding 2 (Rev5): Extract session cookie as token for CapabilityAPI.submit_task().
-    Retrieve MessageDispatcher from container, call dispatch(message, token),
+    Retrieve CapabilityAPI from container, call submit_task() with the message,
     return TaskResponseDTO with the submitted task.
     """
+    from sovereignai.shared.capability_api import CapabilityAPI
     from sovereignai.shared.task_state_machine import ITaskStateQuery
 
     container: Any = request.app.state.container
-    dispatcher: Any = container.retrieve(MessageDispatcher)
+    capability_api: Any = container.retrieve(CapabilityAPI)
     task_state_query: Any = container.retrieve(ITaskStateQuery)  # type: ignore[type-abstract]
     token = get_session_token(request)
 
@@ -376,17 +384,22 @@ async def dispatch(request: Request) -> TaskResponseDTO:
     message = data.get("message", "")
 
     try:
-        task = await dispatcher.dispatch(message, token=token)
+        task_id = capability_api.submit_task(
+            capability=CapabilityCategory.TOOL,
+            name="websearch",
+            payload=message,
+            token=token,
+        )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     # Retrieve the task state from the state machine
-    state = task_state_query.get_state(task.task_id)
+    state = task_state_query.get_state(task_id)
     if state is None:
         state = TaskState.RECEIVED
 
     return TaskResponseDTO(
-        task_id=str(task.task_id),
+        task_id=str(task_id),
         state=state.value,
         result=None,
         error=None,

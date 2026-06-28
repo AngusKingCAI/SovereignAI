@@ -160,7 +160,7 @@ class MessageDispatcher:
         return None
 
     def _get_intent_keywords(self, component_id: ComponentId) -> list[str]:
-        """Extract intent_keywords from a component's manifest.toml file by reading the raw TOML data.
+        """Extract intent_keywords from a component's manifest.toml file by reading raw TOML data.
 
         Since ComponentManifest doesn't store intent_keywords (shared/ is sacred),
         we read the raw TOML file directly. Skills are in skills/user/ or
