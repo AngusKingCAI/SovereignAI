@@ -157,7 +157,7 @@ class UnknownTaskError(Exception):
     Per Rev5 Finding 1: moved from task_state_machine.py to types.py.
     """
 
-    def __init__(self, task_id) -> None:
+    def __init__(self, task_id: UUID) -> None:
         """Create an error for an unknown task ID."""
         self.task_id = task_id
         super().__init__(f"Unknown task {task_id} — never submitted")
@@ -169,7 +169,7 @@ class InvalidStateTransitionError(Exception):
     Per Rev5 Finding 1: moved from task_state_machine.py to types.py.
     """
 
-    def __init__(self, task_id, old_state, new_state) -> None:
+    def __init__(self, task_id: UUID, old_state: TaskState, new_state: TaskState) -> None:
         """Create an error describing an invalid state transition attempt."""
         self.task_id = task_id
         self.old_state = old_state

@@ -59,7 +59,7 @@ def build_container() -> DIContainer:
     # 5. RoutingEngine — depends on ICapabilityIndex + LifecycleManager
     from sovereignai.shared.routing_engine import RoutingEngine
     router = RoutingEngine(
-        capability_index=container.retrieve(ICapabilityIndex),
+        capability_index=container.retrieve(ICapabilityIndex),  # type: ignore[type-abstract]
         lifecycle_manager=lifecycle,
     )
     container.register_singleton(RoutingEngine, router)
