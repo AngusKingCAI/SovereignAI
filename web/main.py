@@ -124,6 +124,50 @@ async def get_capabilities(request: Request) -> list[CapabilityResponseDTO]:
     return dtos
 
 
+@app.get("/api/workers")
+async def get_workers(request: Request) -> list[dict]:
+    """Return all registered components from the capability graph.
+
+    Per Finding 8 (Rev4): CapabilityCategory.WORKER does not exist.
+    Use list_all_components() and return all — UI filters client-side.
+    """
+    container: Any = request.app.state.container
+    capability_index: Any = container.retrieve(ICapabilityIndex)  # type: ignore[type-abstract]
+    components = capability_index.list_all_components()
+
+    return [
+        {
+            "id": str(c.component_id),
+            "name": c.version,
+            "category": c.provides[0].category.value if c.provides else "unknown",
+        }
+        for c in components
+    ]
+
+
+@app.get("/api/tasks")
+async def get_tasks(request: Request) -> list[TaskResponseDTO]:
+    """Return all tasks from the task state machine.
+
+    Retrieve TaskStateMachine, call list_tasks(), map to TaskResponseDTO list.
+    """
+    from sovereignai.shared.task_state_machine import ITaskStateQuery
+
+    container: Any = request.app.state.container
+    task_state_query: Any = container.retrieve(ITaskStateQuery)  # type: ignore[type-abstract]
+    tasks = task_state_query.list_all_tasks()
+
+    return [
+        TaskResponseDTO(
+            task_id=str(t.task_id),
+            state=t.state.value,
+            result=t.result,
+            error=t.error,
+        )
+        for t in tasks
+    ]
+
+
 @app.post("/api/tasks")
 async def post_task(
     request: Request,

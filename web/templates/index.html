@@ -7,50 +7,76 @@
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <div id="app-header">
-        <h1>SovereignAI</h1>
-        <div id="connection-status">Connecting...</div>
-    </div>
+  <nav id="sidebar">
+    <div class="sidebar-header">SovereignAI</div>
+    <ul class="sidebar-nav">
+      <li data-panel="orchestrator" class="active">Orchestrator</li>
+      <li data-panel="workers">Workers</li>
+      <li data-panel="tasks">Tasks</li>
+      <li data-panel="skills">Skills</li>
+      <li data-panel="memory">Memory</li>
+      <li data-panel="models">Models</li>
+      <li data-panel="adapters">Adapters</li>
+      <li data-panel="hardware">Hardware</li>
+      <li data-panel="options">Options</li>
+    </ul>
+    <button id="log-toggle">Logs</button>
+  </nav>
 
-    <div id="main-content">
-        <h2>Capabilities</h2>
-        <ul id="capability-list"></ul>
-    </div>
+  <main id="main-content">
+    <section id="panel-orchestrator" class="panel active">
+      <h2>Orchestrator</h2>
+      <div id="chat-messages"></div>
+      <form id="chat-form"><input type="text" id="chat-input" placeholder="Message..."><button>Send</button></form>
+    </section>
+    <section id="panel-workers" class="panel">
+      <h2>Workers</h2>
+      <ul id="workers-list"></ul>
+    </section>
+    <section id="panel-tasks" class="panel">
+      <h2>Tasks</h2>
+      <ul id="tasks-list"></ul>
+    </section>
+    <section id="panel-skills" class="panel">
+      <h2>Skills</h2>
+      <ul id="skills-list"></ul>
+    </section>
+    <section id="panel-memory" class="panel">
+      <h2>Memory</h2>
+      <p>Memory panel — deferred to Librarian implementation.</p>
+    </section>
+    <section id="panel-models" class="panel">
+      <h2>Models</h2>
+      <p>Models panel — deferred to model management plan.</p>
+    </section>
+    <section id="panel-adapters" class="panel">
+      <h2>Adapters</h2>
+      <ul id="adapters-list"></ul>
+    </section>
+    <section id="panel-hardware" class="panel">
+      <h2>Hardware</h2>
+      <div id="hardware-info"></div>
+    </section>
+    <section id="panel-options" class="panel">
+      <h2>Options</h2>
+      <p>Options panel — deferred to settings plan.</p>
+    </section>
+  </main>
 
-    <div id="task-section">
-        <h2>Submit Task</h2>
-        <form id="task-form">
-            <div>
-                <label for="category">Category:</label>
-                <select id="category" name="category" required>
-                    <option value="tool">Tool</option>
-                    <option value="model_inference">Model Inference</option>
-                    <option value="memory">Memory</option>
-                    <option value="communication">Communication</option>
-                </select>
-            </div>
-            <div>
-                <label for="capability_name">Capability Name:</label>
-                <input type="text" id="capability_name" name="capability_name" required>
-            </div>
-            <div>
-                <label for="payload">Payload:</label>
-                <textarea id="payload" name="payload" rows="5" required></textarea>
-            </div>
-            <button type="submit">Submit Task</button>
-        </form>
+  <div id="log-drawer">
+    <div id="log-controls">
+      <label><input type="checkbox" checked data-level="ERROR"> ERROR</label>
+      <label><input type="checkbox" checked data-level="WARN"> WARN</label>
+      <label><input type="checkbox" checked data-level="INFO"> INFO</label>
+      <label><input type="checkbox" data-level="DEBUG"> DEBUG</label>
+      <label><input type="checkbox" data-level="TRACE"> TRACE</label>
+      <input type="text" id="log-search" placeholder="Search traces...">
+      <button id="log-clear">Clear</button>
     </div>
+    <div id="log-content"></div>
+  </div>
 
-    <div id="task-status">
-        <h2>Task Status</h2>
-        <div id="task-status-content">No task submitted</div>
-    </div>
-
-    <div id="log-drawer">
-        <button id="log-toggle">Toggle Logs</button>
-        <div id="log-content"></div>
-    </div>
-
-    <script src="/static/app.js"></script>
+  <script src="/static/logic.js"></script>
+  <script src="/static/app.js"></script>
 </body>
 </html>

@@ -9,51 +9,163 @@ body {
     min-width: 320px;
 }
 
-#app-header {
+#sidebar {
     position: fixed;
-    top: 0;
     left: 0;
-    right: 0;
-    height: 50px;
+    top: 0;
+    width: 200px;
+    height: 100vh;
     background-color: #2d2d2d;
-    border-bottom: 1px solid #3d3d3d;
+    border-right: 1px solid #3d3d3d;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
+    flex-direction: column;
     z-index: 1000;
 }
 
-#app-header h1 {
-    font-size: 20px;
-    margin: 0;
+.sidebar-header {
+    padding: 20px;
+    font-size: 18px;
+    font-weight: bold;
     color: #ffffff;
+    border-bottom: 1px solid #3d3d3d;
 }
 
-#connection-status {
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
+
+.sidebar-nav li {
+    padding: 12px 20px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background-color 0.2s;
+}
+
+.sidebar-nav li:hover {
+    background-color: #3d3d3d;
+}
+
+.sidebar-nav li.active {
+    background-color: #3d3d3d;
+    border-left-color: #4a9eff;
+}
+
+#log-toggle {
+    margin: 10px;
+    padding: 10px;
+    background-color: #3d3d3d;
+    color: #e0e0e0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
     font-size: 14px;
-    color: #888;
+}
+
+#log-toggle:hover {
+    background-color: #4d4d4d;
 }
 
 #main-content {
-    padding-top: 60px;
-    max-width: 1200px;
-    margin: 0 auto;
+    margin-left: 200px;
+    min-height: 100vh;
     padding: 20px;
 }
 
-#main-content h2 {
+.panel {
+    display: none;
+}
+
+.panel.active {
+    display: block;
+}
+
+.panel h2 {
     color: #ffffff;
     border-bottom: 1px solid #3d3d3d;
     padding-bottom: 10px;
+    margin-top: 0;
 }
 
-#capability-list {
+#chat-messages {
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    padding: 15px;
+    min-height: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+.chat-message {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
+
+.chat-message.user {
+    background-color: #4a9eff;
+    color: #ffffff;
+}
+
+.chat-message.assistant {
+    background-color: #3d3d3d;
+    color: #e0e0e0;
+}
+
+.chat-message.system {
+    background-color: #2d2d2d;
+    color: #888;
+    font-style: italic;
+}
+
+.chat-message.error {
+    background-color: #ff6b6b;
+    color: #ffffff;
+}
+
+#chat-form {
+    display: flex;
+    gap: 10px;
+}
+
+#chat-input {
+    flex: 1;
+    padding: 10px;
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    color: #e0e0e0;
+}
+
+#chat-form button {
+    padding: 10px 20px;
+    background-color: #4a9eff;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#chat-form button:hover {
+    background-color: #3a8eef;
+}
+
+#workers-list,
+#tasks-list,
+#skills-list,
+#adapters-list {
     list-style: none;
     padding: 0;
 }
 
-#capability-list li {
+#workers-list li,
+#tasks-list li,
+#skills-list li,
+#adapters-list li {
     background-color: #2d2d2d;
     border: 1px solid #3d3d3d;
     border-radius: 4px;
@@ -61,106 +173,71 @@ body {
     margin-bottom: 8px;
 }
 
-#task-section {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-#task-section h2 {
-    color: #ffffff;
-    border-bottom: 1px solid #3d3d3d;
-    padding-bottom: 10px;
-}
-
-#task-form {
-    background-color: #2d2d2d;
-    border: 1px solid #3d3d3d;
-    border-radius: 4px;
-    padding: 20px;
-}
-
-#task-form div {
-    margin-bottom: 15px;
-}
-
-#task-form label {
-    display: block;
-    margin-bottom: 5px;
-    color: #b0b0b0;
-}
-
-#task-form select,
-#task-form input,
-#task-form textarea {
-    width: 100%;
-    padding: 8px;
-    background-color: #1a1a1a;
-    border: 1px solid #3d3d3d;
-    border-radius: 4px;
-    color: #e0e0e0;
-    box-sizing: border-box;
-}
-
-#task-form button {
-    background-color: #4a9eff;
-    color: #ffffff;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-#task-form button:hover {
-    background-color: #3a8eef;
-}
-
-#task-status {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-#task-status h2 {
-    color: #ffffff;
-    border-bottom: 1px solid #3d3d3d;
-    padding-bottom: 10px;
-}
-
-#task-status-content {
+#hardware-info pre {
     background-color: #2d2d2d;
     border: 1px solid #3d3d3d;
     border-radius: 4px;
     padding: 15px;
-    min-height: 50px;
+    overflow-x: auto;
 }
 
 #log-drawer {
     position: fixed;
     bottom: 0;
-    left: 0;
+    left: 200px;
     right: 0;
-    height: 200px;
+    height: 0;
     background-color: #2d2d2d;
     border-top: 1px solid #3d3d3d;
     display: flex;
     flex-direction: column;
     z-index: 1000;
+    transition: height 0.3s ease;
 }
 
-#log-toggle {
+#log-drawer.open {
+    height: 250px;
+}
+
+#log-controls {
+    display: flex;
+    align-items: center;
+    padding: 10px;
     background-color: #3d3d3d;
-    color: #e0e0e0;
-    border: none;
     border-bottom: 1px solid #4d4d4d;
-    padding: 8px 15px;
-    cursor: pointer;
-    font-size: 14px;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-#log-toggle:hover {
-    background-color: #4d4d4d;
+#log-controls label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+}
+
+#log-search {
+    flex: 1;
+    padding: 5px 10px;
+    background-color: #2d2d2d;
+    border: 1px solid #4d4d4d;
+    border-radius: 4px;
+    color: #e0e0e0;
+    font-size: 12px;
+}
+
+#log-clear {
+    padding: 5px 10px;
+    background-color: #ff6b6b;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+#log-clear:hover {
+    background-color: #ff5b5b;
 }
 
 #log-content {
@@ -170,6 +247,11 @@ body {
     font-family: 'Courier New', Courier, monospace;
     font-size: 12px;
     line-height: 1.4;
+}
+
+.trace-entry {
+    padding: 4px 8px;
+    border-bottom: 1px solid #333;
 }
 
 .trace-error {
@@ -190,4 +272,39 @@ body {
 
 .trace-trace {
     color: #666666;
+}
+
+@media (max-width: 768px) {
+    #sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid #3d3d3d;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .sidebar-nav li {
+        flex: 1;
+        text-align: center;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+    }
+
+    .sidebar-nav li.active {
+        border-left: none;
+        border-bottom-color: #4a9eff;
+    }
+
+    #main-content {
+        margin-left: 0;
+    }
+
+    #log-drawer {
+        left: 0;
+    }
 }
