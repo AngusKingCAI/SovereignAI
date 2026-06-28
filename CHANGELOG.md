@@ -166,3 +166,38 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - /close step 3 fix: mypy now filters edited files to .py only via `git diff --name-only HEAD~1 | grep '\.py$'`. If no .py files were edited, mypy is N/A.
 - /close step 21 fix: stronger language — "STOP CONDITION: the plan is NOT complete until this step executes. Do not report 'Plan X Complete' until step 21 has run."
 - No Round Table review (scan-prompt exemption per AI_HANDOFF.md).
+## prompt-1 — Core scaffold (Event Bus, TraceEmitter, DI container, types, Composition Root)
+
+**Date**: 2026-06-28
+**Plan file**: prompts/plan-1-Rev3.md
+
+**Files changed**:
+- txt/requirements.txt (NO change in Rev2 — dependency-injector removed per Finding 5; remains empty)
+- sovereignai/shared/__init__.py (new — marks shared/ as package)
+- sovereignai/shared/types.py (new — frozen dataclasses: TraceLevel, TraceEvent, Channel, Event, ComponentId, helpers)
+- sovereignai/shared/event_bus.py (new — in-order per channel, no silent failures per P10; imports TraceEmitter from trace_emitter.py per Finding 1)
+- sovereignai/shared/trace_emitter.py (new — singleton observability surface, NOT a context bag per AR6; correlation_id typed per Finding 4)
+- sovereignai/shared/container.py (new — passive typed DI registry, no auto-wiring per A8; thread-safe via Lock per Finding 3)
+- sovereignai/main.py (new — incremental Composition Root, wires Plan 1 components only per A3; smoke test uses TraceLevel.INFO per Finding 2)
+- tests/test_event_bus.py (new — 6 tests: ordering, fault isolation, channel isolation)
+- tests/test_trace_emitter.py (new — 6 tests: emit, filter, bounded, thread-safe)
+- tests/test_di_container.py (new — 5 tests: singleton, factory, precedence, missing; +1 thread-safety test per Finding 3 = 6 tests)
+- tests/test_composition_root.py (new — 5 tests: populated, singleton retrieval, wiring, smoke)
+- DEBT.md (add AR4 amendment deferral per Finding 5)
+- PLANS.md (set test + static analysis baselines)
+
+**Results**:
+- Tests: 22 passed (6 event_bus + 6 trace_emitter + 6 di_container + 5 composition_root)
+- Ruff: 0 errors
+- Mypy: 0 errors (file-scoped per OR2 — 5 source files checked with --explicit-package-bases)
+- Bandit: 49 Low (B101: assert_used) — all test assertions, expected
+- pip-audit: 0 CVEs (txt/requirements.txt remains empty — no runtime deps per Rev2 Finding 5)
+- Vulture: 0 findings (high-confidence ≥80)
+- Detect-secrets: pass (baseline unchanged from prompt-0)
+
+**Notes**:
+- First code plan — established core scaffold for Plans 2–4 to build on.
+- All Round Table Rev2 findings addressed (Finding 1: EventBus import fix; Finding 2: main.py smoke test TraceLevel.INFO; Finding 3: DIContainer thread-safety via Lock; Finding 4: TraceEmitter correlation_id typed; Finding 5: dependency-injector removed, DEBT entry added).
+- Test baseline established at 22 tests exactly as planned.
+- Static analysis baselines established for all tools.
+- Q9 (test strategy) and Q32 (DEBT format) resolved.

@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-28 (prompt-0.4)
+**Last updated**: 2026-06-28 (prompt-1)
 
 This document tracks the dynamic state of the SovereignAI project: baselines, completed prompts, and the next-5-prompt queue. It is the canonical source for test counts, static analysis baselines, and which prompt is currently active. The Executor updates this document at every `/close`. The Architect reads it at every session start. Do not duplicate content from this file into other documents — this is the SSOT for baselines and queue state.
 
@@ -8,15 +8,13 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 
 ## Baseline Reconciliation Notes
 
-*No code plans executed yet (prompt-0 and prompt-0.1 were docs-only). Test and static-analysis baselines will be established at Plan 1 `/close` and recorded here. Each entry follows this format:*
-
-*`**Plan N**: <what changed, why, delta, tolerance note>`*
+**Plan 1**: First code plan — established test baseline at 22 tests and static analysis baselines for all tools. No delta from expected (22 tests exactly as planned).
 
 ---
 
 ## Test Baseline
 
-**Current baseline**: Not yet established — set at Plan 1 `/close` (S_close step: full pytest run)
+**Current baseline**: 22 tests (Plan 1 `/close`). Breakdown: 6 event_bus + 6 trace_emitter + 5 di_container + 5 composition_root.
 
 **Tolerance**: ±5 tests (variance acceptable due to parameterised fixtures and environment variation)
 
@@ -26,17 +24,17 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 
 ## Static Analysis Baseline
 
-**Status**: Not yet established — all tool baselines set at Plan 1 `/close`
+**Status**: Established at Plan 1 `/close`
 
 | Tool | Baseline | Source | Notes |
 |---|---|---|---|
-| **Ruff** | TBD | Plan 1 `/close` | 0 errors expected on fresh scaffold |
-| **Mypy (file-scoped)** | TBD | Plan 1 `/close` | File-scoped per OR2 — not full repo |
-| **Bandit** | TBD | Plan 1 `/close` | Count per OR4 (filter: `>> Issue: [B`) |
-| **pip-audit** | TBD | Plan 1 `/close` | CVE count across all packages |
-| **Vulture** | TBD | Plan 1 `/close` | High-confidence findings only |
-| **detect-secrets** | TBD | Plan 1 `/close` | Baseline established with `.secrets.baseline` |
-| **pre-commit** | TBD | Plan 1 | Hooks configured at scaffold |
+| **Ruff** | 0 errors | Plan 1 `/close` | Fresh scaffold — D100/D104 excluded per pyproject.toml |
+| **Mypy (file-scoped)** | 0 errors | Plan 1 `/close` | File-scoped per OR2 — Plan 1 files: shared/types.py, event_bus.py, trace_emitter.py, container.py, main.py + tests |
+| **Bandit** | 49 Low (B101: assert_used) | Plan 1 `/close` | Count per OR4 (filter: `>> Issue: [B`) — all test assertions, expected |
+| **pip-audit** | 0 CVEs | Plan 1 `/close` | Scanned txt/requirements.txt only per OR39 — file remains empty (no runtime deps per Rev2 Finding 5; Rev3 confirms no stale references) |
+| **Vulture** | 0 findings | Plan 1 `/close` | High-confidence (≥80) only |
+| **detect-secrets** | pass | Plan 1 `/close` | Baseline established prompt-0; unchanged |
+| **pre-commit** | pass | Plan 1 | Hooks configured at prompt-0 scaffold |
 
 ---
 
@@ -49,16 +47,17 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 | prompt-0.2 | `prompt-0.2` | Environment + doc drift cleanup — OR44-OR45, L28-L29, venv setup, ruff config fix | N/A | 0 | N/A | 2026-06-28 |
 | prompt-0.3 | `prompt-0.3` | Venv path + repo hygiene cleanup — OR46, L30, workflow files use absolute venv paths | N/A | 0 | N/A | 2026-06-28 |
 | prompt-0.4 | `prompt-0.4` | Mypy filtering + kill bash at start — OR47, L31, /open step 1 kill orphans, /close step 3 mypy .py filter, /close step 21 stronger language | N/A | 0 | N/A | 2026-06-28 |
+| prompt-1 | `prompt-1` | Core scaffold — Event Bus, TraceEmitter, DI container, Composition Root, test baseline | 22 | 0 | 0 | 2026-06-28 |
 
-*Plans 1–4 rows will be added here at each `/close`.*
+*Plans 2–4 rows will be added here at each `/close`.*
 
 ---
 
 ## Active Plan
 
-**Plan 1** — awaiting execution.
+**Plan 2** — awaiting execution.
 
-Plan 1 file: prompts/plan-1.md (to be created by Architect, copied by User)
+Plan 2 file: prompts/plan-2-Rev3.md
 
 ---
 
@@ -66,11 +65,11 @@ Plan 1 file: prompts/plan-1.md (to be created by Architect, copied by User)
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 1 | Core scaffold — project layout, event bus, TraceEmitter, DI container, Composition Root | prompt-0 | ▶️ Active |
-| 2 | Plan 2 | Capability graph, manifest parser, routing engine | Plan 1 | ⏳ Pending Plan 1 |
-| 3 | Plan 3 | Lifecycle manager, task state machine, DAG validator | Plan 2 | ⏳ Pending Plan 2 |
-| 4 | Plan 4 | Auth middleware, Capability API, Relay server stub | Plan 3 | ⏳ Pending Plan 3 |
-| 5 | Scan 5 | First scan — verify baselines, fix accumulated issues | Plans 1–4 | ⏳ Pending Plans 1–4 |
+| 1 | Plan 2 | Capability graph, manifest parser, routing engine | Plan 1 | ▶️ Active |
+| 2 | Plan 3 | Lifecycle manager, task state machine, DAG validator | Plan 2 | ⏳ Pending Plan 2 |
+| 3 | Plan 4 | Auth middleware, Capability API, Relay server stub | Plan 3 | ⏳ Pending Plan 3 |
+| 4 | Scan 5 | First scan — verify baselines, fix accumulated issues | Plans 1–4 | ⏳ Pending Plans 1–4 |
+| 5 | TBD | Future plan | TBD | ⏳ Pending |
 
 ---
 
@@ -85,11 +84,11 @@ The following open questions from `project-vision-Rev5.md` remain unresolved. Pl
 | Q3 | Memory abstraction — capability-based backend routing | Plan 3 |
 | Q4 | Core routing between adapters without knowing them | Plan 2 |
 | Q8 | Adapter/skill/memory versioning — semantic versioning + capability negotiation | Plan 2 |
-| Q9 | Test strategy — conformance, contract, property-based | Plan 1 |
+| ~~Q9~~ | ~~Test strategy — conformance, contract, property-based~~ | ~~Resolved at Plan 1~~ |
 | Q13 | Learning and improvement — retrospective trace skill (not core) | Deferred (post Plan 4) |
 | Q14 | Persistence story — many stores, crash recovery via trace replay | Plan 3 |
 | Q31 | Packaging and distribution — Windows-first, PyInstaller vs native | Deferred (post Plan 4) |
-| Q32 | Debt register format — where it lives, who maintains it, trigger conditions | Plan 1 (DEBT.md scaffold) |
+| ~~Q32~~ | ~~Debt register format — where it lives, who maintains it, trigger conditions~~ | ~~Resolved at Plan 1 (DEBT.md scaffold)~~ |
 
 ---
 

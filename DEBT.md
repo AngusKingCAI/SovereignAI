@@ -67,6 +67,15 @@ Append-only. Each entry: deferred at, reason, trigger condition, target plan.
 
 ---
 
+## Deferred: AR4 amendment — remove dependency-injector reference
+
+**Deferred at**: prompt-1 (per Plan 1-4 batch Round Table Rev2 adjudication, Finding 5)
+**Reason**: AR4 names `dependency-injector` as the DI library, but A8 mandates a passive registry (no `@inject`, no auto-wiring). The hand-rolled DIContainer in `shared/container.py` satisfies A8 without using the `dependency-injector` library. AR4's reference is stale.
+**Trigger condition**: When the Architect next drafts a plan's S0.3 (next batch, Plan 5+).
+**Target plan**: Plan 5 (Scan) or first plan in next batch.
+
+---
+
 ## How to add a new deferred item
 
 At `/close` step 12, if an item is deferred, append an entry in the format above. When a deferred item is addressed, do not remove the entry — add a "Resolved at: prompt-{N}" line below it. DEBT.md is append-only.
