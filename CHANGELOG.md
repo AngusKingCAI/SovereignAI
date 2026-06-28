@@ -237,3 +237,42 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - ICapabilityIndex protocol shipped as locked named output (per A5). Plan 4 will import only this protocol.
 - No new runtime dependencies (uses stdlib tomllib).
 - All Rev2 and Rev3 Round Table findings addressed.
+
+## prompt-3 — Execution layer (routing, lifecycle, task state machine, DAG validator, ITaskStateQuery)
+
+**Date**: 2026-06-28
+**Plan file**: prompts/plan-3-Rev7.md
+
+**Files changed**:
+- sovereignai/shared/types.py (extended: TaskState, TaskStateChanged, Task, ComponentStatus, TASK_STATE_CHANNEL, DAGSpec per Rev3 Finding 6, NoActiveProviderError per Rev4 Finding 2)
+- sovereignai/shared/lifecycle_manager.py (new — circuit breaker per AR16, 50 errors/10s; reset() per Finding 2; emits ERROR trace per Finding 4; set_status per Finding 6; get_status read-only + try_recover() per Rev3 Finding 7)
+- sovereignai/shared/routing_engine.py (new — capability-based routing, skips non-ACTIVE; calls try_recover() per Rev4 Finding 1; imports NoActiveProviderError from types per Rev4 Finding 2)
+- sovereignai/shared/task_state_machine.py (new — ITaskStateQuery protocol, in-memory only per A7; raises InvalidStateTransitionError per Finding 3; submit() validates DAG per Finding 1; get_state returns None for unknown per Finding 5; UnknownTaskError per Rev3 Finding 11; DAGSpec typed per Rev3 Finding 6; now_utc_safe removed per Finding 7)
+- sovereignai/shared/dag_validator.py (new — acyclicity + type-matching per A6; wired into submit() per Finding 1)
+- sovereignai/main.py (extended: registers Lifecycle (with trace), Router, TaskStateMachine against ITaskStateQuery)
+- DEBT.md (add circuit breaker auto-recovery heartbeat per Rev4 Finding 9)
+- tests/test_lifecycle_manager.py (new — 7 tests)
+- tests/test_routing_engine.py (new — 5 tests)
+- tests/test_task_state_machine.py (new — 11 tests, including A9 in-order verification)
+- tests/test_dag_validator.py (new — 6 tests)
+- tests/test_composition_root.py (extended — 6 new tests)
+- DEBT.md (added Q3 + Q14 deferrals)
+- PLANS.md (updated test baseline)
+
+**Results**:
+- Tests: 75 passed (37 from Plans 1-2 + 38 new)
+- Ruff: 0 errors
+- Mypy: 0 errors (file-scoped per OR47)
+- Bandit: 0 findings
+- pip-audit: 0 CVEs
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- Q3 (memory abstraction interface) resolved — interface shape defined; implementation deferred (DEBT).
+- Q4 (routing) resolved — capability-based via ICapabilityIndex + LifecycleManager.
+- Q14 (persistence) resolved — in-memory only per A7; durable backends deferred (DEBT).
+- ITaskStateQuery protocol shipped as locked named output (per A5). Plan 4 will import only this protocol.
+- Circuit breaker: 50 errors/10s triggers CIRCUIT_BROKEN (AR16). Verified by test_record_error_at_threshold_circuit_breaks.
+- Event bus in-order delivery verified for task state transitions (A9, test_transitions_published_in_order).
+- DAG validator prevents composite tasks with cycles or type mismatches from entering the state machine (A6, P9).

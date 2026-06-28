@@ -50,6 +50,29 @@ def build_container() -> DIContainer:
     container.register_singleton(CapabilityGraph, graph)
     container.register_singleton(ICapabilityIndex, graph)  # type: ignore[type-abstract]
 
+    # 4. LifecycleManager — depends on TraceEmitter, singleton (Plan 3)
+    # Rev2 per Finding 4: accepts TraceEmitter to emit on circuit-breaker trips.
+    from sovereignai.shared.lifecycle_manager import LifecycleManager
+    lifecycle = LifecycleManager(trace=trace)
+    container.register_singleton(LifecycleManager, lifecycle)
+
+    # 5. RoutingEngine — depends on ICapabilityIndex + LifecycleManager
+    from sovereignai.shared.routing_engine import RoutingEngine
+    router = RoutingEngine(
+        capability_index=container.retrieve(ICapabilityIndex),
+        lifecycle_manager=lifecycle,
+    )
+    container.register_singleton(RoutingEngine, router)
+
+    # 6. TaskStateMachine — depends on EventBus + TraceEmitter
+    from sovereignai.shared.task_state_machine import (
+        ITaskStateQuery,
+        TaskStateMachine,
+    )
+    state_machine = TaskStateMachine(bus=bus, trace=trace)
+    container.register_singleton(TaskStateMachine, state_machine)
+    container.register_singleton(ITaskStateQuery, state_machine)  # type: ignore[type-abstract]
+
     return container
 
 

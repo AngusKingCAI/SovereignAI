@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from enum import StrEnum
+from enum import Enum, StrEnum
 from typing import NewType
 from uuid import UUID, uuid4
 
@@ -133,3 +133,152 @@ class ComponentManifest:
     requires: tuple[CapabilityDeclaration, ...]  # capabilities needed (empty for Plan 2 MVP)
     author: str                           # provenance — who built it (P14)
     content_hash: str                     # provenance — verified on install (P14)
+
+
+# ============================================================================
+# Routing errors (used by RoutingEngine in S2; moved here per Rev4 Finding 2)
+# ============================================================================
+
+class NoActiveProviderError(Exception):
+    """Raised when no active component provides the requested capability.
+
+    Per Rev4 Finding 2: defined here (shared/types.py) so both
+    routing_engine.py and capability_api.py import from the same location.
+    """
+
+    def __init__(self, message: str = "No active provider for the requested capability") -> None:
+        """Create a no-active-provider error with a descriptive message."""
+        super().__init__(message)
+
+
+class UnknownTaskError(Exception):
+    """Raised when an operation references a task_id that was never submitted.
+
+    Per Rev5 Finding 1: moved from task_state_machine.py to types.py.
+    """
+
+    def __init__(self, task_id) -> None:
+        """Create an error for an unknown task ID."""
+        self.task_id = task_id
+        super().__init__(f"Unknown task {task_id} — never submitted")
+
+
+class InvalidStateTransitionError(Exception):
+    """Raised when a task state transition violates the state machine's rules.
+
+    Per Rev5 Finding 1: moved from task_state_machine.py to types.py.
+    """
+
+    def __init__(self, task_id, old_state, new_state) -> None:
+        """Create an error describing an invalid state transition attempt."""
+        self.task_id = task_id
+        self.old_state = old_state
+        self.new_state = new_state
+        super().__init__(f"Invalid transition {old_state} -> {new_state} for task {task_id}")
+
+
+class DAGValidationError(Exception):
+    """Raised when a skill DAG has a cycle or a type mismatch.
+
+    Per Rev5 Finding 1: moved from dag_validator.py to types.py.
+    """
+
+
+# ============================================================================
+# DAG types (used by DAG validator + TaskStateMachine.submit in S4/S5)
+# ============================================================================
+
+@dataclass(frozen=True)
+class DAGSpec:
+    """Specification of a composite skill's directed acyclic graph.
+    
+    Per Rev3 Finding 6: defined here so TaskStateMachine.submit() can
+    accept it as a typed parameter. Frozen so the spec is immutable
+    once constructed — a composite skill's DAG cannot be mutated after
+    submission.
+    
+    Attributes:
+        nodes: Tuple of skill node IDs (e.g. ("open_browser", "register_email")).
+        edges: Tuple of (source, target) pairs meaning source's output
+            feeds into target's input.
+        input_types: Map of node ID -> type name it requires as input.
+        output_types: Map of node ID -> type name it produces as output.
+    """
+    nodes: tuple[str, ...]
+    edges: tuple[tuple[str, str], ...]
+    input_types: dict[str, str]
+    output_types: dict[str, str]
+
+
+# ============================================================================
+# Task types (used by task state machine in S4)
+# ============================================================================
+
+class TaskState(str, Enum):
+    """Lifecycle state of a single task, from receipt to completion.
+
+    The task state machine transitions: RECEIVED → QUEUED → EXECUTING
+    → COMPLETE or FAILED. Transitions are published as events on the
+    event bus so subscribers (e.g. the Capability API in Plan 4) can
+    react to state changes.
+    """
+    RECEIVED = "received"      # task entered the system, not yet queued
+    QUEUED = "queued"          # task is waiting for a worker
+    EXECUTING = "executing"    # a worker is running this task
+    COMPLETE = "complete"      # task finished successfully
+    FAILED = "failed"          # task failed; see traces for details
+
+
+# Event channel for task state transitions (per A9 — bus guarantees order)
+TASK_STATE_CHANNEL = Channel("task_state")
+
+
+@dataclass(frozen=True)
+class TaskStateChanged(Event):
+    """Event published when a task transitions between states.
+
+    Frozen so subscribers receive an immutable snapshot. Subscribers
+    cannot modify the event before another subscriber sees it.
+    """
+    task_id: UUID
+    old_state: TaskState
+    new_state: TaskState
+
+
+@dataclass(frozen=True)
+class Task:
+    """A unit of work submitted to the system for execution.
+
+    Frozen so a task cannot be mutated after submission. The state
+    machine tracks transitions externally (via TaskStateChanged events)
+    rather than mutating the Task itself.
+    """
+    task_id: UUID
+    capability: CapabilityDeclaration    # what the task needs done
+    payload: str                          # opaque payload (JSON or similar)
+    submitted_at: datetime                # UTC, timezone-aware (per OR20)
+
+
+# ============================================================================
+# Lifecycle types (used by Lifecycle Manager in S3)
+# ============================================================================
+
+class ComponentStatus(str, Enum):
+    """Health status of a registered component, used by the routing engine.
+
+    The Lifecycle Manager tracks status; the Routing Engine queries it
+    to skip degraded or circuit-broken components (per A1).
+    """
+    ACTIVE = "active"                # healthy and available
+    DEGRADED = "degraded"            # experiencing errors but still running
+    CIRCUIT_BROKEN = "circuit_broken"  # unloaded due to >50 errors/10s (AR16)
+    STOPPED = "stopped"              # explicitly stopped, not available
+
+    def is_available(self) -> bool:
+        """Return True if a component in this state can accept new work.
+
+        Only ACTIVE components are available. DEGRADED components may
+        be running existing tasks but should not receive new ones.
+        CIRCUIT_BROKEN and STOPPED are never available.
+        """
+        return self is ComponentStatus.ACTIVE
