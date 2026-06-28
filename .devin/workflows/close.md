@@ -4,6 +4,8 @@ Run at the end of every plan. Run straight through — STOP only on failure. Do 
 
 **Prerequisite**: `.venv/` must exist (verified at `/open` step 3). If missing, STOP and run `/open` first. All commands use absolute venv paths per OR46 — do not rely on `source .venv/Scripts/activate` (L30).
 
+**Re-read this file in full before starting** (per OR71). Do not use a cached/remembered version of these commands — workflow files change between plans. Copy each command verbatim (after substituting `{N}`), do not paraphrase.
+
 ---
 
 **Step 1 — Tests**
@@ -168,7 +170,17 @@ fi
 if [ -f "prompts/plan-{N}-brief.md" ]; then
   mv prompts/plan-{N}-brief.md prompts/completed/
 fi
+# Verify all Revs were moved (per OR71 — catches paraphrasing bugs)
+remaining=$(ls prompts/plan-{N}-Rev*.md 2>/dev/null | wc -l)
+if [ "$remaining" -gt 0 ]; then
+  echo "STOP: $remaining plan-{N}-Rev*.md files still in prompts/ — for-loop did not move all Revs"
+  ls prompts/plan-{N}-Rev*.md
+  STOP
+fi
+# Also verify the base plan and brief were moved (if they existed)
 ```
+
+**Note**: The for-loop above is the canonical archiving logic. A script version lives at `scripts/ar_checks/archive_plan.sh` (created in a future plan) — when it exists, prefer `bash scripts/ar_checks/archive_plan.sh {N}` over the inline loop. The script includes the verification check automatically.
 
 **Step 18 — Commit docs** (NOT the execution log — that's committed separately)
 ```
