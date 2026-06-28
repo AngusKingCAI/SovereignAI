@@ -160,7 +160,7 @@ class MessageDispatcher:
         return None
 
     def _get_intent_keywords(self, component_id: ComponentId) -> list[str]:
-        """Extract intent_keywords from a component's manifest.toml file.
+        """Extract intent_keywords from a component's manifest.toml file by reading the raw TOML data.
 
         Since ComponentManifest doesn't store intent_keywords (shared/ is sacred),
         we read the raw TOML file directly. Skills are in skills/user/ or
@@ -188,7 +188,7 @@ class MessageDispatcher:
         return []
 
     def _get_capability_name(self, component_id: ComponentId) -> str:
-        """Get the primary capability name for a component.
+        """Get the primary capability name for a component by querying the capability graph.
 
         For skills, this is the TOOL capability. For adapters, this is the
         MODEL_INFERENCE capability.
