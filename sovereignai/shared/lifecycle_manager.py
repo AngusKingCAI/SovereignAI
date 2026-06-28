@@ -39,7 +39,7 @@ class LifecycleManager:
     """
 
     def __init__(self, trace: TraceEmitter) -> None:
-        """Create a lifecycle manager with no registered components.
+        """Create a lifecycle manager instance with no registered components yet.
 
         Args:
             trace: Trace emitter for logging circuit-breaker trips and
@@ -51,7 +51,7 @@ class LifecycleManager:
         self._lock = Lock()
 
     def register(self, component_id: ComponentId) -> None:
-        """Start tracking a component with ACTIVE status.
+        """Start tracking a component with ACTIVE status in the lifecycle manager.
 
         Args:
             component_id: The component to register.
@@ -61,7 +61,7 @@ class LifecycleManager:
             self._error_log[component_id] = deque()
 
     def get_status(self, component_id: ComponentId) -> ComponentStatus:
-        """Return the current status of a registered component (read-only).
+        """Return the current status of a registered component as a read-only value.
 
         Per Finding 7 (Rev3): this method is now read-only. It returns
         the current status WITHOUT auto-recovering. Auto-recovery moved

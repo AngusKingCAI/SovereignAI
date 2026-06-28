@@ -5,6 +5,7 @@ with passing tests covering key paths.
 """
 from __future__ import annotations
 
+from collections.abc import Generator
 from typing import Any
 from unittest.mock import Mock
 from uuid import uuid4
@@ -18,10 +19,6 @@ from sovereignai.shared.types import (
     ComponentId,
     ComponentManifest,
     TaskState,
-    TraceEvent,
-    TraceLevel,
-    new_correlation_id,
-    now_utc,
 )
 from web.main import app
 
@@ -69,17 +66,17 @@ def mock_container() -> Mock:
 
 
 @pytest.fixture
-def client(mock_container: Mock) -> TestClient:
+def client(mock_container: Mock) -> Generator[TestClient, None, None]:
     """Create a test client with dependency overrides for the mock container."""
     # Override the app's state to use the mock container
     app.state.container = mock_container
-    
+
     # Override get_current_user to skip auth for these tests
     from web.main import get_current_user
     app.dependency_overrides[get_current_user] = lambda: Mock()
-    
+
     yield TestClient(app)
-    
+
     # Clean up overrides
     app.dependency_overrides.clear()
 

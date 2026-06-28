@@ -31,7 +31,7 @@ class EventBus:
     """
 
     def __init__(self, trace: TraceEmitter) -> None:
-        """Create an empty event bus with no subscribers yet.
+        """Create an empty event bus instance with no subscribers registered yet.
 
         Args:
             trace: The trace emitter for logging subscriber failures. The

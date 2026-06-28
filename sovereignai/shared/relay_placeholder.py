@@ -22,7 +22,7 @@ class RelayPlaceholder:
     """
 
     def __init__(self, trace: TraceEmitter) -> None:
-        """Create a relay placeholder that logs all connection attempts.
+        """Create a relay placeholder instance that logs all connection attempts.
 
         Args:
             trace: Trace emitter for logging attempts (so the user can
@@ -31,7 +31,7 @@ class RelayPlaceholder:
         self._trace = trace
 
     def attempt_connection(self, source: str) -> None:
-        """Reject a connection attempt by raising RelayNotSupportedError.
+        """Reject a connection attempt by raising a RelayNotSupportedError typed exception.
 
         Per Finding 5 (Rev2): raises a typed exception instead of
         returning a plain string. Callers catch RelayNotSupportedError

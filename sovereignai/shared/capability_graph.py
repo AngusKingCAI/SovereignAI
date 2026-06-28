@@ -53,7 +53,7 @@ class ICapabilityIndex(Protocol):
         ...
 
     def list_all_components(self) -> tuple[ComponentManifest, ...]:
-        """Return manifests for every registered component.
+        """Return manifests for every registered component in the capability graph.
 
         Returns:
             Tuple of ComponentManifest instances. Empty if nothing
@@ -72,7 +72,7 @@ class CapabilityGraph:
     """
 
     def __init__(self, trace: TraceEmitter) -> None:
-        """Create an empty capability graph with no registered components.
+        """Create an empty capability graph instance with no registered components yet.
 
         Args:
             trace: Trace emitter for logging registration events (per P9
@@ -145,7 +145,7 @@ class CapabilityGraph:
         return tuple(providers)
 
     def list_all_components(self) -> tuple[ComponentManifest, ...]:
-        """Return manifests for every registered component.
+        """Return manifests for every registered component in the capability graph.
 
         Returns:
             Tuple of ComponentManifest instances. Empty if nothing

@@ -119,7 +119,7 @@ intent_keywords = ["search", "find"]
 """
 
         task_id = uuid4()
-        capability_api.submit_task = Mock(return_value=task_id)
+        capability_api.submit_task = Mock(return_value=task_id)  # type: ignore[method-assign]
 
         task = Task(
             task_id=task_id,
@@ -131,7 +131,7 @@ intent_keywords = ["search", "find"]
             payload="search for python",
             submitted_at=Mock(),
         )
-        task_state_machine.list_tasks = Mock(return_value=[task])
+        task_state_machine.list_tasks = Mock(return_value=[task])  # type: ignore[method-assign]
 
         result = await dispatcher.dispatch("search for python", token="test-token")
 
@@ -155,7 +155,7 @@ intent_keywords = ["chat", "talk"]
 """
 
         task_id = uuid4()
-        capability_api.submit_task = Mock(return_value=task_id)
+        capability_api.submit_task = Mock(return_value=task_id)  # type: ignore[method-assign]
 
         task = Task(
             task_id=task_id,
@@ -167,7 +167,7 @@ intent_keywords = ["chat", "talk"]
             payload="chat with me",
             submitted_at=Mock(),
         )
-        task_state_machine.list_tasks = Mock(return_value=[task])
+        task_state_machine.list_tasks = Mock(return_value=[task])  # type: ignore[method-assign]
 
         result = await dispatcher.dispatch("chat with me", token="test-token")
 
@@ -186,7 +186,7 @@ async def test_dispatch_no_match_fallback_to_ollama(
         # No intent_keywords in manifests
 
         task_id = uuid4()
-        capability_api.submit_task = Mock(return_value=task_id)
+        capability_api.submit_task = Mock(return_value=task_id)  # type: ignore[method-assign]
 
         task = Task(
             task_id=task_id,
@@ -198,7 +198,7 @@ async def test_dispatch_no_match_fallback_to_ollama(
             payload="random message",
             submitted_at=Mock(),
         )
-        task_state_machine.list_tasks = Mock(return_value=[task])
+        task_state_machine.list_tasks = Mock(return_value=[task])  # type: ignore[method-assign]
 
         result = await dispatcher.dispatch("random message", token="test-token")
 
@@ -224,7 +224,7 @@ intent_keywords = ["search"]
 """
 
         task_id = uuid4()
-        dispatcher._api.submit_task = Mock(return_value=task_id)
+        dispatcher._api.submit_task = Mock(return_value=task_id)  # type: ignore[method-assign]
 
         task = Task(
             task_id=task_id,
@@ -236,7 +236,7 @@ intent_keywords = ["search"]
             payload="search test",
             submitted_at=Mock(),
         )
-        task_state_machine.list_tasks = Mock(return_value=[task])
+        task_state_machine.list_tasks = Mock(return_value=[task])  # type: ignore[method-assign]
 
         await dispatcher.dispatch("search test", token="test-token")
 
@@ -260,7 +260,7 @@ intent_keywords = ["search"]
 """
 
         task_id = uuid4()
-        dispatcher._api.submit_task = Mock(return_value=task_id)
+        dispatcher._api.submit_task = Mock(return_value=task_id)  # type: ignore[method-assign]
 
         task = Task(
             task_id=task_id,
@@ -272,7 +272,7 @@ intent_keywords = ["search"]
             payload="search test",
             submitted_at=Mock(),
         )
-        task_state_machine.list_tasks = Mock(return_value=[task])
+        task_state_machine.list_tasks = Mock(return_value=[task])  # type: ignore[method-assign]
 
         # Dispatch should return immediately, not wait for task completion
         import asyncio

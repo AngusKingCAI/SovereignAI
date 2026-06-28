@@ -147,7 +147,7 @@ class NoActiveProviderError(Exception):
     """
 
     def __init__(self, message: str = "No active provider for the requested capability") -> None:
-        """Create a no-active-provider error with a descriptive message."""
+        """Create a no-active-provider error instance with a descriptive error message."""
         super().__init__(message)
 
 
@@ -158,7 +158,7 @@ class UnknownTaskError(Exception):
     """
 
     def __init__(self, task_id: UUID) -> None:
-        """Create an error for an unknown task ID."""
+        """Create an error instance for an unknown task identifier value."""
         self.task_id = task_id
         super().__init__(f"Unknown task {task_id} — never submitted")
 
@@ -170,7 +170,7 @@ class InvalidStateTransitionError(Exception):
     """
 
     def __init__(self, task_id: UUID, old_state: TaskState, new_state: TaskState) -> None:
-        """Create an error describing an invalid state transition attempt."""
+        """Create an error instance describing an invalid state transition attempt."""
         self.task_id = task_id
         self.old_state = old_state
         self.new_state = new_state
@@ -346,7 +346,7 @@ class RelayNotSupportedError(Exception):
         message: str = "Remote transport not yet supported "
         "(relay server deferred per Plan 1-4 scope adjudication A4)",
     ) -> None:
-        """Create a relay-not-supported error with a descriptive message.
+        """Create a relay-not-supported error instance with a descriptive error message.
 
         Args:
             message: Human-readable explanation of why the relay is not available.
@@ -367,7 +367,7 @@ class CapabilityAPIError(Exception):
     """
 
     def __init__(self, message: str, cause: Exception | None = None) -> None:
-        """Create a CapabilityAPIError wrapping an optional cause.
+        """Create a CapabilityAPIError instance wrapping an optional cause exception value.
 
         Args:
             message: Human-readable explanation of what failed.

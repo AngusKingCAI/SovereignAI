@@ -46,7 +46,7 @@ class RoutingEngine:
         self._lifecycle = lifecycle_manager
 
     def route(self, category: CapabilityCategory, name: str) -> ComponentId:
-        """Return the component ID of the highest-priority active provider.
+        """Return the component ID of the highest-priority active provider available.
 
         Per Rev4 Finding 1: calls `try_recover(component_id)` before
         checking status. If the error window has expired, the component

@@ -60,7 +60,7 @@ class ITaskStateQuery(Protocol):
         ...
 
     def list_tasks(self) -> tuple[Task, ...]:
-        """Return all tasks currently tracked by the state machine.
+        """Return all tasks currently tracked by the state machine in memory.
 
         Returns:
             Tuple of Task instances, oldest first.
@@ -88,7 +88,7 @@ class TaskStateMachine:
     """
 
     def __init__(self, bus: EventBus, trace: TraceEmitter) -> None:
-        """Create an empty state machine with no tracked tasks.
+        """Create an empty state machine instance with no tracked tasks yet.
 
         Args:
             bus: Event bus for publishing TaskStateChanged events.
@@ -183,7 +183,7 @@ class TaskStateMachine:
             return self._states.get(task_id)
 
     def list_tasks(self) -> tuple[Task, ...]:
-        """Return all tasks currently tracked by the state machine.
+        """Return all tasks currently tracked by the state machine in memory.
 
         Returns:
             Tuple of Task instances, in insertion order (oldest first).
@@ -193,7 +193,7 @@ class TaskStateMachine:
 
     def _publish(self, task_id: UUID, old_state: TaskState | None,
                  new_state: TaskState) -> None:
-        """Publish a TaskStateChanged event on the task state channel.
+        """Publish a TaskStateChanged event on the task state event channel.
 
         Per Finding 7 (Rev2): uses `now_utc()` directly from the
         top-level import instead of the removed `now_utc_safe()` wrapper.

@@ -35,7 +35,7 @@ class DIContainer:
     """
 
     def __init__(self) -> None:
-        """Create an empty container with no registered components."""
+        """Create an empty container instance with no registered components yet."""
         self._instances: dict[type[Any], Any] = {}
         self._factories: dict[type[Any], Callable[[], Any]] = {}
         self._lock = Lock()

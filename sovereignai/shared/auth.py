@@ -37,7 +37,7 @@ class AuthMiddleware:
     """
 
     def __init__(self, trace: TraceEmitter) -> None:
-        """Create an empty auth middleware with no registered users.
+        """Create an empty auth middleware instance with no registered users yet.
 
         Args:
             trace: Trace emitter for logging auth events (login

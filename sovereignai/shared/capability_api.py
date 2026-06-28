@@ -77,7 +77,7 @@ class CapabilityAPI:
     def query_capabilities(
         self, token: str, query: CapabilityQuery
     ) -> CapabilityResponse:
-        """Return the components that currently provide a requested capability.
+        """Return the components that currently provide a requested capability category.
 
         Args:
             token: Session token from a prior login() call.

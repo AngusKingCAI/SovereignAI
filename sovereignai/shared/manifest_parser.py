@@ -77,7 +77,7 @@ def parse_manifest(path: Path) -> ComponentManifest:
 
 
 def _parse_caps(raw: list[dict], path: Path) -> list[CapabilityDeclaration]:
-    """Convert raw TOML capability entries into frozen CapabilityDeclaration objects.
+    """Convert raw TOML capability entries into frozen CapabilityDeclaration data objects.
 
     Args:
         raw: List of dicts from the TOML file's provides[] or requires[].

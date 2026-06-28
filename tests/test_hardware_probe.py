@@ -147,7 +147,7 @@ def test_probe_async(probe: HardwareProbe) -> None:
     import asyncio
 
     with patch("web.hardware_probe.os.cpu_count", return_value=4):
-        async def test():
+        async def test() -> None:
             info = await probe.probe_async()
             assert info.cpu_count == 4
 
