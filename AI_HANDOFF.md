@@ -291,7 +291,7 @@ The scan prompt is queued after Plan X4 in `PLANS.md` and executes before the ne
 
 ### Scan prompt structure
 
-Scan prompts use the standard S0 opening and `/close` closing. They get their own `prompt-{N}` tag. The scan workflow is defined in `.windsurf/workflows/scan.md` — the scan prompt file just tells the Executor to run `/scan`.
+Scan prompts use the standard S0 opening and `/close` closing. They get their own `prompt-{N}` tag. The scan workflow is defined in `.devin/workflows/scan.md` — the scan prompt file just tells the Executor to run `/scan`.
 
 **Scan prompts skip the Round Table** — they're mechanical, no architectural decisions.
 
@@ -359,7 +359,7 @@ Execute all steps specified in the plan file. After each file edit, run `/verify
 
 **Run `/close`** — handles test suite, ruff, mypy, bandit, pip-audit, vulture, custom AR checks, commit, tag, CHANGELOG, PLANS.md, LANDMINES.md (if new pattern), DEBT.md (if deferred), rule proposal (C9), docs commit, push, post-push verification, chat-log reminder, Git Bash cleanup. If the workflow is missing or fails, STOP and report.
 
-The workflow files (`.windsurf/workflows/*.md`) are the source of truth for the workflow steps. The Architect reads them from the repo to verify the Executor's execution at Architect Workflow Step 2.
+The workflow files (`.devin/workflows/*.md`) are the source of truth for the workflow steps. The Architect reads them from the repo to verify the Executor's execution at Architect Workflow Step 2.
 
 ---
 
@@ -377,10 +377,10 @@ Twelve documents govern this project. Each has a single responsibility — do no
 | `AGENTS.md` | Executor's always-on rules — environment, edit discipline, git discipline, scope discipline. AR (Architecture Rules) + OR (Operational Rules). Rules reference their source landmine (e.g., "Source: L{n}") | Executor (at `/open` S0.3, when the Architect specifies new rules) | When new rules are added |
 | `DECISIONS.md` | Architectural decisions record — context, options considered, decision, rationale, trade-offs. Append-only | Executor (at `/close`, when a decision is codified) | When a new architectural decision is made |
 | `DEBT.md` | Deferred items register — what's been pushed to later, why, trigger condition, target plan | Executor (at `/close`, when an item is deferred or addressed) | When item deferred or addressed |
-| `.windsurf/workflows/open.md` | `/open` workflow — steps the Executor runs at the start of every plan | Architect | When workflow changes |
-| `.windsurf/workflows/verify.md` | `/verify` workflow — steps the Executor runs after each file edit | Architect | When workflow changes |
-| `.windsurf/workflows/close.md` | `/close` workflow — steps the Executor runs at the end of every plan | Architect | When workflow changes |
-| `.windsurf/workflows/scan.md` | `/scan` workflow — steps the Executor runs at scan prompts (5, 10, 15, ...) | Architect | When workflow changes |
+| `.devin/workflows/open.md` | `/open` workflow — steps the Executor runs at the start of every plan | Architect | When workflow changes |
+| `.devin/workflows/verify.md` | `/verify` workflow — steps the Executor runs after each file edit | Architect | When workflow changes |
+| `.devin/workflows/close.md` | `/close` workflow — steps the Executor runs at the end of every plan | Architect | When workflow changes |
+| `.devin/workflows/scan.md` | `/scan` workflow — steps the Executor runs at scan prompts (5, 10, 15, ...) | Architect | When workflow changes |
 
 ### Single source of truth (SSOT)
 
@@ -394,7 +394,7 @@ Each fact lives in exactly one document. Other documents reference it, don't cop
 - Architectural decisions → `DECISIONS.md` only
 - Deferred items → `DEBT.md` only
 - Vision / principles / open questions → `project-vision-Rev5.md` only
-- Workflow steps → `.windsurf/workflows/*.md` only (this handoff references them, doesn't duplicate)
+- Workflow steps → `.devin/workflows/*.md` only (this handoff references them, doesn't duplicate)
 
 ### Read order
 
@@ -407,7 +407,7 @@ Each fact lives in exactly one document. Other documents reference it, don't cop
 
 This project starts from an empty repo. The bootstrap sequence is:
 
-1. **`prompt-0`** (bootstrap commit): initial commit containing all 12 governance docs (`AI_HANDOFF.md`, `AGENTS.md`, `LANDMINES.md`, `PLANS.md`, `CHANGELOG.md`, `DECISIONS.md`, `DEBT.md`, `project-vision-Rev5.md`, `.windsurf/workflows/open.md`, `.windsurf/workflows/verify.md`, `.windsurf/workflows/close.md`, `.windsurf/workflows/scan.md`). No code. Tag: `prompt-0`.
+1. **`prompt-0`** (bootstrap commit): initial commit containing all 12 governance docs (`AI_HANDOFF.md`, `AGENTS.md`, `LANDMINES.md`, `PLANS.md`, `CHANGELOG.md`, `DECISIONS.md`, `DEBT.md`, `project-vision-Rev5.md`, `.devin/workflows/open.md`, `.devin/workflows/verify.md`, `.devin/workflows/close.md`, `.devin/workflows/scan.md`). No code. Tag: `prompt-0`.
 
 2. **Plans 1–4** (first batch): the Architect drafts 4 individual plan files + 1 batch context brief. Round Table reviews. Architect revises to clean pass. User copies final files to `C:/SovereignAI/prompts/`. Executor executes each plan, tagging `prompt-1` through `prompt-4`. Plan 1 scaffolds the core because that's what the project needs first — it's a regular plan, not a special Architecture Decision Plan.
 

@@ -97,10 +97,10 @@ The following open questions from `project-vision-Rev5.md` remain unresolved. Pl
 - **Known failure patterns** → `LANDMINES.md` (append-only; L1–L23 inherited from sovereign-ai predecessor)
 - **Architectural decisions record** → `DECISIONS.md`
 - **Deferred items register** → `DEBT.md`
-- **Opening workflow** → `.windsurf/workflows/open.md`
-- **Per-edit verification** → `.windsurf/workflows/verify.md`
-- **Closing workflow** → `.windsurf/workflows/close.md`
-- **Scan workflow** → `.windsurf/workflows/scan.md`
+- **Opening workflow** → `.devin/workflows/open.md`
+- **Per-edit verification** → `.devin/workflows/verify.md`
+- **Closing workflow** → `.devin/workflows/close.md`
+- **Scan workflow** → `.devin/workflows/scan.md`
 
 ---
 
