@@ -66,7 +66,7 @@ When the User pastes an Executor execution log, the Architect follows these 7 st
 
 ### Step 1 — Read the execution log end-to-end
 
-Extract: actual test counts for ALL test suites, ruff/mypy/bandit/pip-audit/vulture counts, any STOP conditions triggered, any C9 rule proposals the Executor submitted, any deviations from the plan. If a new test suite was introduced, include it — the test count list is not fixed.
+Read every line of the logs,Extract: actual test counts for ALL test suites, ruff/mypy/bandit/pip-audit/vulture counts, any STOP conditions triggered, any C9 rule proposals the Executor submitted, any deviations from the plan. If a new test suite was introduced, include it — the test count list is not fixed.
 
 ### Step 2 — Verify the repo state
 
