@@ -357,3 +357,31 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Coverage baseline established: 96% coverage across sovereignai/ package.
 - No Round Table review (scan-prompt exemption per AI_HANDOFF.md).
 
+## prompt-6 — Implement FastAPI Web UI
+
+**Date**: 2026-06-28
+**Plan file**: prompts/plan-6-Rev5.md
+
+**Files changed**:
+- web/schemas.py
+- web/main.py
+- web/templates/index.html
+- web/static/app.js
+- web/static/styles.css
+- web/__init__.py
+- tests/test_web_server.py
+- tests/test_ar7_no_core_imports_in_ui.py
+- txt/requirements.txt
+
+**Results**:
+- Tests: 114 passed, 3 skipped, 0 failed
+- Ruff: 0 findings
+- Mypy: 0 findings
+- Bandit: 0 findings
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- Added httpx2 dependency for FastAPI test client
+- Updated AR7 test to allow web/main.py imports (composition root exception)
+- Fixed timezone comparison issue in SSE event generator

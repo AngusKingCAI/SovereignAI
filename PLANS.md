@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-28 (prompt-5)
+**Last updated**: 2026-06-28 (prompt-6)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -15,15 +15,16 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 3**: Baseline → 75 tests. Delta: +6 — see CHANGELOG prompt-3.
 **Plan 4**: Baseline → 107 tests. Delta: +32 — see CHANGELOG prompt-4.
 **Plan 5**: Baseline → 106 tests. Delta: -1 — see CHANGELOG prompt-5.
+**Plan 6**: Baseline → 117 tests. Delta: +11 — see CHANGELOG prompt-6.
 
 ---
 
 ## Test Baseline
 
-**Current**: 106 tests (Plan 5 `/close` — Scan 5)
+**Current**: 117 tests (Plan 6 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
-.venv/Scripts/python.exe -m pytest tests/ --collect-only -q | tail -n 1
+.venv/Scripts/python.exe -m pytest tests/ --collect-only -q
 ```
 If a per-suite count is needed for debugging, generate it on demand rather than maintaining it here:
 ```
@@ -64,6 +65,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-3 | `prompt-3` | Execution layer — routing, lifecycle, task state machine, DAG validator | 75 | 0 | 0 | 2026-06-28 |
 | prompt-4 | `prompt-4` | Interface layer — Auth middleware, Capability API, Relay placeholder, Q26 audit | 107 | 0 | 0 | 2026-06-28 |
 | prompt-5 | `prompt-5` | Scan 5 — mechanical verification scan | 106 | 0 | 0 | 2026-06-28 |
+| prompt-6 | `prompt-6` | Implement FastAPI Web UI | 117 | 0 | 0 | 2026-06-28 |
 
 ---
 
