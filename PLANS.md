@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-29 (prompt-8)
+**Last updated**: 2026-06-29 (prompt-9)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -18,12 +18,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 6**: Baseline → 117 tests. Delta: +11 — see CHANGELOG prompt-6.
 **Plan 7**: Baseline → 149 tests. Delta: +32 — see CHANGELOG prompt-7.
 **Plan 8**: Baseline → 158 tests. Delta: +9 — see CHANGELOG prompt-8.
+**Plan 9**: Baseline → 169 tests. Delta: +11 — see CHANGELOG prompt-9.
 
 ---
 
 ## Test Baseline
 
-**Current**: 158 tests (Plan 8 `/close`)
+**Current**: 169 tests (Plan 9 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -70,12 +71,13 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-6 | `prompt-6` | Implement FastAPI Web UI | 117 | 0 | 0 | 2026-06-28 |
 | prompt-7 | `prompt-7` | MessageDispatcher, WebSearchSkill, OllamaAdapter, HardwareProbe | 149 | 0 | 0 | 2026-06-29 |
 | prompt-8 | `prompt-8` | 9-panel sidebar UI with observability | 158 | 0 | 0 | 2026-06-29 |
+| prompt-9 | `prompt-9` | Web Authentication Implementation | 169 | 0 | 0 | 2026-06-29 |
 
 ---
 
 ## Active Plan
 
-**Plan 9** — Auth integration (login/register, session cookies, first-run flow)
+**Scan 10** — Mechanical verification scan
 
 ---
 
@@ -83,11 +85,11 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Scan 10 | Mechanical verification scan | Plans 6–9 | ⏳ Pending |
-| 2 | Plan 11 | Memory layer — Librarian, backends (episodic, procedural, working, trace) | Plan 10 | ⏳ Pending |
-| 3 | Plan 12 | Versioning — semver, negotiator, compatibility matrix | Plan 11 | ⏳ Pending |
-| 4 | Plan 13 | Test framework — conformance, contract, property-based tests | Plan 12 | ⏳ Pending |
-| 5 | Plan 14 | Education department — Teacher worker, self-correction skill | Plan 13 | ⏳ Pending |
+| 1 | Plan 11 | Memory layer — Librarian, backends (episodic, procedural, working, trace) | Scan 10 | ⏳ Pending |
+| 2 | Plan 12 | Versioning — semver, negotiator, compatibility matrix | Plan 11 | ⏳ Pending |
+| 3 | Plan 13 | Test framework — conformance, contract, property-based tests | Plan 12 | ⏳ Pending |
+| 4 | Plan 14 | Education department — Teacher worker, self-correction skill | Plan 13 | ⏳ Pending |
+| 5 | TBD | TBD | TBD | ⏳ Pending |
 
 ---
 
