@@ -148,8 +148,8 @@ STOP if tag not listed.
 **Step 17 — Archive completed plan files**
 ```
 mkdir -p prompts/completed
-git mv prompts/plan-{N}*.md prompts/completed/
-git mv prompts/plan-{N}-brief.md prompts/completed/ 2>/dev/null || true
+mv prompts/plan-{N}*.md prompts/completed/ 2>/dev/null || true
+mv prompts/plan-{N}-brief.md prompts/completed/ 2>/dev/null || true
 ```
 
 **Step 18 — Commit docs** (NOT the execution log — that's committed separately)
