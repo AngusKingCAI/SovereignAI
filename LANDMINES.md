@@ -1,6 +1,6 @@
 # LANDMINES.md — SovereignAI Failure Patterns
 
-Append-only. Selected landmines (L1–L9, L11, L12, L17) inherited from sovereign-ai (predecessor project) — these are the entries referenced in `AGENTS.md`'s landmine-to-rule table. L10, L13–L16, L18–L23 were not graduated to rules in SovereignAI and are not carried forward. SovereignAI-specific landmines L24–L27 captured during Plan 0 execution; L28–L29 captured during prompt-0.1 execution. New landmines for SovereignAI continue from L30.
+Append-only. Selected landmines (L1–L9, L11, L12, L17) inherited from sovereign-ai (predecessor project) — these are the entries referenced in `AGENTS.md`'s landmine-to-rule table. L10, L13–L16, L18–L23 were not graduated to rules in SovereignAI and are not carried forward. SovereignAI-specific landmines L24–L27 captured during Plan 0 execution; L28–L29 captured during prompt-0.1 execution; L30 captured during prompt-0.2 execution. New landmines for SovereignAI continue from L31.
 
 Entries below are placeholder records for the inherited landmines referenced in `AGENTS.md`'s landmine-to-rule table. Each entry records the inherited trigger pattern and impact; SovereignAI-specific triggers will be appended as they occur. Per AGENTS.md: "Keep entries concise — trigger and impact only. No narrative."
 
@@ -96,9 +96,14 @@ Entries below are placeholder records for the inherited landmines referenced in 
 **Impact**: `/close` step 1 (pytest) would have failed even if test files existed. The Executor reported "Tests: N/A (no tests directory exists)" — technically true, but masked the underlying PATH issue. Plan 1's first `/close` would have hit the same wall.
 **Graduated to**: OR45 (project-local venv at `.venv/` is the canonical Python environment; activate before any python/pip command).
 
+## L30 — source .venv/Scripts/activate does not persist in Git Bash on Windows
+**Trigger**: prompt-0.2, S1.4, Executor ran `source .venv/Scripts/activate` then `which python` returned the venv path but `which pip` returned the system path (`/c/Users/King/AppData/Local/Programs/Python/Python311/Scripts/pip`). Activation did not reliably persist across separate command invocations.
+**Impact**: Executor fell back to absolute paths (`.venv/Scripts/python.exe`, `.venv/Scripts/pip.exe`) for all subsequent commands. This worked but required verbose command syntax. If `/open` workflow relied on `source activate` (as prompt-0.2's S1.6 originally specified but was skipped), every subsequent plan would hit the same activation issue.
+**Graduated to**: OR46 (workflow commands use absolute venv paths, not source activate).
+
 ---
 
-## Process for capturing new landmines (L30+)
+## Process for capturing new landmines (L31+)
 
 At `/close` step 11, if a new failure pattern was discovered during the plan, append an entry in this format:
 

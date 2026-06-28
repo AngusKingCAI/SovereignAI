@@ -4,14 +4,14 @@ Run at scan prompts (Plan 5, 10, 15, 20, ...). Whole-repo scan. No new features.
 
 ## Steps
 
-1. Run all scan tools in full, one at a time (parallel execution corrupts output streams):
-   - `python -m pytest tests/ -vvv` (full verbose, no piping)
-   - `ruff check . 2>&1 | tail -n 3`
-   - `mypy . --ignore-missing-imports 2>&1 | tail -n 3` (full repo at scan prompts)
-   - `bandit -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache 2>&1 | tail -n 5`
-   - `pip-audit --strict 2>&1 | tail -n 5`
-   - `vulture . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,htmlcov 2>&1 | tail -n 5` (compare against `txt/vulture-whitelist.txt`)
-   - `detect-secrets scan --baseline txt/.secrets.baseline`
+1. Run all scan tools in full, one at a time (parallel execution corrupts output streams per OR3). Use absolute venv paths per OR46:
+   - `.venv/Scripts/python.exe -m pytest tests/ -vvv` (full verbose, no piping)
+   - `.venv/Scripts/ruff.exe check . 2>&1 | tail -n 3`
+   - `.venv/Scripts/mypy.exe . --ignore-missing-imports 2>&1 | tail -n 3` (full repo at scan prompts)
+   - `.venv/Scripts/bandit.exe -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache 2>&1 | tail -n 5`
+   - `.venv/Scripts/pip-audit.exe --strict --requirement txt/requirements.txt 2>&1 | tail -n 5` (scan requirements file only per OR39)
+   - `.venv/Scripts/vulture.exe . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,htmlcov 2>&1 | tail -n 5` (compare against `txt/vulture-whitelist.txt`)
+   - `.venv/Scripts/detect-secrets.exe scan --baseline txt/.secrets.baseline`
    - Custom AR static analysis checks (same as `/close` step 8)
    - **Auto-discovered tools**: any test suite or static analysis tool configured in `pyproject.toml`, `pytest.ini`, `.pre-commit-config.yaml`, or similar. Run them all automatically.
    
@@ -25,14 +25,14 @@ Run at scan prompts (Plan 5, 10, 15, 20, ...). Whole-repo scan. No new features.
 
 5. Scan all docstrings for references to removed/renamed modules. Fix stale references mechanically.
 
-6. Run full test suite (final confirmation after any fixes from steps 2-5):
+6. Run full test suite (final confirmation after any fixes from steps 2-5, use absolute venv path per OR46):
    ```
-   python -m pytest tests/ -vvv
+   .venv/Scripts/python.exe -m pytest tests/ -vvv
    ```
 
-7. Verify coverage hasn't dropped >5% from baseline:
+7. Verify coverage hasn't dropped >5% from baseline (use absolute venv path per OR46):
    ```
-   python -m pytest tests/ --cov=. --cov-report=term 2>&1 | tail -n 10
+   .venv/Scripts/python.exe -m pytest tests/ --cov=. --cov-report=term 2>&1 | tail -n 10
    ```
 
 8. Audit against the principles in `project-vision-Rev5.md`. For each of the 14 principles, verify the codebase complies. If any principle is violated, STOP — architectural violations require a regular plan with Round Table review, not a scan fix.

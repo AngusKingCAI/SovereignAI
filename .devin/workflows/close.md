@@ -4,49 +4,51 @@ Run at the end of every plan. Do not pause between steps — run straight throug
 
 ## Steps
 
+**Prerequisite**: The project-local venv (`.venv/`) must exist and be functional before running any step in this workflow. The venv is verified at `/open` step 3 (per OR45). If the venv does not exist, STOP and run `/open` first. Per OR46, all commands below use absolute venv paths (`.venv/Scripts/python.exe`, `.venv/Scripts/ruff.exe`, etc.) — do not rely on `source .venv/Scripts/activate` (it does not reliably persist in Git Bash on Windows per L30).
+
 **N/A handling**: When a step's result is N/A (e.g., no Python code to test, no new landmines discovered), the Executor runs the step, observes the N/A result, and reports it in the final summary (step 20). The Executor does NOT skip the step. Skipping steps because "the result would be N/A" is an OR34 violation. The only steps that may be skipped are those explicitly marked "skip if N/A" in this workflow file.
 
-1. Run full test suite:
+1. Run full test suite (use absolute venv path per OR46):
    ```
-   python -m pytest tests/ -vvv
+   .venv/Scripts/python.exe -m pytest tests/ -vvv
    ```
-   If any test fails, STOP.
+   If any test fails, STOP. If pytest reports "no tests ran" and the plan was supposed to add tests, STOP — test collection may have failed silently.
 
-2. Run ruff (full repo):
+2. Run ruff (full repo, use absolute venv path per OR46):
    ```
-   ruff check . 2>&1 | tail -n 3
+   .venv/Scripts/ruff.exe check . 2>&1 | tail -n 3
    ```
    If errors, STOP.
 
-3. Run mypy:
-   - At scan prompts (5, 10, 15...): `mypy . --ignore-missing-imports`
-   - At regular prompts: `mypy <files-edited-this-plan> --ignore-missing-imports`
+3. Run mypy (use absolute venv path per OR46):
+   - At scan prompts (5, 10, 15...): `.venv/Scripts/mypy.exe . --ignore-missing-imports`
+   - At regular prompts: `.venv/Scripts/mypy.exe <files-edited-this-plan> --ignore-missing-imports`
    
    Pipe through `tail -n 3`. If errors, STOP.
 
-4. Run bandit:
+4. Run bandit (use absolute venv path per OR46):
    ```
-   bandit -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache 2>&1 | tail -n 5
+   .venv/Scripts/bandit.exe -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache 2>&1 | tail -n 5
    ```
    If findings, STOP.
 
-5. Run pip-audit:
+5. Run pip-audit (use absolute venv path per OR46; scan requirements file only per OR39):
    ```
-   pip-audit --strict 2>&1 | tail -n 5
+   .venv/Scripts/pip-audit.exe --strict --requirement txt/requirements.txt 2>&1 | tail -n 5
    ```
    If CVEs, STOP.
 
-6. Run vulture:
+6. Run vulture (use absolute venv path per OR46):
    ```
-   vulture . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,htmlcov 2>&1 | tail -n 5
+   .venv/Scripts/vulture.exe . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,htmlcov 2>&1 | tail -n 5
    ```
    Compare against `txt/vulture-whitelist.txt`. If new findings, STOP.
 
-7. Run detect-secrets:
+7. Run detect-secrets (use absolute venv path per OR46):
    ```
-   detect-secrets scan --baseline txt/.secrets.baseline
+   .venv/Scripts/detect-secrets.exe scan --baseline txt/.secrets.baseline
    ```
-   If exit code != 0, STOP — a new secret was introduced. Either update the baseline (if false positive) or remove the secret. Do not commit until this passes.
+   If exit code != 0, STOP — a new secret was introduced. Either update the baseline (if false positive, use `.venv/Scripts/detect-secrets.exe audit txt/.secrets.baseline` per OR40) or remove the secret. Do not commit until this passes.
 
 8. Run custom static analysis checks (AR rules). Each is a separate command. STOP on any violation:
    - No globals in `sovereignai/`

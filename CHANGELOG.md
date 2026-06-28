@@ -104,3 +104,36 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Ruff config fix: moved [tool.ruff.pydocstyle] to [tool.ruff.lint.pydocstyle] per ruff deprecation warning.
 - PLANS.md doc drift fix: landmine range updated to reflect L24-L29; baseline notes wording clarified.
 - No Round Table review (scan-prompt exemption per AI_HANDOFF.md).
+
+## prompt-0.3 — Venv path + workflow file cleanup
+
+**Date**: 2026-06-28
+**Plan file**: prompts/plan-0.3-Rev1.md
+
+**Files changed**:
+- AGENTS.md (added OR46; revised OR45 to reference OR46; updated landmine-to-rule table with L30)
+- .devin/workflows/open.md (added step 3: venv verification + creation if missing; renumbered subsequent steps)
+- .devin/workflows/verify.md (updated python and ruff commands to use .venv/Scripts/ absolute paths)
+- .devin/workflows/close.md (added venv prerequisite note; updated steps 1-7 to use .venv/Scripts/ absolute paths; fixed step 5 pip-audit to use --requirement per OR39)
+- .devin/workflows/scan.md (updated steps 1, 6, 7 to use .venv/Scripts/ absolute paths)
+- LANDMINES.md (appended L30; updated header; updated process section header)
+
+**Results**:
+- Tests: N/A (no code, no tests/test_*.py files)
+- Ruff: 0 errors
+- Mypy: N/A (no Python code)
+- Bandit: 0 findings
+- pip-audit: 0 CVEs (txt/requirements.txt still empty)
+- Vulture: N/A (no Python code)
+- Detect-secrets: pass (baseline unchanged)
+
+**Notes**:
+- Mechanical cleanup plan addressing issues discovered during prompt-0.2 execution.
+- 1 new OR rule: OR46 (workflow commands use absolute venv paths, not source activate).
+- 1 new landmine: L30 (source activate does not persist in Git Bash on Windows).
+- Workflow files: all 4 (.devin/workflows/open.md, verify.md, close.md, scan.md) updated to use .venv/Scripts/python.exe, .venv/Scripts/ruff.exe, etc. instead of relying on PATH.
+- /close step 5 fix: pip-audit now uses --requirement txt/requirements.txt per OR39 (was previously environment scan — residual issue from prompt-0.2).
+- /open step 3 added: verifies .venv/ exists, creates it if missing.
+- No prompts/ files deleted — Rev-suffixed plan files (plan-0.1-Rev1.md, plan-0.2-Rev1.md) are kept per AI_HANDOFF.md line 96 ("All Revs are kept forever — no deletion. The prompts/ directory accumulates the full history.").
+- Observation (no action): prompts/plan-0.md lacks Rev suffix while plan-0.1-Rev1.md and plan-0.2-Rev1.md have suffixes. Handoff has internally conflicting guidance (line 58 says Rev suffix; line 108 says strip suffix on copy). User should decide which interpretation is canonical before Plan 1 starts.
+- No Round Table review (scan-prompt exemption per AI_HANDOFF.md).
