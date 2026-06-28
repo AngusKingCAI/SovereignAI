@@ -166,7 +166,7 @@ def test_protocol_compliance() -> None:
 
 
 def test_register_equal_priority_stable_sort() -> None:
-    """Register two providers with equal priority; verify stable sort preserves registration order."""
+    """Register two providers with equal priority; verify stable sort preserves order."""
     trace = TraceEmitter()
     graph = CapabilityGraph(trace=trace)
     manifest1 = ComponentManifest(
@@ -212,7 +212,7 @@ def test_register_cleanup_old_capabilities_on_reregistration() -> None:
     """Verify that re-registering a component removes its old capabilities."""
     trace = TraceEmitter()
     graph = CapabilityGraph(trace=trace)
-    
+
     # Initial registration with one capability
     manifest_v1 = ComponentManifest(
         component_id=ComponentId("TestAdapter"),
@@ -232,7 +232,7 @@ def test_register_cleanup_old_capabilities_on_reregistration() -> None:
     graph.register(manifest_v1)
     providers = graph.find_providers(CapabilityCategory.MODEL_INFERENCE, "text_generation")
     assert len(providers) == 1
-    
+
     # Re-register with different capability
     manifest_v2 = ComponentManifest(
         component_id=ComponentId("TestAdapter"),
@@ -250,11 +250,11 @@ def test_register_cleanup_old_capabilities_on_reregistration() -> None:
         requires=(),
     )
     graph.register(manifest_v2)
-    
+
     # Old capability should be removed
     providers_old = graph.find_providers(CapabilityCategory.MODEL_INFERENCE, "text_generation")
     assert len(providers_old) == 0
-    
+
     # New capability should be present
     providers_new = graph.find_providers(CapabilityCategory.TOOL, "calculator")
     assert len(providers_new) == 1

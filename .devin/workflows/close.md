@@ -145,26 +145,34 @@ Run at the end of every plan. Do not pause between steps — run straight throug
     ```
     If tag not created, STOP.
 
-17. Commit docs (do NOT include the execution log file — it's committed separately after the User pastes content):
+17. Move completed prompt files to `prompts/completed/`:
     ```
-    git add CHANGELOG.md PLANS.md LANDMINES.md DEBT.md prompts/plan-{N}*.md
+    mkdir -p prompts/completed
+    git mv prompts/plan-{N}*.md prompts/completed/
+    git mv prompts/plan-{N}-brief.md prompts/completed/ 2>/dev/null || true  # brief may not exist
+    ```
+    This archives all revisions and the brief file for the completed prompt.
+
+18. Commit docs (do NOT include the execution log file — it's committed separately after the User pastes content):
+    ```
+    git add CHANGELOG.md PLANS.md LANDMINES.md DEBT.md prompts/completed/
     git commit -m "docs: prompt-{N} governance updates"
     ```
 
-18. Push:
+19. Push:
     ```
     git push origin main
     git push origin prompt-{N}
     ```
     If push fails, STOP.
 
-19. Verify tag on origin:
+20. Verify tag on origin:
     ```
     git ls-remote --tags origin | grep "prompt-{N}"
     ```
     If missing, STOP.
 
-20. Final summary:
+21. Final summary:
     ```
     === prompt-{N} COMPLETE ===
     

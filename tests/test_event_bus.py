@@ -8,9 +8,9 @@ from __future__ import annotations
 from uuid import uuid4
 
 import pytest
-from sovereignai.shared.trace_emitter import TraceEmitter
 
 from sovereignai.shared.event_bus import EventBus
+from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import Channel, Event, TraceLevel, now_utc
 
 
@@ -175,7 +175,7 @@ def test_concurrent_publish_and_subscribe(event_bus: EventBus) -> None:
     event_bus.subscribe(Channel("test-channel"), subscriber)
 
     def publish_many() -> None:
-        for i in range(10):
+        for _i in range(10):
             event = Event(
                 channel=Channel("test-channel"),
                 correlation_id=uuid4(),
