@@ -202,6 +202,12 @@ OR50. SSE connections authenticate via standard HTTP session cookie. No query-pa
 
 OR52. Web-layer DTOs (in `web/schemas.py`) are the canonical HTTP contract. Core domain types are never returned directly from HTTP endpoints. Mapping functions convert between DTOs and core types. Source: Plan 6 Rev 2.
 
+OR54. Every adapter MUST declare a `health_check()` method. The `LifecycleManager` calls this method on adapter registration. If the health check fails, the adapter is registered with `DEGRADED` status in the capability graph — it is NOT skipped. This lets the UI show "Ollama: unavailable" rather than hiding it. Source: Plan 7.
+
+OR55. Skills placed in `skills/user/` are user-authored and trusted by default per P14. They do NOT require a provenance manifest or cryptographic signature. Skills in `skills/external/` DO require provenance manifests. The manifest parser distinguishes by directory path. Source: P14.
+
+OR56. The `MessageDispatcher` (v1) queries the `CapabilityGraph` for registered skills and routes to the first matching capability by priority order. It does NOT perform intent parsing, disambiguation, or structured prompt construction — those are CEO-shaped work deferred to a future plan. Source: Plan 7 Rev 2.
+
 ---
 
 ## Landmines → Rules
