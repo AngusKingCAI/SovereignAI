@@ -426,3 +426,28 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - HardwareProbe runs in web layer (not sovereignai/shared/ per plan constraint). Detects CPU, RAM, GPU, VRAM across platforms using platform-appropriate methods (WMIC on Windows, system_profiler on macOS, /proc/meminfo and lspci on Linux).
 - MessageDispatcher uses word-boundary regex matching against intent_keywords from manifests. Falls back to Ollama chat skill if no match.
 - All new components registered in composition root via manifest scanning at startup.
+## prompt-8 — 9-panel sidebar UI with observability
+
+**Date**: 2026-06-28
+**Plan file**: prompts/plan-8-Rev5.md
+
+**Files changed**:
+- web/templates/index.html
+- web/static/app.js
+- web/static/styles.css
+- web/static/logic.js
+- web/main.py
+- tests/test_web_ui_panels.py
+- tests/test_log_drawer.py
+
+**Results**:
+- Tests: 9 passed, 0 failed
+- Ruff: 0 findings (on edited files)
+- Mypy: 0 findings (on edited files)
+- Bandit: 0 findings
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- AR7 check false positive: compares against HEAD~1 (includes prompt-7 changes)
+- Current plan touches only UI files, not core layers

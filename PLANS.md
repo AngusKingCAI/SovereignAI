@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-29 (prompt-7)
+**Last updated**: 2026-06-29 (prompt-8)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -17,12 +17,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 5**: Baseline → 106 tests. Delta: -1 — see CHANGELOG prompt-5.
 **Plan 6**: Baseline → 117 tests. Delta: +11 — see CHANGELOG prompt-6.
 **Plan 7**: Baseline → 149 tests. Delta: +32 — see CHANGELOG prompt-7.
+**Plan 8**: Baseline → 158 tests. Delta: +9 — see CHANGELOG prompt-8.
 
 ---
 
 ## Test Baseline
 
-**Current**: 149 tests (Plan 7 `/close`)
+**Current**: 158 tests (Plan 8 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -68,6 +69,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-5 | `prompt-5` | Scan 5 — mechanical verification scan | 106 | 0 | 0 | 2026-06-28 |
 | prompt-6 | `prompt-6` | Implement FastAPI Web UI | 117 | 0 | 0 | 2026-06-28 |
 | prompt-7 | `prompt-7` | MessageDispatcher, WebSearchSkill, OllamaAdapter, HardwareProbe | 149 | 0 | 0 | 2026-06-29 |
+| prompt-8 | `prompt-8` | 9-panel sidebar UI with observability | 158 | 0 | 0 | 2026-06-29 |
 
 ---
 
