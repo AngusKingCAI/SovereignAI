@@ -196,6 +196,12 @@ OR47. Mypy is invoked on `.py` files only — never markdown, YAML, TOML, or oth
 
 OR48. Custom AR static analysis checks (AR4, AR5, AR6, AR9, AR21) are committed scripts in `scripts/ar_checks/`, never re-derived ad hoc at `/close` or `/scan`. If a check has no script yet, write one, commit it with the current plan, and use it from then on. Each script documents which AR rule it enforces via `--help`. Changing a check's behaviour means editing the script (reviewable diff), not silently changing what gets caught. (Source: governance review 2026-06-28 — see DECISIONS.md D5)
 
+OR49. The FastAPI web app runs as a separate process, not embedded in the core runtime. The web server imports from `sovereignai/` only via the public API surface (`CapabilityAPI`, protocols). It does not import core internals directly. Source: Plan 6.
+
+OR50. SSE connections authenticate via standard HTTP session cookie. No query-parameter tokens are used for auth. Source: Plan 6 Rev 2.
+
+OR52. Web-layer DTOs (in `web/schemas.py`) are the canonical HTTP contract. Core domain types are never returned directly from HTTP endpoints. Mapping functions convert between DTOs and core types. Source: Plan 6 Rev 2.
+
 ---
 
 ## Landmines → Rules
