@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-28 (prompt-2)
+**Last updated**: 2026-06-28 (prompt-3)
 
 This document tracks the dynamic state of the SovereignAI project: baselines, completed prompts, and the next-5-prompt queue. It is the canonical source for test counts, static analysis baselines, and which prompt is currently active. The Executor updates this document at every `/close`. The Architect reads it at every session start. Do not duplicate content from this file into other documents — this is the SSOT for baselines and queue state.
 
@@ -12,11 +12,13 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 
 **Plan 2**: Discovery layer — test baseline updated to 40 tests. Delta from expected: +3 tests (manifest_parser has 8 tests vs expected 6; added test_parse_missing_capability_field_raises and test_parse_invalid_priority_raises per Findings 2 and 12).
 
+**Plan 3**: Execution layer — test baseline updated to 75 tests. Delta from expected: +6 tests (task_state_machine has 11 tests vs expected 8; added test_get_state_unknown_returns_none, test_list_tasks_returns_insertion_order, test_transition_unknown_task_raises_unknown_task_error per implementation requirements).
+
 ---
 
 ## Test Baseline
 
-**Current baseline**: 40 tests (Plan 2 `/close`). Breakdown: 6 event_bus + 6 trace_emitter + 6 di_container + 8 composition_root + 8 manifest_parser + 6 capability_graph.
+**Current baseline**: 75 tests (Plan 3 `/close`). Breakdown: 6 event_bus + 6 trace_emitter + 6 di_container + 14 composition_root + 8 manifest_parser + 6 capability_graph + 7 lifecycle_manager + 5 routing_engine + 11 task_state_machine + 6 dag_validator.
 
 **Tolerance**: ±5 tests (variance acceptable due to parameterised fixtures and environment variation)
 
@@ -50,16 +52,16 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 | prompt-0.3 | `prompt-0.3` | Venv path + repo hygiene cleanup — OR46, L30, workflow files use absolute venv paths | N/A | 0 | N/A | 2026-06-28 |
 | prompt-0.4 | `prompt-0.4` | Mypy filtering + kill bash at start — OR47, L31, /open step 1 kill orphans, /close step 3 mypy .py filter, /close step 21 stronger language | N/A | 0 | N/A | 2026-06-28 |
 | prompt-1 | `prompt-1` | Core scaffold — Event Bus, TraceEmitter, DI container, Composition Root, test baseline | 22 | 0 | 0 | 2026-06-28 |
+| prompt-2 | `prompt-2` | Discovery layer — manifest parser, capability graph, ICapabilityIndex | 40 | 0 | 0 | 2026-06-28 |
+| prompt-3 | `prompt-3` | Execution layer — routing, lifecycle, task state machine, DAG validator, ITaskStateQuery | 75 | 0 | 0 | 2026-06-28 |
 
-*Plans 2–4 rows will be added here at each `/close`.*
+*Plans 4+ rows will be added here at each `/close`.*
 
 ---
 
 ## Active Plan
 
-**Plan 2** — awaiting execution.
-
-Plan 2 file: prompts/plan-2-Rev3.md
+None — awaiting next plan.
 
 ---
 
@@ -67,10 +69,10 @@ Plan 2 file: prompts/plan-2-Rev3.md
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 2 | Capability graph, manifest parser, routing engine | Plan 1 | ▶️ Active |
-| 2 | Plan 3 | Lifecycle manager, task state machine, DAG validator | Plan 2 | ⏳ Pending Plan 2 |
-| 3 | Plan 4 | Auth middleware, Capability API, Relay server stub | Plan 3 | ⏳ Pending Plan 3 |
-| 4 | Scan 5 | First scan — verify baselines, fix accumulated issues | Plans 1–4 | ⏳ Pending Plans 1–4 |
+| 1 | Plan 4 | Auth middleware, Capability API, Relay server stub | Plan 3 | ⏳ Pending Plan 3 |
+| 2 | Scan 5 | First scan — verify baselines, fix accumulated issues | Plans 1–4 | ⏳ Pending Plans 1–4 |
+| 3 | TBD | Future plan | TBD | ⏳ Pending |
+| 4 | TBD | Future plan | TBD | ⏳ Pending |
 | 5 | TBD | Future plan | TBD | ⏳ Pending |
 
 ---
@@ -83,12 +85,12 @@ The following open questions from `project-vision-Rev5.md` remain unresolved. Pl
 |---|---|---|
 | Q1 | Adapter contract — manifest format and interface contract | Plan 2 |
 | Q2 | Skill discovery and registration — directory scan + manifest | Plan 2 |
-| Q3 | Memory abstraction — capability-based backend routing | Plan 3 |
-| Q4 | Core routing between adapters without knowing them | Plan 2 |
+| ~~Q3~~ | ~~Memory abstraction — capability-based backend routing~~ | ~~Resolved at Plan 3 (interface shape defined; implementation deferred to DEBT)~~ |
+| ~~Q4~~ | ~~Core routing between adapters without knowing them~~ | ~~Resolved at Plan 3 (capability-based via ICapabilityIndex + LifecycleManager)~~ |
 | Q8 | Adapter/skill/memory versioning — semantic versioning + capability negotiation | Plan 2 |
 | ~~Q9~~ | ~~Test strategy — conformance, contract, property-based~~ | ~~Resolved at Plan 1~~ |
 | Q13 | Learning and improvement — retrospective trace skill (not core) | Deferred (post Plan 4) |
-| Q14 | Persistence story — many stores, crash recovery via trace replay | Plan 3 |
+| ~~Q14~~ | ~~Persistence story — many stores, crash recovery via trace replay~~ | ~~Resolved at Plan 3 (in-memory only; durable backends deferred to DEBT)~~ |
 | Q31 | Packaging and distribution — Windows-first, PyInstaller vs native | Deferred (post Plan 4) |
 | ~~Q32~~ | ~~Debt register format — where it lives, who maintains it, trigger conditions~~ | ~~Resolved at Plan 1 (DEBT.md scaffold)~~ |
 

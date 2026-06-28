@@ -85,6 +85,24 @@ Append-only. Each entry: deferred at, reason, trigger condition, target plan.
 
 ---
 
+## Deferred: Memory abstraction implementation
+
+**Deferred at**: prompt-3 (per Plan 3 scope adjudication)
+**Reason**: Plan 3 defines the interface shape (via ITaskStateQuery protocol pattern) but does not implement memory routing. The Librarian is a pluggable component, not a core component.
+**Trigger condition**: When the Librarian Registry is needed (post Plan 4).
+**Target plan**: TBD (post Plan 4).
+
+---
+
+## Deferred: Circuit breaker auto-recovery heartbeat
+
+**Deferred at**: prompt-3 (per Rev4 Finding 9)
+**Reason**: LifecycleManager implements circuit breaker (50 errors/10s -> CIRCUIT_BROKEN) but does not include an auto-recovery heartbeat that periodically checks if the error window has expired and attempts recovery. Manual recovery via try_recover() is available.
+**Trigger condition**: When the system needs automated recovery without manual intervention.
+**Target plan**: TBD (post Plan 4).
+
+---
+
 ## How to add a new deferred item
 
 At `/close` step 12, if an item is deferred, append an entry in the format above. When a deferred item is addressed, do not remove the entry — add a "Resolved at: prompt-{N}" line below it. DEBT.md is append-only.
