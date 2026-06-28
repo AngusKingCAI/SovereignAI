@@ -63,7 +63,7 @@ select = ["E", "F", "W", "D", "I", "N", "UP", "B", "C4", "SIM"]
 # enforced rule. Revisit at Plan 1 when __init__.py files get content.
 ignore = ["D100", "D104"]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
 
 [tool.mypy]

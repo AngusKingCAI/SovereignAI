@@ -72,3 +72,35 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Workflow file fixes: /close step 8 references sovereignai/ instead of core/; /close step 21 and Steps header clarify N/A handling.
 - Repo hygiene: prompts/ directory now contains only prompts/plan-0.md (canonical name per AI_HANDOFF.md).
 - No Round Table review (scan-prompt exemption per AI_HANDOFF.md).
+
+## prompt-0.2 — Environment + doc drift cleanup
+
+**Date**: 2026-06-28
+**Plan file**: prompts/plan-0.2-Rev1.md
+
+**Files changed**:
+- AGENTS.md (added OR44, OR45; updated landmine-to-rule table with L28, L29)
+- .devin/workflows/open.md (added venv activation step 3 per OR45; fixed master->main in step 2 if still present)
+- .devin/workflows/close.md (added venv prerequisite note to Steps section)
+- pyproject.toml (fixed ruff config: [tool.ruff.pydocstyle] -> [tool.ruff.lint.pydocstyle])
+- PLANS.md (fixed landmine range in cross-references; fixed baseline notes wording; updated date)
+- LANDMINES.md (appended L28, L29; updated header; updated process section header)
+- .venv/ (created — gitignored, not committed)
+
+**Results**:
+- Tests: N/A (no code, no tests/test_*.py files)
+- Ruff: 0 errors (deprecation warning resolved)
+- Mypy: N/A (no Python code)
+- Bandit: 0 findings
+- pip-audit: 0 CVEs (txt/requirements.txt still empty)
+- Vulture: N/A (no Python code)
+- Detect-secrets: pass (baseline unchanged)
+
+**Notes**:
+- Mechanical cleanup plan addressing issues discovered during prompt-0.1 execution.
+- 2 new OR rules: OR44 (workflow files are structured markdown — OR7 applies), OR45 (project-local venv at .venv/ is canonical Python environment).
+- 2 new landmines: L28 (sed on workflow files), L29 (python/pip PATH mismatch).
+- Environment fix: created .venv/ via `py -3.11 -m venv .venv`, installed dev deps via `pip install -e .[dev]`. Verified `python -m pytest --version` works (no more "No module named pytest").
+- Ruff config fix: moved [tool.ruff.pydocstyle] to [tool.ruff.lint.pydocstyle] per ruff deprecation warning.
+- PLANS.md doc drift fix: landmine range updated to reflect L24-L29; baseline notes wording clarified.
+- No Round Table review (scan-prompt exemption per AI_HANDOFF.md).

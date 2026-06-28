@@ -1,6 +1,6 @@
 # LANDMINES.md — SovereignAI Failure Patterns
 
-Append-only. Selected landmines (L1–L9, L11, L12, L17) inherited from sovereign-ai (predecessor project) — these are the entries referenced in `AGENTS.md`'s landmine-to-rule table. L10, L13–L16, L18–L23 were not graduated to rules in SovereignAI and are not carried forward. SovereignAI-specific landmines L24–L27 captured during Plan 0 execution. New landmines for SovereignAI continue from L28.
+Append-only. Selected landmines (L1–L9, L11, L12, L17) inherited from sovereign-ai (predecessor project) — these are the entries referenced in `AGENTS.md`'s landmine-to-rule table. L10, L13–L16, L18–L23 were not graduated to rules in SovereignAI and are not carried forward. SovereignAI-specific landmines L24–L27 captured during Plan 0 execution; L28–L29 captured during prompt-0.1 execution. New landmines for SovereignAI continue from L30.
 
 Entries below are placeholder records for the inherited landmines referenced in `AGENTS.md`'s landmine-to-rule table. Each entry records the inherited trigger pattern and impact; SovereignAI-specific triggers will be appended as they occur. Per AGENTS.md: "Keep entries concise — trigger and impact only. No narrative."
 
@@ -86,9 +86,19 @@ Entries below are placeholder records for the inherited landmines referenced in 
 **Impact**: User had to prompt "why did you stop at 14? you should complete all closing steps." Executor then completed remaining steps. Wasted a round-trip and risked leaving the session in an inconsistent state (bash processes not killed, final summary not produced).
 **Graduated to**: No new rule — workflow file fix only (S2.2 and S2.3 add explicit "mandatory even for docs-only plans" language to `/close` step 21 and the Steps header).
 
+## L28 — sed used on workflow files after Edit-tool failures
+**Trigger**: prompt-0.1, S2.2 and S2.3, Executor used `sed -i` on `.devin/workflows/close.md` after 3 Edit-tool attempts failed due to whitespace mismatch.
+**Impact**: The `sed` commands produced correct output (verified post-execution), but the precedent is dangerous — `sed` regex bugs could silently corrupt workflow files loaded by every subsequent plan's `/open` and `/close`. OR7 listed structured-markdown files but did not explicitly include `.devin/workflows/*.md`, so the Executor interpreted the gap as "OR7 doesn't apply to workflow files."
+**Graduated to**: OR44 (workflow files are structured markdown — OR7 applies; if Edit tool fails, STOP and report, do not fall back to sed).
+
+## L29 — python and pip resolve to different interpreters on Windows
+**Trigger**: prompt-0.1, `/close` step 1, `python -m pytest tests/ -vvv` failed with `No module named pytest`. Diagnosis: `python` on PATH resolved to `C:\Users\King\AppData\Local\hermes\hermes-agent\venv\Scripts\python.exe` (hermes-agent's venv), but `pip install -e .[dev]` (run during prompt-0) installed dev tools into `C:\Users\King\AppData\Local\Programs\Python\Python311\Lib\site-packages` (the main Python 3.11 install). The two Pythons don't share site-packages.
+**Impact**: `/close` step 1 (pytest) would have failed even if test files existed. The Executor reported "Tests: N/A (no tests directory exists)" — technically true, but masked the underlying PATH issue. Plan 1's first `/close` would have hit the same wall.
+**Graduated to**: OR45 (project-local venv at `.venv/` is the canonical Python environment; activate before any python/pip command).
+
 ---
 
-## Process for capturing new landmines (L28+)
+## Process for capturing new landmines (L30+)
 
 At `/close` step 11, if a new failure pattern was discovered during the plan, append an entry in this format:
 

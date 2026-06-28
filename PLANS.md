@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-28
+**Last updated**: 2026-06-28 (prompt-0.2)
 
 This document tracks the dynamic state of the SovereignAI project: baselines, completed prompts, and the next-5-prompt queue. It is the canonical source for test counts, static analysis baselines, and which prompt is currently active. The Executor updates this document at every `/close`. The Architect reads it at every session start. Do not duplicate content from this file into other documents — this is the SSOT for baselines and queue state.
 
@@ -8,7 +8,7 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 
 ## Baseline Reconciliation Notes
 
-*No plans executed yet. Baselines will be established at Plan 1 `/close` and recorded here. Each entry follows this format:*
+*No code plans executed yet (prompt-0 and prompt-0.1 were docs-only). Test and static-analysis baselines will be established at Plan 1 `/close` and recorded here. Each entry follows this format:*
 
 *`**Plan N**: <what changed, why, delta, tolerance note>`*
 
@@ -46,6 +46,7 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 |---|---|---|---|---|---|---|
 | prompt-0 | `prompt-0` | Bootstrap commit — governance docs only, no code | N/A | N/A | N/A | 2026-06-28 |
 | prompt-0.1 | `prompt-0.1` | Post-execution cleanup — OR40-OR43, L24-L27, workflow fixes, repo hygiene | N/A | N/A | N/A | 2026-06-28 |
+| prompt-0.2 | `prompt-0.2` | Environment + doc drift cleanup — OR44-OR45, L28-L29, venv setup, ruff config fix | N/A | 0 | N/A | 2026-06-28 |
 
 *Plans 1–4 rows will be added here at each `/close`.*
 
@@ -95,7 +96,7 @@ The following open questions from `project-vision-Rev5.md` remain unresolved. Pl
 - **Architecture and operational rules** → `AGENTS.md` (always-on; every file edit must comply)
 - **Static process guide, plan template, Round Table process** → `AI_HANDOFF.md`
 - **Canonical vision, 14 principles, success criteria, open questions** → `project-vision-Rev5.md`
-- **Known failure patterns** → `LANDMINES.md` (append-only; L1–L23 inherited from sovereign-ai predecessor)
+- **Known failure patterns** → `LANDMINES.md` (append-only; L1–L9, L11, L12, L17 inherited from sovereign-ai predecessor; L24+ SovereignAI-specific)
 - **Architectural decisions record** → `DECISIONS.md`
 - **Deferred items register** → `DEBT.md`
 - **Opening workflow** → `.devin/workflows/open.md`
