@@ -100,7 +100,7 @@ def test_icapability_index_registered() -> None:
     """Verify that ICapabilityIndex is registered and returns the same graph instance."""
     container = build_container()
     graph = container.retrieve(CapabilityGraph)
-    index = container.retrieve(ICapabilityIndex)
+    index = container.retrieve(ICapabilityIndex)  # type: ignore[type-abstract]
     assert index is graph  # Same instance registered against both types
 
 

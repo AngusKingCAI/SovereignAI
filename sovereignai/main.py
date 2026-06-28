@@ -48,7 +48,7 @@ def build_container() -> DIContainer:
     )
     graph = CapabilityGraph(trace=trace)
     container.register_singleton(CapabilityGraph, graph)
-    container.register_singleton(ICapabilityIndex, graph)
+    container.register_singleton(ICapabilityIndex, graph)  # type: ignore[type-abstract]
 
     return container
 

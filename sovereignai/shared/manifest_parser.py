@@ -55,6 +55,11 @@ def parse_manifest(path: Path) -> ComponentManifest:
 
     # Wrap as ComponentId (NewType — requires explicit construction per Finding 4)
     from sovereignai.shared.types import ComponentId
+    # Type narrowing: mypy knows these are str after the all() check above
+    assert isinstance(component_id, str)
+    assert isinstance(version, str)
+    assert isinstance(author, str)
+    assert isinstance(content_hash, str)
     component_id = ComponentId(component_id)
 
     # Parse provides[] and requires[]
@@ -130,7 +135,10 @@ def _parse_priority(raw: object, entry_index: int, path: Path) -> int:
         ManifestParseError: If the value cannot be converted to int.
     """
     try:
-        return int(raw)
+        # Type narrowing: cast to int-compatible types for mypy
+        if not isinstance(raw, (int, str, bool)):
+            raise TypeError(f"Priority must be int or str, got {type(raw).__name__}")
+        return int(raw)  # type: ignore[arg-type]
     except (TypeError, ValueError) as exc:
         raise ManifestParseError(
             f"Manifest {path} entry {entry_index} has invalid priority "
