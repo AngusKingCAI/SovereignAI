@@ -1,0 +1,256 @@
+Depends on: prompt-5 (Scan 5)
+Vision principles: P8 (UIs separate processes), P4 (local-first), P9 (observability)
+Open questions resolved: none
+
+---
+
+## Adjudication Log (Rev3 → Rev4)
+
+Per GR4. 6 panelist responses. 17 accepted findings. Key: verified against actual Plan 1-4 code on origin/main.
+
+### Finding 2 — SSE depends on TraceEmitter features that don't exist (Kimi C2 — CRITICAL)
+**Action**: ACCEPTED. SSE endpoint redesigned: use `TraceEmitter.get_events()` polling (100ms interval) instead of non-existent `subscribe()` callback. No ring buffer replay — on reconnect, client gets current events from `get_events()` (up to 10000 stored). Sequence IDs still emitted but for client-side dedup only, not server-side replay.
+
+### Finding 5 — Plan 8 `event: task_state` has no server emission mechanism (Qwen #4 — CRITICAL)
+**Action**: ACCEPTED. SSE endpoint also subscribes to EventBus `TASK_STATE_CHANNEL` and forwards `TaskStateChanged` events as `event: task_state` SSE messages.
+
+### Finding 6 — `event: gap` requires `addEventListener` (Qwen #6 — CRITICAL)
+**Action**: ACCEPTED. Plan 8 S2 must specify `eventSource.addEventListener('gap', handleGap)` and `eventSource.addEventListener('task_state', handleTaskState)`.
+
+### Finding 7 — `/api/capabilities` can't enumerate (Kimi H1 — HIGH)
+**Action**: ACCEPTED. Use `ICapabilityIndex.list_all_components()` (available via container) instead of `CapabilityAPI.query_capabilities()`.
+
+### Finding 9 — `POST /api/tasks` DTO too thin (Kimi H4 — HIGH)
+**Action**: ACCEPTED. DTO expanded to include `category`, `capability_name`, `payload`.
+
+### Finding 11 — Multi-worker breaks in-memory state (MiniMax Issue 1 — HIGH)
+**Action**: ACCEPTED. Pin `--workers 1` in run commands. Add startup check.
+
+### Verdict: All CRITICAL/HIGH issues fixed.
+
+---
+
+## Adjudication Log (Rev2 → Rev3)
+
+Per GR4. 6 panelist responses received. The following Rev2 issues were accepted and fixed.
+
+### Finding 5 — SSE backpressure silent data loss (4 panelists — convergent)
+**Severity**: HIGH (P9 violation)
+**Action**: ACCEPTED. SSE endpoint now emits `id: <seq>` per event. When events are dropped from the queue, sends a special `event: gap\ndata: {"dropped": N}\n\n` marker. Client renders a visual separator.
+
+### Finding 7 — `secure=False` hardcoded (Kimi M1, DeepSeek L12, MiniMax B3)
+**Severity**: HIGH
+**Action**: ACCEPTED. Changed to `secure=True`. Modern browsers accept Secure cookies on localhost per RFC 6265bis.
+
+### Finding 8 — CORS configuration is dead code (Architect self-identified)
+**Severity**: MEDIUM
+**Action**: ACCEPTED. CORS configuration removed — frontend is same-origin (served by the same FastAPI app). Document that cross-origin requires adding CORS config in a future plan.
+
+### Finding 13 — FastAPI dependency weight (4 panelists)
+**Severity**: MEDIUM
+**Action**: ACCEPTED as documented decision. FastAPI retained for v1. DEBT entry added noting dependency cost and migration path to Starlette.
+
+### Finding 16 — SSE needs event IDs for reconnect resync (MiniMax A2)
+**Severity**: HIGH
+**Action**: ACCEPTED. Each SSE event now includes `id: <monotonic_seq>`. On reconnect, server reads `Last-Event-ID` header and replays from TraceEmitter's ring buffer (up to 1000 events).
+
+### Finding 21 — DTO strips input/output schemas (MiniMax A5, Kimi)
+**Severity**: MEDIUM
+**Action**: ACCEPTED. `CapabilityResponseDTO` now includes `input_schema` and `output_schema` fields.
+
+### Verdict
+All HIGH/MEDIUM issues fixed. Plan 6 Rev3 is ready for execution.
+
+---
+
+## S0 — Opening
+
+S0.1 — Run `/open`. Verify prompt-5 tag exists on origin. Confirm working copy is clean and on `main`. If the workflow is missing or fails, STOP and report.
+
+S0.2 — Read `AGENTS.md` in full. Note: Landmines L1–L31 are inherited; new landmines start at L32.
+
+S0.3 — Add new rules the Architect specified for this plan to `AGENTS.md` and commit before any coding step:
+- **OR48**: The FastAPI web app runs as a separate process, not embedded in the core runtime. The web server imports from `sovereignai/` only via the public API surface (`CapabilityAPI`, protocols). It does not import core internals directly. Source: Plan 6.
+- **OR49**: SSE connections authenticate via standard HTTP session cookie. No query-parameter tokens are used for auth. Source: Plan 6 Rev 2.
+- **OR52**: Web-layer DTOs (in `web/schemas.py`) are the canonical HTTP contract. Core domain types are never returned directly from HTTP endpoints. Mapping functions convert between DTOs and core types. Source: Plan 6 Rev 2.
+
+Commit: `docs: add OR48-OR49, OR52 for prompt-6`
+
+---
+
+## Plan Body
+
+### S1 — Add runtime dependencies to txt/requirements.txt
+
+Append to `txt/requirements.txt`:
+```
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.9
+jinja2>=3.1.0
+```
+
+Run `.venv/Scripts/pip.exe install -e .[dev]` to refresh the local environment.
+Run `.venv/Scripts/pip-audit.exe --strict --requirement txt/requirements.txt` to verify no CVEs.
+
+### S2 — Create web/schemas.py (HTTP DTOs)
+
+Create `web/schemas.py` with Pydantic models that are the canonical HTTP contract:
+
+```python
+from pydantic import BaseModel
+from typing import Optional
+from uuid import UUID
+
+class CapabilityResponseDTO(BaseModel):
+    id: str
+    name: str
+    category: str
+    description: str
+    priority: int
+    input_schema: Optional[str] = None   # Per Finding 21: include schemas
+    output_schema: Optional[str] = None  # Per Finding 21: include schemas
+
+class TaskSubmitDTO(BaseModel):
+    category: str
+    capability_name: str
+    payload: str
+
+class TaskResponseDTO(BaseModel):
+    task_id: str
+    state: str
+    result: Optional[str] = None
+    error: Optional[str] = None
+
+class TraceEventDTO(BaseModel):
+    sequence: int          # Per Finding 16: monotonic sequence for SSE replay
+    timestamp: str
+    level: str
+    component: str
+    message: str
+    trace_id: str
+    task_id: Optional[str] = None  # Per Finding 19: correlate traces with tasks
+```
+
+Per OR52: These DTOs are independent of core types. Mapping functions convert between DTOs and core types. A refactor of `Task` in the core does not break the HTTP contract.
+
+### S3 — Create web/main.py (FastAPI application)
+
+Create `web/main.py` with the following structure:
+
+1. **FastAPI app instance** (per Finding 8: no CORS configuration — frontend is same-origin, served by the same app. Cross-origin requires adding CORS in a future plan).
+2. **Static files**: Mount `web/static/` at `/static`.
+3. **Templates**: Jinja2 templates from `web/templates/`.
+4. **Startup event**: Call `build_container()` from `sovereignai.main`, store the container in `app.state.container`.
+5. **Shutdown event**: Clean up (no-op for now; future plans may close connections).
+6. **HTTP endpoints**:
+   - `GET /` → render `index.html` template.
+   - `GET /api/capabilities` → **Per Finding 7 (Rev4)**: retrieve `ICapabilityIndex` from container, call `list_all_components()`, map to `CapabilityResponseDTO` list, return JSON.
+   - `POST /api/tasks` → **Per Finding 9 (Rev4)**: parse expanded `TaskSubmitDTO` (category, capability_name, payload), retrieve `CapabilityAPI`, call `submit_task(token, category, capability_name, payload)`, map result to `TaskResponseDTO`, return JSON.
+   - `GET /api/tasks/{task_id}` → retrieve `CapabilityAPI`, call `get_task_state()`, map to `TaskResponseDTO`, return JSON.
+7. **SSE endpoint** `GET /api/traces/stream`:
+   - Set headers: `Content-Type: text/event-stream`, `Cache-Control: no-cache`, `Connection: keep-alive`, `X-Accel-Buffering: no` (for nginx compatibility per Finding 11).
+   - **Per Finding 2 (Rev4)**: TraceEmitter does NOT have a `subscribe()` method or ring buffer. SSE endpoint uses `get_events()` polling: every 100ms, call `trace.get_events()`, compare with last-seen timestamp, emit new events as SSE data. Each event includes `id: <monotonic_seq>` for client-side dedup (NOT for server-side replay — TraceEmitter doesn't support that).
+   - **Per Finding 5 (Rev4)**: SSE endpoint also subscribes to EventBus `TASK_STATE_CHANNEL` and forwards `TaskStateChanged` events as `event: task_state\ndata: <json>\n\n`.
+   - Auth: standard HTTP session cookie (same as all other endpoints).
+   - **Per Finding 5**: Backpressure: maintain a max queue of 1000 events per client. When events are dropped, send `event: gap\ndata: {"dropped": N}\n\n` marker so client can display a visual separator.
+   - **Per Finding 12**: Add 60-second timeout on the SSE queue. If no consumption in 60s, close connection (browser auto-reconnects).
+
+Per OR48: `web/main.py` imports only `CapabilityAPI`, `AuthMiddleware`, `TraceEmitter`, `ICapabilityIndex`, `EventBus`, and `build_container` from `sovereignai/`. No imports from `sovereignai/shared/` internals.
+
+**Per Finding 11 (Rev4)**: Run command MUST be `uvicorn web.main:app --host 127.0.0.1 --port 8000 --workers 1`. Multi-worker is NOT supported (in-memory auth + TraceEmitter state). Add startup assertion: `if os.environ.get('UVICORN_WORKERS', '1') != '1': raise RuntimeError('SovereignAI requires --workers 1 (in-memory state)')`.
+
+### S4 — Create web/templates/index.html
+
+Create `web/templates/index.html`:
+- `<!DOCTYPE html>` with `<meta charset="UTF-8">` and `<meta name="viewport" content="width=device-width, initial-scale=1.0">`.
+- Title: "SovereignAI".
+- Link to `styles.css`.
+- Body structure:
+  - `#app-header`: Title bar with "SovereignAI" and connection status indicator.
+  - `#main-content`: Default view showing capability list from `/api/capabilities`.
+  - `#task-section`: Input field + submit button for task submission.
+  - `#task-status`: Displays current task state (polling `/api/tasks/{id}`).
+  - `#log-drawer`: Collapsible bottom panel for trace events from SSE.
+- Script tag loading `app.js`.
+
+### S5 — Create web/static/app.js
+
+Create `web/static/app.js` (vanilla JavaScript, no frameworks):
+
+1. **On DOM load**: Fetch `/api/capabilities` and render as a bulleted list in `#main-content`.
+2. **SSE connection**:
+   - Create `EventSource('/api/traces/stream')`.
+   - On `open`: update connection status to "Connected".
+   - On `message`: parse JSON, append to `#log-drawer` with timestamp, level, component, message.
+   - On `error`: update status to "Reconnecting...", `EventSource` auto-reconnects after default browser backoff.
+   - Max reconnect: rely on browser's built-in exponential backoff (no manual counter needed).
+3. **Task submission**:
+   - On form submit: POST to `/api/tasks` with JSON body.
+   - On success: start polling `/api/tasks/{task_id}` every 1s.
+   - On state change: update `#task-status` text.
+   - On COMPLETE or FAILED: stop polling, display result or error.
+4. **Log drawer**:
+   - Toggle button shows/hides the drawer.
+   - Each trace entry is a `<div>` with CSS class per level (error, warn, info, debug, trace).
+
+### S6 — Create web/static/styles.css
+
+Create `web/static/styles.css`:
+- Body: sans-serif font, dark theme (vision P8 implies a developer-focused UI).
+- `#app-header`: fixed top, full width, 50px height, flex layout.
+- `#main-content`: padding-top 60px, max-width 1200px, centered.
+- `#log-drawer`: fixed bottom, full width, 200px height, collapsible (display toggle), overflow-y scroll, monospace font for trace entries.
+- `.trace-error`: red text. `.trace-warn`: yellow. `.trace-info`: white. `.trace-debug`: gray. `.trace-trace`: dark gray.
+- Responsive: min-width 320px support.
+
+### S7 — Tests
+
+Create `tests/test_web_server.py`:
+1. `test_get_index_returns_200`: Use FastAPI `TestClient` to `GET /`, assert 200, assert body contains "SovereignAI".
+2. `test_get_capabilities_returns_json_list`: Mock `CapabilityAPI.query_capabilities()` to return a list with one capability, assert JSON structure matches `CapabilityResponseDTO`.
+3. `test_post_task_returns_task_id`: Mock `CapabilityAPI.submit_task()` to return a task ID, assert response matches `TaskResponseDTO`.
+4. `test_get_task_state_returns_task`: Mock `CapabilityAPI.get_task_state()` to return a `Task`, assert JSON structure matches `TaskResponseDTO`.
+5. `test_sse_receives_trace_events`: Use `TestClient` to `GET /api/traces/stream`, mock `TraceEmitter` to emit an event, assert SSE data format (`data: <json>`).
+6. `test_sse_auth_required`: Request `/api/traces/stream` without session cookie, assert 401.
+7. `test_dto_mapping_isolated`: Verify that changing a core `Task` field name does not break the HTTP response format.
+
+Use `unittest.mock` to patch container retrieval so tests don't need a real DI container.
+
+---
+
+## STOP Conditions
+
+- If `fastapi` or `uvicorn` fail to install, STOP and report.
+- If SSE test hangs for more than 5 seconds, STOP (indicates async event loop issue).
+- If any test fails, STOP.
+- If `web/main.py` imports anything from `sovereignai/shared/` directly (violating OR48), STOP.
+- If a core type is returned directly from an endpoint (violating OR52), STOP.
+
+---
+
+## Files WILL Create
+
+- `web/main.py`
+- `web/schemas.py`
+- `web/templates/index.html`
+- `web/static/app.js`
+- `web/static/styles.css`
+- `tests/test_web_server.py`
+
+## Files WILL Edit
+
+- `txt/requirements.txt` (append 4 lines)
+
+## Files WILL NOT Edit
+
+- Any file in `sovereignai/shared/` (core is sacred per P1)
+- `sovereignai/main.py` (no `get_container()` needed — startup event calls `build_container()` directly)
+- `.devin/workflows/*.md` (workflow changes require separate plan)
+- `AGENTS.md` (except S0.3 rule addition)
+
+---
+
+## Closing
+
+Run `/close`. Tag: `prompt-6`. Update CHANGELOG, PLANS.md.
