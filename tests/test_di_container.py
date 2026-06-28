@@ -103,30 +103,30 @@ def test_di_container_thread_safety(container: DIContainer) -> None:
     """Verify that concurrent registration and retrieval on different types do not cause races."""
     # Pre-register one interface
     container.register_singleton(DummyInterface, DummyInterface(value=42))
-    
+
     errors: list[Exception] = []
     lock = threading.Lock()
-    
+
     def register_and_retrieve() -> None:
         """Register InterfaceB/InterfaceC while retrieving InterfaceA/InterfaceB/InterfaceC."""
         try:
             # Register InterfaceB and InterfaceC
             container.register_factory(AnotherInterface, lambda: AnotherInterface(value="test"))
-            
+
             # Retrieve all interfaces
             container.retrieve(DummyInterface)
             container.retrieve(AnotherInterface)
         except Exception as e:
             with lock:
                 errors.append(e)
-    
+
     # Spawn threads
     threads = [threading.Thread(target=register_and_retrieve) for _ in range(10)]
     for t in threads:
         t.start()
     for t in threads:
         t.join()
-    
+
     # Assert no errors and all interfaces are retrievable
     assert len(errors) == 0, f"Thread-safety test failed with errors: {errors}"
     assert isinstance(container.retrieve(DummyInterface), DummyInterface)
