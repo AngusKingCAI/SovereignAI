@@ -65,6 +65,9 @@ WEB_MAIN_ALLOWED_IMPORTS = {
     "sovereignai.shared.types.TASK_STATE_CHANNEL",
     "sovereignai.shared.types.TaskStateChanged",
     "sovereignai.shared.types.TraceLevel",
+    # ITaskStateQuery is a protocol needed for task state queries (web/main.py lines 280, 376)
+    "sovereignai.shared.task_state_machine",
+    "sovereignai.shared.task_state_machine.ITaskStateQuery",
 }
 
 # Package-level imports forbidden in UI directories only.
