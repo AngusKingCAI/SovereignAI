@@ -1,0 +1,16 @@
+component_id = "WebSearchSkill"
+version = "0.5.0"
+author = "sovereignai-team"
+content_hash = "sha256:example-websearch-hash"
+
+[[provides]]
+category = "tool"
+name = "websearch"
+version = "1.0.0"
+priority = 5
+
+[[requires]]
+category = "model_inference"
+name = "text_generation"
+version = "1.0.0"
+priority = 0

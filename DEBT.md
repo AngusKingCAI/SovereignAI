@@ -76,6 +76,15 @@ Append-only. Each entry: deferred at, reason, trigger condition, target plan.
 
 ---
 
+## Deferred: Full Q8 versioning / capability negotiation (post-MVP)
+
+**Deferred at**: prompt-2 (per Plan 1-4 scope adjudication)
+**Reason**: Plan 2 ships Q8 MVP only — manifests declare semver versions, but no capability negotiation (resolving incompatible versions at startup) is implemented.
+**Trigger condition**: When a second adapter version is needed and two components declare incompatible versions of the same capability.
+**Target plan**: TBD (post Plan 2).
+
+---
+
 ## How to add a new deferred item
 
 At `/close` step 12, if an item is deferred, append an entry in the format above. When a deferred item is addressed, do not remove the entry — add a "Resolved at: prompt-{N}" line below it. DEBT.md is append-only.

@@ -85,3 +85,51 @@ def now_utc() -> datetime:
 def new_correlation_id() -> UUID:
     """Generate a fresh UUID4 for correlating events across components in the system."""
     return uuid4()
+
+
+# ============================================================================
+# Capability types (used by manifest parser + capability graph in Plan 2)
+# ============================================================================
+
+class CapabilityCategory(StrEnum):
+    """Category of capability a component provides.
+
+    Adapters declare model categories; skills declare tool categories;
+    memory backends declare storage categories. The capability graph
+    routes requests to components based on these declarations.
+    """
+    MODEL_INFERENCE = "model_inference"      # adapters: OpenAI, Ollama, etc.
+    TOOL = "tool"                            # skills: websearch, calculator
+    MEMORY = "memory"                        # backends: Postgres, Qdrant
+    COMMUNICATION = "communication"          # gateways: voice, IM
+
+
+@dataclass(frozen=True)
+class CapabilityDeclaration:
+    """Single capability a component claims to provide.
+
+    Frozen so declarations can be safely shared and compared across
+    threads. The priority field lets the routing engine (Plan 3)
+    pick the highest-priority provider when multiple components
+    satisfy the same capability.
+    """
+    category: CapabilityCategory
+    name: str                 # e.g. "text_generation", "websearch", "vector_search"
+    version: str              # semver, e.g. "1.0.0" (Q8 MVP — full negotiation deferred)
+    priority: int = 0         # higher = preferred; routing engine picks max
+
+
+@dataclass(frozen=True)
+class ComponentManifest:
+    """Parsed manifest declaring what a component provides and needs.
+
+    Read from a TOML file at startup (per Q1 resolution: static manifest
+    declaring capability categories plus a protocol/interface). Frozen
+    so manifests are immutable once loaded.
+    """
+    component_id: ComponentId  # e.g. "OpenAIAdapter", "WebSearchSkill"
+    version: str  # component semver, e.g. "1.2.0"
+    provides: tuple[CapabilityDeclaration, ...]  # capabilities this component offers
+    requires: tuple[CapabilityDeclaration, ...]  # capabilities needed (empty for Plan 2 MVP)
+    author: str                           # provenance — who built it (P14)
+    content_hash: str                     # provenance — verified on install (P14)

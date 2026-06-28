@@ -1,0 +1,16 @@
+component_id = "OpenAIAdapter"
+version = "1.0.0"
+author = "sovereignai-team"
+content_hash = "sha256:example-openai-hash"
+
+[[provides]]
+category = "model_inference"
+name = "text_generation"
+version = "1.0.0"
+priority = 10
+
+[[provides]]
+category = "model_inference"
+name = "embeddings"
+version = "1.0.0"
+priority = 10

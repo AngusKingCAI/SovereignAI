@@ -38,6 +38,18 @@ def build_container() -> DIContainer:
     bus = EventBus(trace=trace)
     container.register_singleton(EventBus, bus)
 
+    # 3. CapabilityGraph — depends on TraceEmitter, singleton (Plan 2)
+    # Registered against ICapabilityIndex protocol so Plan 4's Capability
+    # API can depend on the protocol, not the concrete class (per A5).
+    # Rev2: graph now accepts TraceEmitter per Finding 3 (P9 compliance).
+    from sovereignai.shared.capability_graph import (
+        CapabilityGraph,
+        ICapabilityIndex,
+    )
+    graph = CapabilityGraph(trace=trace)
+    container.register_singleton(CapabilityGraph, graph)
+    container.register_singleton(ICapabilityIndex, graph)
+
     return container
 
 

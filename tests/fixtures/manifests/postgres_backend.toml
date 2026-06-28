@@ -1,0 +1,16 @@
+component_id = "PostgresBackend"
+version = "1.2.0"
+author = "sovereignai-team"
+content_hash = "sha256:example-postgres-hash"
+
+[[provides]]
+category = "memory"
+name = "relational"
+version = "1.0.0"
+priority = 8
+
+[[provides]]
+category = "memory"
+name = "full_text"
+version = "1.0.0"
+priority = 6

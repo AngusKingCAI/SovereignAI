@@ -201,3 +201,39 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Test baseline established at 22 tests exactly as planned.
 - Static analysis baselines established for all tools.
 - Q9 (test strategy) and Q32 (DEBT format) resolved.
+
+## prompt-2 — Discovery layer (manifest parser, capability graph, ICapabilityIndex)
+
+**Date**: 2026-06-28
+**Plan file**: prompts/plan-2-Rev3.md
+
+**Files changed**:
+- sovereignai/shared/types.py (extended: CapabilityCategory, CapabilityDeclaration, ComponentManifest)
+- sovereignai/shared/manifest_parser.py (new — TOML parser, validates required fields per Finding 2; wraps ComponentId per Finding 4; priority validation per Rev3 Finding 12)
+- sovereignai/shared/capability_graph.py (new — in-memory index, ICapabilityIndex protocol; return type fixed per Finding 1; accepts TraceEmitter per Finding 3; @runtime_checkable added)
+- sovereignai/main.py (extended: registers CapabilityGraph against ICapabilityIndex; passes trace per Finding 3)
+- tests/fixtures/manifests/openai_adapter.toml (new — example fixture)
+- tests/fixtures/manifests/websearch_skill.toml (new — example fixture)
+- tests/fixtures/manifests/postgres_backend.toml (new — example fixture)
+- tests/test_manifest_parser.py (new — 8 tests; +2 vs expected per Findings 2 and 12)
+- tests/test_capability_graph.py (new — 6 tests)
+- tests/test_composition_root.py (extended — 3 new tests for graph wiring)
+- DEBT.md (added Q8 full versioning deferral)
+- PLANS.md (updated test baseline to 40 tests)
+
+**Results**:
+- Tests: 40 passed (6 event_bus + 6 trace_emitter + 6 di_container + 8 composition_root + 8 manifest_parser + 6 capability_graph)
+- Ruff: 0 errors
+- Mypy: 0 errors (file-scoped to Plan 2 .py files per OR47)
+- Bandit: 0 findings
+- pip-audit: 0 CVEs (no new runtime deps)
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- Q1 (adapter contract) resolved: TOML manifest declaring capability categories.
+- Q2 (skill discovery) resolved: directory scan at startup reads manifest.toml files.
+- Q8 (versioning MVP) resolved: semver on manifests; full negotiation deferred (DEBT).
+- ICapabilityIndex protocol shipped as locked named output (per A5). Plan 4 will import only this protocol.
+- No new runtime dependencies (uses stdlib tomllib).
+- All Rev2 and Rev3 Round Table findings addressed.

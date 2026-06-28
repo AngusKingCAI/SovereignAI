@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-28 (prompt-1)
+**Last updated**: 2026-06-28 (prompt-2)
 
 This document tracks the dynamic state of the SovereignAI project: baselines, completed prompts, and the next-5-prompt queue. It is the canonical source for test counts, static analysis baselines, and which prompt is currently active. The Executor updates this document at every `/close`. The Architect reads it at every session start. Do not duplicate content from this file into other documents — this is the SSOT for baselines and queue state.
 
@@ -10,11 +10,13 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 
 **Plan 1**: First code plan — established test baseline at 23 tests and static analysis baselines for all tools. Delta from expected: +1 test (di_container thread-safety test added per Finding 3).
 
+**Plan 2**: Discovery layer — test baseline updated to 40 tests. Delta from expected: +3 tests (manifest_parser has 8 tests vs expected 6; added test_parse_missing_capability_field_raises and test_parse_invalid_priority_raises per Findings 2 and 12).
+
 ---
 
 ## Test Baseline
 
-**Current baseline**: 23 tests (Plan 1 `/close`). Breakdown: 6 event_bus + 6 trace_emitter + 6 di_container + 5 composition_root.
+**Current baseline**: 40 tests (Plan 2 `/close`). Breakdown: 6 event_bus + 6 trace_emitter + 6 di_container + 8 composition_root + 8 manifest_parser + 6 capability_graph.
 
 **Tolerance**: ±5 tests (variance acceptable due to parameterised fixtures and environment variation)
 

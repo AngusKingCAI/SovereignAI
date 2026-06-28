@@ -7,6 +7,7 @@ from __future__ import annotations
 import subprocess
 
 from sovereignai.main import build_container
+from sovereignai.shared.capability_graph import CapabilityGraph, ICapabilityIndex
 from sovereignai.shared.container import DIContainer
 from sovereignai.shared.event_bus import EventBus
 from sovereignai.shared.trace_emitter import TraceEmitter
@@ -86,3 +87,26 @@ def test_main_smoke_test() -> None:
 
     assert result.returncode == 0
     assert "Composition root built successfully" in result.stdout
+
+
+def test_capability_graph_registered() -> None:
+    """Verify that CapabilityGraph is registered in the container and retrievable."""
+    container = build_container()
+    graph = container.retrieve(CapabilityGraph)
+    assert isinstance(graph, CapabilityGraph)
+
+
+def test_icapability_index_registered() -> None:
+    """Verify that ICapabilityIndex is registered and returns the same graph instance."""
+    container = build_container()
+    graph = container.retrieve(CapabilityGraph)
+    index = container.retrieve(ICapabilityIndex)
+    assert index is graph  # Same instance registered against both types
+
+
+def test_capability_graph_is_singleton() -> None:
+    """Verify that retrieving CapabilityGraph twice returns the same instance."""
+    container = build_container()
+    first = container.retrieve(CapabilityGraph)
+    second = container.retrieve(CapabilityGraph)
+    assert first is second
