@@ -187,6 +187,8 @@ OR31. When the Executor discovers a plan step is impossible as written (missing 
 
 > **Dropped**: OR38 (decade cleanup / deleting old plan files) was reviewed and explicitly dropped for this project — all plan files are kept forever, no deletion. Do not renumber a future rule into this slot; OR38 is permanently retired.
 
+OR39. Runtime dependencies live in `txt/requirements.txt` only. When a plan introduces a new runtime dependency (a package imported by production code in `sovereignai/`, `web/`, `cli/`, `tui/`, or `phone/`), the Executor appends the package name with version pin (e.g., `pydantic>=2.0`) to `txt/requirements.txt` at the plan step that introduces the import. `pyproject.toml` declares `dynamic = ["dependencies"]` and reads from `txt/requirements.txt` via `[tool.setuptools.dynamic]` — it must NOT also list runtime deps under `[project.dependencies]` (SSOT; duplicate lists drift). Dev-only tools (pytest, ruff, mypy, bandit, vulture, detect-secrets, pre-commit) live in `pyproject.toml`'s `[project.optional-dependencies] dev = [...]` — they never go in `txt/requirements.txt` because they are not installed in a production environment. After any change to `txt/requirements.txt`, run `pip install -e .[dev]` to refresh the local environment, then re-run `pip-audit --strict --requirement txt/requirements.txt` to verify the new runtime dependency has no known CVEs (scans the requirements file only — dev-tool CVEs in the environment are not in scope for this check). (Source: Plan 0 — Architect-proposed.)
+
 ---
 
 ## Landmines that have graduated to rules
