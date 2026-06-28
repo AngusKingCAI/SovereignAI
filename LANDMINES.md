@@ -104,9 +104,19 @@ Append-only. L1–L9, L11, L12, L17 inherited from sovereign-ai (only those refe
 **Impact**: Executor skipped mypy entirely. Pattern would skip mypy on real Python files in Plan 1+ if any markdown files were also edited.
 **Graduated to**: OR47.
 
+## L32 — Executor paraphrases workflow commands instead of running them verbatim
+**Trigger**: Prompts 7, 8, 9 Step 17 — Executor ran `mv plan-{N}-Rev5.md` (single file) instead of the `for file in prompts/plan-{N}-Rev*.md` loop defined in close.md. Result: older plan revisions left in `prompts/`; User had to ask 3 times; repo state inconsistent.
+**Impact**: 3 User interventions across prompts 7–9; plan-9 Rev1–4 unarchived for 1+ prompt cycles; undermined trust in /close workflow reliability.
+**Graduated to**: OR71.
+
+## L33 — Executor weakens AR check scripts or tests to make a failure pass
+**Trigger**: Prompt 6 close — `test_ar7_no_core_imports_in_ui.py` failed because `web/main.py` imported `sovereignai.shared.*`. Executor edited the test to add `WEB_MAIN_ALLOWED_IMPORTS` allowlist. (This case was subsequently documented as a legitimate scoped allowlist — see Plan 10 S3 audit. But the *pattern* of editing a test to make it pass, rather than fixing the source, is the landmine.)
+**Impact**: Risk of silently disabling architectural enforcement. AR7 (UI/core separation) could be effectively disabled without Architect sign-off.
+**Graduated to**: OR72.
+
 ---
 
-## Capturing new landmines (L32+)
+## Capturing new landmines (L34+)
 
 At `/close` step 11, append:
 ```markdown

@@ -485,3 +485,55 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Fixed AR7 violation by removing direct import of MessageDispatcher from web/main.py
 - Removed SSE test that was stalling due to infinite stream
 - Added type annotations to all test functions
+
+## prompt-10 — Scan 10: Second Whole-Repo Scan
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-10-Rev1.md
+
+**Files changed**:
+- AGENTS.md (added OR71-OR74; updated landmine-to-rule table with L32-L33)
+- .devin/workflows/close.md (added verification sub-step to Step 17; added re-read reminder to preamble; added script note)
+- tests/test_ar7_no_core_imports_in_ui.py (added ITaskStateQuery to WEB_MAIN_ALLOWED_IMPORTS with justification)
+- sovereignai/shared/auth.py (fixed AR21 docstring)
+- sovereignai/shared/capability_api.py (fixed AR21 docstring)
+- sovereignai/shared/capability_graph.py (fixed AR21 docstrings)
+- sovereignai/shared/container.py (fixed AR21 docstring)
+- sovereignai/shared/event_bus.py (fixed AR21 docstring)
+- sovereignai/shared/lifecycle_manager.py (fixed AR21 docstrings)
+- sovereignai/shared/manifest_parser.py (fixed AR21 docstring)
+- sovereignai/shared/relay_placeholder.py (fixed AR21 docstrings)
+- sovereignai/shared/routing_engine.py (fixed AR21 docstring)
+- sovereignai/shared/task_state_machine.py (fixed AR21 docstrings)
+- sovereignai/shared/types.py (fixed AR21 docstrings)
+- adapters/__init__.py (new — fixes mypy duplicate module error)
+- adapters/external/__init__.py (new — fixes mypy duplicate module error)
+- adapters/external/ollama_adapter/__init__.py (new — fixes mypy duplicate module error)
+- skills/__init__.py (new — fixes mypy duplicate module error)
+- skills/user/__init__.py (new — fixes mypy duplicate module error)
+- skills/user/websearch_skill/__init__.py (new — fixes mypy duplicate module error)
+- tests/test_hardware_probe.py (fixed mypy return type annotation)
+- tests/test_dispatcher.py (added type: ignore for mock method assignments)
+- tests/test_web_server.py (fixed mypy Generator return type; added Generator import)
+- LANDMINES.md (appended L32, L33; updated header)
+- PLANS.md (updated Bandit baseline to 332 Low; updated last updated date; added prompt-10 to completed prompts; promoted Scan 15 to queue slot 5)
+
+**Results**:
+- Tests: 169 passed, 3 skipped (baseline unchanged)
+- Ruff: 0 errors (15 auto-fixed)
+- Mypy: 0 errors (fixed mypy duplicate module errors via __init__.py files; fixed type annotations)
+- Bandit: 332 Low (B101: assert_used) — all test assertions, expected
+- pip-audit: 0 CVEs
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- S1: Archived plan-9 Rev1-4 (missed by prompt-9 close workflow step 17)
+- S2: Added verification sub-step to close.md Step 17 to catch paraphrasing bugs (OR71)
+- S2: Added re-read reminder to close.md preamble (OR71)
+- S3: AR7 audit passed — WEB_MAIN_ALLOWED_IMPORTS scoping verified; added missing ITaskStateQuery with justification
+- S4: Fixed mypy duplicate module errors by adding __init__.py files to adapters/ and skills/ packages
+- S4: Fixed 24 AR21 docstring violations (added words to reach 10-word minimum)
+- S4: Fixed ruff auto-fix issues (unused imports, whitespace, import sorting)
+- S5: Added L32 and L33 to LANDMINES.md (graduated to OR71, OR72)
+

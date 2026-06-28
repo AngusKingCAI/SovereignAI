@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-29 (prompt-9)
+**Last updated**: 2026-06-29 (prompt-10)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -45,7 +45,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 |---|---|---|---|
 | **Ruff** | 0 errors | Plan 1 | D100/D104 excluded per pyproject.toml |
 | **Mypy (file-scoped)** | 0 errors | Plan 1 | File-scoped per OR2 |
-| **Bandit** | 49 Low (B101) | Plan 1 | All test assertions; filter `>> Issue: [B` per OR4 |
+| **Bandit** | 332 Low (B101) | Plan 10 | All test assertions; filter `>> Issue: [B` per OR4 |
 | **pip-audit** | 0 CVEs | Plan 1 | Scans txt/requirements.txt only per OR39 (file empty — no runtime deps) |
 | **Vulture** | 0 findings | Plan 1 | High-confidence (≥80) only |
 | **detect-secrets** | pass | Plan 1 | Baseline established prompt-0 |
@@ -72,12 +72,13 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-7 | `prompt-7` | MessageDispatcher, WebSearchSkill, OllamaAdapter, HardwareProbe | 149 | 0 | 0 | 2026-06-29 |
 | prompt-8 | `prompt-8` | 9-panel sidebar UI with observability | 158 | 0 | 0 | 2026-06-29 |
 | prompt-9 | `prompt-9` | Web Authentication Implementation | 169 | 0 | 0 | 2026-06-29 |
+| prompt-10 | `prompt-10` | Scan 10 — mechanical verification scan | 169 | 0 | 0 | 2026-06-29 |
 
 ---
 
 ## Active Plan
 
-**Scan 10** — Mechanical verification scan
+**None** — awaiting next plan
 
 ---
 
@@ -89,7 +90,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | 2 | Plan 12 | Versioning — semver, negotiator, compatibility matrix | Plan 11 | ⏳ Pending |
 | 3 | Plan 13 | Test framework — conformance, contract, property-based tests | Plan 12 | ⏳ Pending |
 | 4 | Plan 14 | Education department — Teacher worker, self-correction skill | Plan 13 | ⏳ Pending |
-| 5 | TBD | TBD | TBD | ⏳ Pending |
+| 5 | Scan 15 | Third whole-repo scan | Plan 14 | ⏳ Pending |
 
 ---
 
