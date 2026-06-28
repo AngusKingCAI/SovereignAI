@@ -20,10 +20,10 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from starlette.responses import StreamingResponse
+from starlette.responses import RedirectResponse, StreamingResponse
 
 from sovereignai.main import build_container
 from sovereignai.orchestrator.dispatcher import MessageDispatcher
@@ -69,6 +69,27 @@ app.mount("/static", StaticFiles(directory="web/static"), name="static")
 templates = Jinja2Templates(directory="web/templates")
 
 
+@app.middleware("http")
+async def first_run_redirect(request: Request, call_next):
+    """Redirect to registration page on first run when no users exist.
+
+    API paths return 401 instead of redirect to avoid JSON parsing errors.
+    Static files, auth endpoints, and login/register pages are always allowed.
+    """
+    path = request.url.path
+    if path.startswith("/static/") or path in ("/login", "/register") or path.startswith("/api/auth/"):
+        return await call_next(request)
+
+    container: Any = request.app.state.container
+    auth: Any = container.retrieve(AuthMiddleware)
+    if len(auth._password_hashes) == 0:
+        if path.startswith("/api/"):
+            raise HTTPException(status_code=401, detail="No user registered — complete first-run setup")
+        return RedirectResponse(url="/register")
+
+    return await call_next(request)
+
+
 def get_session_token(request: Request) -> str:
     """Extract the session token from the HTTP cookie for authentication.
 
@@ -84,10 +105,34 @@ def get_session_token(request: Request) -> str:
     Raises:
         HTTPException: If no session cookie is present.
     """
-    token = request.cookies.get("session")
+    token = request.cookies.get("session_id")
     if not token:
         raise HTTPException(status_code=401, detail="No session cookie")
     return token
+
+
+async def get_current_user(request: Request) -> Any:
+    """Validate the session cookie and return the authenticated user.
+
+    Args:
+        request: The FastAPI request object.
+
+    Returns:
+        The authenticated user object.
+
+    Raises:
+        HTTPException: If session is invalid or expired.
+    """
+    session_id = request.cookies.get("session_id")
+    if not session_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    container: Any = request.app.state.container
+    auth: Any = container.retrieve(AuthMiddleware)
+    try:
+        user = auth.validate(session_id)
+    except Exception as exc:
+        raise HTTPException(status_code=401, detail="Invalid or expired session") from exc
+    return user
 
 
 @app.get("/")
@@ -96,7 +141,81 @@ async def get_index(request: Request) -> Response:
     return templates.TemplateResponse(request, "index.html")
 
 
-@app.get("/api/capabilities")
+@app.post("/api/auth/login")
+async def login(request: Request, response: Response) -> dict:
+    """Validate credentials and set session cookie."""
+    data = await request.json()
+    container: Any = request.app.state.container
+    auth: Any = container.retrieve(AuthMiddleware)
+    try:
+        session = auth.login(data["username"], data["password"])
+        response.set_cookie(
+            key="session_id",
+            value=session.token,
+            httponly=True,
+            secure=True,
+            samesite="lax",
+            max_age=86400,
+        )
+        return {"status": "authenticated"}
+    except Exception as exc:
+        raise HTTPException(status_code=401, detail="Invalid credentials") from exc
+
+
+@app.post("/api/auth/logout")
+async def logout(response: Response) -> dict:
+    """Clear session cookie."""
+    response.delete_cookie(key="session_id")
+    return {"status": "logged_out"}
+
+
+@app.post("/api/auth/register")
+async def register(request: Request) -> dict:
+    """First-run registration. Only allowed when no users exist."""
+    data = await request.json()
+    container: Any = request.app.state.container
+    auth: Any = container.retrieve(AuthMiddleware)
+    if len(auth._password_hashes) > 0:
+        raise HTTPException(status_code=403, detail="Registration closed — user already exists")
+    try:
+        auth.register_user(data["username"], data["password"])
+    except ValueError as exc:
+        raise HTTPException(status_code=403, detail="Registration closed — user already exists") from exc
+    return {"status": "created"}
+
+
+@app.get("/login")
+async def login_page(request: Request) -> Response:
+    """Render the login page."""
+    return templates.TemplateResponse(request, "login.html")
+
+
+@app.get("/register")
+async def register_page(request: Request) -> Response:
+    """Render the registration page. Only accessible when no users exist."""
+    container: Any = request.app.state.container
+    auth: Any = container.retrieve(AuthMiddleware)
+    if len(auth._password_hashes) > 0:
+        return RedirectResponse(url="/login")
+    return templates.TemplateResponse(request, "register.html")
+
+
+@app.get("/api/auth/status")
+async def auth_status(request: Request) -> dict:
+    """Check if session is valid. Used by SSE 401 handler in app.js."""
+    session_id = request.cookies.get("session_id")
+    if not session_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    container: Any = request.app.state.container
+    auth: Any = container.retrieve(AuthMiddleware)
+    try:
+        user = auth.validate(session_id)
+    except Exception as exc:
+        raise HTTPException(status_code=401, detail="Invalid or expired session") from exc
+    return {"username": user.username}
+
+
+@app.get("/api/capabilities", dependencies=[Depends(get_current_user)])
 async def get_capabilities(request: Request) -> list[CapabilityResponseDTO]:
     """Return all registered capabilities as a JSON list of capability response DTOs.
 
@@ -124,7 +243,7 @@ async def get_capabilities(request: Request) -> list[CapabilityResponseDTO]:
     return dtos
 
 
-@app.get("/api/workers")
+@app.get("/api/workers", dependencies=[Depends(get_current_user)])
 async def get_workers(request: Request) -> list[dict]:
     """Return all registered components from the capability graph.
 
@@ -145,7 +264,7 @@ async def get_workers(request: Request) -> list[dict]:
     ]
 
 
-@app.get("/api/tasks")
+@app.get("/api/tasks", dependencies=[Depends(get_current_user)])
 async def get_tasks(request: Request) -> list[TaskResponseDTO]:
     """Return all tasks from the task state machine.
 
@@ -155,7 +274,7 @@ async def get_tasks(request: Request) -> list[TaskResponseDTO]:
 
     container: Any = request.app.state.container
     task_state_query: Any = container.retrieve(ITaskStateQuery)  # type: ignore[type-abstract]
-    tasks = task_state_query.list_all_tasks()
+    tasks = task_state_query.list_tasks()
 
     return [
         TaskResponseDTO(
@@ -168,7 +287,7 @@ async def get_tasks(request: Request) -> list[TaskResponseDTO]:
     ]
 
 
-@app.post("/api/tasks")
+@app.post("/api/tasks", dependencies=[Depends(get_current_user)])
 async def post_task(
     request: Request,
     task_dto: TaskSubmitDTO,
@@ -209,7 +328,7 @@ async def post_task(
     )
 
 
-@app.get("/api/tasks/{task_id}")
+@app.get("/api/tasks/{task_id}", dependencies=[Depends(get_current_user)])
 async def get_task(request: Request, task_id: str) -> TaskResponseDTO:
     """Return the current state of a task by its ID.
 
@@ -238,7 +357,7 @@ async def get_task(request: Request, task_id: str) -> TaskResponseDTO:
     )
 
 
-@app.post("/api/dispatch")
+@app.post("/api/dispatch", dependencies=[Depends(get_current_user)])
 async def dispatch(request: Request) -> TaskResponseDTO:
     """Submit a natural language message to the MessageDispatcher.
 
@@ -274,7 +393,7 @@ async def dispatch(request: Request) -> TaskResponseDTO:
     )
 
 
-@app.get("/api/hardware")
+@app.get("/api/hardware", dependencies=[Depends(get_current_user)])
 async def get_hardware(request: Request) -> dict:
     """Return current hardware probe results.
 

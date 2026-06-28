@@ -4,7 +4,10 @@ let traces = [];
 let maxTraces = 1000;
 let eventSource = null;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Check auth status on page load
+    await checkAuthStatus();
+
     // Deep-link restoration
     const hash = location.hash.slice(1) || 'orchestrator';
     showPanel(hash);
@@ -21,9 +24,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Setup log drawer
     setupLogDrawer();
 
+    // Add logout button
+    addLogoutButton();
+
     // Load initial panel content
     loadPanelContent(hash);
 });
+
+async function checkAuthStatus() {
+    try {
+        const response = await fetch('/api/capabilities');
+        if (response.status === 401) {
+            const data = await response.json();
+            if (data.detail && data.detail.includes('No user registered')) {
+                window.location.href = '/register';
+            } else {
+                window.location.href = '/login';
+            }
+        }
+    } catch (error) {
+        console.error('Auth check failed:', error);
+    }
+}
 
 function showPanel(name) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -76,7 +98,17 @@ function loadPanelContent(panelName) {
 
 function loadWorkers() {
     fetch('/api/workers')
-        .then(response => response.json())
+        .then(response => {
+            if (response.status === 401) {
+                window.location.href = '/login';
+                throw new Error('Unauthorized');
+            }
+            if (response.status === 500) {
+                showToast('Server error — check Log drawer for details', 'error');
+                throw new Error('Server error');
+            }
+            return response.json();
+        })
         .then(data => {
             const list = document.getElementById('workers-list');
             list.innerHTML = '';
@@ -87,13 +119,26 @@ function loadWorkers() {
             });
         })
         .catch(error => {
-            console.error('Failed to fetch workers:', error);
+            if (error.message !== 'Unauthorized' && error.message !== 'Server error') {
+                console.error('Failed to fetch workers:', error);
+                showNetworkError();
+            }
         });
 }
 
 function loadTasks() {
     fetch('/api/tasks')
-        .then(response => response.json())
+        .then(response => {
+            if (response.status === 401) {
+                window.location.href = '/login';
+                throw new Error('Unauthorized');
+            }
+            if (response.status === 500) {
+                showToast('Server error — check Log drawer for details', 'error');
+                throw new Error('Server error');
+            }
+            return response.json();
+        })
         .then(data => {
             const list = document.getElementById('tasks-list');
             list.innerHTML = '';
@@ -104,13 +149,26 @@ function loadTasks() {
             });
         })
         .catch(error => {
-            console.error('Failed to fetch tasks:', error);
+            if (error.message !== 'Unauthorized' && error.message !== 'Server error') {
+                console.error('Failed to fetch tasks:', error);
+                showNetworkError();
+            }
         });
 }
 
 function loadSkills() {
     fetch('/api/capabilities')
-        .then(response => response.json())
+        .then(response => {
+            if (response.status === 401) {
+                window.location.href = '/login';
+                throw new Error('Unauthorized');
+            }
+            if (response.status === 500) {
+                showToast('Server error — check Log drawer for details', 'error');
+                throw new Error('Server error');
+            }
+            return response.json();
+        })
         .then(data => {
             const list = document.getElementById('skills-list');
             list.innerHTML = '';
@@ -121,13 +179,26 @@ function loadSkills() {
             });
         })
         .catch(error => {
-            console.error('Failed to fetch skills:', error);
+            if (error.message !== 'Unauthorized' && error.message !== 'Server error') {
+                console.error('Failed to fetch skills:', error);
+                showNetworkError();
+            }
         });
 }
 
 function loadAdapters() {
     fetch('/api/capabilities')
-        .then(response => response.json())
+        .then(response => {
+            if (response.status === 401) {
+                window.location.href = '/login';
+                throw new Error('Unauthorized');
+            }
+            if (response.status === 500) {
+                showToast('Server error — check Log drawer for details', 'error');
+                throw new Error('Server error');
+            }
+            return response.json();
+        })
         .then(data => {
             const list = document.getElementById('adapters-list');
             list.innerHTML = '';
@@ -138,23 +209,56 @@ function loadAdapters() {
             });
         })
         .catch(error => {
-            console.error('Failed to fetch adapters:', error);
+            if (error.message !== 'Unauthorized' && error.message !== 'Server error') {
+                console.error('Failed to fetch adapters:', error);
+                showNetworkError();
+            }
         });
 }
 
 function loadHardware() {
     fetch('/api/hardware')
-        .then(response => response.json())
+        .then(response => {
+            if (response.status === 401) {
+                window.location.href = '/login';
+                throw new Error('Unauthorized');
+            }
+            if (response.status === 500) {
+                showToast('Server error — check Log drawer for details', 'error');
+                throw new Error('Server error');
+            }
+            return response.json();
+        })
         .then(data => {
             const info = document.getElementById('hardware-info');
             info.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
         })
         .catch(error => {
-            console.error('Failed to fetch hardware info:', error);
+            if (error.message !== 'Unauthorized' && error.message !== 'Server error') {
+                console.error('Failed to fetch hardware info:', error);
+                showNetworkError();
+            }
         });
 }
 
-function setupSSE() {
+async function setupSSE() {
+    // Check auth before opening SSE connection
+    try {
+        const authResponse = await fetch('/api/capabilities');
+        if (authResponse.status === 401) {
+            const data = await authResponse.json();
+            if (data.detail && data.detail.includes('No user registered')) {
+                window.location.href = '/register';
+            } else {
+                window.location.href = '/login';
+            }
+            return;
+        }
+    } catch (error) {
+        console.error('Auth check failed before SSE:', error);
+        return;
+    }
+
     eventSource = new EventSource('/api/traces/stream');
     const logContent = document.getElementById('log-content');
 
@@ -203,16 +307,10 @@ function setupSSE() {
     });
 
     eventSource.addEventListener('error', async () => {
-        console.error('SSE error, checking auth status');
-        try {
-            const authResponse = await fetch('/api/auth/status');
-            if (authResponse.status === 401) {
-                eventSource.close();
-                window.location.href = '/login';
-            }
-        } catch (error) {
-            console.error('Failed to check auth status:', error);
-        }
+        console.error('SSE error, closing connection and checking auth');
+        eventSource.close();
+        eventSource = null;
+        await checkAuthStatus();
     });
 }
 
@@ -241,6 +339,20 @@ function setupChatForm() {
                 body: JSON.stringify({ message })
             });
 
+            if (response.status === 401) {
+                window.location.href = '/login';
+                return;
+            }
+
+            if (response.status === 500) {
+                showToast('Server error — check Log drawer for details', 'error');
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'chat-message error';
+                errorMessage.textContent = 'Server error — check Log drawer for details';
+                chatMessages.appendChild(errorMessage);
+                return;
+            }
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -252,12 +364,52 @@ function setupChatForm() {
             chatMessages.appendChild(assistantMessage);
         } catch (error) {
             console.error('Failed to dispatch message:', error);
+            showNetworkError();
             const errorMessage = document.createElement('div');
             errorMessage.className = 'chat-message error';
-            errorMessage.textContent = `Error: ${error.message}`;
+            errorMessage.textContent = 'Connection error — retrying...';
             chatMessages.appendChild(errorMessage);
         }
     });
+}
+
+function addLogoutButton() {
+    const sidebar = document.getElementById('sidebar');
+    const logoutButton = document.createElement('button');
+    logoutButton.id = 'logout-button';
+    logoutButton.textContent = 'Logout';
+    logoutButton.addEventListener('click', () => {
+        if (typeof Auth !== 'undefined' && Auth.logout) {
+            Auth.logout();
+        } else {
+            fetch('/api/auth/logout', { method: 'POST' })
+                .then(() => window.location.href = '/login')
+                .catch(err => console.error('Logout failed:', err));
+        }
+    });
+    sidebar.appendChild(logoutButton);
+}
+
+function showNetworkError() {
+    const overlay = document.getElementById('network-error-overlay');
+    overlay.classList.add('show');
+}
+
+function hideNetworkError() {
+    const overlay = document.getElementById('network-error-overlay');
+    overlay.classList.remove('show');
+}
+
+function showToast(message, type = 'error') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
 }
 
 function updateChatTaskState(data) {

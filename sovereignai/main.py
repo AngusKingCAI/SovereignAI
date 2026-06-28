@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from sovereignai.shared.container import DIContainer
 from sovereignai.shared.event_bus import EventBus
-from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
 
 
 def build_container() -> DIContainer:
