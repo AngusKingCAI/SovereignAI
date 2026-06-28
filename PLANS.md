@@ -8,13 +8,13 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 
 ## Baseline Reconciliation Notes
 
-**Plan 1**: First code plan — established test baseline at 22 tests and static analysis baselines for all tools. No delta from expected (22 tests exactly as planned).
+**Plan 1**: First code plan — established test baseline at 23 tests and static analysis baselines for all tools. Delta from expected: +1 test (di_container thread-safety test added per Finding 3).
 
 ---
 
 ## Test Baseline
 
-**Current baseline**: 22 tests (Plan 1 `/close`). Breakdown: 6 event_bus + 6 trace_emitter + 5 di_container + 5 composition_root.
+**Current baseline**: 23 tests (Plan 1 `/close`). Breakdown: 6 event_bus + 6 trace_emitter + 6 di_container + 5 composition_root.
 
 **Tolerance**: ±5 tests (variance acceptable due to parameterised fixtures and environment variation)
 

@@ -187,7 +187,7 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - PLANS.md (set test + static analysis baselines)
 
 **Results**:
-- Tests: 22 passed (6 event_bus + 6 trace_emitter + 6 di_container + 5 composition_root)
+- Tests: 23 passed (6 event_bus + 6 trace_emitter + 6 di_container + 5 composition_root)
 - Ruff: 0 errors
 - Mypy: 0 errors (file-scoped per OR2 — 5 source files checked with --explicit-package-bases)
 - Bandit: 49 Low (B101: assert_used) — all test assertions, expected

@@ -12,7 +12,6 @@ from collections.abc import Callable
 from threading import Lock
 
 from sovereignai.shared.trace_emitter import TraceEmitter
-
 from sovereignai.shared.types import (
     Channel,
     Event,
@@ -44,7 +43,7 @@ class EventBus:
         self._lock = Lock()
 
     def subscribe(self, channel: Channel, subscriber: Subscriber) -> None:
-        """Register a subscriber to receive events sent to a specific channel.
+        """Register a subscriber to receive events sent to a specific channel in the event bus.
 
         Multiple subscribers may register for the same channel; each
         receives every event published to that channel. Subscribers are
@@ -64,7 +63,7 @@ class EventBus:
         )
 
     def publish(self, event: Event) -> None:
-        """Send an event to all subscribers registered on its channel.
+        """Send an event to all subscribers registered on its channel synchronously.
 
         Subscribers are called synchronously in registration order. If a
         subscriber raises an exception, the bus catches it, logs at ERROR

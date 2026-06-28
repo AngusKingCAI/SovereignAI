@@ -19,7 +19,7 @@ from sovereignai.shared.trace_emitter import TraceEmitter
 
 
 def build_container() -> DIContainer:
-    """Create and populate the dependency injection container.
+    """Create and populate the dependency injection container with Plan 1 components.
 
     Wires components in topological order: TraceEmitter first (no deps),
     then EventBus (depends on TraceEmitter). Registers both as singletons

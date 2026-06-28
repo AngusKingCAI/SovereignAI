@@ -74,7 +74,7 @@ ComponentId = NewType("ComponentId", str)  # e.g. "EventBus", "TraceEmitter"
 # ============================================================================
 
 def now_utc() -> datetime:
-    """Return the current time in UTC with timezone awareness.
+    """Return the current time in UTC with timezone awareness to avoid naive datetime issues.
 
     Use this instead of datetime.now() or datetime.utcnow() — both are
     forbidden per OR20 (naive/aware datetime mixing caused L6).
@@ -83,5 +83,5 @@ def now_utc() -> datetime:
 
 
 def new_correlation_id() -> UUID:
-    """Generate a fresh UUID4 for correlating events across components."""
+    """Generate a fresh UUID4 for correlating events across components in the system."""
     return uuid4()

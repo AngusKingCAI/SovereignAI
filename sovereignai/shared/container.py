@@ -41,7 +41,7 @@ class DIContainer:
         self._lock = Lock()
 
     def register_singleton(self, interface: type[T], instance: T) -> None:
-        """Register a single instance that all callers will share.
+        """Register a single instance that all callers will share in the container registry.
 
         Use for long-lived components like the EventBus or TraceEmitter.
         Retrieving the same interface always returns the same instance.
@@ -56,7 +56,7 @@ class DIContainer:
     def register_factory(
         self, interface: type[T], factory: Callable[[], T]
     ) -> None:
-        """Register a factory that produces a fresh instance per call.
+        """Register a factory that produces a fresh instance per call in the container registry.
 
         Use for short-lived components like per-task Workers. Each
         retrieve() call invokes the factory and returns a new instance.
@@ -70,7 +70,7 @@ class DIContainer:
             self._factories[interface] = factory
 
     def retrieve(self, interface: type[T]) -> T:
-        """Get a registered instance or invoke the registered factory.
+        """Get a registered instance or invoke the registered factory from the container registry.
 
         Singletons take precedence: if both a singleton and a factory
         are registered for the same type, the singleton is returned.

@@ -52,7 +52,7 @@ class TraceEmitter:
         message: str,
         correlation_id: UUID | None = None,
     ) -> None:
-        """Record a single trace event from a named component.
+        """Record a single trace event from a named component into the in-memory log.
 
         Args:
             component: Name of the emitting component (e.g. "EventBus").
@@ -77,7 +77,7 @@ class TraceEmitter:
     def get_events(
         self, level: TraceLevel | None = None, component: str | None = None
     ) -> list[TraceEvent]:
-        """Return a filtered list of recorded trace events.
+        """Return a filtered list of recorded trace events from the in-memory log.
 
         Args:
             level: If provided, return only events at this level or above.
