@@ -154,8 +154,20 @@ STOP if tag not listed.
 **Step 17 — Archive completed plan files**
 ```
 mkdir -p prompts/completed
-mv prompts/plan-{N}*.md prompts/completed/ 2>/dev/null || true
-mv prompts/plan-{N}-brief.md prompts/completed/ 2>/dev/null || true
+# Move all revisions of the plan (Rev1, Rev2, etc.) to completed/
+for file in prompts/plan-{N}-Rev*.md; do
+  if [ -f "$file" ]; then
+    mv "$file" prompts/completed/
+  fi
+done
+# Move the base plan file if it exists
+if [ -f "prompts/plan-{N}.md" ]; then
+  mv prompts/plan-{N}.md prompts/completed/
+fi
+# Move the brief if it exists
+if [ -f "prompts/plan-{N}-brief.md" ]; then
+  mv prompts/plan-{N}-brief.md prompts/completed/
+fi
 ```
 
 **Step 18 — Commit docs** (NOT the execution log — that's committed separately)
