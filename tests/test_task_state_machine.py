@@ -8,15 +8,14 @@ from sovereignai.shared.event_bus import EventBus
 from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
+    TASK_STATE_CHANNEL,
     CapabilityCategory,
     CapabilityDeclaration,
     DAGSpec,
     DAGValidationError,
     InvalidStateTransitionError,
-    TASK_STATE_CHANNEL,
     Task,
     TaskState,
-    TaskStateChanged,
     UnknownTaskError,
 )
 

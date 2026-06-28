@@ -25,7 +25,7 @@ from sovereignai.shared.types import (
 )
 
 # Token expires after 8 hours (configurable in a future plan via Options panel)
-TOKEN_TTL = timedelta(hours=8)
+_TOKEN_TTL = timedelta(hours=8)
 
 
 class AuthMiddleware:
@@ -107,7 +107,7 @@ class AuthMiddleware:
                 token=token_str,
                 username=username,
                 issued_at=issued,
-                expires_at=issued + TOKEN_TTL,
+                expires_at=issued + _TOKEN_TTL,
             )
             self._tokens[token_str] = token
         self._trace.emit(

@@ -46,7 +46,7 @@ def bus(trace: TraceEmitter) -> EventBus:
 
 
 @pytest.fixture
-def capability_index(trace: TraceEmitter) -> ICapabilityIndex:
+def capability_index(trace: TraceEmitter) -> CapabilityGraph:
     """Create a CapabilityGraph instance for testing."""
     return CapabilityGraph(trace=trace)
 
@@ -75,7 +75,7 @@ def api(
 
 
 def test_query_capabilities_valid_token_returns_providers(
-    api: CapabilityAPI, auth: AuthMiddleware, capability_index: ICapabilityIndex
+    api: CapabilityAPI, auth: AuthMiddleware, capability_index: CapabilityGraph
 ) -> None:
     """Verify that query_capabilities with a valid token returns providers."""
     # Register a user and get a token
@@ -124,7 +124,7 @@ def test_query_capabilities_invalid_token_raises(api: CapabilityAPI) -> None:
 def test_submit_task_valid_token_returns_uuid(
     api: CapabilityAPI,
     auth: AuthMiddleware,
-    capability_index: ICapabilityIndex,
+    capability_index: CapabilityGraph,
 ) -> None:
     """Verify that submit_task with a valid token returns a UUID."""
     # Register a user and get a token
@@ -202,7 +202,7 @@ def test_submit_task_no_provider_raises(
 def test_submit_task_with_category_param(
     api: CapabilityAPI,
     auth: AuthMiddleware,
-    capability_index: ICapabilityIndex,
+    capability_index: CapabilityGraph,
 ) -> None:
     """Verify that submit_task accepts a category parameter (per Rev3 Finding 2)."""
     # Register a user and get a token
@@ -241,7 +241,7 @@ def test_submit_task_with_category_param(
 def test_submit_task_then_get_state_returns_received(
     api: CapabilityAPI,
     auth: AuthMiddleware,
-    capability_index: ICapabilityIndex,
+    capability_index: CapabilityGraph,
     task_state_machine: TaskStateMachine,
 ) -> None:
     """Verify that submit_task actually submits to the state machine (per Rev2 Finding 1)."""
