@@ -89,5 +89,9 @@ class DIContainer:
             if interface in self._instances:
                 return cast(T, self._instances[interface])
             if interface in self._factories:
-                return cast(T, self._factories[interface]())
-        raise KeyError(f"No singleton or factory registered for {interface!r}")
+                factory = self._factories[interface]
+            else:
+                raise KeyError(f"No singleton or factory registered for {interface!r}")
+        # Call factory outside the lock so slow factories do not block
+        # other retrieve() or register() calls.
+        return cast(T, factory())

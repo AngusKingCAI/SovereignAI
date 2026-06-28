@@ -94,14 +94,29 @@ class CapabilityGraph:
                 component's manifest.toml file.
         """
         with self._lock:
+            # Remove old capabilities if this component was previously registered
+            old_manifest = self._manifests.get(manifest.component_id)
+            if old_manifest is not None:
+                for cap in old_manifest.provides:
+                    key = (cap.category, cap.name)
+                    if key in self._index:
+                        self._index[key] = [
+                            entry for entry in self._index[key]
+                            if entry[0] != manifest.component_id
+                        ]
+                        if not self._index[key]:
+                            del self._index[key]
+                self._trace.emit(
+                    component="CapabilityGraph",
+                    level=TraceLevel.WARN,
+                    message=f"Re-registering {manifest.component_id} - old capabilities removed",
+                )
             self._manifests[manifest.component_id] = manifest
             for cap in manifest.provides:
                 key = (cap.category, cap.name)
                 self._index.setdefault(key, []).append(
                     (manifest.component_id, cap)
                 )
-                # Keep sorted by priority descending
-                self._index[key].sort(key=lambda x: -x[1].priority)
         self._trace.emit(
             component="CapabilityGraph",
             level=TraceLevel.DEBUG,
@@ -125,7 +140,9 @@ class CapabilityGraph:
         """
         with self._lock:
             key = (category, name)
-            return tuple(self._index.get(key, []))
+            providers = list(self._index.get(key, []))
+        providers.sort(key=lambda x: -x[1].priority)
+        return tuple(providers)
 
     def list_all_components(self) -> tuple[ComponentManifest, ...]:
         """Return manifests for every registered component.

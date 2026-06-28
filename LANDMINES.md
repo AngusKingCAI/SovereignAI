@@ -7,12 +7,12 @@ Entries below are placeholder records for the inherited landmines referenced in 
 ---
 
 ## L1 — replace_all corrupts adjacent lines
-**Trigger**: Inherited from sovereign-ai predecessor. Specific SovereignAI trigger TBD.
+**Trigger**: Inherited from sovereign-ai predecessor. Not yet triggered in SovereignAI - retained for diagnostic context.
 **Impact**: `AGENTS.md` or other structured markdown becomes structurally invalid. Requires manual restoration from git.
 **Graduated to**: OR5.
 
 ## L2 — Parallel scan tools corrupt output streams
-**Trigger**: Inherited from sovereign-ai predecessor. Specific SovereignAI trigger TBD.
+**Trigger**: Inherited from sovereign-ai predecessor. Not yet triggered in SovereignAI - retained for diagnostic context.
 **Impact**: Output streams from pytest/ruff/mypy/bandit/pip-audit/vulture interleave when run in parallel, producing unreadable output. Requires re-running all tools sequentially.
 **Graduated to**: OR3.
 
@@ -22,47 +22,47 @@ Entries below are placeholder records for the inherited landmines referenced in 
 **Graduated to**: OR7.
 
 ## L4 — Temp files left in repo root get committed
-**Trigger**: Inherited from sovereign-ai predecessor. Specific SovereignAI trigger TBD.
+**Trigger**: Inherited from sovereign-ai predecessor. Not yet triggered in SovereignAI - retained for diagnostic context.
 **Impact**: Temp file committed to repo. Requires follow-up commit to remove.
 **Graduated to**: OR13, OR21.
 
 ## L5 — Vulture flags unused test fixtures incorrectly
-**Trigger**: Inherited from sovereign-ai predecessor. Specific SovereignAI trigger TBD.
+**Trigger**: Inherited from sovereign-ai predecessor. Not yet triggered in SovereignAI - retained for diagnostic context.
 **Impact**: False positive. Parameter was required by pytest's parametrize decorator.
 **Graduated to**: OR19.
 
 ## L6 — Naive/aware datetime mixing
-**Trigger**: Inherited from sovereign-ai predecessor. Specific SovereignAI trigger TBD.
+**Trigger**: Inherited from sovereign-ai predecessor. Not yet triggered in SovereignAI - retained for diagnostic context.
 **Impact**: Type error when comparing `datetime.utcnow()` with `datetime.now(timezone.utc)`. Mypy flagged the mismatch.
 **Graduated to**: OR20.
 
 ## L7 — Stale baselines propagate through plans
-**Trigger**: Inherited from sovereign-ai predecessor. Specific SovereignAI trigger TBD.
+**Trigger**: Inherited from sovereign-ai predecessor. Not yet triggered in SovereignAI - retained for diagnostic context.
 **Impact**: Baseline drift. Subsequent plan starts with wrong expected test count, causing false STOP.
 **Graduated to**: OR17.
 
 ## L8 — Scope drift: editing files outside declared scope
-**Trigger**: Inherited from sovereign-ai predecessor. Specific SovereignAI trigger TBD.
+**Trigger**: Inherited from sovereign-ai predecessor. Not yet triggered in SovereignAI - retained for diagnostic context.
 **Impact**: Unplanned changes in commit. Difficult to trace which plan produced which change.
 **Graduated to**: OR16, OR22.
 
 ## L9 — Interface changes break existing tests during type remediation
-**Trigger**: Inherited from sovereign-ai predecessor. Specific SovereignAI trigger TBD.
+**Trigger**: Inherited from sovereign-ai predecessor. Not yet triggered in SovereignAI - retained for diagnostic context.
 **Impact**: Tests failed. Required either test updates (out of scope) or compatibility shim.
 **Graduated to**: OR27.
 
 ## L11 — Bypassed pre-commit hooks with --no-verify
-**Trigger**: Inherited from sovereign-ai predecessor. Specific SovereignAI trigger TBD.
+**Trigger**: Inherited from sovereign-ai predecessor. Not yet triggered in SovereignAI - retained for diagnostic context.
 **Impact**: Committed code with known style violation. Required follow-up fix.
 **Graduated to**: OR32.
 
 ## L12 — Hiding type errors by excluding files from hooks
-**Trigger**: Inherited from sovereign-ai predecessor. Specific SovereignAI trigger TBD.
+**Trigger**: Inherited from sovereign-ai predecessor. Not yet triggered in SovereignAI - retained for diagnostic context.
 **Impact**: Type error hidden permanently. File never type-checked again.
 **Graduated to**: OR33.
 
 ## L17 — Plan steps executed/marked complete out of order
-**Trigger**: Inherited from sovereign-ai predecessor. Specific SovereignAI trigger TBD.
+**Trigger**: Inherited from sovereign-ai predecessor. Not yet triggered in SovereignAI - retained for diagnostic context.
 **Impact**: Step marked complete based on work done in a different section. Required replan.
 **Graduated to**: OR34.
 

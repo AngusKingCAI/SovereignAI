@@ -13,7 +13,7 @@ see transitions in the order they occurred.
 """
 from __future__ import annotations
 
-from threading import Lock
+from threading import RLock
 from typing import Protocol, runtime_checkable
 from uuid import UUID
 
@@ -98,7 +98,7 @@ class TaskStateMachine:
         self._trace = trace
         self._tasks: dict[UUID, Task] = {}
         self._states: dict[UUID, TaskState] = {}
-        self._lock = Lock()
+        self._lock = RLock()
 
     def submit(self, task: Task, dag: DAGSpec | None = None) -> None:
         """Accept a new task into the RECEIVED state, validating its DAG if provided.

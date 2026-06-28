@@ -143,13 +143,15 @@ class CapabilityAPI:
             raise NoActiveProviderError(
                 f"No provider registered for {category}/{capability_name}"
             )
+        # Defensive copy: extract provider_id and declaration before creating Task (S2.25 L14)
+        provider_id, declaration = providers[0]
         task_id = uuid4()
         task = Task(
             task_id=task_id,
             capability=CapabilityDeclaration(
                 category=category,
                 name=capability_name,
-                version=providers[0][1].version,  # use the highest-priority provider's version
+                version=declaration.version,  # use the highest-priority provider's version
             ),
             payload=payload,
             submitted_at=now_utc(),

@@ -74,8 +74,8 @@ def test_valid_transition_publishes_event(machine: TaskStateMachine, bus: EventB
     machine.transition(task.task_id, TaskState.QUEUED)
 
     assert len(events_received) == 2  # submit + transition
-    assert events_received[1].old_state == TaskState.RECEIVED
-    assert events_received[1].new_state == TaskState.QUEUED
+    assert events_received[1].old_state == TaskState.RECEIVED  # type: ignore[attr-defined]
+    assert events_received[1].new_state == TaskState.QUEUED  # type: ignore[attr-defined]
 
 
 def test_invalid_transition_raises(machine: TaskStateMachine) -> None:
@@ -193,9 +193,9 @@ def test_transitions_published_in_order(machine: TaskStateMachine, bus: EventBus
     machine.transition(task.task_id, TaskState.EXECUTING)
 
     assert len(events_received) == 3
-    assert events_received[0].new_state == TaskState.RECEIVED
-    assert events_received[1].new_state == TaskState.QUEUED
-    assert events_received[2].new_state == TaskState.EXECUTING
+    assert events_received[0].new_state == TaskState.RECEIVED  # type: ignore[attr-defined]
+    assert events_received[1].new_state == TaskState.QUEUED  # type: ignore[attr-defined]
+    assert events_received[2].new_state == TaskState.EXECUTING  # type: ignore[attr-defined]
 
 
 def test_transition_unknown_task_raises_unknown_task_error(machine: TaskStateMachine) -> None:

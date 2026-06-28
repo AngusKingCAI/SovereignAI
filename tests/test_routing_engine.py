@@ -81,7 +81,7 @@ def test_route_returns_highest_priority_active(
     lifecycle.register(component_a)
     lifecycle.register(component_b)
 
-    capability_index.find_providers.return_value = [provider_b, provider_a]
+    capability_index.find_providers.return_value = [provider_b, provider_a]  # type: ignore[attr-defined]
 
     result = router.route(CapabilityCategory.TOOL, "test")
     assert result == component_b
@@ -104,7 +104,7 @@ def test_route_skips_circuit_broken(
     for _ in range(51):
         lifecycle.record_error(component_a)
 
-    capability_index.find_providers.return_value = [provider_a, provider_b]
+    capability_index.find_providers.return_value = [provider_a, provider_b]  # type: ignore[attr-defined]
 
     result = router.route(CapabilityCategory.TOOL, "test")
     assert result == component_b
@@ -127,7 +127,7 @@ def test_route_recovers_circuit_broken_when_window_expired(
     for _ in range(51):
         lifecycle.record_error(component_a)
 
-    capability_index.find_providers.return_value = [provider_a, provider_b]
+    capability_index.find_providers.return_value = [provider_a, provider_b]  # type: ignore[attr-defined]
 
     # Force recovery by calling try_recover (simulating window expiry)
     from time import monotonic
@@ -158,7 +158,7 @@ def test_route_raises_when_no_active_provider(
         lifecycle.record_error(component_a)
         lifecycle.record_error(component_b)
 
-    capability_index.find_providers.return_value = [provider_a, provider_b]
+    capability_index.find_providers.return_value = [provider_a, provider_b]  # type: ignore[attr-defined]
 
     with pytest.raises(NoActiveProviderError):
         router.route(CapabilityCategory.TOOL, "test")
@@ -169,7 +169,7 @@ def test_route_raises_when_no_providers_at_all(
     capability_index: ICapabilityIndex,
 ) -> None:
     """Verify that routing raises NoActiveProviderError when no providers are registered."""
-    capability_index.find_providers.return_value = []
+    capability_index.find_providers.return_value = []  # type: ignore[attr-defined]
 
     with pytest.raises(NoActiveProviderError):
         router.route(CapabilityCategory.TOOL, "test")

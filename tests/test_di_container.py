@@ -100,23 +100,34 @@ def test_different_types_are_isolated(container: DIContainer) -> None:
 
 
 def test_di_container_thread_safety(container: DIContainer) -> None:
-    """Verify that concurrent registration and retrieval do not cause races."""
-    num_threads = 10
-    registers_per_thread = 10
-
-    def register_many() -> None:
-        for i in range(registers_per_thread):
-            instance = DummyInterface(value=i)
-            container.register_singleton(DummyInterface, instance)
-
-    threads = [
-        threading.Thread(target=register_many) for _ in range(num_threads)
-    ]
+    """Verify that concurrent registration and retrieval on different types do not cause races."""
+    # Pre-register one interface
+    container.register_singleton(DummyInterface, DummyInterface(value=42))
+    
+    errors: list[Exception] = []
+    lock = threading.Lock()
+    
+    def register_and_retrieve() -> None:
+        """Register InterfaceB/InterfaceC while retrieving InterfaceA/InterfaceB/InterfaceC."""
+        try:
+            # Register InterfaceB and InterfaceC
+            container.register_factory(AnotherInterface, lambda: AnotherInterface(value="test"))
+            
+            # Retrieve all interfaces
+            container.retrieve(DummyInterface)
+            container.retrieve(AnotherInterface)
+        except Exception as e:
+            with lock:
+                errors.append(e)
+    
+    # Spawn threads
+    threads = [threading.Thread(target=register_and_retrieve) for _ in range(10)]
     for t in threads:
         t.start()
     for t in threads:
         t.join()
-
-    # Should be able to retrieve without error
-    retrieved = container.retrieve(DummyInterface)
-    assert isinstance(retrieved, DummyInterface)
+    
+    # Assert no errors and all interfaces are retrievable
+    assert len(errors) == 0, f"Thread-safety test failed with errors: {errors}"
+    assert isinstance(container.retrieve(DummyInterface), DummyInterface)
+    assert isinstance(container.retrieve(AnotherInterface), AnotherInterface)

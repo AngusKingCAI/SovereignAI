@@ -146,7 +146,7 @@ def test_ui_directories_do_not_import_core_internals(ui_dir: str) -> None:
     Currently these directories are empty (no UI code yet — UIs are
     post-batch). This test will start enforcing once UI files exist.
     """
-    ui_path = Path(ui_dir)
+    ui_path = Path(__file__).resolve().parent.parent / ui_dir
     if not ui_path.exists():
         pytest.skip(f"UI directory {ui_dir}/ does not exist yet")
     py_files = list(ui_path.rglob("*.py"))

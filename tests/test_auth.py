@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
+from unittest.mock import patch
 
 import pytest
 
@@ -80,18 +81,11 @@ def test_validate_expired_token_raises_and_deleted(auth: AuthMiddleware) -> None
     password = "password"
     auth.register_user(username, password)
     token = auth.login(username, password)
-    # Manually expire the token by setting expires_at to the past
-    # We need to mutate the token store directly since SessionToken is frozen
-    expired_token = SessionToken(
-        token=token.token,
-        username=token.username,
-        issued_at=token.issued_at,
-        expires_at=now_utc() - timedelta(hours=9),  # 9 hours ago
-    )
-    auth._tokens[token.token] = expired_token
-    # Validate should raise AuthError
-    with pytest.raises(AuthError, match="Session token expired"):
-        auth.validate(token.token)
+    # Use mock to simulate time passing beyond token expiration
+    with patch("sovereignai.shared.auth.now_utc") as mock_now:
+        mock_now.return_value = token.expires_at + timedelta(hours=1)
+        with pytest.raises(AuthError, match="Session token expired"):
+            auth.validate(token.token)
     # Token should be deleted from the store
     assert token.token not in auth._tokens
 

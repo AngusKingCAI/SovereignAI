@@ -73,6 +73,7 @@ Append-only. Each entry: deferred at, reason, trigger condition, target plan.
 **Reason**: AR4 names `dependency-injector` as the DI library, but A8 mandates a passive registry (no `@inject`, no auto-wiring). The hand-rolled DIContainer in `shared/container.py` satisfies A8 without using the `dependency-injector` library. AR4's reference is stale.
 **Trigger condition**: When the Architect next drafts a plan's S0.3 (next batch, Plan 5+).
 **Target plan**: Plan 5 (Scan) or first plan in next batch.
+**Resolved at**: prompt-5 (Scan 5 S2.2 — AR4 rewritten to reference hand-rolled DI container; DECISIONS.md D2 updated).
 
 ---
 

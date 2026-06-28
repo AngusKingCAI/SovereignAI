@@ -5,6 +5,8 @@ Verifies that the DI container is wired correctly with Plan 1 components.
 from __future__ import annotations
 
 import subprocess
+import sys
+from pathlib import Path
 
 from sovereignai.main import build_container
 from sovereignai.shared.auth import AuthMiddleware
@@ -84,9 +86,10 @@ def test_event_bus_has_trace_emitter_wired() -> None:
 
 def test_main_smoke_test() -> None:
     """Verify that running the main module exits successfully and produces expected output."""
+    project_root = Path(__file__).resolve().parents[1]
     result = subprocess.run(
-        [".venv/Scripts/python.exe", "-m", "sovereignai.main"],
-        cwd="c:\\SovereignAI",
+        [sys.executable, "-m", "sovereignai.main"],
+        cwd=str(project_root),
         capture_output=True,
         text=True,
     )
@@ -232,13 +235,14 @@ def test_q26_all_components_instantiated_in_main() -> None:
 
     # Collect all class instantiations in the function
     instantiations = set()
-    for node in ast.walk(build_container_func):
-        if isinstance(node, ast.Call):
-            # Get the type being instantiated
-            if isinstance(node.func, ast.Name):
-                instantiations.add(node.func.id)
-            elif isinstance(node.func, ast.Attribute):
-                instantiations.add(node.func.attr)
+    for stmt in build_container_func.body:
+        for node in ast.walk(stmt):
+            if isinstance(node, ast.Call):
+                # Get the type being instantiated
+                if isinstance(node.func, ast.Name):
+                    instantiations.add(node.func.id)
+                elif isinstance(node.func, ast.Attribute):
+                    instantiations.add(node.func.attr)
 
     # Verify all 9 components are instantiated
     expected_components = {

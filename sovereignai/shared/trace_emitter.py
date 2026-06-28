@@ -19,6 +19,15 @@ from sovereignai.shared.types import TraceEvent, TraceLevel, new_correlation_id,
 if TYPE_CHECKING:
     pass
 
+# O(1) level priority mapping for performance (S2.12)
+TRACE_LEVEL_PRIORITY: dict[TraceLevel, int] = {
+    TraceLevel.TRACE: 0,
+    TraceLevel.DEBUG: 1,
+    TraceLevel.INFO: 2,
+    TraceLevel.WARN: 3,
+    TraceLevel.ERROR: 4,
+}
+
 
 class TraceEmitter:
     """Record trace events from all components in a single in-memory log.
@@ -89,10 +98,10 @@ class TraceEmitter:
         with self._lock:
             events = list(self._events)
         if level is not None:
-            # Ordered comparison via enum index
-            min_idx = list(TraceLevel).index(level)
+            # Ordered comparison via O(1) priority lookup (S2.12)
+            min_priority = TRACE_LEVEL_PRIORITY[level]
             events = [
-                e for e in events if list(TraceLevel).index(e.level) >= min_idx
+                e for e in events if TRACE_LEVEL_PRIORITY[e.level] >= min_priority
             ]
         if component is not None:
             events = [e for e in events if e.component == component]

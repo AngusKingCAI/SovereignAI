@@ -160,3 +160,35 @@ def test_trace_emitter_called_on_subscriber_failure(
     error_events = trace_emitter.get_events(level=TraceLevel.ERROR)
     assert len(error_events) > 0
     assert any("RuntimeError" in event.message for event in error_events)
+
+
+def test_concurrent_publish_and_subscribe(event_bus: EventBus) -> None:
+    """Verify that concurrent publish and subscribe operations are thread-safe."""
+    import threading
+    received_events: list[Event] = []
+    lock = threading.Lock()
+
+    def subscriber(event: Event) -> None:
+        with lock:
+            received_events.append(event)
+
+    event_bus.subscribe(Channel("test-channel"), subscriber)
+
+    def publish_many() -> None:
+        for i in range(10):
+            event = Event(
+                channel=Channel("test-channel"),
+                correlation_id=uuid4(),
+                timestamp=now_utc(),
+            )
+            event_bus.publish(event)
+
+    # Spawn 5 threads, each publishing 10 events
+    threads = [threading.Thread(target=publish_many) for _ in range(5)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+
+    # Should receive 50 events total
+    assert len(received_events) == 50

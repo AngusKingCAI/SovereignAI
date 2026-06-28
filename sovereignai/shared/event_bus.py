@@ -70,6 +70,10 @@ class EventBus:
         with full context, and continues to the next subscriber. The bus
         never silently swallows failures (per P10, criterion 28).
 
+        The subscriber list is copied under the lock, then the lock is released
+        before calling subscribers. A slow subscriber does not block other
+        publishers or subscribers on other channels.
+
         Args:
             event: The event to publish. Must already carry its channel,
                 correlation ID, and timestamp.

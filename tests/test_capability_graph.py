@@ -163,3 +163,98 @@ def test_protocol_compliance() -> None:
     # Protocol structural typing: isinstance returns True if the object
     # has all the required methods with matching signatures
     assert isinstance(graph, ICapabilityIndex)
+
+
+def test_register_equal_priority_stable_sort() -> None:
+    """Register two providers with equal priority; verify stable sort preserves registration order."""
+    trace = TraceEmitter()
+    graph = CapabilityGraph(trace=trace)
+    manifest1 = ComponentManifest(
+        component_id=ComponentId("FirstAdapter"),
+        version="1.0.0",
+        author="test-author",
+        content_hash="sha256:abc123",
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name="text_generation",
+                version="1.0.0",
+                priority=5,
+            ),
+        ),
+        requires=(),
+    )
+    manifest2 = ComponentManifest(
+        component_id=ComponentId("SecondAdapter"),
+        version="1.0.0",
+        author="test-author",
+        content_hash="sha256:def456",
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name="text_generation",
+                version="1.0.0",
+                priority=5,
+            ),
+        ),
+        requires=(),
+    )
+    graph.register(manifest1)
+    graph.register(manifest2)
+    providers = graph.find_providers(CapabilityCategory.MODEL_INFERENCE, "text_generation")
+    assert len(providers) == 2
+    # Stable sort: FirstAdapter registered first, should appear first
+    assert providers[0][0] == ComponentId("FirstAdapter")
+    assert providers[1][0] == ComponentId("SecondAdapter")
+
+
+def test_register_cleanup_old_capabilities_on_reregistration() -> None:
+    """Verify that re-registering a component removes its old capabilities."""
+    trace = TraceEmitter()
+    graph = CapabilityGraph(trace=trace)
+    
+    # Initial registration with one capability
+    manifest_v1 = ComponentManifest(
+        component_id=ComponentId("TestAdapter"),
+        version="1.0.0",
+        author="test-author",
+        content_hash="sha256:abc123",
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name="text_generation",
+                version="1.0.0",
+                priority=10,
+            ),
+        ),
+        requires=(),
+    )
+    graph.register(manifest_v1)
+    providers = graph.find_providers(CapabilityCategory.MODEL_INFERENCE, "text_generation")
+    assert len(providers) == 1
+    
+    # Re-register with different capability
+    manifest_v2 = ComponentManifest(
+        component_id=ComponentId("TestAdapter"),
+        version="2.0.0",
+        author="test-author",
+        content_hash="sha256:def456",
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.TOOL,
+                name="calculator",
+                version="2.0.0",
+                priority=10,
+            ),
+        ),
+        requires=(),
+    )
+    graph.register(manifest_v2)
+    
+    # Old capability should be removed
+    providers_old = graph.find_providers(CapabilityCategory.MODEL_INFERENCE, "text_generation")
+    assert len(providers_old) == 0
+    
+    # New capability should be present
+    providers_new = graph.find_providers(CapabilityCategory.TOOL, "calculator")
+    assert len(providers_new) == 1

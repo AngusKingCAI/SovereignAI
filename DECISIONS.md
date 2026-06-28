@@ -16,15 +16,15 @@ Append-only. Each entry: context, options considered, decision, rationale, trade
 
 ---
 
-## D2 — `dependency-injector` as the DI container library
+## D2 — Hand-rolled DI container (no external dependency)
 
-**Context**: AR4 requires a DI container and names `dependency-injector` specifically.
-**Options considered**: Not separately debated. The choice was made during AR4 drafting and encoded directly in the rule text.
-**Decision**: `dependency-injector` (per AR4).
-**Rationale**: AR4 asserts this library meets the DI-managed singleton (Orchestrator, Librarian Registry) and factory (Managers, Workers) requirements. Full options/rationale not separately debated — this ADR records that gap.
-**Trade-offs**: External dependency. If abandoned, manual DI is the fallback. If Plan 1+ implementation reveals issues, this entry should be expanded with the options/rationale and re-submitted to the Round Table.
-**Status**: Active, pending separate debate. Revisit at Plan 1 if implementation surfaces friction.
-**Source**: `AGENTS.md` AR4.
+**Context**: AR4 requires a DI container for managing shared state and component lifecycles.
+**Options considered**: A) Hand-rolled passive typed registry (no runtime magic); B) `dependency-injector` library; C) Other third-party DI framework.
+**Decision**: Option A — Hand-rolled DI container in `shared/container.py`.
+**Rationale**: A passive typed registry (no @inject decorators, no auto-wiring, no runtime magic) aligns with A8 (no hidden complexity). The container is a simple map of type → instance/factory. Explicit wiring in main.py (Composition Root) makes the dependency graph transparent and debuggable. No external dependency reduces attack surface and version drift.
+**Trade-offs**: More verbose than auto-wiring frameworks. Requires manual registration of each component. Acceptable given the small component count (9) and the benefit of clarity and control.
+**Status**: Active. Implemented at Plan 1. All 9 components registered: TraceEmitter, EventBus, CapabilityGraph, LifecycleManager, RoutingEngine, TaskStateMachine, AuthMiddleware, CapabilityAPI, RelayPlaceholder.
+**Source**: `AGENTS.md` AR4, Plan 1 implementation.
 
 ---
 

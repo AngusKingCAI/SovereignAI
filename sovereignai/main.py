@@ -119,12 +119,6 @@ def build_container() -> DIContainer:
 
 
 if __name__ == "__main__":
-    """Run the composition root standalone for smoke testing.
-
-    Builds the container, retrieves the EventBus and TraceEmitter, emits
-    a startup trace event, and prints it. This verifies the wiring is
-    functional before Plan 2 builds on top.
-    """
     from sovereignai.shared.types import TraceLevel
 
     container = build_container()
