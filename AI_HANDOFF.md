@@ -63,7 +63,7 @@ This is the **static process guide** for the Architect role — how to make plan
 - Independently scan the log for patterns the Executor may have missed: scope creep, repeated failures, workarounds, multi-attempt steps
 - Cross-reference `LANDMINES.md` — already captured? No new rule needed. Not captured? Consider proposing one
 - Cross-reference `AGENTS.md` — rule already exists but wasn't followed? Enforcement problem, not a new rule. No rule? Propose one
-- New rule → include in next plan's S0 instructions (Executor adds to `AGENTS.md` at `/open` step 4, with source: "Source: L{n}" or "Source: Round Table Rev{n}")
+- New rule → include in next plan's S0 instructions (Executor adds to `AGENTS.md` at `/open` step 4, with source: "Source: L{n}" or "Source: Round Table Rev{n}"). Write in compact style: one to three sentences, verb-first, actionable content only — no narrative backstory, no repeated framing.
 - Reject C9 proposals if redundant/unnecessary — document rejection in context brief
 
 **Step 5 — Make plan files + context brief.** N individual files at `/home/z/my-project/download/plan-{N}-Rev1.md` + one shared brief at `/home/z/my-project/download/plan-{X1}-{X4}-batch-Rev1-context-brief.md`. Rev{n} notation: one file per plan per revision. Context brief created for Rev1 only — Rev2+ brief not required. All Revs kept forever. Plan files contain ONLY what the Executor needs (S0, body, STOP conditions, file lists, closing, header lines). Briefs follow the 3-part scaffold below.

@@ -2,6 +2,7 @@
 
 **AR{n}** = Architecture Rules · **OR{n}** = Operational Rules · Ambiguous rule → read `LANDMINES.md`.
 Authority: `project-vision-Rev5.md` (locked). New rules must be checked against it before being added.
+**Rule style**: one to three sentences, actionable content only. No explanatory backstory, no "this applies to all layers" tail-clauses, no repeated framing. Source citations use short form: `(Source: P7)` or `(Source: L24)`.
 
 ---
 
