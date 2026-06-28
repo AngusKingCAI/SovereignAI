@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sovereignai"
+version = "0.1.0"
+description = "Local-first, modular AI assistant framework"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "AngusKingCAI"}]
+# Runtime deps live in txt/requirements.txt (SSOT per OR39).
+# Do NOT add [project.dependencies] — that would duplicate and drift.
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["txt/requirements.txt"]}
+
+[tool.setuptools.packages.find]
+# Only sovereignai/ is an installable package.
+# UIs (web/, cli/, tui/, phone/) are separate processes — NOT installable as part of the core.
+include = ["sovereignai*"]
+exclude = ["tests*", "web*", "cli*", "tui*", "phone*", "documents*", "prompts*", "logs*", "txt*"]
+
+[project.optional-dependencies]
+# Dev-only tools — never installed in production. Per OR39.
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.4.0",
+    "mypy>=1.0",
+    "bandit>=1.7",
+    "pip-audit>=2.0",
+    "vulture>=2.0",
+    "detect-secrets>=1.0",
+    "pre-commit>=3.0",
+]
+
+# ============================================================================
+# Tool configuration below is TENTATIVE per P5 (wire as you go).
+# These settings are best-effort guesses for an empty codebase. They WILL be
+# tuned as Python code emerges in Plans 1+. Any /close that produces the first
+# real Python file should revisit these settings.
+# ============================================================================
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-vvv"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "D", "I", "N", "UP", "B", "C4", "SIM"]
+# D100 (missing module docstring) and D104 (missing package docstring) are
+# excluded because empty __init__.py files in the scaffold don't need
+# docstrings yet. AR21 covers def/async def docstrings (D103) — that's the
+# enforced rule. Revisit at Plan 1 when __init__.py files get content.
+ignore = ["D100", "D104"]
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.bandit]
+exclude_dirs = [".venv", "venv", "env", ".git", "node_modules", "__pycache__", "build", "dist", ".tox", ".eggs", ".pytest_cache"]
+
+[tool.vulture]
+min_confidence = 80
+exclude = [".venv", "venv", "env", ".git", "node_modules", "__pycache__", "build", "dist", ".tox", ".eggs", ".pytest_cache", ".mypy_cache", ".ruff_cache", "htmlcov"]

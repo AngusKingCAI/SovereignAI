@@ -52,7 +52,7 @@ This document tracks the dynamic state of the SovereignAI project: baselines, co
 
 ## Active Plan
 
-**None** — awaiting Plan 1 execution.
+**Plan 1** — awaiting execution.
 
 Plan 1 file: `prompts/plan-1-Rev1.md` (to be created by Architect, copied by User)
 
@@ -62,7 +62,7 @@ Plan 1 file: `prompts/plan-1-Rev1.md` (to be created by Architect, copied by Use
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 1 | Core scaffold — project layout, event bus, TraceEmitter, DI container, Composition Root | prompt-0 | 🔜 Ready to draft |
+| 1 | Plan 1 | Core scaffold — project layout, event bus, TraceEmitter, DI container, Composition Root | prompt-0 | ▶️ Active |
 | 2 | Plan 2 | Capability graph, manifest parser, routing engine | Plan 1 | ⏳ Pending Plan 1 |
 | 3 | Plan 3 | Lifecycle manager, task state machine, DAG validator | Plan 2 | ⏳ Pending Plan 2 |
 | 4 | Plan 4 | Auth middleware, Capability API, Relay server stub | Plan 3 | ⏳ Pending Plan 3 |

@@ -11,12 +11,12 @@ Run at the start of every plan.
    ```
    If missing, STOP. Skip if Plan 1.
 
-2. Confirm working copy is clean and on master:
+2. Confirm working copy is clean and on main:
    ```
    git status -s | tail -n 10
    git branch --show-current
    ```
-   If dirty (excluding governance docs/plan files) or not on master, STOP.
+   If dirty (excluding governance docs/plan files) or not on main, STOP.
 
 3. Read `AGENTS.md` in full.
 

@@ -1,0 +1,13 @@
+# SovereignAI runtime dependencies
+#
+# This file is the SSOT for runtime deps (per AGENTS.md OR39).
+# pyproject.toml reads it via dynamic = ["dependencies"].
+#
+# Append package>=version when adding a new import to production code in
+# sovereignai/, web/, cli/, tui/, or phone/.
+#
+# Dev-only tools (pytest, ruff, mypy, etc.) go in pyproject.toml's
+# [project.optional-dependencies] dev = [...] — NOT here.
+#
+# After any change, run: pip install -e .[dev] && pip-audit --strict --requirement txt/requirements.txt
+

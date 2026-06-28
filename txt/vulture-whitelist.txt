@@ -1,0 +1,10 @@
+# Vulture whitelist — SovereignAI
+#
+# Add symbols here that vulture falsely flags as unused.
+# Format: symbol_name  # reason
+#
+# Per OR19: pytest fixture parameters flagged by vulture may be required by
+# the parametrize decorator — verify before removing.
+#
+# File starts empty. First entry will be added when vulture reports its first
+# false positive in Plan 1+.
