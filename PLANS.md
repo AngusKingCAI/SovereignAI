@@ -75,7 +75,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 ## Active Plan
 
-None — awaiting next plan.
+**Plan 9** — Auth integration (login/register, session cookies, first-run flow)
 
 ---
 
@@ -83,11 +83,11 @@ None — awaiting next plan.
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Scan 5 | First scan — verify baselines, fix accumulated issues | Plans 1–4 | ⏳ Pending |
-| 2 | TBD | Future plan | TBD | ⏳ Pending |
-| 3 | TBD | Future plan | TBD | ⏳ Pending |
-| 4 | TBD | Future plan | TBD | ⏳ Pending |
-| 5 | TBD | Future plan | TBD | ⏳ Pending |
+| 1 | Scan 10 | Mechanical verification scan | Plans 6–9 | ⏳ Pending |
+| 2 | Plan 11 | Memory layer — Librarian, backends (episodic, procedural, working, trace) | Plan 10 | ⏳ Pending |
+| 3 | Plan 12 | Versioning — semver, negotiator, compatibility matrix | Plan 11 | ⏳ Pending |
+| 4 | Plan 13 | Test framework — conformance, contract, property-based tests | Plan 12 | ⏳ Pending |
+| 5 | Plan 14 | Education department — Teacher worker, self-correction skill | Plan 13 | ⏳ Pending |
 
 ---
 

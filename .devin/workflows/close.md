@@ -97,7 +97,13 @@ Write to `temp/changelog-entry-{N}.md`, `cat >> CHANGELOG.md`, delete temp.
 - Update Static Analysis Baseline (ruff, mypy, bandit, vulture, detect-secrets, coverage %)
 - Add completed prompt row
 - Add a one-line Baseline Reconciliation Notes entry if the count changed: `**Plan N**: Baseline → X tests, delta ±Y — see CHANGELOG prompt-N for why.` Full explanation goes in CHANGELOG only, not here.
-- Update Active Plan → none; shift next-5-queue
+- Update Active Plan and shift next-5-queue:
+  1. Identify the queue slot that matches the just-completed plan (by description or plan number)
+  2. Remove that row from the queue
+  3. Shift remaining rows up to fill the gap (slot 2→1, 3→2, etc.)
+  4. Promote the new slot 1 to Active Plan (format: `**Plan N** — {description}`)
+  5. Fill the now-empty slot 5 with "TBD" if no future plan is known
+  6. If the completed plan was NOT in the queue (e.g., ad-hoc plan), do NOT shift — leave queue unchanged and set Active Plan to "None — awaiting next plan"
 - Do NOT add or edit the Open Questions table — that lives solely in `project-vision-Rev5.md` (see PLANS.md Open Questions section)
 
 **Step 11 — Update `LANDMINES.md`** if a new failure pattern was discovered. Append-only. New landmines start at L32.
