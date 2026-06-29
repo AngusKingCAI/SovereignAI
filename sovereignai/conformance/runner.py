@@ -14,11 +14,19 @@ class ConformanceRunner:
     """Discover and run conformance tests for a component."""
 
     def __init__(self, trace: Any) -> None:
+        """Create a conformance runner.
+
+        Args:
+            trace: Trace emitter for logging conformance test results.
+        """
         self._trace = trace
         self._cache: collections.OrderedDict[tuple[str, str], bool] = collections.OrderedDict()
 
     def _cache_set(self, key: tuple[str, str], value: bool) -> None:
-        """Insert into cache and enforce LRU cap (Rev9: extracted helper — cap enforced on ALL paths)."""
+        """Insert into cache and enforce LRU cap.
+
+        Rev9: extracted helper — cap enforced on ALL paths.
+        """
         self._cache[key] = value
         self._cache.move_to_end(key)
         if len(self._cache) > 1024:
@@ -32,12 +40,17 @@ class ConformanceRunner:
         instance: Any,
         is_first_party: bool = False,
     ) -> bool:
-        """Run conformance tests for a component. Returns True if passed (or no tests found for third-party).
+        """Run conformance tests for a component.
 
-        Per Rev3 N1: imports from sovereignai.conformance.registry, NEVER from tests/.
-        Per Rev5 F2: fail-CLOSED for first-party (missing tests = STOP); fail-OPEN for third-party (missing tests = WARN + allow).
+        Returns True if passed (or no tests found for third-party).
+
+        Per Rev3 N1: imports from sovereignai.conformance.registry,
+            NEVER from tests/.
+        Per Rev5 F2: fail-CLOSED for first-party (missing tests = STOP);
+            fail-OPEN for third-party (missing tests = WARN + allow).
         Per Rev3 N13: results cached per (component_id, content_hash).
-        Per Rev5 F9: LRU cache with maxsize=1024 (move_to_end on hit, popitem on overflow).
+        Per Rev5 F9: LRU cache with maxsize=1024 (move_to_end on hit,
+            popitem on overflow).
         """
         cache_key = (component_id, content_hash)
         if cache_key in self._cache:

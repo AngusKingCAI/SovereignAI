@@ -816,3 +816,34 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Updated web UI with Education section showing GPU status and fine-tuning controls
 - Added 32 new tests for Education department components
 - Fixed AR4 violation in librarian/__init__.py (mutable __all__ → tuple)
+## prompt-15 — Scan 15 — mechanical verification scan
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-15-Rev1.md
+
+**Files changed**:
+- .devin/workflows/close.md
+- LANDMINES.md
+- sovereignai/conformance/runner.py
+- sovereignai/skills/official/self_correction/skill.py
+- sovereignai/versioning/compatibility_matrix.py
+- sovereignai/versioning/negotiator.py
+- sovereignai/workers/education/teacher_worker.py
+- sovereignai/shared/capability_graph.py
+- AGENTS.md
+- PLANS.md
+
+**Results**:
+- Tests: 311 passed, 9 skipped
+- Ruff: 0 findings
+- Mypy: 83 errors (pre-existing from Plans 11-14)
+- Bandit: 635 Low, 0 Medium
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- Fixed close.md Step 17 git rm → git add -A per L40
+- Added OR86 (backend + UI in same plan) to AGENTS.md
+- Added L40 (close.md git rm bug) to LANDMINES.md
+- Fixed ruff E501 line length violations from Plans 11-14
+- Fixed vulture unused variable in teacher_worker.py

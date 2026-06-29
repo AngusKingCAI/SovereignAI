@@ -18,8 +18,16 @@ _GPU_LOCK = threading.Lock()
 class TeacherWorker:
     """Perform model improvement: QLoRA fine-tuning, evaluation, dataset curation."""
 
-    def __init__(self, capability_api: CapabilityAPI, trace: TraceEmitter, hardware_probe: HardwareProbe):
-        """Create a Teacher worker that can detect GPU availability and manage QLoRA fine-tuning tasks."""
+    def __init__(
+        self,
+        capability_api: CapabilityAPI,
+        trace: TraceEmitter,
+        hardware_probe: HardwareProbe,
+    ):
+        """Create a Teacher worker.
+
+        Detects GPU availability and manages QLoRA fine-tuning tasks.
+        """
         self._capability_api = capability_api
         self._trace = trace
         self._hardware_probe = hardware_probe
@@ -33,14 +41,25 @@ class TeacherWorker:
         ImportError (missing package) and OSError (missing CUDA DLLs) without
         the multi-second import cost on every startup.
         """
-        required = ["torch", "peft", "transformers", "trl", "bitsandbytes", "accelerate", "datasets"]
+        required = [
+            "torch",
+            "peft",
+            "transformers",
+            "trl",
+            "bitsandbytes",
+            "accelerate",
+            "datasets",
+        ]
         for pkg in required:
             # F12: find_spec first — fast check, no import side effects
             if importlib.util.find_spec(pkg) is None:
                 self._trace.emit(
                     component="teacher",
                     level=TraceLevel.WARN,
-                    message=f"QLoRA dependency '{pkg}' not installed. Install with: pip install sovereignai[education]",
+                    message=(
+                        f"QLoRA dependency '{pkg}' not installed. "
+                        "Install with: pip install sovereignai[education]"
+                    ),
                 )
                 return False
             # F12: find_spec succeeded — now try actual import to catch broken installs
@@ -51,7 +70,10 @@ class TeacherWorker:
                 self._trace.emit(
                     component="teacher",
                     level=TraceLevel.WARN,
-                    message=f"QLoRA dependency '{pkg}' found but broken ({type(e).__name__}): {e}. Install with: pip install sovereignai[education]",
+                    message=(
+                        f"QLoRA dependency '{pkg}' found but broken ({type(e).__name__}): {e}. "
+                        "Install with: pip install sovereignai[education]"
+                    ),
                 )
                 return False
         # Verify CUDA is actually available (not just that torch imports)
@@ -87,10 +109,18 @@ class TeacherWorker:
         from trl import SFTTrainer
 
         if not _GPU_LOCK.acquire(timeout=10):
-            raise RuntimeError("GPU lock timeout — another in-process GPU task is running. Retry later.")
+            raise RuntimeError(
+                "GPU lock timeout — another in-process GPU task is running. Retry later."
+            )
         try:
-            self._trace.emit(component="teacher", level=TraceLevel.INFO,
-                             message=f"Acquired in-process GPU lock; starting QLoRA fine-tune of {base_model}")
+            self._trace.emit(
+                component="teacher",
+                level=TraceLevel.INFO,
+                message=(
+                    f"Acquired in-process GPU lock; "
+                    f"starting QLoRA fine-tune of {base_model}"
+                ),
+            )
 
             bnb_config = BitsAndBytesConfig(
                 load_in_4bit=True,
@@ -102,20 +132,38 @@ class TeacherWorker:
                 device_map="auto", torch_dtype=torch.bfloat16,
             )
             tokenizer = AutoTokenizer.from_pretrained(base_model)  # nosec B615
-            lora_config = LoraConfig(r=16, lora_alpha=32, target_modules=["q_proj", "v_proj"], task_type="CAUSAL_LM")
+            lora_config = LoraConfig(
+                r=16,
+                lora_alpha=32,
+                target_modules=["q_proj", "v_proj"],
+                task_type="CAUSAL_LM",
+            )
             model = get_peft_model(prepare_model_for_kbit_training(model), lora_config)
             train_dataset = datasets.Dataset.from_list(dataset)
-            trainer = SFTTrainer(model=model, tokenizer=tokenizer, train_dataset=train_dataset, dataset_text_field="prompt")
+            trainer = SFTTrainer(
+                model=model,
+                tokenizer=tokenizer,
+                train_dataset=train_dataset,
+                dataset_text_field="prompt",
+            )
 
             # Cancellation support (per Rev2 F-53)
             self._cancel_requested = False
             for step in range(trainer.max_steps or 1000):
                 if self._cancel_requested:
-                    self._trace.emit(component="teacher", level=TraceLevel.WARN, message="Fine-tune cancelled by user")
+                    self._trace.emit(
+                        component="teacher",
+                        level=TraceLevel.WARN,
+                        message="Fine-tune cancelled by user",
+                    )
                     break
                 trainer.train_step()  # Hypothetical API — actual trainer API may differ
                 if step % 100 == 0:
-                    self._trace.emit(component="teacher", level=TraceLevel.INFO, message=f"Training step {step}")
+                    self._trace.emit(
+                        component="teacher",
+                        level=TraceLevel.INFO,
+                        message=f"Training step {step}",
+                    )
 
             output_path = os.path.expanduser(f"~/.sovereignai/models/{output_name}")
             os.makedirs(output_path, exist_ok=True)
@@ -134,12 +182,15 @@ class TeacherWorker:
         self._cancel_requested = True
 
     def evaluate(self, model_path: str, dataset: list) -> dict:
-        """Evaluate a model. Returns {'loss': float, 'perplexity': float} only (no accuracy — per F-33)."""
+        """Evaluate a model.
+
+        Returns {'loss': float, 'perplexity': float} only (no accuracy — per F-33).
+        """
         # Placeholder implementation — actual evaluation logic to be added
         return {"loss": 0.0, "perplexity": 0.0}
 
     def curate_dataset(
-        self, trace_ids: list[str], criteria: dict[str, object], consent: bool
+        self, trace_ids: list[str], _criteria: dict[str, object], consent: bool
     ) -> list:
         """Extract training examples from episodic memory with explicit user consent.
 
@@ -147,8 +198,11 @@ class TeacherWorker:
         PII filter (regex: email/phone/SSN/credit-card) + 30-day retention.
         """
         if not consent:
-            self._trace.emit(component="teacher", level=TraceLevel.WARN,
-                             message="curate_dataset called with consent=False; returning empty dataset")
+            self._trace.emit(
+                component="teacher",
+                level=TraceLevel.WARN,
+                message="curate_dataset called with consent=False; returning empty dataset",
+            )
             return []
 
         # Query episodic memory for trace events
@@ -157,8 +211,11 @@ class TeacherWorker:
             # For now, return empty list as this requires Librarian dependency
             traces: list = []
         except Exception as e:
-            self._trace.emit(component="teacher", level=TraceLevel.ERROR,
-                             message=f"Failed to query episodic memory: {e}")
+            self._trace.emit(
+                component="teacher",
+                level=TraceLevel.ERROR,
+                message=f"Failed to query episodic memory: {e}",
+            )
             return []
 
         # Filter by 30-day retention
@@ -182,14 +239,20 @@ class TeacherWorker:
             completion = trace.get("completion", "")
 
             # Check for PII
-            has_pii = any(re.search(pattern, prompt + completion, re.IGNORECASE) for pattern in pii_patterns)
+            has_pii = any(
+                re.search(pattern, prompt + completion, re.IGNORECASE)
+                for pattern in pii_patterns
+            )
             if has_pii:
                 continue
 
             examples.append({"prompt": prompt, "completion": completion})
 
-        self._trace.emit(component="teacher", level=TraceLevel.INFO,
-                         message=f"Curated {len(examples)} examples from {len(trace_ids)} trace IDs")
+        self._trace.emit(
+            component="teacher",
+            level=TraceLevel.INFO,
+            message=f"Curated {len(examples)} examples from {len(trace_ids)} trace IDs",
+        )
         return examples
 
     def _enforce_model_size_limit(self) -> None:
@@ -210,15 +273,23 @@ class TeacherWorker:
                     for filename in filenames
                 )
                 created_at = os.path.getctime(model_path)
-                models.append({"name": model_name, "path": model_path, "size": size, "created_at": created_at})
+                models.append({
+                    "name": model_name,
+                    "path": model_path,
+                    "size": size,
+                    "created_at": created_at,
+                })
                 total_size += size
 
         # Evict oldest if >50GB
         max_size_gb = 50
         while total_size > max_size_gb * 1024 * 1024 * 1024 and models:
             oldest = min(models, key=lambda m: float(m["created_at"]))  # type: ignore[arg-type]
-            self._trace.emit(component="teacher", level=TraceLevel.WARN,
-                             message=f"Evicting model {oldest['name']} to enforce size limit")
+            self._trace.emit(
+                component="teacher",
+                level=TraceLevel.WARN,
+                message=f"Evicting model {oldest['name']} to enforce size limit",
+            )
             # Remove model directory
             import shutil
             model_path = str(oldest["path"])  # type: ignore[arg-type]

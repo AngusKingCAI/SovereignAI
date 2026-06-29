@@ -88,7 +88,9 @@ class VersionNegotiator:
         self._matrix = CompatibilityMatrix(trace=trace)
 
     def negotiate(self) -> NegotiationResult:
-        """Check compatibility between all registered component pairs and record results in the matrix.
+        """Check compatibility between all registered component pairs.
+
+        Record results in the matrix.
 
         For each pair of components:
         - If either is core, use strict checking (fatal on mismatch).
@@ -232,8 +234,9 @@ class VersionNegotiator:
     def _check_core_compatibility(
         self, component: ComponentManifest, other: ComponentManifest
     ) -> Incompatibility:
-        """Perform strict compatibility check for core components requiring exact major version match.
+        """Perform strict compatibility check for core components.
 
+        Requires exact major version match.
         A core component without a version field is an error (fatal).
 
         Args:

@@ -1,5 +1,4 @@
 """Tests for Teacher worker — health checks, dataset curation, and fine-tuning."""
-from datetime import UTC
 from unittest.mock import MagicMock, patch
 
 import pytest

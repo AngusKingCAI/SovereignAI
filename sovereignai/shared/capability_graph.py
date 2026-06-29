@@ -119,7 +119,8 @@ class CapabilityGraph:
         else:
             # N1: import from sovereignai.conformance, NOT tests.conformance
             from sovereignai.conformance.runner import ConformanceRunner
-            # Rev8: reuse a single ConformanceRunner instance (not fresh per call) to preserve LRU cache
+            # Rev8: reuse a single ConformanceRunner instance (not fresh per call)
+            # to preserve LRU cache
             if self._conformance_runner is None:
                 self._conformance_runner = ConformanceRunner(self._trace)
             runner = self._conformance_runner

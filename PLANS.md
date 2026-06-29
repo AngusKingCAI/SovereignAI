@@ -90,6 +90,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-12 | `prompt-12` | Version Negotiation — SemVer, negotiator, compatibility matrix | 271 | 0 | 0 | 2026-06-29 |
 | prompt-13 | `prompt-13` | Conformance and Property Testing — framework, contracts, Hypothesis | 288 | 0 | 0 | 2026-06-29 |
 | prompt-14 | `prompt-14` | Education Department — Teacher worker, Self-correction skill, QLoRA | 320 | 0 | 0 | 2026-06-29 |
+| prompt-15 | `prompt-15` | Scan 15 — mechanical verification scan | 320 | 0 | 0 | 2026-06-29 |
 
 ---
 
@@ -103,11 +104,11 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | TBD | TBD | TBD | ⏳ Pending |
-| 2 | TBD | TBD | TBD | ⏳ Pending |
-| 3 | TBD | TBD | TBD | ⏳ Pending |
-| 4 | TBD | TBD | TBD | ⏳ Pending |
-| 5 | TBD | TBD | TBD | ⏳ Pending |
+| 1 | Plan 16 | Logging & observability — fix Log Drawer, add Orchestrator "thinking", verify trace persistence | Scan 15 | ⏳ Pending |
+| 2 | Plan 17 | Memory panel API + UI wiring | Plan 16 | ⏳ Pending |
+| 3 | Plan 18 | Tasks panel — active/scheduled/completed tabs + task detail + manual task creation | Plan 17 | ⏳ Pending |
+| 4 | Plan 19 | Tools panel — list + run tools with input schema forms | Plan 18 | ⏳ Pending |
+| 5 | Scan 20 | Fourth whole-repo scan | Plan 19 | ⏳ Pending |
 
 ---
 

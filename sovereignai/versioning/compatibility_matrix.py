@@ -53,7 +53,9 @@ class CompatibilityMatrix:
     BACKUP_PATH = Path.home() / ".sovereignai" / "compatibility.json.backup"
 
     def __init__(self, trace: TraceEmitter) -> None:
-        """Create a compatibility matrix instance for storing and querying version compatibility test results.
+        """Create a compatibility matrix instance.
+
+        Stores and queries version compatibility test results.
 
         Args:
             trace: Trace emitter for logging matrix operations.
@@ -210,7 +212,9 @@ class CompatibilityMatrix:
         version_b: str,
         content_hash_b: str,
     ) -> str:
-        """Return the compatibility status for a component pair and invalidate on content hash mismatch.
+        """Return the compatibility status for a component pair.
+
+        Invalidates on content hash mismatch.
 
         Args:
             component_a: First component ID.

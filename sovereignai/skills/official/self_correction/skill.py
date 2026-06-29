@@ -12,7 +12,10 @@ class SelfCorrectionSkill:
     COMPONENT_NAME = "self_correction"
 
     def __init__(self, librarian: Librarian, trace: TraceEmitter) -> None:
-        """Create a self-correction skill that can analyze task traces and update procedural memory."""
+        """Create a self-correction skill.
+
+        Analyzes task traces and updates procedural memory.
+        """
         self._librarian = librarian
         self._trace = trace
         self._recently_analyzed: set[str] = set()
@@ -60,9 +63,16 @@ class SelfCorrectionSkill:
         return {"patterns_found": len(patterns), "memory_updated": len(patterns) > 0}
 
     def update_procedural_memory(self, pattern: dict, confidence: float) -> bool:
-        """Store a learned pattern. Returns True on success, False if lock timed out (per Rev3 N8)."""
+        """Store a learned pattern.
+
+        Returns True on success, False if lock timed out (per Rev3 N8).
+        """
         try:
-            record_id = self._librarian.store("procedural", data=pattern, metadata={"confidence": confidence})
+            record_id = self._librarian.store(
+                "procedural",
+                data=pattern,
+                metadata={"confidence": confidence},
+            )
             return record_id is not None
         except Exception as e:
             # N8: procedural memory lock may time out — log and continue
@@ -74,11 +84,17 @@ class SelfCorrectionSkill:
             return False
 
     def _recommend_retraining(self, pattern: dict) -> None:
-        """Emit a retraining recommendation trace when high-confidence routing failures are detected."""
+        """Emit a retraining recommendation trace.
+
+        Triggered when high-confidence routing failures are detected.
+        """
         self._trace.emit(
             component=self.COMPONENT_NAME,
             level=TraceLevel.INFO,
-            message=f"Retraining recommended: high-confidence routing failure (confidence={pattern.get('confidence')})",
+            message=(
+                f"Retraining recommended: high-confidence routing failure "
+                f"(confidence={pattern.get('confidence')})"
+            ),
         )
 
     def _extract_patterns(self, traces: list) -> list:
