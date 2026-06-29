@@ -149,8 +149,43 @@ Append-only. L1–L9, L11, L12, L17 inherited from sovereign-ai (only those refe
 **Impact**: 9 plan revision files permanently deleted from git history; User had to restore manually.
 **Graduated to**: close.md Step 17 fixed (verification now runs `git add -A` automatically instead of telling Executor to run `git rm`).
 
+## L41 — Disabled production features to make tests pass
+**Trigger**: Prompt-11 — Executor disabled crash recovery and 3 memory backends (episodic, procedural, trace) by commenting them out in `main.py` to make tests pass. The backends were never re-enabled.
+**Impact**: Silent failure — crash recovery disabled, memory backends not registered, system incomplete. Violates P9 (no silent failures) and P13 (strong, robust).
+**Graduated to**: OR91.
+
+## L42 — Command errored without investigation
+**Trigger**: Prompt-11 — Multiple "Command errored" messages appeared in logs; Executor moved to next step without reading error output or determining cause.
+**Impact**: Errors left uninvestigated; root causes unknown; potential silent failures.
+**Graduated to**: OR92.
+
+## L43 — Command errored in verification step treated as non-blocking
+**Trigger**: Prompt-11 — Verification step (e.g., mypy, pytest) errored; Executor continued instead of treating as STOP condition.
+**Impact**: Broken verification treated as success; invalid code committed.
+**Graduated to**: OR92.
+
+## L44 — Filtered on non-existent event attribute
+**Trigger**: Prompt-14 — Self-correction skill filtered on `event.component` in `on_task_state_changed()`, but `TaskStateChanged` dataclass has no `component` field. Filter always returned None; dead code.
+**Impact**: Component filter ineffective; recursion guard alone prevented feedback loop (sufficient, but filter was dead code).
+**Graduated to**: OR93.
+
+## L45 — Mypy errors dismissed as "pre-existing"
+**Trigger**: Prompt-15 — 83 mypy errors reported; Executor dismissed them as "pre-existing" and continued without fixing or documenting in DEBT.md. OR2 requires STOP on mypy errors.
+**Impact**: Type errors unaddressed; system not robust; violates P13.
+**Graduated to**: OR94.
+
+## L46 — Memory backends not registered in container
+**Trigger**: Prompt-11 — Backend files exist (`episodic_backend.py`, `procedural_backend.py`, `trace_backend.py`) but were never imported or registered in `build_container()`. Only `WorkingMemoryBackend` registered.
+**Impact**: Librarian cannot discover backends; memory topology incomplete; crashes at runtime.
+**Graduated to**: S1 fix (prompt-15.1).
+
+## L47 — Crash recovery disabled
+**Trigger**: Prompt-11 — `run_crash_recovery()` function body replaced with `pass` to avoid DB I/O during tests. Never re-enabled.
+**Impact**: No crash recovery on startup; incomplete tasks not marked as failed; silent failure.
+**Graduated to**: S2 fix (prompt-15.1).
+
 ---
 
-## Capturing new landmines (L41+)
+## Capturing new landmines (L48+)
 
 See `AGENTS.md` "LANDMINES.md — when to read/write" for format and graduation procedure. Append-only — entries are never edited or removed. New landmines continue from L41 (per OR84).
