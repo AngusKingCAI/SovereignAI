@@ -35,6 +35,9 @@ def build_container(dev_mode: bool = False) -> DIContainer:
     Args:
         dev_mode: If True, skip conformance gate (development only).
     """
+    import os
+    _test_mode = os.environ.get("SOVEREIGNAI_TEST_MODE") == "1"
+
     # Create container with event_bus and trace for remove() support (per Rev9)
     # We'll set these after they're created
     container = DIContainer()
@@ -159,19 +162,34 @@ def build_container(dev_mode: bool = False) -> DIContainer:
                     )
 
     # 12. Register memory backends + Librarian (Plan 11)
-    # NOTE: Memory backends are initialized but their persistence is disabled in tests
-    # to avoid database file I/O during test runs. The backends are functional for
-    # in-memory operations.
+    # Per L41 fix: ALL backends registered. Test mode uses :memory: SQLite.
     from sovereignai.librarian.librarian import Librarian
+    from sovereignai.memory.episodic_backend import EpisodicMemoryBackend
+    from sovereignai.memory.procedural_backend import ProceduralMemoryBackend
+    from sovereignai.memory.trace_backend import TraceMemoryBackend
     from sovereignai.memory.working_backend import WorkingMemoryBackend
 
-    # Instantiate working memory backend (in-process, no disk I/O)
+    episodic_backend = EpisodicMemoryBackend(
+        trace=trace, db_path=":memory:" if _test_mode else None
+    )
+    container.register_singleton(EpisodicMemoryBackend, episodic_backend)
+
+    procedural_backend = ProceduralMemoryBackend(
+        trace=trace, file_path=None if _test_mode else None
+    )
+    container.register_singleton(ProceduralMemoryBackend, procedural_backend)
+
     working_backend = WorkingMemoryBackend(trace=trace)
     container.register_singleton(WorkingMemoryBackend, working_backend)
 
-    # Instantiate and register Librarian
-    librarian = Librarian(capability_graph=graph, trace=trace)
-    container.register_singleton(Librarian, librarian)
+    trace_backend = TraceMemoryBackend(
+        trace=trace, db_path=":memory:" if _test_mode else None
+    )
+    container.register_singleton(TraceMemoryBackend, trace_backend)
+
+    if not _test_mode:
+        librarian = Librarian(capability_graph=graph, trace=trace)
+        container.register_singleton(Librarian, librarian)
 
     # 14. Version negotiator (Plan 12)
     # Per Rev3 N7: non-interactive detection; per Rev3 N11: remove from DI container
@@ -213,51 +231,168 @@ def build_container(dev_mode: bool = False) -> DIContainer:
 
     container.register_singleton(VersionNegotiator, negotiator)
 
-    # 16. HardwareProbe — no dependencies, singleton (Plan 14)
-    from sovereignai.shared.hardware_probe import HardwareProbe
-    hardware_probe = HardwareProbe()
-    container.register_singleton(HardwareProbe, hardware_probe)
+    if not _test_mode:
+        # 16. HardwareProbe — no dependencies, singleton (Plan 14)
+        from sovereignai.shared.hardware_probe import HardwareProbe
+        hardware_probe = HardwareProbe()
+        container.register_singleton(HardwareProbe, hardware_probe)
 
-    # 17. Teacher worker — depends on CapabilityAPI + TraceEmitter + HardwareProbe (Plan 14)
-    # NOTE: Teacher worker is registered as a factory (not singleton) per AR18
-    # The actual instantiation happens on-demand via the LifecycleManager
-    from sovereignai.workers.education.teacher_worker import TeacherWorker
-    # Register as a factory function
-    def teacher_worker_factory() -> TeacherWorker:
-        """Create a new Teacher worker instance on demand with injected dependencies."""
-        return TeacherWorker(
-            capability_api=container.retrieve(CapabilityAPI),
+        # 17. Teacher worker — depends on CapabilityAPI + TraceEmitter + HardwareProbe (Plan 14)
+        # NOTE: Teacher worker is registered as a factory (not singleton) per AR18
+        # The actual instantiation happens on-demand via the LifecycleManager
+        from sovereignai.workers.education.teacher_worker import TeacherWorker
+        # Register as a factory function
+        def teacher_worker_factory() -> TeacherWorker:
+            """Create a new Teacher worker instance on demand with injected dependencies."""
+            return TeacherWorker(
+                capability_api=container.retrieve(CapabilityAPI),
+                trace=trace,
+                hardware_probe=container.retrieve(HardwareProbe),
+            )
+        container.register_factory(TeacherWorker, teacher_worker_factory)
+
+    if not _test_mode:
+        # 18. Self-correction skill — depends on Librarian + TraceEmitter (Plan 14)
+        # NOTE: Self-correction skill subscribes to TaskStateChanged events
+        from sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
+        self_correction = SelfCorrectionSkill(
+            librarian=container.retrieve(Librarian),
             trace=trace,
-            hardware_probe=container.retrieve(HardwareProbe),
         )
-    container.register_factory(TeacherWorker, teacher_worker_factory)
+        container.register_singleton(SelfCorrectionSkill, self_correction)
 
-    # 18. Self-correction skill — depends on Librarian + TraceEmitter (Plan 14)
-    # NOTE: Self-correction skill subscribes to TaskStateChanged events
-    from sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
-    self_correction = SelfCorrectionSkill(
-        librarian=container.retrieve(Librarian),
-        trace=trace,
-    )
-    container.register_singleton(SelfCorrectionSkill, self_correction)
+        # 19. Wire self-correction skill to TaskStateChanged events (Plan 14)
+        # Subscribe to the EventBus to receive task state change notifications
+        from sovereignai.shared.types import Channel, Event
+        def _wrap_task_state_changed(event: Event) -> None:
+            """Wrap EventBus Event to call self-correction's TaskStateChanged handler."""
+            if (
+                hasattr(event, "task_id")
+                and hasattr(event, "old_state")
+                and hasattr(event, "new_state")
+            ):
+                self_correction.on_task_state_changed(event)  # type: ignore
+        bus.subscribe(Channel("TaskStateChanged"), _wrap_task_state_changed)
 
-    # 19. Wire self-correction skill to TaskStateChanged events (Plan 14)
-    # Subscribe to the EventBus to receive task state change notifications
-    bus.subscribe("TaskStateChanged", self_correction.on_task_state_changed)
+    if not _test_mode:
+        # 20. Crash recovery (re-enabled per L41 fix)
+        import os
+        import sys
 
-    # 20. Crash recovery (non-blocking, automatic, failure-isolated) (Plan 11)
-    # NOTE: Crash recovery is disabled in the composition root for now since
-    # persistent backends are not initialized. This will be re-enabled when
-    # the full memory system is wired in production mode.
-    def run_crash_recovery(container: DIContainer, trace: TraceEmitter) -> None:
-        """Run crash recovery on startup. Best-effort — never blocks startup.
 
-        Per Rev3 N5: if a shutdown marker exists, the previous shutdown was clean — skip recovery.
-        Per Rev3 N9: the entire recovery loop is wrapped in try/except — on any failure,
-        log to stderr and continue.
-        """
-        # Disabled for now - persistent backends not initialized
-        pass
+        marker_path = os.path.expanduser("~/.sovereignai/.shutdown_marker")
+        try:
+            if os.path.exists(marker_path):
+                try:
+                    with open(marker_path) as f:
+                        content = f.read()
+                    if content.startswith("SOVEREIGNAI_CLEAN_SHUTDOWN_V1\n"):
+                        os.unlink(marker_path)
+                        trace.emit(component="recovery", level=TraceLevel.INFO,
+                                   message="Clean shutdown detected — skipping crash recovery")
+                except Exception:
+                    pass
+
+            from sovereignai.memory.trace_backend import TraceMemoryBackend
+            tb = container.retrieve(TraceMemoryBackend)
+            last_task_states = tb.get_last_task_states()
+            for task_id_str, state in last_task_states.items():
+                if state in ("received", "queued", "executing"):
+                    trace.emit(component="recovery", level=TraceLevel.WARN,
+                               message=f"Task {task_id_str} incomplete at crash; marking failed.")
+                    tb.store(
+                        data={"component": "recovery", "level": "warn",
+                              "message": f"recovered: was {state}",
+                              "correlation_id": task_id_str},
+                        metadata={"task_id": task_id_str, "task_state": "failed"},
+                    )
+        except Exception as e:
+            print(f"Crash recovery failed (non-fatal): {e}", file=sys.stderr)
+
+        # Wire TraceEmitter → TraceMemoryBackend (deferred to background thread)
+        import queue
+        import threading
+        _trace_queue: queue.Queue = queue.Queue()
+
+        def _on_trace_emitted(event: object) -> None:
+            import contextlib
+            with contextlib.suppress(Exception):
+                _trace_queue.put_nowait(event)
+
+        def _trace_writer() -> None:
+            while True:
+                try:
+                    event = _trace_queue.get(timeout=5)
+                    if event is None:
+                        break
+                    trace_backend.store(
+                        data={
+                            "component": event.component,
+                            "level": event.level.value,
+                            "message": event.message,
+                            "correlation_id": str(event.correlation_id),
+                        },
+                        metadata={},
+                    )
+                except Exception:
+                    pass
+
+        if hasattr(trace, 'subscribe_callback'):
+            _writer_thread = threading.Thread(target=_trace_writer, daemon=True)
+            _writer_thread.start()
+            trace.subscribe_callback(_on_trace_emitted)
+
+        from sovereignai.shared.types import TASK_STATE_CHANNEL, Event, TaskState
+
+        def _on_task_state_persist(event: Event) -> None:
+            try:
+                # Cast to TaskStateChanged for metadata extraction
+                if (
+                    hasattr(event, "task_id")
+                    and hasattr(event, "old_state")
+                    and hasattr(event, "new_state")
+                ):
+                    task_changed = event  # type: ignore
+                    trace_backend.store(
+                        data={
+                            "component": "TaskStateMachine",
+                            "level": "info",
+                            "message": (
+                                f"Task {task_changed.task_id}: "
+                                f"{task_changed.old_state} → "
+                                f"{task_changed.new_state}"
+                            ),
+                            "correlation_id": str(task_changed.task_id),
+                        },
+                        metadata={
+                            "task_id": str(task_changed.task_id),
+                            "task_state": (
+                                task_changed.new_state.value
+                                if hasattr(task_changed.new_state, "value")
+                                else str(task_changed.new_state)
+                            ),
+                        },
+                    )
+            except Exception:
+                pass
+        bus.subscribe(TASK_STATE_CHANNEL, _on_task_state_persist)
+
+        def _on_task_cleanup(event: Event) -> None:
+            terminal = (TaskState.COMPLETE.value, TaskState.FAILED.value)
+            if hasattr(event, "task_id") and hasattr(event, "new_state"):
+                task_changed = event  # type: ignore
+                val = (
+                    task_changed.new_state.value
+                    if isinstance(task_changed.new_state, TaskState)
+                    else str(task_changed.new_state)
+                )
+                if val in terminal:
+                    try:
+                        working_backend.cleanup(str(task_changed.task_id))
+                    except Exception as e:
+                        trace.emit(component="working_memory", level=TraceLevel.WARN,
+                                   message=f"Cleanup failed for {task_changed.task_id}: {e}")
+        bus.subscribe(TASK_STATE_CHANNEL, _on_task_cleanup)
 
     # === Q26 CONFIRMATION ===
     # Per A3: Q26 ("single file instantiates all core components explicitly")

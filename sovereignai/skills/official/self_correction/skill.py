@@ -23,9 +23,6 @@ class SelfCorrectionSkill:
 
     def on_task_state_changed(self, event: TaskStateChanged) -> None:
         """Handle a task state change. Filters own events + deduplicates per task_id."""
-        # Rev9: filter events from self_correction component (per OR69)
-        if getattr(event, 'component', None) == self.COMPONENT_NAME:
-            return
         if event.new_state not in (TaskState.COMPLETE, TaskState.FAILED):
             return
         task_id_str = str(event.task_id)

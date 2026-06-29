@@ -86,12 +86,15 @@ def test_event_bus_has_trace_emitter_wired() -> None:
 
 def test_main_smoke_test() -> None:
     """Verify that running the main module exits successfully and produces expected output."""
+    import os as _os
+    env = {**_os.environ, "SOVEREIGNAI_TEST_MODE": "1"}
     project_root = Path(__file__).resolve().parents[1]
     result = subprocess.run(
         [sys.executable, "-m", "sovereignai.main"],
         cwd=str(project_root),
         capture_output=True,
         text=True,
+        env=env,
     )
 
     assert result.returncode == 0

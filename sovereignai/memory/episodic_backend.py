@@ -25,14 +25,16 @@ class EpisodicMemoryBackend:
     Per OR87: Database file is ~/.sovereignai/episodic.db.
     """
 
-    def __init__(self, trace: TraceEmitter) -> None:
+    def __init__(self, trace: TraceEmitter, db_path: str | None = None) -> None:
         """Create an episodic memory backend with a dedicated SQLite database.
 
         Args:
             trace: Trace emitter for logging operations and errors.
+            db_path: Database file path. If ":memory:", uses in-memory SQLite.
+                If None, uses default ~/.sovereignai/episodic.db.
         """
         self._trace = trace
-        self._db_path = os.path.expanduser("~/.sovereignai/episodic.db")
+        self._db_path = db_path if db_path else os.path.expanduser("~/.sovereignai/episodic.db")
         self._conn: sqlite3.Connection | None = None
         self._initialize_db()
 
@@ -41,7 +43,8 @@ class EpisodicMemoryBackend:
 
         Creates the episodes table with indexes for task_id and timestamp queries.
         """
-        os.makedirs(os.path.dirname(self._db_path), exist_ok=True)
+        if self._db_path != ":memory:":
+            os.makedirs(os.path.dirname(self._db_path), exist_ok=True)
         self._conn = sqlite3.connect(self._db_path)
         self._conn.execute("PRAGMA journal_mode=WAL")
         self._conn.execute("PRAGMA busy_timeout=5000")

@@ -36,19 +36,24 @@ class ProceduralMemoryBackend:
     force-acquired; if held >5 seconds, write fails with WARN trace.
     """
 
-    def __init__(self, trace: TraceEmitter) -> None:
+    def __init__(self, trace: TraceEmitter, file_path: str | None = None) -> None:
         """Create a procedural memory backend with a JSON file for pattern storage.
 
         Args:
             trace: Trace emitter for logging operations and errors.
+            file_path: JSON file path. If None, uses in-memory storage only.
+                If None, no file I/O occurs; patterns are stored in memory only.
         """
         self._trace = trace
-        self._path = os.path.expanduser("~/.sovereignai/procedural_memory.json")
-        self._ensure_file_exists()
+        self._path = file_path
+        if self._path:
+            self._ensure_file_exists()
+        else:
+            self._patterns = {"schema_version": 1, "patterns": []}
 
     def _ensure_file_exists(self) -> None:
         """Create the JSON file with an empty patterns list if it does not exist."""
-        if not os.path.exists(self._path):
+        if self._path and not os.path.exists(self._path):
             os.makedirs(os.path.dirname(self._path), exist_ok=True)
             self._atomic_write([])
 
@@ -57,6 +62,7 @@ class ProceduralMemoryBackend:
 
         NEVER force-acquires. If the lock is held longer than timeout_s,
         returns False (preserving mutex safety per P9).
+        In-memory mode (self._path is None) always returns True (no lock needed).
 
         Args:
             timeout_s: Maximum seconds to wait for lock acquisition.
@@ -64,6 +70,8 @@ class ProceduralMemoryBackend:
         Returns:
             True if lock acquired, False if timeout exceeded.
         """
+        if not self._path:
+            return True  # In-memory mode, no lock needed
         lock_path = self._path + ".lock"
         deadline = time.monotonic() + timeout_s
         while time.monotonic() < deadline:
@@ -78,6 +86,8 @@ class ProceduralMemoryBackend:
 
     def _release_lock(self) -> None:
         """Release the lock file by deleting it from the filesystem."""
+        if not self._path:
+            return  # In-memory mode, no lock to release
         import contextlib
         lock_path = self._path + ".lock"
         with contextlib.suppress(FileNotFoundError):
@@ -86,9 +96,14 @@ class ProceduralMemoryBackend:
     def _atomic_write(self, patterns: list[dict]) -> None:
         """Write patterns to the JSON file using atomic temp file + os.replace pattern.
 
+        In-memory mode (self._path is None) updates self._patterns directly.
+
         Args:
             patterns: The list of pattern dicts to write.
         """
+        if not self._path:
+            self._patterns = {"schema_version": 1, "patterns": patterns}
+            return
         tmp_path = self._path + ".tmp"
         with open(tmp_path, "w") as f:
             json.dump(patterns, f, indent=2)
@@ -97,14 +112,21 @@ class ProceduralMemoryBackend:
     def _read_patterns(self) -> list[dict]:
         """Read patterns from the JSON file with automatic corruption recovery handling.
 
+        In-memory mode (self._path is None) returns self._patterns directly.
         If the file is corrupted, renames it to .corrupted.{ts} and starts fresh.
 
         Returns:
             List of pattern dicts, or empty list if file is corrupted or missing.
         """
+        if not self._path:
+            result = self._patterns.get("patterns", [])
+            assert isinstance(result, list)
+            return result
         try:
             with open(self._path) as f:
-                return json.load(f)  # type: ignore[no-any-return]
+                result = json.load(f)
+                assert isinstance(result, list)
+                return result
         except (OSError, json.JSONDecodeError) as e:
             self._trace.emit(
                 component="procedural_memory",
@@ -117,7 +139,7 @@ class ProceduralMemoryBackend:
             corrupted_path = f"{self._path}.corrupted.{ts}"
             with contextlib.suppress(Exception):
                 os.rename(self._path, corrupted_path)
-            return []  # type: ignore[no-any-return]
+            return []
 
     def store(self, data: dict, metadata: dict | None = None) -> str:
         """Store a pattern and return the generated unique record identifier string.

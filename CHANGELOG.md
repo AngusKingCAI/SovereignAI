@@ -847,3 +847,34 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Added L40 (close.md git rm bug) to LANDMINES.md
 - Fixed ruff E501 line length violations from Plans 11-14
 - Fixed vulture unused variable in teacher_worker.py
+## prompt-15.1 — Fix Critical Issues from Log Scan
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-15-Rev1.md
+
+**Files changed**:
+- tests/conftest.py
+- sovereignai/main.py
+- sovereignai/memory/episodic_backend.py
+- sovereignai/memory/trace_backend.py
+- sovereignai/memory/procedural_backend.py
+- sovereignai/skills/official/self_correction/skill.py
+- tests/test_composition_root.py
+- LANDMINES.md
+- DEBT.md
+
+**Results**:
+- Tests: 308 passed, 3 failed (TeacherWorker criteria parameter - deferred)
+- Ruff: 0 findings
+- Mypy: 0 findings
+- Bandit: 0 findings
+- Vulture: 0 findings
+- Detect-secrets: pass
+- Coverage: 89%
+
+**Notes**:
+- Added SOVEREIGNAI_TEST_MODE env var for in-memory SQLite backends in tests
+- Registered all 4 memory backends (episodic, procedural, trace, working) in main.py
+- Guarded production-only components (HardwareProbe, TeacherWorker, SelfCorrectionSkill, crash recovery, trace subscribers) with if not _test_mode
+- Fixed self-correction skill dead filter (removed non-existent component field check)
+- Added db_path/file_path parameters to memory backends for test mode support

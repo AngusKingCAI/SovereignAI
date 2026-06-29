@@ -28,14 +28,16 @@ class TraceMemoryBackend:
     store(data: dict, metadata: dict) -> str.
     """
 
-    def __init__(self, trace: TraceEmitter) -> None:
+    def __init__(self, trace: TraceEmitter, db_path: str | None = None) -> None:
         """Create a trace memory backend with a dedicated SQLite database.
 
         Args:
             trace: Trace emitter for logging operations and errors.
+            db_path: Database file path. If ":memory:", uses in-memory SQLite.
+                If None, uses default ~/.sovereignai/trace.db.
         """
         self._trace = trace
-        self._db_path = "~/.sovereignai/trace.db"
+        self._db_path = db_path if db_path else "~/.sovereignai/trace.db"
         self._conn: sqlite3.Connection | None = None
         self._initialize_db()
 
@@ -47,7 +49,8 @@ class TraceMemoryBackend:
         import os
 
         db_path = os.path.expanduser(self._db_path)
-        os.makedirs(os.path.dirname(db_path), exist_ok=True)
+        if db_path != ":memory:":
+            os.makedirs(os.path.dirname(db_path), exist_ok=True)
         self._conn = sqlite3.connect(db_path)
         self._conn.execute("PRAGMA journal_mode=WAL")
         self._conn.execute("PRAGMA busy_timeout=5000")

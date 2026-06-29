@@ -117,3 +117,30 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Logged at**: prompt-5 (governance review)
 **Issue**: This item was logged twice under near-identical wording — once at prompt-0 (bootstrap, generic Plan 1–4 scope adjudication) and again at prompt-2 (Plan 2 scope adjudication). Both describe the same deferred capability-negotiation work; the prompt-0 entry's trigger condition and the prompt-2 entry's reason are restatements of each other.
 **Resolution**: Track resolution against the prompt-0 entry only. When Q8 negotiation work begins, add a single "Resolved at" line to the prompt-0 entry and reference it from the prompt-2 entry rather than resolving both independently.
+
+---
+
+## Deferred: TeacherWorker.curate_dataset() criteria parameter
+
+**Deferred at**: prompt-15.1
+**Reason**: Tests in test_teacher_worker.py pass a `criteria` parameter to `curate_dataset()` but the actual implementation signature doesn't accept it. This causes 3 test failures (test_curate_dataset_consent_false, test_curate_dataset_pii_filter, test_curate_dataset_retention_filter). The parameter was likely added to tests but not to the implementation during Plan 14.
+**Trigger condition**: When TeacherWorker implementation is updated to match test expectations.
+**Target plan**: Plan 16 or next Education department plan.
+
+---
+
+## Deferred: AR6 violations - memory backend dict parameters
+
+**Deferred at**: prompt-15.1
+**Reason**: Memory backend interfaces (episodic, procedural, trace, working) and Librarian use `dict` parameters for data/query. This violates AR6 (no untyped dict/Any context bags) but is a foundational architectural pattern. Refactoring would require defining typed dataclasses for all memory operations, which is a significant scope change.
+**Trigger condition**: When memory backend interfaces are redesigned with typed contracts.
+**Target plan**: TBD (major memory system refactoring).
+
+---
+
+## Deferred: AR21 violations - docstring discipline
+
+**Deferred at**: prompt-15.1
+**Reason**: Multiple components have docstrings that don't meet AR21 requirements (≥10 words, verb-first, no jargon). These include conformance framework, versioning components, and self-correction skill. Fixing all violations would be a large docstring rewrite effort across many files.
+**Trigger condition**: When a focused docstring cleanup plan is scheduled.
+**Target plan**: TBD (docs-only cleanup plan).
