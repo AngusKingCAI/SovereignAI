@@ -232,6 +232,12 @@ OR81. The `.secrets.baseline` file is never edited manually. To remove a false p
 
 OR82. Never use `git mv` — it errors unreliably in Git Bash on Windows. Use plain `mv` to move files, then `git add -A` (per OR75/OR80) to stage both the new paths and the deletions of the old paths. Verify with `git ls-files '<old-path-glob>'` that git no longer tracks the old paths. Source: L34 (clarified).
 
+OR83. `git add -A` is the ONLY allowed staging command. Never use `git add <filename>`, `git add <file1> <file2>`, or `git add <directory>/` — these are OR80/OR75 violations even when the Executor thinks it knows which files changed. The only exception: `git add -A` after a `git rm` (the `git rm` already staged the deletion; `git add -A` stages any remaining changes). After every `git add -A`, run `git status -s` to verify the staging area is clean (no unstaged lines). Source: OR80 (clarified — prompt-10.2 had 8 violations).
+
+OR84. Rule and landmine numbers are NEVER renumbered. Existing numbers (AR1–AR21, OR1–OR82, L1–L39, D1–D5) are frozen — they are cited by value in 53 completed plan files, 17 execution logs, and 4 workflow files. Renumbering would break thousands of cross-references. Gaps from retired slots (AR8; OR10, OR11, OR36, OR38, OR51, OR53; L10, L13–L16, L18–L23) are documented in the "Retired slots" block at the top of AGENTS.md and are NOT reused. New rules continue from OR85; new landmines from L40; new decisions from D6. Source: numbering policy (prompt-10.3).
+
+OR85. Governance doc condensation merges document the retired slot in the "Retired slots" block with a one-line reason and a pointer to the merged rule. Example: `OR36 — merged into OR35 (prompt-10.3)`. The merged rule's source citation is updated to include the retired rule's landmine sources. Source: OR84 (clarified).
+
 ---
 
 ## Landmines → Rules
