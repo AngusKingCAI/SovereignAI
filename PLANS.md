@@ -19,12 +19,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 7**: Baseline → 149 tests. Delta: +32 — see CHANGELOG prompt-7.
 **Plan 8**: Baseline → 158 tests. Delta: +9 — see CHANGELOG prompt-8.
 **Plan 9**: Baseline → 169 tests. Delta: +11 — see CHANGELOG prompt-9.
+**Plan 10**: Baseline → 169 tests. Delta: 0 — see CHANGELOG prompt-10.
 
 ---
 
 ## Test Baseline
 
-**Current**: 169 tests (Plan 9 `/close`)
+**Current**: 169 tests (Plan 10 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -50,7 +51,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | **Vulture** | 0 findings | Plan 1 | High-confidence (≥80) only |
 | **detect-secrets** | pass | Plan 1 | Baseline established prompt-0 |
 | **pre-commit** | pass | Plan 1 | Hooks configured at prompt-0 |
-| **Coverage** | 96% | Plan 5 | 568 statements, 22 missed. Gaps: main.py (smoke), capability_api.py (error paths), lifecycle_manager.py (error paths), manifest_parser.py (error path), types.py (unused error classes) |
+| **Coverage** | 93% | Plan 10 | Dropped from 96% (Plan 5) as codebase grew through Plans 6–10 without proportional test additions. Gaps to address in Plans 11–14: memory backends, versioning, conformance framework, Education department. Target: 90% floor (Plan 13 STOP condition). |
 
 ---
 
