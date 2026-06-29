@@ -12,7 +12,7 @@ Capability API; they never reach into core internals).
 from __future__ import annotations
 
 from threading import Lock
-from typing import Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable, Any
 
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
@@ -22,6 +22,11 @@ from sovereignai.shared.types import (
     ComponentManifest,
     TraceLevel,
 )
+
+
+class ComponentRegistrationError(Exception):
+    """Raised when a component fails conformance tests and cannot be registered."""
+    pass
 
 
 @runtime_checkable
@@ -71,28 +76,72 @@ class CapabilityGraph:
     protocol, not the concrete class.
     """
 
-    def __init__(self, trace: TraceEmitter) -> None:
+    def __init__(self, trace: TraceEmitter, dev_mode: bool = False) -> None:
         """Create an empty capability graph instance with no registered components yet.
 
         Args:
             trace: Trace emitter for logging registration events (per P9
                 observability — every registration emits a DEBUG trace).
+            dev_mode: If True, skip conformance gate (development only).
         """
         self._trace = trace
+        self._dev_mode = dev_mode
         # Map (category, name) -> list of (component_id, declaration)
         self._index: dict[tuple[CapabilityCategory, str],
                           list[tuple[ComponentId, CapabilityDeclaration]]] = {}
         # Map component_id -> manifest (for list_all_components)
         self._manifests: dict[ComponentId, ComponentManifest] = {}
         self._lock = Lock()
+        self._conformance_runner: Any = None
 
-    def register(self, manifest: ComponentManifest) -> None:
+    def register(self, manifest: ComponentManifest, instance: Any = None) -> None:
         """Add a component's manifest to the graph so its capabilities become discoverable.
 
         Args:
             manifest: Frozen ComponentManifest parsed from the
                 component's manifest.toml file.
+            instance: Optional component instance for conformance testing.
+
+        Raises:
+            ComponentRegistrationError: If conformance tests fail.
         """
+        # N18: --dev flag required (not just env var)
+        # F8: dev_mode is a constructor arg (self._dev_mode), NOT os.environ
+        if self._dev_mode:
+            self._trace.emit(
+                component="capability_graph",
+                level=TraceLevel.WARN,  # F8: WARN, not ERROR (ERROR confuses monitoring)
+                message=(
+                    f"DEV MODE active: skipping conformance gate for "
+                    f"{manifest.component_id}. DO NOT use in production."
+                ),
+            )
+        else:
+            # N1: import from sovereignai.conformance, NOT tests.conformance
+            from sovereignai.conformance.runner import ConformanceRunner
+            # Rev8: reuse a single ConformanceRunner instance (not fresh per call) to preserve LRU cache
+            if self._conformance_runner is None:
+                self._conformance_runner = ConformanceRunner(self._trace)
+            runner = self._conformance_runner
+            capability_class = (
+                manifest.provides[0].category.value if manifest.provides else "unknown"
+            )  # Per Rev5 F3: derive from first provides category
+            is_first_party = (
+                str(manifest.component_id).startswith("sovereignai.")
+                or "adapters/internal" in str(getattr(manifest, "_source_path", ""))
+                or "skills/official" in str(getattr(manifest, "_source_path", ""))
+            )  # Rev7: use manifest._source_path (not undefined manifest_path)
+            passed = runner.check(
+                component_id=str(manifest.component_id),
+                content_hash=manifest.content_hash,
+                capability_class=capability_class,
+                is_first_party=is_first_party,
+                instance=instance,
+            )
+            if not passed:
+                raise ComponentRegistrationError(
+                    f"Component {manifest.component_id} failed conformance tests"
+                )
         with self._lock:
             # Remove old capabilities if this component was previously registered
             old_manifest = self._manifests.get(manifest.component_id)

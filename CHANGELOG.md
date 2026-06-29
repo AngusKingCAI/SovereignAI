@@ -736,3 +736,44 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Updated manifest parser to distinguish core vs plugin components and default plugin version to 0.0.0
 - Added capability graph and DI container removal methods for disabled plugins
 - Integrated version negotiation into main.py startup with fatal error handling and --no-wait flag
+## prompt-13 — Conformance and Property Testing
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-13-Rev10.md
+
+**Files changed**:
+- sovereignai/conformance/__init__.py
+- sovereignai/conformance/base.py
+- sovereignai/conformance/runner.py
+- sovereignai/conformance/registry.py
+- sovereignai/shared/capability_graph.py
+- sovereignai/main.py
+- tests/conformance/__init__.py
+- tests/conformance/conftest.py
+- tests/conformance/test_adapter.py
+- tests/conformance/test_skill.py
+- tests/conformance/test_memory.py
+- tests/contracts/__init__.py
+- tests/contracts/test_capability_api_contract.py
+- tests/property/__init__.py
+- tests/property/test_state_machine_properties.py
+- tests/test_conformance_framework.py
+- tests/test_contract_tests.py
+- tests/test_property_tests.py
+- pyproject.toml
+- AGENTS.md
+
+**Results**:
+- Tests: 285 passed, 3 skipped
+- Ruff: 0 findings
+- Mypy: 0 findings
+- Bandit: 575 Low (unchanged)
+- Vulture: 0 findings
+- Detect-secrets: pass
+- Coverage: 93% (baseline 94%, -1% within 5% threshold)
+
+**Notes**:
+- Added conformance testing framework with runtime-safe package in sovereignai/conformance/
+- Added contract tests for Capability API in tests/contracts/
+- Added property-based tests with Hypothesis in tests/property/
+- Integrated conformance gate in CapabilityGraph.register() with --dev CLI flag bypass

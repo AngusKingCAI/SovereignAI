@@ -22,7 +22,7 @@ from sovereignai.shared.types import (
 from sovereignai.versioning.negotiator import FatalIncompatibilityError
 
 
-def build_container() -> DIContainer:
+def build_container(dev_mode: bool = False) -> DIContainer:
     """Create and populate the dependency injection container with Plan 1 components.
 
     Wires components in topological order: TraceEmitter first (no deps),
@@ -31,6 +31,9 @@ def build_container() -> DIContainer:
 
     Plans 2-4 will extend this function to add their components after
     the EventBus registration.
+
+    Args:
+        dev_mode: If True, skip conformance gate (development only).
     """
     # Create container with event_bus and trace for remove() support (per Rev9)
     # We'll set these after they're created
@@ -52,11 +55,12 @@ def build_container() -> DIContainer:
     # Registered against ICapabilityIndex protocol so Plan 4's Capability
     # API can depend on the protocol, not the concrete class (per A5).
     # Rev2: graph now accepts TraceEmitter per Finding 3 (P9 compliance).
+    # Plan 13: graph accepts dev_mode flag for conformance gate bypass
     from sovereignai.shared.capability_graph import (
         CapabilityGraph,
         ICapabilityIndex,
     )
-    graph = CapabilityGraph(trace=trace)
+    graph = CapabilityGraph(trace=trace, dev_mode=dev_mode)
     container.register_singleton(CapabilityGraph, graph)
     container.register_singleton(ICapabilityIndex, graph)  # type: ignore[type-abstract]
 
@@ -251,10 +255,15 @@ if __name__ == "__main__":
         "--no-wait", action="store_true",
         help="Exit immediately on fatal errors (for CI)"
     )
+    parser.add_argument(
+        "--dev",
+        action="store_true",
+        help="Skip conformance gate (development only)",
+    )
     args = parser.parse_args()
 
     try:
-        container = build_container()
+        container = build_container(dev_mode=args.dev)
         trace = container.retrieve(TraceEmitter)
         bus = container.retrieve(EventBus)
 
