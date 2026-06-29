@@ -1,0 +1,24 @@
+[component]
+component_id = "procedural_memory"
+name = "Procedural Memory Backend"
+version = "0.1.0"
+author = "system"
+content_hash = "sha256:placeholder-internal-adapter"
+
+[[provides]]
+category = "memory"
+name = "procedural"
+version = "1.0.0"
+priority = 100
+
+[[provides]]
+category = "memory"
+name = "procedural_storage"
+version = "1.0.0"
+priority = 100
+
+[[provides]]
+category = "memory"
+name = "procedural_query"
+version = "1.0.0"
+priority = 100

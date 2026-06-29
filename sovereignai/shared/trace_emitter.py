@@ -53,6 +53,7 @@ class TraceEmitter:
         self._events: list[TraceEvent] = []
         self._lock = Lock()
         self._max_events = max_events
+        self._callbacks: list[callable] = []
 
     def emit(
         self,
@@ -82,6 +83,13 @@ class TraceEmitter:
             self._events.append(event)
             if len(self._events) > self._max_events:
                 self._events.pop(0)
+            # Notify all registered callbacks for durable persistence
+            for callback in self._callbacks:
+                try:
+                    callback(event)
+                except Exception:
+                    # Callback failures must not break emission
+                    pass
 
     def get_events(
         self, level: TraceLevel | None = None, component: str | None = None
@@ -106,3 +114,16 @@ class TraceEmitter:
         if component is not None:
             events = [e for e in events if e.component == component]
         return events
+
+    def subscribe_callback(self, callback: callable) -> None:
+        """Register a callback function to be invoked on every trace event emission.
+
+        The callback receives the TraceEvent object as its sole argument.
+        This enables durable persistence (e.g. writing to SQLite) without
+        coupling the emitter to any specific storage backend.
+
+        Args:
+            callback: A function accepting a single TraceEvent argument.
+        """
+        with self._lock:
+            self._callbacks.append(callback)

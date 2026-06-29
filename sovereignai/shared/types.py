@@ -87,6 +87,20 @@ def new_correlation_id() -> UUID:
     return uuid4()
 
 
+def _is_valid_uuid(value: str) -> bool:
+    """Check if a string is a valid UUID format without raising an exception.
+
+    This helper is used for validation when parsing task IDs from external
+    sources like trace storage. It returns False for invalid formats instead
+    of raising ValueError, allowing graceful degradation.
+    """
+    try:
+        UUID(value)
+        return True
+    except (ValueError, AttributeError, TypeError):
+        return False
+
+
 # ============================================================================
 # Capability types (used by manifest parser + capability graph in Plan 2)
 # ============================================================================
