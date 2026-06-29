@@ -141,7 +141,11 @@ User pastes content after `/close` completes, then asks Executor to commit and p
 
 **Step 15 — Commit code changes**
 ```
-git add <files-changed-this-plan>
+# Per OR75: stage ALL changes (catches auto-fixes, deletions, new files)
+git add -A
+# Verify staging area is clean — no unstaged changes remain
+git status -s
+# If any lines appear above, STOP — unstaged changes exist
 git commit -m "{plan title} (prompt-{N})" -m "{multi-line description}"
 ```
 Never `--no-verify`. STOP on pre-commit hook failure.
@@ -177,6 +181,13 @@ if [ "$remaining" -gt 0 ]; then
   ls prompts/plan-{N}-Rev*.md
   STOP
 fi
+# Also verify git no longer tracks the old paths (per L34 — catches mv+add-not-rm bug)
+tracked_old=$(git ls-files 'prompts/plan-{N}-Rev*.md' | wc -l)
+if [ "$tracked_old" -gt 0 ]; then
+  echo "STOP: git still tracks $tracked_old plan-{N}-Rev*.md files in prompts/ — run 'git rm' to stage deletions"
+  git ls-files 'prompts/plan-{N}-Rev*.md'
+  STOP
+fi
 # Also verify the base plan and brief were moved (if they existed)
 ```
 
@@ -184,7 +195,9 @@ fi
 
 **Step 18 — Commit docs** (NOT the execution log — that's committed separately)
 ```
-git add CHANGELOG.md PLANS.md LANDMINES.md DEBT.md prompts/completed/
+# Per OR75: stage ALL changes (catches governance docs + archived plan deletions + any auto-fixes)
+git add -A
+git status -s  # Verify staging area is clean
 git commit -m "docs: prompt-{N} governance updates"
 ```
 
