@@ -8,11 +8,13 @@ Run at the end of every plan. Run straight through — STOP only on failure. Do 
 
 ---
 
-**Step 1 — Tests**
+**Step 1 — Tests (with coverage)**
 ```
-.venv/Scripts/python.exe -m pytest tests/ -vvv
+.venv/Scripts/python.exe -m pytest tests/ -vvv --cov=. --cov-report=term-missing
 ```
 STOP on any failure. STOP if "no tests ran" and the plan was supposed to add tests (silent collection failure).
+
+**Coverage check (per OR77)**: Record the coverage %. Compare against PLANS.md baseline. If coverage dropped >5% from baseline, STOP. If this plan edited `.py` files and coverage is "N/A" or unavailable, STOP. Update PLANS.md coverage baseline in Step 10. Docs-only plans (no `.py` edits) may report "N/A" with a one-line reason.
 
 **Step 2 — Ruff**
 ```
@@ -37,7 +39,7 @@ STOP on errors on `.py` files.
 ```
 .venv/Scripts/bandit.exe -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache 2>&1 | tail -n 5
 ```
-STOP on findings.
+STOP on findings. Update the Bandit Low (B101) count in PLANS.md at Step 10 (per OR78). If the count changed >20% without a corresponding test count change, STOP and investigate.
 
 **Step 5 — pip-audit** (requirements file only per OR39)
 ```
@@ -150,12 +152,16 @@ git commit -m "{plan title} (prompt-{N})" -m "{multi-line description}"
 ```
 Never `--no-verify`. STOP on pre-commit hook failure.
 
-**Step 16 — Tag**
+**Step 16 — Tag (per OR76 — only after final commit is verified)**
 ```
+# Verify the tag does not already exist (prevents premature-tag force-push)
+git tag --list prompt-{N}
+# If the above returns output, STOP — tag already exists. Report to User. Do NOT delete and recreate.
+# If empty, create the tag at the current (final) commit:
 git tag prompt-{N}
 git tag --list prompt-{N}
 ```
-STOP if tag not listed.
+STOP if tag not listed. STOP if tag already existed before this step (premature tag — report to User, do not force-push).
 
 **Step 17 — Archive completed plan files**
 ```
