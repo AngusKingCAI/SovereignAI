@@ -20,6 +20,8 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 8**: Baseline → 158 tests. Delta: +9 — see CHANGELOG prompt-8.
 **Plan 9**: Baseline → 169 tests. Delta: +11 — see CHANGELOG prompt-9.
 **Plan 10**: Baseline → 169 tests. Delta: 0 — see CHANGELOG prompt-10.
+**Plan 10.1**: Baseline → 169 tests. Delta: 0 — see CHANGELOG prompt-10.1.
+**Plan 10.2**: Baseline → 169 tests. Delta: 0 — governance patch, no test changes.
 
 ---
 
@@ -46,12 +48,12 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 |---|---|---|---|
 | **Ruff** | 0 errors | Plan 1 | D100/D104 excluded per pyproject.toml |
 | **Mypy (file-scoped)** | 0 errors | Plan 1 | File-scoped per OR2 |
-| **Bandit** | 332 Low (B101) | Plan 10 | All test assertions; filter `>> Issue: [B` per OR4 |
+| **Bandit** | 332 Low (B101) | Plan 10 | All test assertions; filter `>> Issue: [B` per OR4. Bandit count reconciled at every /close per OR78. |
 | **pip-audit** | 0 CVEs | Plan 1 | Scans txt/requirements.txt only per OR39 (file empty — no runtime deps) |
 | **Vulture** | 0 findings | Plan 1 | High-confidence (≥80) only |
 | **detect-secrets** | pass | Plan 1 | Baseline established prompt-0 |
 | **pre-commit** | pass | Plan 1 | Hooks configured at prompt-0 |
-| **Coverage** | 93% | Plan 10 | Dropped from 96% (Plan 5) as codebase grew through Plans 6–10 without proportional test additions. Gaps to address in Plans 11–14: memory backends, versioning, conformance framework, Education department. Target: 90% floor (Plan 13 STOP condition). |
+| **Coverage** | 93% | Plan 10 | Dropped from 96% (Plan 5) as codebase grew through Plans 6–10 without proportional test additions. Gaps to address in Plans 11–14: memory backends, versioning, conformance framework, Education department. Target: 90% floor (Plan 13 STOP condition). Coverage measured at every /close per OR77. |
 
 ---
 
