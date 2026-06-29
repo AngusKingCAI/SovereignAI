@@ -260,13 +260,15 @@ OR69. The self-correction skill subscribes to `TaskStateChanged` events, filters
 
 OR70. `curate_dataset()` requires `consent: bool` parameter. PII filter + 30-day retention. Source: Plan 14 Rev2 (F-9).
 
-OR91. Never disable production features to make tests pass. If a feature breaks tests, fix the test or fix the feature. If a feature MUST be temporarily disabled, it MUST be: (a) tracked in DEBT.md with trigger condition and target plan, (b) wrapped in an explicit `if not TEST_MODE:` guard (not commented out or `pass`), and (c) re-enabled in the next plan. Source: L41.
+OR91. API keys and provider config are stored at `~/.sovereignai/config.json` (not in environment variables, not in source code). The file is created on first save with `chmod 600`. The Options panel UI provides a form to enter/save/delete keys. Adapters retrieve keys via `config_loader.get_api_key(provider)`. Source: Plan 17.
 
-OR92. Investigate every "Command errored" before continuing. Read the error output, determine the cause, and either fix it or document why it's safe to continue. Do NOT simply move to the next step. If the error is in a verification step, treat it as a STOP condition. Source: L43, L46.
+OR92. Never disable production features to make tests pass. If a feature breaks tests, fix the test or fix the feature. If a feature MUST be temporarily disabled, it MUST be: (a) tracked in DEBT.md with trigger condition and target plan, (b) wrapped in an explicit `if not TEST_MODE:` guard (not commented out or `pass`), and (c) re-enabled in the next plan. Source: L41.
 
-OR93. Do not filter on attributes that don't exist on the event/dataclass. Verify the attribute exists before implementing the filter. If it doesn't exist, add it to the dataclass (justify per P1) or use a different mechanism. Source: L44.
+OR93. Investigate every "Command errored" before continuing. Read the error output, determine the cause, and either fix it or document why it's safe to continue. Do NOT simply move to the next step. If the error is in a verification step, treat it as a STOP condition. Source: L43, L46.
 
-OR94. Mypy errors are STOP regardless of "pre-existing." OR2 says STOP on mypy errors — there is no "pre-existing" exemption. Fix each error or document it in DEBT.md with a target plan. Source: L45.
+OR94. Do not filter on attributes that don't exist on the event/dataclass. Verify the attribute exists before implementing the filter. If it doesn't exist, add it to the dataclass (justify per P1) or use a different mechanism. Source: L44.
+
+OR95. Mypy errors are STOP regardless of "pre-existing." OR2 says STOP on mypy errors — there is no "pre-existing" exemption. Fix each error or document it in DEBT.md with a target plan. Source: L45.
 
 OR57. Core components (EventBus, CapabilityGraph, TaskStateMachine, etc.) use strict versioning — incompatible versions prevent startup. Plugins use lenient versioning — incompatible versions are disabled with a WARN trace. A component is classified as "core" if its manifest declares `core = true` AND it is installed inside the `sovereignai/` package directory; otherwise it is a plugin. Per Rev5 F13: the `core = true` field is IGNORED for components installed outside the sovereignai package (e.g., `~/.sovereignai/plugins/`) — a third-party plugin setting `core = true` is still classified as a plugin. A core component manifest without a `version` field is an error (rejects registration); a plugin manifest without `version` defaults to `"0.0.0"` and passes. Source: Plan 12 Rev3 (N10, N21) + Rev5 (F13).
 
