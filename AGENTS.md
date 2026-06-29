@@ -248,6 +248,16 @@ OR88. Crash recovery is automatic and non-blocking. On startup, if a `~/.soverei
 
 OR89. All durable memory backends use atomic writes. SQLite backends use transactions (WAL mode, `busy_timeout=5000`). The JSON procedural backend writes to a temp file then `os.replace()`. No backend may use bare `open().write()`. The procedural backend's lock file is NEVER force-acquired — if the lock is held >5 seconds, the write fails with a WARN trace (preserving mutex safety per P9). Source: Plan 11 Rev3 (N8).
 
+OR63. The Education department is a first-class organizational unit. Source: Plan 14.
+
+OR64. Model improvement tasks run asynchronously via the CapabilityAPI. Fine-tuning acquires a process-wide GPU lock (`threading.Lock`) before starting. The lock protects against in-process GPU consumers only (the Teacher worker itself). Cross-process GPU contention with Ollama (a separate process) is NOT handled in v1 — if the user fine-tunes while Ollama is running, Ollama may fail with CUDA OOM. This is a documented known limitation (see DEBT.md). Source: Plan 14 Rev3 (N3).
+
+OR65. The Teacher worker gracefully degrades if GPU/dependencies are unavailable. Heavy ML imports are deferred inside method bodies. The `health_check()` method uses `importlib.util.find_spec()` FIRST for a fast availability check (no import side effects, ~1ms), then imports the top-level module inside a `try/except` block ONLY if `find_spec` succeeds — this catches both `ImportError` (missing package) and `OSError` (missing CUDA DLLs) without the multi-second import cost on every startup. Source: Plan 14 Rev3 (N17) + Rev5 (F12).
+
+OR69. The self-correction skill subscribes to `TaskStateChanged` events, filters out events where `component == "self_correction"`, and limits to 1 invocation per `task_id` via a `_recently_analyzed` set. When the set's guard triggers (duplicate event), emit a DEBUG trace (not silent). Source: Plan 14 Rev2 (F-1) + Rev3 (N14).
+
+OR70. `curate_dataset()` requires `consent: bool` parameter. PII filter + 30-day retention. Source: Plan 14 Rev2 (F-9).
+
 OR57. Core components (EventBus, CapabilityGraph, TaskStateMachine, etc.) use strict versioning — incompatible versions prevent startup. Plugins use lenient versioning — incompatible versions are disabled with a WARN trace. A component is classified as "core" if its manifest declares `core = true` AND it is installed inside the `sovereignai/` package directory; otherwise it is a plugin. Per Rev5 F13: the `core = true` field is IGNORED for components installed outside the sovereignai package (e.g., `~/.sovereignai/plugins/`) — a third-party plugin setting `core = true` is still classified as a plugin. A core component manifest without a `version` field is an error (rejects registration); a plugin manifest without `version` defaults to `"0.0.0"` and passes. Source: Plan 12 Rev3 (N10, N21) + Rev5 (F13).
 
 OR58. "Latest wins" applies ONLY to cosmetic attributes. "Latest" = highest SemVer; ties broken by registration order (first-registered wins). Source: Plan 12 Rev2 (F-38).
