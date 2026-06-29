@@ -537,3 +537,26 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - S4: Fixed ruff auto-fix issues (unused imports, whitespace, import sorting)
 - S5: Added L32 and L33 to LANDMINES.md (graduated to OR71, OR72)
 
+## prompt-10.1 — Post-Scan-10 Cleanup Patch
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-10.1-Rev1.md
+
+**Files changed**:
+- AGENTS.md (added OR75)
+- LANDMINES.md (added L34, L35)
+- .devin/workflows/close.md (git add -A + git ls-files verification)
+- PLANS.md (test baseline label, coverage baseline, reconciliation note)
+
+**Results**:
+- Tests: 169 passed, 0 failed
+- Ruff: 0 findings
+- Mypy: 0 findings
+- Bandit: 0 findings
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- OR75 prevents L34 (mv+add-not-rm) and L35 (missed auto-fixes) by requiring git add -A + git status verification
+- close.md Step 17 now checks git ls-files to catch duplicate-tracking bugs
+- Plan 9 Rev1-4 already removed from prompts/ (verified in S1)
