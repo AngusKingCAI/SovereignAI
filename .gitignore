@@ -38,3 +38,11 @@ Thumbs.db
 # Secrets (never commit real secrets — detect-secrets enforces this)
 .env
 .env.local
+
+# User settings (API keys, config, local state)
+settings/
+*.config.json
+config.json
+
+# SovereignAI local data (if symlinked or copied into repo)
+sovereignai_data/

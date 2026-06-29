@@ -384,6 +384,8 @@ async def dispatch(request: Request) -> TaskResponseDTO:
     Retrieve CapabilityAPI from container, call submit_task() with the message,
     return TaskResponseDTO with the submitted task.
     """
+    from uuid import uuid4
+
     from sovereignai.shared.capability_api import CapabilityAPI
     from sovereignai.shared.task_state_machine import ITaskStateQuery
 
@@ -394,7 +396,31 @@ async def dispatch(request: Request) -> TaskResponseDTO:
 
     data = await request.json()
     message = data.get("message", "")
+    model = data.get("model", None)  # NEW: optional model selection
 
+    # If a model is selected, use Ollama directly for chat
+    if model:
+        try:
+            import ollama
+            response = ollama.chat(
+                model=model,
+                messages=[{"role": "user", "content": message}],
+            )
+            return TaskResponseDTO(
+                task_id=str(uuid4()),
+                state="complete",
+                result=response.get("message", {}).get("content", ""),
+                error=None,
+            )
+        except Exception as exc:
+            return TaskResponseDTO(
+                task_id=str(uuid4()),
+                state="failed",
+                result=None,
+                error=str(exc),
+            )
+
+    # No model selected — use existing websearch dispatch
     try:
         task_id = capability_api.submit_task(
             token=token,
@@ -636,3 +662,208 @@ async def get_traces_for_task(
         }
         for e in task_events
     ]
+
+
+@app.get("/api/models/installed", dependencies=[Depends(get_current_user)])
+async def get_installed_models(request: Request) -> list[dict]:
+    """List models installed locally via Ollama."""
+    models = []
+    try:
+        import ollama
+        result = ollama.list()
+        for m in result.get("models", []):
+            models.append({
+                "id": m.get("name", "unknown"),
+                "provider": "ollama",
+                "size": m.get("size", 0),
+                "status": "installed",
+            })
+    except Exception:
+        # Ollama not running or not installed
+        pass
+    return models
+
+
+@app.get("/api/models/catalog", dependencies=[Depends(get_current_user)])
+async def get_model_catalog(
+    request: Request,
+    search: str = "",
+    limit: int = 50,
+) -> list[dict]:
+    """Browse available GGUF models from HuggingFace."""
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+    from sovereignai.shared.hf_catalog import fetch_gguf_models
+    return fetch_gguf_models(trace, search=search, limit=limit)
+
+
+@app.get("/api/models/catalog/{model_id:path}", dependencies=[Depends(get_current_user)])
+async def get_model_detail(request: Request, model_id: str) -> dict:
+    """Get available GGUF files (quantizations) for a specific model."""
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+    from sovereignai.shared.hf_catalog import get_model_files
+    files = get_model_files(trace, model_id)
+    return {"model_id": model_id, "files": files}
+
+
+@app.post("/api/models/pull", dependencies=[Depends(get_current_user)])
+async def pull_model(request: Request) -> dict:
+    """Pull a model via Ollama. Returns task_id for progress tracking."""
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+    data = await request.json()
+    model_name = data.get("model", "")
+    if not model_name:
+        raise HTTPException(status_code=400, detail="model is required")
+
+    trace.emit(component="models", level=TraceLevel.INFO,
+               message=f"Pulling model: {model_name}")
+
+    # Run ollama pull in background (it's a long operation)
+    import subprocess
+    import threading
+
+    def _pull() -> None:
+        try:
+            result = subprocess.run(
+                ["ollama", "pull", model_name],
+                capture_output=True, text=True, timeout=3600,
+            )
+            if result.returncode == 0:
+                trace.emit(component="models", level=TraceLevel.INFO,
+                           message=f"Model {model_name} pulled successfully")
+            else:
+                trace.emit(component="models", level=TraceLevel.ERROR,
+                           message=f"Model pull failed: {result.stderr}")
+        except Exception as exc:
+            trace.emit(component="models", level=TraceLevel.ERROR,
+                       message=f"Model pull error: {exc}")
+
+    thread = threading.Thread(target=_pull, daemon=True)
+    thread.start()
+
+    return {"status": "pulling", "model": model_name}
+
+
+@app.get("/api/models", dependencies=[Depends(get_current_user)])
+async def get_all_models(request: Request) -> dict:
+    """Get installed models + catalog summary."""
+    # Installed
+    installed = []
+    try:
+        import ollama
+        result = ollama.list()
+        for m in result.get("models", []):
+            installed.append({
+                "id": m.get("name", "unknown"),
+                "provider": "ollama",
+                "size": m.get("size", 0),
+                "status": "installed",
+            })
+    except Exception:
+        pass
+
+    return {
+        "installed": installed,
+        "providers": [
+            {"id": "huggingface", "name": "HuggingFace", "type": "catalog"},
+            {"id": "ollama", "name": "Ollama (Installed)", "type": "local"},
+        ],
+    }
+
+
+@app.get("/api/memory/backends", dependencies=[Depends(get_current_user)])
+async def get_memory_backends(request: Request) -> list[dict]:
+    """List registered memory backends with type and storage info."""
+    container: Any = request.app.state.container
+    backends = []
+
+    backend_specs = [
+        ("episodic", "EpisodicMemoryBackend", "~/.sovereignai/episodic.db", "SQLite"),
+        ("procedural", "ProceduralMemoryBackend", "~/.sovereignai/procedural_memory.json", "JSON"),
+        ("trace", "TraceMemoryBackend", "~/.sovereignai/trace.db", "SQLite"),
+        ("working", "WorkingMemoryBackend", "in-memory (volatile)", "Python dict"),
+    ]
+
+    for mem_type, class_name, storage, engine in backend_specs:
+        registered = False
+        record_count = 0
+        try:
+            backend_map = {
+                "EpisodicMemoryBackend": (
+                    "sovereignai.memory.episodic_backend",
+                    "EpisodicMemoryBackend",
+                ),
+                "ProceduralMemoryBackend": (
+                    "sovereignai.memory.procedural_backend",
+                    "ProceduralMemoryBackend",
+                ),
+                "TraceMemoryBackend": (
+                    "sovereignai.memory.trace_backend",
+                    "TraceMemoryBackend",
+                ),
+                "WorkingMemoryBackend": (
+                    "sovereignai.memory.working_backend",
+                    "WorkingMemoryBackend",
+                ),
+            }
+            module_path, cls_name = backend_map[class_name]
+            import importlib
+            mod = importlib.import_module(module_path)
+            cls = getattr(mod, cls_name)
+            backend = container.retrieve(cls)
+            registered = True
+            if hasattr(backend, 'query'):
+                try:
+                    record_count = len(backend.query({}))
+                except Exception:
+                    record_count = 0
+        except (KeyError, Exception):
+            pass
+
+        backends.append({
+            "type": mem_type,
+            "storage": storage,
+            "engine": engine,
+            "registered": registered,
+            "records": record_count,
+        })
+
+    return backends
+
+
+@app.get("/api/options/config", dependencies=[Depends(get_current_user)])
+async def get_options_config(request: Request) -> dict:
+    """Get user configuration (API keys are masked)."""
+    from sovereignai.shared.config_loader import load_config
+    config = load_config()
+    # Mask API keys
+    api_keys = {}
+    for provider, key in config.get("api_keys", {}).items():
+        api_keys[provider] = f"{key[:4]}...{key[-4:]}" if len(key) > 8 else "****"
+    return {
+        "api_keys": api_keys,
+        "ollama_host": config.get("ollama", {}).get("host", "http://localhost:11434"),
+    }
+
+
+@app.post("/api/options/api-keys", dependencies=[Depends(get_current_user)])
+async def set_api_key_endpoint(request: Request) -> dict:
+    """Set an API key for a provider."""
+    from sovereignai.shared.config_loader import set_api_key
+    data = await request.json()
+    provider = data.get("provider", "")
+    key = data.get("key", "")
+    if not provider or not key:
+        raise HTTPException(status_code=400, detail="provider and key required")
+    set_api_key(provider, key)
+    return {"status": "saved"}
+
+
+@app.delete("/api/options/api-keys/{provider}", dependencies=[Depends(get_current_user)])
+async def delete_api_key_endpoint(provider: str) -> dict:
+    """Delete an API key for a provider."""
+    from sovereignai.shared.config_loader import delete_api_key
+    delete_api_key(provider)
+    return {"status": "deleted"}

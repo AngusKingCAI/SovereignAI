@@ -26,6 +26,11 @@
   <main id="main-content">
     <section id="panel-orchestrator" class="panel active">
       <h2>Orchestrator</h2>
+      <div class="orchestrator-controls">
+        <select id="model-selector" onchange="selectModel(this.value)">
+          <option value="">Select a model...</option>
+        </select>
+      </div>
       <div id="orchestrator-thinking" style="display: none;">
         <div id="thinking-header" onclick="toggleThinking()">
           <span id="thinking-status">Working...</span>
@@ -50,11 +55,24 @@
     </section>
     <section id="panel-memory" class="panel">
       <h2>Memory</h2>
-      <p>Memory panel — deferred to Librarian implementation.</p>
+      <div id="memory-backends"></div>
     </section>
     <section id="panel-models" class="panel">
       <h2>Models</h2>
-      <p>Models panel — deferred to model management plan.</p>
+      <div class="models-tabs">
+        <button class="models-tab active" onclick="switchModelsTab('installed')">Installed</button>
+        <button class="models-tab" onclick="switchModelsTab('huggingface')">HuggingFace</button>
+      </div>
+      <div id="models-installed" class="models-content">
+        <div id="installed-models-list"></div>
+      </div>
+      <div id="models-huggingface" class="models-content" style="display:none;">
+        <div class="models-search">
+          <input type="text" id="hf-search" placeholder="Search GGUF models..." onkeyup="if(event.key==='Enter')loadHFCatalog()">
+          <button onclick="loadHFCatalog()">Search</button>
+        </div>
+        <div id="hf-models-list"></div>
+      </div>
     </section>
     <section id="panel-adapters" class="panel">
       <h2>Adapters</h2>
@@ -74,7 +92,20 @@
     </section>
     <section id="panel-options" class="panel">
       <h2>Options</h2>
-      <p>Options panel — deferred to settings plan.</p>
+      <div class="options-section">
+        <h3>API Keys</h3>
+        <div id="api-keys-list"></div>
+        <div class="api-key-form">
+          <input type="text" id="api-key-provider" placeholder="Provider (e.g., openai)">
+          <input type="password" id="api-key-value" placeholder="API Key">
+          <button onclick="saveApiKey()">Save</button>
+        </div>
+      </div>
+      <div class="options-section">
+        <h3>Ollama</h3>
+        <p>Host: <span id="ollama-host-display">Loading...</span></p>
+        <p>Ensure Ollama is running: <code>ollama serve</code></p>
+      </div>
     </section>
   </main>
 

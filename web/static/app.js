@@ -30,6 +30,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Load initial panel content
     loadPanelContent(hash);
+
+    // Load model selector on startup
+    loadModelSelector();
 });
 
 async function checkAuthStatus() {
@@ -79,6 +82,9 @@ function setupPanelNavigation() {
 
 function loadPanelContent(panelName) {
     switch (panelName) {
+        case 'orchestrator':
+            loadModelSelector();
+            break;
         case 'workers':
             loadWorkers();
             break;
@@ -88,11 +94,20 @@ function loadPanelContent(panelName) {
         case 'skills':
             loadSkills();
             break;
+        case 'memory':
+            loadMemory();
+            break;
+        case 'models':
+            loadInstalledModels();
+            break;
         case 'adapters':
             loadAdapters();
             break;
         case 'hardware':
             loadHardware();
+            break;
+        case 'options':
+            loadOptions();
             break;
     }
 }
@@ -369,7 +384,7 @@ function setupChatForm() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message })
+                body: JSON.stringify({ message, model: selectedModel })
             });
 
             if (response.status === 401) {
@@ -612,4 +627,189 @@ function renderTraces() {
     if (isAtBottom) {
         logContent.scrollTop = logContent.scrollHeight;
     }
+}
+
+// Models panel functions
+let currentModelsTab = 'installed';
+
+function switchModelsTab(tab) {
+    currentModelsTab = tab;
+    document.querySelectorAll('.models-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.models-tab[onclick*="${tab}"]`).classList.add('active');
+    document.getElementById('models-installed').style.display = tab === 'installed' ? 'block' : 'none';
+    document.getElementById('models-huggingface').style.display = tab === 'huggingface' ? 'block' : 'none';
+    if (tab === 'installed') loadInstalledModels();
+    if (tab === 'huggingface') loadHFCatalog();
+}
+
+function loadInstalledModels() {
+    fetch('/api/models/installed')
+        .then(r => r.json())
+        .then(models => {
+            const list = document.getElementById('installed-models-list');
+            list.innerHTML = '';
+            if (models.length === 0) {
+                list.innerHTML = '<p>No models installed. Pull a model from the HuggingFace tab or run <code>ollama pull llama3.2</code>.</p>';
+                return;
+            }
+            models.forEach(m => {
+                const entry = document.createElement('div');
+                entry.className = 'model-entry installed';
+                const size = m.size ? `${(m.size / 1e9).toFixed(1)}GB` : '';
+                entry.innerHTML = `<span class="model-name">${m.id}</span> <span class="model-size">${size}</span>`;
+                list.appendChild(entry);
+            });
+        });
+}
+
+function loadHFCatalog() {
+    const search = document.getElementById('hf-search').value;
+    const url = `/api/models/catalog${search ? '?search=' + encodeURIComponent(search) : ''}`;
+    fetch(url)
+        .then(r => r.json())
+        .then(models => {
+            const list = document.getElementById('hf-models-list');
+            list.innerHTML = '';
+            if (models.length === 0) {
+                list.innerHTML = '<p>No models found. Try a different search.</p>';
+                return;
+            }
+            // Group by publisher
+            const byPublisher = {};
+            models.forEach(m => {
+                if (!byPublisher[m.publisher]) byPublisher[m.publisher] = [];
+                byPublisher[m.publisher].push(m);
+            });
+            for (const [publisher, pubModels] of Object.entries(byPublisher)) {
+                const section = document.createElement('div');
+                section.className = 'model-publisher-section';
+                section.innerHTML = `<h3>${publisher}</h3>`;
+                pubModels.forEach(m => {
+                    const entry = document.createElement('div');
+                    entry.className = 'model-entry catalog';
+                    const downloads = m.downloads > 1000 ? `${(m.downloads / 1000).toFixed(0)}K` : m.downloads;
+                    entry.innerHTML = `
+                        <span class="model-name">${m.name}</span>
+                        <span class="model-downloads">⬇ ${downloads}</span>
+                        <button class="pull-btn" onclick="pullModel('${m.id}')">Pull</button>
+                    `;
+                    section.appendChild(entry);
+                });
+                list.appendChild(section);
+            }
+        });
+}
+
+function pullModel(modelId) {
+    if (!confirm(`Pull ${modelId}? This will download the model via Ollama.`)) return;
+    fetch('/api/models/pull', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({model: modelId}),
+        credentials: 'same-origin',
+    })
+    .then(r => r.json())
+    .then(result => {
+        alert(`Pulling ${modelId}... Check the log drawer for progress.`);
+    });
+}
+
+// Orchestrator model selector
+let selectedModel = null;
+
+function loadModelSelector() {
+    fetch('/api/models/installed')
+        .then(r => r.json())
+        .then(models => {
+            const selector = document.getElementById('model-selector');
+            const current = selector.value;
+            selector.innerHTML = '<option value="">Select a model...</option>';
+            models.forEach(m => {
+                const option = document.createElement('option');
+                option.value = m.id;
+                option.textContent = m.id;
+                if (m.id === current) option.selected = true;
+                selector.appendChild(option);
+            });
+            if (models.length === 0) {
+                selector.innerHTML = '<option value="">No models installed — pull one first</option>';
+            }
+        });
+}
+
+function selectModel(modelId) {
+    selectedModel = modelId;
+}
+
+function loadMemory() {
+    fetch('/api/memory/backends')
+        .then(r => r.json())
+        .then(backends => {
+            const list = document.getElementById('memory-backends');
+            list.innerHTML = '';
+            backends.forEach(b => {
+                const entry = document.createElement('div');
+                entry.className = 'memory-backend-entry';
+                const status = b.registered ? '✅' : '❌';
+                entry.innerHTML = `
+                    <h3>${b.type} ${status}</h3>
+                    <p>Engine: ${b.engine}</p>
+                    <p>Storage: ${b.storage}</p>
+                    <p>Records: ${b.records}</p>
+                `;
+                list.appendChild(entry);
+            });
+        });
+}
+
+function loadOptions() {
+    fetch('/api/options/config')
+        .then(r => r.json())
+        .then(config => {
+            const list = document.getElementById('api-keys-list');
+            list.innerHTML = '';
+            for (const [provider, maskedKey] of Object.entries(config.api_keys)) {
+                const entry = document.createElement('div');
+                entry.className = 'api-key-entry';
+                entry.innerHTML = `
+                    <span>${provider}: ${maskedKey}</span>
+                    <button onclick="deleteApiKey('${provider}')">Delete</button>
+                `;
+                list.appendChild(entry);
+            }
+            document.getElementById('ollama-host-display').textContent = config.ollama_host;
+        });
+}
+
+function saveApiKey() {
+    const provider = document.getElementById('api-key-provider').value;
+    const key = document.getElementById('api-key-value').value;
+    if (!provider || !key) {
+        alert('Provider and key are required');
+        return;
+    }
+    fetch('/api/options/api-keys', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({provider, key}),
+        credentials: 'same-origin',
+    })
+    .then(r => r.json())
+    .then(result => {
+        document.getElementById('api-key-provider').value = '';
+        document.getElementById('api-key-value').value = '';
+        loadOptions();
+    });
+}
+
+function deleteApiKey(provider) {
+    if (!confirm(`Delete API key for ${provider}?`)) return;
+    fetch(`/api/options/api-keys/${provider}`, {
+        method: 'DELETE',
+        credentials: 'same-origin',
+    })
+    .then(r => r.json())
+    .then(result => {
+        loadOptions();
+    });
 }

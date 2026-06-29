@@ -574,3 +574,34 @@ body {
         opacity: 1;
     }
 }
+
+/* Models panel */
+.models-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+.models-tab { padding: 6px 16px; background: #2d2d2d; border: 1px solid #3d3d3d; color: #888; cursor: pointer; border-radius: 4px; }
+.models-tab.active { background: #3d3d3d; color: #fff; }
+.models-search { display: flex; gap: 8px; margin-bottom: 12px; }
+.models-search input { flex: 1; padding: 6px; background: #2d2d2d; border: 1px solid #4d4d4d; color: #ddd; border-radius: 4px; }
+.model-entry { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #333; }
+.model-name { color: #ddd; font-weight: 500; }
+.model-size { color: #888; font-size: 12px; }
+.model-downloads { color: #666; font-size: 12px; }
+.pull-btn { padding: 4px 12px; background: #3d3d3d; border: 1px solid #4d4d4d; color: #ccc; border-radius: 4px; cursor: pointer; font-size: 12px; }
+.pull-btn:hover { background: #4d4d4d; }
+.model-publisher-section { margin-bottom: 16px; }
+.model-publisher-section h3 { color: #aaa; margin: 8px 0 4px; font-size: 14px; }
+
+/* Orchestrator model selector */
+.orchestrator-controls { margin-bottom: 12px; }
+#model-selector { padding: 6px; background: #2d2d2d; border: 1px solid #4d4d4d; color: #ddd; border-radius: 4px; width: 100%; max-width: 300px; }
+
+/* Memory panel */
+.memory-backend-entry { padding: 12px; border: 1px solid #3d3d3d; margin-bottom: 8px; border-radius: 4px; }
+.memory-backend-entry h3 { color: #ccc; margin: 0 0 4px; }
+.memory-backend-entry p { color: #999; margin: 2px 0; font-size: 13px; }
+
+/* Options panel */
+.options-section { margin-bottom: 24px; }
+.api-key-entry { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #333; color: #ddd; }
+.api-key-form { display: flex; gap: 8px; margin-top: 12px; }
+.api-key-form input { padding: 6px; background: #2d2d2d; border: 1px solid #4d4d4d; color: #ddd; border-radius: 4px; }
+
