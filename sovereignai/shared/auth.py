@@ -33,7 +33,7 @@ from sovereignai.shared.types import (
 _TOKEN_TTL = timedelta(hours=8)
 
 # Persistent storage for user credentials (per Plan 17)
-_AUTH_FILE = Path(os.path.expanduser("~/.sovereignai/auth.json"))
+_AUTH_FILE = Path("settings/auth.json")
 
 
 class AuthMiddleware:
@@ -43,7 +43,7 @@ class AuthMiddleware:
     session tokens. It does NOT store the user's password in memory
     after initial setup — only the hash (per P10 security principle).
 
-    User credentials are persisted to ~/.sovereignai/auth.json so they
+    User credentials are persisted to settings/auth.json so they
     survive server restarts. Tokens are in-memory only (expire on restart).
     """
 
