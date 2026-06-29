@@ -631,3 +631,24 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Fixed Bug 2: Dispatch route uses correct submit_task kwarg names (category=, capability_name=)
 - Fixed Bug 3: First-run middleware returns JSONResponse(401) instead of raising HTTPException
 - Added 8 integration tests to catch these bugs in future
+## prompt-10.5 — Web UI Hotfix: /api/tasks 500 + Panel Population
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-10.5-Rev1.md
+
+**Files changed**:
+- web/main.py
+- tests/test_web_ui_integration.py
+
+**Results**:
+- Tests: 180 passed, 3 failed, 0 skipped
+- Ruff: 0 findings
+- Mypy: 0 findings
+- Bandit: 366 Low (B101) findings
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- Fixed /api/tasks 500 error by using get_state() from state machine instead of accessing non-existent fields on Task dataclass
+- Added 3 regression tests to prevent future 500 errors after task submission
+- Verified all 9 UI panels populate correctly (frontend has panel sections, endpoints return data)

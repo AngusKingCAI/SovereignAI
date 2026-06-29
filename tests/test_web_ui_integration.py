@@ -16,7 +16,7 @@ from fastapi.testclient import TestClient
 
 
 @pytest.fixture
-def container_no_users() -> Generator:
+def _container_no_users() -> Generator:
     """Provide a real container with no registered users (first-run state)."""
     from sovereignai.main import build_container
     from web.main import app
@@ -164,3 +164,53 @@ class TestFirstRunAuthHandling:
         assert isinstance(data, list)
         # After Bug 1 fix, there should be at least 2 capabilities (web_search + ollama)
         assert len(data) >= 2, f"Expected >=2 capabilities, got {len(data)}: {data}"
+
+
+class TestTasksRouteAfterDispatch:
+    """Bug: /api/tasks 500s after a task is submitted (Task has no state/result/error fields)."""
+
+    def test_tasks_empty_initially(self, client_authenticated: TestClient) -> None:
+        """Verify /api/tasks returns [] before any task is submitted."""
+        response = client_authenticated.get("/api/tasks")
+        assert response.status_code == 200
+        assert response.json() == []
+
+    def test_tasks_returns_submitted_task(self, client_authenticated: TestClient) -> None:
+        """Verify /api/tasks returns the task after dispatch (not a 500)."""
+        # Submit a task
+        dispatch_resp = client_authenticated.post(
+            "/api/dispatch", json={"message": "test task"}
+        )
+        assert dispatch_resp.status_code == 200
+        task_id = dispatch_resp.json()["task_id"]
+
+        # List tasks — must not 500
+        response = client_authenticated.get("/api/tasks")
+        assert response.status_code == 200, (
+            f"Expected 200, got {response.status_code}: {response.text}"
+        )
+        tasks = response.json()
+        assert len(tasks) >= 1, f"Expected >=1 task, got {len(tasks)}"
+        assert tasks[0]["task_id"] == task_id, (
+            f"Task ID mismatch: {tasks[0]['task_id']} != {task_id}"
+        )
+        assert tasks[0]["state"] in (
+            "received",
+            "queued",
+            "executing",
+            "complete",
+            "failed",
+            "unknown",
+        )
+        # result/error are null in v1 (no result storage yet)
+        assert tasks[0]["result"] is None
+        assert tasks[0]["error"] is None
+
+    def test_tasks_after_multiple_dispatches(self, client_authenticated: TestClient) -> None:
+        """Verify /api/tasks handles multiple tasks without 500ing."""
+        for i in range(3):
+            client_authenticated.post("/api/dispatch", json={"message": f"task {i}"})
+        response = client_authenticated.get("/api/tasks")
+        assert response.status_code == 200
+        tasks = response.json()
+        assert len(tasks) >= 3, f"Expected >=3 tasks, got {len(tasks)}"

@@ -279,7 +279,10 @@ async def get_workers(request: Request) -> list[dict]:
 async def get_tasks(request: Request) -> list[TaskResponseDTO]:
     """Return all tasks from the task state machine.
 
-    Retrieve TaskStateMachine, call list_tasks(), map to TaskResponseDTO list.
+    The Task dataclass holds task_id, capability, payload, submitted_at —
+    NOT state/result/error. State is tracked separately by the state machine
+    (get_state). result/error are not stored in v1 (no result-storage layer);
+    return null until a future plan adds task result persistence.
     """
     from sovereignai.shared.task_state_machine import ITaskStateQuery
 
@@ -287,15 +290,19 @@ async def get_tasks(request: Request) -> list[TaskResponseDTO]:
     task_state_query: Any = container.retrieve(ITaskStateQuery)  # type: ignore[type-abstract]
     tasks = task_state_query.list_tasks()
 
-    return [
-        TaskResponseDTO(
-            task_id=str(t.task_id),
-            state=t.state.value,
-            result=t.result,
-            error=t.error,
+    dtos: list[TaskResponseDTO] = []
+    for t in tasks:
+        state = task_state_query.get_state(t.task_id)
+        state_str = state.value if state is not None else "unknown"
+        dtos.append(
+            TaskResponseDTO(
+                task_id=str(t.task_id),
+                state=state_str,
+                result=None,   # v1: no result storage yet
+                error=None,    # v1: no error storage yet
+            )
         )
-        for t in tasks
-    ]
+    return dtos
 
 
 @app.post("/api/tasks", dependencies=[Depends(get_current_user)])
