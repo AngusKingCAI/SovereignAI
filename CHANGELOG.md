@@ -906,3 +906,26 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 **Notes**:
 - API endpoint tests skipped due to FastAPI authentication dependency complexity
 - Manual panel verification available via browser preview
+## prompt-17.1 — Fix model pull to use hf.co/ prefix
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-17.1-Rev1.md
+
+**Files changed**:
+- web/main.py
+- web/static/app.js
+- web/static/styles.css
+- web/templates/index.html
+
+**Results**:
+- Tests: 304 passed, 31 failed (pre-existing auth isolation issues)
+- Ruff: 0 findings on edited files
+- Mypy: 0 findings on edited files
+- Bandit: 5 Low findings (pre-existing)
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- Fixed ollama.pull() to prefix hf.co/ for HuggingFace models
+- Added quant selection dialog for model pulls
+- Updated Models panel UI with tabbed layout

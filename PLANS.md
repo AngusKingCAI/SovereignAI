@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-29 (prompt-17)
+**Last updated**: 2026-06-29 (prompt-17.1)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -31,6 +31,7 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 15**: Baseline → 320 tests. Delta: 0 — see CHANGELOG prompt-15.
 **Plan 16**: Baseline → 332 tests. Delta: +12 — see CHANGELOG prompt-16.
 **Plan 17**: Baseline → 352 tests. Delta: +20 — see CHANGELOG prompt-17.
+**Plan 17.1**: Baseline → 352 tests. Delta: 0 — hotfix, no test changes.
 
 ---
 
@@ -96,6 +97,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-15 | `prompt-15` | Scan 15 — mechanical verification scan | 320 | 0 | 0 | 2026-06-29 |
 | prompt-16 | `prompt-16` | Fix Log Drawer and Add Orchestrator Thinking | 332 | 0 | 0 | 2026-06-29 |
 | prompt-17 | `prompt-17` | Implement Models, Memory, Orchestrator, and Options Panels | 352 | 0 | 0 | 2026-06-29 |
+| prompt-17.1 | `prompt-17.1` | Fix model pull to use hf.co/ prefix | 352 | 0 | 0 | 2026-06-29 |
 
 ---
 

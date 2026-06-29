@@ -636,8 +636,8 @@ function switchModelsTab(tab) {
     currentModelsTab = tab;
     document.querySelectorAll('.models-tab').forEach(t => t.classList.remove('active'));
     document.querySelector(`.models-tab[onclick*="${tab}"]`).classList.add('active');
-    document.getElementById('models-installed').style.display = tab === 'installed' ? 'block' : 'none';
-    document.getElementById('models-huggingface').style.display = tab === 'huggingface' ? 'block' : 'none';
+    document.querySelectorAll('.models-content').forEach(c => c.classList.remove('active'));
+    document.getElementById(`models-${tab}`).classList.add('active');
     if (tab === 'installed') loadInstalledModels();
     if (tab === 'huggingface') loadHFCatalog();
 }
@@ -677,8 +677,9 @@ function loadHFCatalog() {
             // Group by publisher
             const byPublisher = {};
             models.forEach(m => {
-                if (!byPublisher[m.publisher]) byPublisher[m.publisher] = [];
-                byPublisher[m.publisher].push(m);
+                const pub = m.id.split('/')[0];
+                if (!byPublisher[pub]) byPublisher[pub] = [];
+                byPublisher[pub].push(m);
             });
             for (const [publisher, pubModels] of Object.entries(byPublisher)) {
                 const section = document.createElement('div');
@@ -691,7 +692,7 @@ function loadHFCatalog() {
                     entry.innerHTML = `
                         <span class="model-name">${m.name}</span>
                         <span class="model-downloads">⬇ ${downloads}</span>
-                        <button class="pull-btn" onclick="pullModel('${m.id}')">Pull</button>
+                        <button class="pull-btn" onclick="showPullDialog('${m.id}')">Pull</button>
                     `;
                     section.appendChild(entry);
                 });
@@ -700,17 +701,43 @@ function loadHFCatalog() {
         });
 }
 
-function pullModel(modelId) {
-    if (!confirm(`Pull ${modelId}? This will download the model via Ollama.`)) return;
+function showPullDialog(modelId) {
+    // Fetch available quants first
+    fetch(`/api/models/catalog/${encodeURIComponent(modelId)}`)
+        .then(r => r.json())
+        .then(data => {
+            const files = data.files || [];
+            const quants = files.map(f => f.quant).filter(Boolean);
+            const defaultQuant = quants.includes('Q4_K_M') ? 'Q4_K_M' : quants[0] || '';
+
+            const quantSelect = quants.length > 0
+                ? `<select id="pull-quant">${quants.map(q => `<option value="${q}" ${q===defaultQuant?'selected':''}>${q}</option>`).join('')}</select>`
+                : '<input type="text" id="pull-quant" placeholder="quant (e.g., Q4_K_M)" />';
+
+            const dialog = document.createElement('div');
+            dialog.className = 'pull-dialog';
+            dialog.innerHTML = `
+                <h3>Pull ${modelId}</h3>
+                <label>Quantization: ${quantSelect}</label>
+                <button onclick="confirmPull('${modelId}')">Pull</button>
+                <button onclick="this.closest('.pull-dialog').remove()">Cancel</button>
+            `;
+            document.body.appendChild(dialog);
+        });
+}
+
+function confirmPull(modelId) {
+    const quant = document.getElementById('pull-quant').value;
     fetch('/api/models/pull', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({model: modelId}),
+        body: JSON.stringify({model: modelId, quant: quant}),
         credentials: 'same-origin',
     })
     .then(r => r.json())
     .then(result => {
-        alert(`Pulling ${modelId}... Check the log drawer for progress.`);
+        alert(`Pulling ${modelId}:${quant}... Check the log drawer for progress.`);
+        document.querySelector('.pull-dialog').remove();
     });
 }
 

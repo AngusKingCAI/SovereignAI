@@ -697,6 +697,14 @@ async def get_model_catalog(
     return fetch_gguf_models(trace, search=search, limit=limit)
 
 
+def extract_quant_from_filename(path: str) -> str:
+    """Extract quantization label from GGUF filename (e.g., Q4_K_M)."""
+    import re
+    # Match patterns like "Q4_K_M", "Q5_K_M", "Q8_0", etc.
+    match = re.search(r"(Q[0-9]+_[A-Z_]+)", path)
+    return match.group(1) if match else ""
+
+
 @app.get("/api/models/catalog/{model_id:path}", dependencies=[Depends(get_current_user)])
 async def get_model_detail(request: Request, model_id: str) -> dict:
     """Get available GGUF files (quantizations) for a specific model."""
@@ -704,6 +712,9 @@ async def get_model_detail(request: Request, model_id: str) -> dict:
     trace: Any = container.retrieve(TraceEmitter)
     from sovereignai.shared.hf_catalog import get_model_files
     files = get_model_files(trace, model_id)
+    # Enrich with quant labels
+    for f in files:
+        f["quant"] = extract_quant_from_filename(f["path"])
     return {"model_id": model_id, "files": files}
 
 
@@ -717,8 +728,19 @@ async def pull_model(request: Request) -> dict:
     if not model_name:
         raise HTTPException(status_code=400, detail="model is required")
 
+    # Prefix with hf.co/ for HuggingFace models
+    if "/" in model_name and not model_name.startswith("hf.co/"):
+        ollama_name = f"hf.co/{model_name}"
+    else:
+        ollama_name = model_name
+
+    # Add quant if specified
+    quant = data.get("quant", "")
+    if quant:
+        ollama_name = f"{ollama_name}:{quant}"
+
     trace.emit(component="models", level=TraceLevel.INFO,
-               message=f"Pulling model: {model_name}")
+               message=f"Pulling model: {ollama_name}")
 
     # Run ollama pull in background (it's a long operation)
     import subprocess
@@ -727,12 +749,12 @@ async def pull_model(request: Request) -> dict:
     def _pull() -> None:
         try:
             result = subprocess.run(
-                ["ollama", "pull", model_name],
+                ["ollama", "pull", ollama_name],
                 capture_output=True, text=True, timeout=3600,
             )
             if result.returncode == 0:
                 trace.emit(component="models", level=TraceLevel.INFO,
-                           message=f"Model {model_name} pulled successfully")
+                           message=f"Model {ollama_name} pulled successfully")
             else:
                 trace.emit(component="models", level=TraceLevel.ERROR,
                            message=f"Model pull failed: {result.stderr}")
@@ -743,7 +765,7 @@ async def pull_model(request: Request) -> dict:
     thread = threading.Thread(target=_pull, daemon=True)
     thread.start()
 
-    return {"status": "pulling", "model": model_name}
+    return {"status": "pulling", "model": ollama_name}
 
 
 @app.get("/api/models", dependencies=[Depends(get_current_user)])
