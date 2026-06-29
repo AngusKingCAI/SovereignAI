@@ -124,6 +124,26 @@ Append-only. L1–L9, L11, L12, L17 inherited from sovereign-ai (only those refe
 **Impact**: 3 files left uncommitted after "successful" close; User frustration; required follow-up commit.
 **Graduated to**: OR75.
 
+## L36 — Premature git tag creation requires force-push to move
+**Trigger**: Prompts 9, 10 — tag created before final commit, then `tag -d` + recreate + `push --force`. Also: prompt-11 tag created at `6fa8d73` (a pre-10.1 commit) before Plan 11 started.
+**Impact**: Force-pushed tags break anyone who pulled the old tag; dangerous for shared repos. Stale tags point to meaningless commits.
+**Graduated to**: OR76.
+
+## L37 — Coverage skipped or unmeasured in 8 of 16 prompts
+**Trigger**: Prompts 0.1, 0.2, 0.4, 1, 3, 4, 7, 8 reported "Coverage: N/A" or "not run" with no rule requiring it.
+**Impact**: Coverage baseline drifted from 96% → 93% without detection; no STOP triggered.
+**Graduated to**: OR77.
+
+## L38 — Bandit Low count drifted without baseline reconciliation
+**Trigger**: Bandit Low count: 49 (Plan 1) → 119 (Plan 3) → 156 (Plan 4) → 332 (Plan 10). Baseline updated only at scans, not at every close.
+**Impact**: Stale baselines make it impossible to detect new non-test Low findings.
+**Graduated to**: OR78.
+
+## L39 — Quota exhaustion mid-plan causes context loss and skipped steps
+**Trigger**: 60+ "Auto-continued" interrupts across 16 logs. Prompt-7 skipped `/close` entirely after interrupts.
+**Impact**: Steps skipped, work repeated, `/close` forgotten.
+**Graduated to**: OR79.
+
 ---
 
 ## Capturing new landmines (L34+)
