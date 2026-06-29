@@ -7,13 +7,18 @@ attached to every subsequent request.
 
 Per AR4: the token store is instance state, not module-level. The
 AuthMiddleware receives it via constructor injection.
+
+Per Plan 17: user credentials persist to ~/.sovereignai/auth.json
+so they survive server restarts.
 """
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import secrets
 from datetime import timedelta
+from pathlib import Path
 from threading import Lock
 
 from sovereignai.shared.trace_emitter import TraceEmitter
@@ -27,6 +32,9 @@ from sovereignai.shared.types import (
 # Token expires after 8 hours (configurable in a future plan via Options panel)
 _TOKEN_TTL = timedelta(hours=8)
 
+# Persistent storage for user credentials (per Plan 17)
+_AUTH_FILE = Path(os.path.expanduser("~/.sovereignai/auth.json"))
+
 
 class AuthMiddleware:
     """Validate session tokens and issue new ones after username/password check.
@@ -34,10 +42,13 @@ class AuthMiddleware:
     The middleware stores password hashes (never plaintext) and active
     session tokens. It does NOT store the user's password in memory
     after initial setup — only the hash (per P10 security principle).
+
+    User credentials are persisted to ~/.sovereignai/auth.json so they
+    survive server restarts. Tokens are in-memory only (expire on restart).
     """
 
     def __init__(self, trace: TraceEmitter) -> None:
-        """Create an empty auth middleware instance with no registered users yet.
+        """Create an auth middleware instance, loading existing users from disk.
 
         Args:
             trace: Trace emitter for logging auth events (login
@@ -48,6 +59,44 @@ class AuthMiddleware:
         self._salts: dict[str, bytes] = {}             # username -> salt
         self._tokens: dict[str, SessionToken] = {}     # token string -> SessionToken
         self._lock = Lock()
+        self._load_users()
+
+    def _load_users(self) -> None:
+        """Load user hashes and salts from disk on startup."""
+        if not _AUTH_FILE.exists():
+            return
+        try:
+            data = json.loads(_AUTH_FILE.read_text(encoding="utf-8"))
+            for username, creds in data.items():
+                self._salts[username] = bytes.fromhex(creds["salt"])
+                self._password_hashes[username] = bytes.fromhex(creds["hash"])
+            self._trace.emit(
+                component="AuthMiddleware",
+                level=TraceLevel.INFO,
+                message=f"Loaded {len(self._password_hashes)} user(s) from {_AUTH_FILE}",
+            )
+        except (json.JSONDecodeError, KeyError, OSError) as exc:
+            self._trace.emit(
+                component="AuthMiddleware",
+                level=TraceLevel.WARN,
+                message=f"Failed to load users from {_AUTH_FILE}: {exc} — starting fresh",
+            )
+
+    def _save_users(self) -> None:
+        """Persist user hashes and salts to disk."""
+        _AUTH_FILE.parent.mkdir(parents=True, exist_ok=True)
+        data = {
+            username: {
+                "salt": self._salts[username].hex(),
+                "hash": self._password_hashes[username].hex(),
+            }
+            for username in self._password_hashes
+        }
+        _AUTH_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        try:
+            os.chmod(_AUTH_FILE, 0o600)  # User read/write only
+        except OSError:
+            pass  # Windows may not support chmod
 
     def register_user(self, username: str, password: str) -> None:
         """Add a new user with a username and password for first-run setup.
@@ -71,6 +120,7 @@ class AuthMiddleware:
                                          salt, iterations=100_000)
             self._salts[username] = salt
             self._password_hashes[username] = hashed
+            self._save_users()
         self._trace.emit(
             component="AuthMiddleware",
             level=TraceLevel.INFO,
