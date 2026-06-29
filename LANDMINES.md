@@ -114,6 +114,16 @@ Append-only. L1–L9, L11, L12, L17 inherited from sovereign-ai (only those refe
 **Impact**: Risk of silently disabling architectural enforcement. AR7 (UI/core separation) could be effectively disabled without Architect sign-off.
 **Graduated to**: OR72.
 
+## L34 — `mv` + `git add <new>` leaves old path tracked in git
+**Trigger**: Prompt-9 close Step 17 and prompt-10 S1 — `mv prompts/plan-{N}-Rev*.md prompts/completed/` followed by `git add prompts/completed/`. The `git add` staged the new files but not the deletions. Git tracked both copies; `git ls-files` showed files in both locations.
+**Impact**: Duplicate plan files in repo across 1+ prompt cycles; User had to manually `git rm`; archive appeared successful but wasn't.
+**Graduated to**: OR75.
+
+## L35 — ruff --fix / detect-secrets auto-modified files missed by explicit `git add` lists
+**Trigger**: Prompt-10 Step 15 — `ruff check . --fix` modified `tests/test_e2e_task_submission.py`, `tests/test_web_ui_panels.py`; `detect-secrets scan` updated `txt/.secrets.baseline`. `git add <explicit 25-file list>` missed all 3. Committed `ddd050b` without them; User caught it; required `7e2eeb8` fix commit.
+**Impact**: 3 files left uncommitted after "successful" close; User frustration; required follow-up commit.
+**Graduated to**: OR75.
+
 ---
 
 ## Capturing new landmines (L34+)
