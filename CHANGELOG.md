@@ -560,3 +560,27 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - OR75 prevents L34 (mv+add-not-rm) and L35 (missed auto-fixes) by requiring git add -A + git status verification
 - close.md Step 17 now checks git ls-files to catch duplicate-tracking bugs
 - Plan 9 Rev1-4 already removed from prompts/ (verified in S1)
+## prompt-10.2 — Governance Patch: Rule Gap Fixes + Premature Tag Cleanup
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-10.2-Rev1.md
+
+**Files changed**:
+- AGENTS.md (added OR76-OR82)
+- LANDMINES.md (added L36-L39)
+- .devin/workflows/close.md (coverage step, tag hardening, bandit reconciliation)
+- PLANS.md (baseline notes, reconciliation entry)
+
+**Results**:
+- Tests: 169 passed, 3 skipped
+- Ruff: 0 findings
+- Mypy: 0 findings
+- Bandit: 332 Low (B101)
+- Vulture: 0 findings
+- Detect-secrets: pass
+- Coverage: 93%
+
+**Notes**:
+- Removed premature prompt-11 tag (pointed to 6fa8d73, a pre-10.1 commit)
+- OR76: no premature tags; OR77: coverage mandatory; OR78: bandit reconciliation; OR79: quota-exhaustion re-read; OR80: git add -A for all commits; OR81: detect-secrets audit only; OR82: never git mv
+- close.md now requires coverage measurement, tag existence check, and bandit count reconciliation
