@@ -13,6 +13,8 @@
 
 This document specifies the **Coding Department** — SovereignAI's internal capability for all software development work. The department writes, reads, modifies, tests, reviews, and reasons about code across any language or framework. It does not own the tools it uses — terminal access, file system operations, git, and test runners are skills and adapters registered in the Skills and Adapters panels. The Coding Department is the brain that directs those tools; the tools themselves are interchangeable.
 
+**Naming note:** the Research Department spec refers to this department as the "Coding Department" throughout (its §7.2 and elsewhere). There is no separate "Engineering Department" — that name does not appear in this document and is not a distinct entity. Any reference elsewhere in the spec set to an "Engineering Department" means this department.
+
 The department handles the full software development lifecycle from initial task intake through to verified, committed output: understanding requirements, reading existing codebases, planning changes, writing code, running tests, interpreting failures, iterating, and presenting finished work to the Owner for review.
 
 ---

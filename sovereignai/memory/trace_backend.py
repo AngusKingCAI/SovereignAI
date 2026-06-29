@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import sqlite3
 import uuid
-from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from sovereignai.shared.trace_emitter import TraceEmitter
@@ -64,9 +63,15 @@ class TraceMemoryBackend:
                 task_state TEXT
             )
         """)
-        self._conn.execute("CREATE INDEX IF NOT EXISTS idx_traces_correlation ON traces(correlation_id)")
-        self._conn.execute("CREATE INDEX IF NOT EXISTS idx_traces_time ON traces(timestamp)")
-        self._conn.execute("CREATE INDEX IF NOT EXISTS idx_traces_task ON traces(task_id)")
+        self._conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_traces_correlation ON traces(correlation_id)"
+        )
+        self._conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_traces_time ON traces(timestamp)"
+        )
+        self._conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_traces_task ON traces(task_id)"
+        )
         self._conn.commit()
 
     def store(self, data: dict, metadata: dict | None = None) -> str:
@@ -96,7 +101,8 @@ class TraceMemoryBackend:
         if self._conn:
             self._conn.execute(
                 """
-                INSERT INTO traces (id, timestamp, level, component, message, correlation_id, task_id, task_state)
+                INSERT INTO traces
+                (id, timestamp, level, component, message, correlation_id, task_id, task_state)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
@@ -120,7 +126,7 @@ class TraceMemoryBackend:
         return record_id
 
     def query(self, query: dict) -> list[dict]:
-        """Query trace events matching the criteria.
+        """Query trace events matching the specified criteria and filters list.
 
         Args:
             query: Query parameters. Supported keys:
@@ -164,7 +170,7 @@ class TraceMemoryBackend:
             WHERE {where_clause}
             ORDER BY timestamp ASC
             {limit_clause}
-        """
+        """  # nosec B608
 
         cursor = self._conn.execute(sql, params)
         results = []
@@ -188,7 +194,7 @@ class TraceMemoryBackend:
         return results
 
     def delete(self, record_id: str) -> bool:
-        """Delete a trace event by its id.
+        """Delete a trace event by its unique identifier from storage.
 
         Args:
             record_id: The id of the trace event to delete.
@@ -240,7 +246,7 @@ class TraceMemoryBackend:
         return {row[0]: row[1] for row in cursor}
 
     def close(self) -> None:
-        """Close the database connection and clean up resources."""
+        """Close the database connection and clean up all related resources."""
         if self._conn:
             self._conn.close()
             self._conn = None

@@ -10,6 +10,7 @@ The emitter is NOT a context bag (per AR6). It carries trace data only
 """
 from __future__ import annotations
 
+from collections.abc import Callable
 from threading import Lock
 from typing import TYPE_CHECKING
 from uuid import UUID
@@ -53,7 +54,7 @@ class TraceEmitter:
         self._events: list[TraceEvent] = []
         self._lock = Lock()
         self._max_events = max_events
-        self._callbacks: list[callable] = []
+        self._callbacks: list[Callable[[TraceEvent], None]] = []
 
     def emit(
         self,
@@ -84,12 +85,10 @@ class TraceEmitter:
             if len(self._events) > self._max_events:
                 self._events.pop(0)
             # Notify all registered callbacks for durable persistence
+            import contextlib
             for callback in self._callbacks:
-                try:
+                with contextlib.suppress(Exception):
                     callback(event)
-                except Exception:
-                    # Callback failures must not break emission
-                    pass
 
     def get_events(
         self, level: TraceLevel | None = None, component: str | None = None
@@ -115,7 +114,7 @@ class TraceEmitter:
             events = [e for e in events if e.component == component]
         return events
 
-    def subscribe_callback(self, callback: callable) -> None:
+    def subscribe_callback(self, callback: Callable[[TraceEvent], None]) -> None:
         """Register a callback function to be invoked on every trace event emission.
 
         The callback receives the TraceEvent object as its sole argument.

@@ -9,7 +9,6 @@ import json
 import os
 import sqlite3
 import uuid
-from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from sovereignai.shared.trace_emitter import TraceEmitter
@@ -57,9 +56,15 @@ class EpisodicMemoryBackend:
                 metadata TEXT
             )
         """)
-        self._conn.execute("CREATE INDEX IF NOT EXISTS idx_episodes_task ON episodes(task_id)")
-        self._conn.execute("CREATE INDEX IF NOT EXISTS idx_episodes_time ON episodes(timestamp)")
-        self._conn.execute("CREATE INDEX IF NOT EXISTS idx_episodes_task_time ON episodes(task_id, timestamp)")
+        self._conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_episodes_task ON episodes(task_id)"
+        )
+        self._conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_episodes_time ON episodes(timestamp)"
+        )
+        self._conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_episodes_task_time ON episodes(task_id, timestamp)"
+        )
         self._conn.commit()
 
     def store(self, data: dict, metadata: dict | None = None) -> str:
@@ -84,7 +89,8 @@ class EpisodicMemoryBackend:
         if self._conn:
             self._conn.execute(
                 """
-                INSERT INTO episodes (id, timestamp, component, task_id, event_type, data, metadata)
+                INSERT INTO episodes
+                (id, timestamp, component, task_id, event_type, data, metadata)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                 (record_id, timestamp, component, task_id, event_type, episode_data, metadata_json),
@@ -99,7 +105,7 @@ class EpisodicMemoryBackend:
         return record_id
 
     def query(self, query: dict) -> list[dict]:
-        """Query episodic memory records matching the criteria.
+        """Query episodic memory records matching the specified criteria and filters.
 
         Supports batch query via task_ids: list[str] for WHERE task_id IN (...).
 
@@ -147,7 +153,7 @@ class EpisodicMemoryBackend:
             WHERE {where_clause}
             ORDER BY timestamp ASC
             {limit_clause}
-        """
+        """  # nosec B608
 
         cursor = self._conn.execute(sql, params)
         results = []
@@ -170,7 +176,7 @@ class EpisodicMemoryBackend:
         return results
 
     def delete(self, record_id: str) -> bool:
-        """Delete an episodic memory record by its id.
+        """Delete an episodic memory record by its unique identifier string.
 
         Args:
             record_id: The id of the record to delete.
@@ -195,7 +201,7 @@ class EpisodicMemoryBackend:
         return deleted
 
     def close(self) -> None:
-        """Close the database connection and clean up resources."""
+        """Close the database connection and clean up all related resources."""
         if self._conn:
             self._conn.close()
             self._conn = None

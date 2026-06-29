@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import tempfile
+from collections.abc import Generator
 
 import pytest
 
@@ -12,28 +13,26 @@ from sovereignai.shared.types import new_correlation_id
 
 
 @pytest.fixture
-def temp_db_path() -> str:
+def temp_db_path() -> Generator[str, None, None]:
     """Provide a temporary database path for testing."""
+    import contextlib
     fd, path = tempfile.mkstemp(suffix=".db")
     os.close(fd)
     yield path
-    try:
+    with contextlib.suppress(Exception):
         os.unlink(path)
-    except Exception:
-        pass
 
 
 @pytest.fixture
-def temp_marker_path() -> str:
+def temp_marker_path() -> Generator[str, None, None]:
     """Provide a temporary shutdown marker path for testing."""
+    import contextlib
     fd, path = tempfile.mkstemp(suffix=".marker")
     os.close(fd)
     yield path
-    try:
+    with contextlib.suppress(Exception):
         if os.path.exists(path):
             os.unlink(path)
-    except Exception:
-        pass
 
 
 @pytest.fixture
@@ -47,7 +46,9 @@ def trace_backend(temp_db_path: str) -> TraceMemoryBackend:
     return backend
 
 
-def test_shutdown_marker_skips_recovery(trace_backend: TraceMemoryBackend, temp_marker_path: str) -> None:
+def test_shutdown_marker_skips_recovery(  # noqa: E501
+    trace_backend: TraceMemoryBackend, temp_marker_path: str
+) -> None:
     """Verify that a valid shutdown marker skips crash recovery per Rev3 N5."""
     # Write a valid shutdown marker
     magic = "SOVEREIGNAI_CLEAN_SHUTDOWN_V1\n"
@@ -59,7 +60,7 @@ def test_shutdown_marker_skips_recovery(trace_backend: TraceMemoryBackend, temp_
     assert marker_exists is True
 
     # Read and validate marker
-    with open(temp_marker_path, "r") as f:
+    with open(temp_marker_path) as f:
         content = f.read()
     is_valid = content.startswith("SOVEREIGNAI_CLEAN_SHUTDOWN_V1\n")
     assert is_valid is True
@@ -76,7 +77,7 @@ def test_invalid_marker_content_treats_as_crash(temp_marker_path: str) -> None:
         f.write("INVALID_MARKER\n")
 
     # Read marker
-    with open(temp_marker_path, "r") as f:
+    with open(temp_marker_path) as f:
         content = f.read()
     is_valid = content.startswith("SOVEREIGNAI_CLEAN_SHUTDOWN_V1\n")
     assert is_valid is False
@@ -120,8 +121,8 @@ def test_recovery_failure_does_not_block_startup(temp_marker_path: str) -> None:
     # Recovery logic should catch exceptions and continue
     try:
         if os.path.exists(invalid_path):
-            with open(invalid_path, "r") as f:
-                content = f.read()
+            with open(invalid_path) as f:
+                _ = f.read()
         # Should not raise even if path is invalid
         assert True
     except Exception:
@@ -143,7 +144,7 @@ def test_atomic_write_creates_valid_marker(temp_marker_path: str) -> None:
 
     # Verify marker exists and is valid
     assert os.path.exists(temp_marker_path)
-    with open(temp_marker_path, "r") as f:
+    with open(temp_marker_path) as f:
         content = f.read()
     assert content.startswith(magic)
 

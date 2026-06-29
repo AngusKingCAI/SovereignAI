@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-29 (prompt-10.5)
+**Last updated**: 2026-06-29 (prompt-11)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -30,7 +30,7 @@ Plan 10.5**: Baseline → 183 tests. Delta: +6 — see CHANGELOG prompt-10.5.
 
 ## Test Baseline
 
-**Current**: 183 tests (Plan 10.5 `/close`)
+**Current**: 183 tests (Plan 11 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -51,8 +51,8 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 |---|---|---|---|
 | **Ruff** | 0 errors | Plan 1 | D100/D104 excluded per pyproject.toml |
 | **Mypy (file-scoped)** | 0 errors | Plan 1 | File-scoped per OR2 |
-| **Bandit** | 366 Low (B101) | Plan 10.5 | All test assertions; filter `>> Issue: [B` per OR4. Bandit count reconciled at every /close per OR78. |
-| **pip-audit** | 0 CVEs | Plan 1 | Scans txt/requirements.txt only per OR39 (file empty — no runtime deps) |
+| **Bandit** | 0 findings | Plan 11 | 2 nosec B608 for SQL injection warnings (parameterized queries) |
+| **pip-audit** | 5 CVEs in setuptools | Plan 11 | Not blocking — setuptools 65.5.0 has known vulnerabilities |
 | **Vulture** | 0 findings | Plan 1 | High-confidence (≥80) only |
 | **detect-secrets** | pass | Plan 1 | Baseline established prompt-0 |
 | **pre-commit** | pass | Plan 1 | Hooks configured at prompt-0 |
@@ -83,6 +83,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-10.2 | `prompt-10.2` | Governance Patch: Rule Gap Fixes + Premature Tag Cleanup — OR76-OR82, L36-L39 | N/A | N/A | N/A | 2026-06-29 |
 | prompt-10.4 | `prompt-10.4` | Web UI Hotfix Patch — 3 bugs (manifest parser, dispatch kwargs, first-run 401) | 177 | 0 | 0 | 2026-06-29 |
 | prompt-10.5 | `prompt-10.5` | Web UI Hotfix: /api/tasks 500 + Panel Population | 183 | 0 | 0 | 2026-06-29 |
+| prompt-11 | `prompt-11` | Memory layer — Librarian, backends (episodic, procedural, working, trace) | 183 | 0 | 0 | 2026-06-29 |
 
 ---
 
@@ -96,11 +97,11 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 11 | Memory layer — Librarian, backends (episodic, procedural, working, trace) | Scan 10 | ⏳ Pending |
-| 2 | Plan 12 | Versioning — semver, negotiator, compatibility matrix | Plan 11 | ⏳ Pending |
-| 3 | Plan 13 | Test framework — conformance, contract, property-based tests | Plan 12 | ⏳ Pending |
-| 4 | Plan 14 | Education department — Teacher worker, self-correction skill | Plan 13 | ⏳ Pending |
-| 5 | Scan 15 | Third whole-repo scan | Plan 14 | ⏳ Pending |
+| 1 | Plan 12 | Versioning — semver, negotiator, compatibility matrix | Plan 11 | ⏳ Pending |
+| 2 | Plan 13 | Test framework — conformance, contract, property-based tests | Plan 12 | ⏳ Pending |
+| 3 | Plan 14 | Education department — Teacher worker, self-correction skill | Plan 13 | ⏳ Pending |
+| 4 | Scan 15 | Third whole-repo scan | Plan 14 | ⏳ Pending |
+| 5 | Plan 16 | Research department — literature review, experimentation, publication | Scan 15 | ⏳ Pending |
 
 ---
 

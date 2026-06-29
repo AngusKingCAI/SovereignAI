@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import tempfile
+from collections.abc import Generator
 
 import pytest
 
@@ -11,15 +12,14 @@ from sovereignai.shared.trace_emitter import TraceEmitter
 
 
 @pytest.fixture
-def temp_db_path() -> str:
+def temp_db_path() -> Generator[str, None, None]:
     """Provide a temporary database path for testing."""
+    import contextlib
     fd, path = tempfile.mkstemp(suffix=".db")
     os.close(fd)
     yield path
-    try:
+    with contextlib.suppress(Exception):
         os.unlink(path)
-    except Exception:
-        pass
 
 
 @pytest.fixture
@@ -122,7 +122,9 @@ def test_episodic_backend_delete_removes_record(episodic_backend: EpisodicMemory
     assert len(results) == 0
 
 
-def test_episodic_backend_delete_nonexistent_returns_false(episodic_backend: EpisodicMemoryBackend) -> None:
+def test_episodic_backend_delete_nonexistent_returns_false(  # noqa: E501
+    episodic_backend: EpisodicMemoryBackend,
+) -> None:
     """Verify delete returns False for nonexistent record id."""
     deleted = episodic_backend.delete("nonexistent-id")
     assert deleted is False

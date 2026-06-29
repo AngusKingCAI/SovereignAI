@@ -52,7 +52,7 @@ class Librarian:
         self._trace = trace
 
     def store(self, memory_type: str, data: dict, metadata: dict | None = None) -> str:
-        """Route a store request to the highest-priority backend declaring memory_storage for the memory type.
+        """Route a store request to the highest-priority backend declaring memory_storage.
 
         Args:
             memory_type: The type of memory being stored (e.g. "episodic", "procedural").
@@ -119,7 +119,7 @@ class Librarian:
             )
 
         # Scatter-gather: query all backends and merge results
-        all_results = []
+        all_results: list[dict] = []
         for component_id in providers:
             # In a full implementation, we would retrieve the backend instance from the DI container
             # and call its query() method. For now, we return empty results.
@@ -180,9 +180,7 @@ class Librarian:
             List of component IDs, sorted by priority (highest first).
         """
         # Map capability string to CapabilityCategory
-        if capability == "memory_storage":
-            category = CapabilityCategory.MEMORY
-        elif capability == "memory_query":
+        if capability == "memory_storage" or capability == "memory_query":
             category = CapabilityCategory.MEMORY
         else:
             return []
@@ -192,7 +190,7 @@ class Librarian:
         return [component_id for component_id, _ in providers]
 
     def _merge_results(self, memory_type: str, results: list[dict]) -> list[dict]:
-        """Apply scatter-gather merge semantics for a memory type.
+        """Apply scatter-gather merge semantics for a memory type based on the plan.
 
         Merge semantics per plan:
         - episodic: union, dedupe by id, sort by timestamp ascending

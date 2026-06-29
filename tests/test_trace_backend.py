@@ -3,24 +3,24 @@ from __future__ import annotations
 
 import os
 import tempfile
+from collections.abc import Generator
 
 import pytest
 
 from sovereignai.memory.trace_backend import TraceMemoryBackend
 from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import TraceEvent, TraceLevel, new_correlation_id
+from sovereignai.shared.types import new_correlation_id
 
 
 @pytest.fixture
-def temp_db_path() -> str:
+def temp_db_path() -> Generator[str, None, None]:
     """Provide a temporary database path for testing."""
+    import contextlib
     fd, path = tempfile.mkstemp(suffix=".db")
     os.close(fd)
     yield path
-    try:
+    with contextlib.suppress(Exception):
         os.unlink(path)
-    except Exception:
-        pass
 
 
 @pytest.fixture
@@ -167,7 +167,9 @@ def test_trace_backend_get_last_task_states(trace_backend: TraceMemoryBackend) -
     assert last_states[task_id] == "complete"
 
 
-def test_trace_backend_get_last_task_states_uses_timestamp_not_id(trace_backend: TraceMemoryBackend) -> None:
+def test_trace_backend_get_last_task_states_uses_timestamp_not_id(  # noqa: E501
+    trace_backend: TraceMemoryBackend,
+) -> None:
     """Verify get_last_task_states uses MAX(timestamp) not MAX(id) per Rev7.
 
     UUID4 is random, not monotonic. Using MAX(id) would return the wrong state.

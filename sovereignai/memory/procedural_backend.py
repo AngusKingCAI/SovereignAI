@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 MAX_PATTERNS = 1000
 
 
-class ProceduralMemoryLockTimeout(Exception):
+class ProceduralMemoryLockTimeoutError(Exception):
     """Raised when the procedural memory lock cannot be acquired within the timeout.
 
     Per OR89: The lock is NEVER force-acquired. If held >5 seconds, the write fails.
@@ -77,12 +77,11 @@ class ProceduralMemoryBackend:
         return False  # Timed out — do NOT force-acquire
 
     def _release_lock(self) -> None:
-        """Release the lock file by deleting it."""
+        """Release the lock file by deleting it from the filesystem."""
+        import contextlib
         lock_path = self._path + ".lock"
-        try:
+        with contextlib.suppress(FileNotFoundError):
             os.unlink(lock_path)
-        except FileNotFoundError:
-            pass
 
     def _atomic_write(self, patterns: list[dict]) -> None:
         """Write patterns to the JSON file using atomic temp file + os.replace pattern.
@@ -96,7 +95,7 @@ class ProceduralMemoryBackend:
         os.replace(tmp_path, self._path)
 
     def _read_patterns(self) -> list[dict]:
-        """Read patterns from the JSON file with corruption recovery.
+        """Read patterns from the JSON file with automatic corruption recovery handling.
 
         If the file is corrupted, renames it to .corrupted.{ts} and starts fresh.
 
@@ -104,27 +103,26 @@ class ProceduralMemoryBackend:
             List of pattern dicts, or empty list if file is corrupted or missing.
         """
         try:
-            with open(self._path, "r") as f:
-                return json.load(f)
-        except (json.JSONDecodeError, IOError) as e:
+            with open(self._path) as f:
+                return json.load(f)  # type: ignore[no-any-return]
+        except (OSError, json.JSONDecodeError) as e:
             self._trace.emit(
                 component="procedural_memory",
                 level=TraceLevel.WARN,
                 message=f"Corrupted procedural memory file: {e}. Renaming and starting fresh.",
             )
             # Rename to .corrupted.{timestamp}
+            import contextlib
             ts = time.time()
             corrupted_path = f"{self._path}.corrupted.{ts}"
-            try:
+            with contextlib.suppress(Exception):
                 os.rename(self._path, corrupted_path)
-            except Exception:
-                pass
-            return []
+            return []  # type: ignore[no-any-return]
 
     def store(self, data: dict, metadata: dict | None = None) -> str:
-        """Store a pattern and return the generated record id.
+        """Store a pattern and return the generated unique record identifier string.
 
-        Raises ProceduralMemoryLockTimeout if lock acquisition fails (>5s).
+        Raises ProceduralMemoryLockTimeoutError if lock acquisition fails (>5s).
 
         Args:
             data: Pattern fields. Must contain: pattern (str), confidence (float).
@@ -135,7 +133,7 @@ class ProceduralMemoryBackend:
             The generated record id (UUID string).
 
         Raises:
-            ProceduralMemoryLockTimeout: If lock cannot be acquired within 5 seconds.
+            ProceduralMemoryLockTimeoutError: If lock cannot be acquired within 5 seconds.
         """
         if not self._acquire_lock():
             self._trace.emit(
@@ -143,7 +141,7 @@ class ProceduralMemoryBackend:
                 level=TraceLevel.WARN,
                 message="Procedural memory write skipped — lock held by another operation for >5s",
             )
-            raise ProceduralMemoryLockTimeout("Lock acquisition timed out")
+            raise ProceduralMemoryLockTimeoutError("Lock acquisition timed out")
 
         try:
             patterns = self._read_patterns()
@@ -178,7 +176,7 @@ class ProceduralMemoryBackend:
             self._release_lock()
 
     def query(self, query: dict) -> list[dict]:
-        """Query procedural memory patterns matching the criteria.
+        """Query procedural memory patterns matching the specified criteria and filters.
 
         Args:
             query: Query parameters. Supported keys:
@@ -213,7 +211,7 @@ class ProceduralMemoryBackend:
         return results
 
     def delete(self, record_id: str) -> bool:
-        """Delete a procedural memory pattern by its id.
+        """Delete a procedural memory pattern by its unique identifier string.
 
         Args:
             record_id: The id of the pattern to delete.
@@ -247,7 +245,7 @@ class ProceduralMemoryBackend:
             self._release_lock()
 
     def prune_low_confidence(self, threshold: float) -> None:
-        """Remove patterns with confidence below the threshold.
+        """Remove patterns with confidence below the specified threshold value limit.
 
         Args:
             threshold: Confidence threshold (0.0 to 1.0). Patterns below this

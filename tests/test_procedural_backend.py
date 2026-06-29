@@ -3,26 +3,26 @@ from __future__ import annotations
 
 import os
 import tempfile
+from collections.abc import Generator
 
 import pytest
 
 from sovereignai.memory.procedural_backend import (
     ProceduralMemoryBackend,
-    ProceduralMemoryLockTimeout,
+    ProceduralMemoryLockTimeoutError,
 )
 from sovereignai.shared.trace_emitter import TraceEmitter
 
 
 @pytest.fixture
-def temp_json_path() -> str:
+def temp_json_path() -> Generator[str, None, None]:
     """Provide a temporary JSON path for testing."""
+    import contextlib
     fd, path = tempfile.mkstemp(suffix=".json")
     os.close(fd)
     yield path
-    try:
+    with contextlib.suppress(Exception):
         os.unlink(path)
-    except Exception:
-        pass
 
 
 @pytest.fixture
@@ -35,7 +35,9 @@ def procedural_backend(temp_json_path: str) -> ProceduralMemoryBackend:
     return backend
 
 
-def test_procedural_backend_store_returns_record_id(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_store_returns_record_id(  # noqa: E501
+    procedural_backend: ProceduralMemoryBackend,
+) -> None:
     """Verify store returns a UUID string record id."""
     record_id = procedural_backend.store(
         data={
@@ -47,7 +49,9 @@ def test_procedural_backend_store_returns_record_id(procedural_backend: Procedur
     assert len(record_id) == 36  # UUID4 format
 
 
-def test_procedural_backend_lock_timeout_raises_exception(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_lock_timeout_raises_exception(  # noqa: E501
+    procedural_backend: ProceduralMemoryBackend,
+) -> None:
     """Verify lock timeout raises ProceduralMemoryLockTimeout."""
     # Acquire the lock manually
     lock_path = procedural_backend._path + ".lock"
@@ -55,8 +59,9 @@ def test_procedural_backend_lock_timeout_raises_exception(procedural_backend: Pr
         f.write("test-pid")
 
     # Try to store with a short timeout
-    procedural_backend._acquire_lock = lambda timeout_s=0.1: False
-    with pytest.raises(ProceduralMemoryLockTimeout):
+    original_acquire = procedural_backend._acquire_lock
+    procedural_backend._acquire_lock = lambda timeout_s=0.1: False  # type: ignore[method-assign]
+    with pytest.raises(ProceduralMemoryLockTimeoutError):
         procedural_backend.store(
             data={
                 "pattern": "test pattern",
@@ -65,11 +70,9 @@ def test_procedural_backend_lock_timeout_raises_exception(procedural_backend: Pr
         )
 
     # Clean up lock
-    try:
+    import contextlib
+    with contextlib.suppress(Exception):
         os.unlink(lock_path)
-    except Exception:
-        pass
-
 
 def test_procedural_backend_query_by_pattern(procedural_backend: ProceduralMemoryBackend) -> None:
     """Verify query can filter by pattern substring."""
@@ -91,7 +94,9 @@ def test_procedural_backend_query_by_pattern(procedural_backend: ProceduralMemor
     assert "search" in results[0]["pattern"]
 
 
-def test_procedural_backend_query_by_min_confidence(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_query_by_min_confidence(  # noqa: E501
+    procedural_backend: ProceduralMemoryBackend,
+) -> None:
     """Verify query can filter by minimum confidence threshold."""
     procedural_backend.store(
         data={
@@ -111,7 +116,9 @@ def test_procedural_backend_query_by_min_confidence(procedural_backend: Procedur
     assert results[0]["confidence"] == 0.9
 
 
-def test_procedural_backend_delete_removes_record(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_delete_removes_record(  # noqa: E501
+    procedural_backend: ProceduralMemoryBackend,
+) -> None:
     """Verify delete removes a pattern by id."""
     record_id = procedural_backend.store(
         data={
@@ -128,7 +135,9 @@ def test_procedural_backend_delete_removes_record(procedural_backend: Procedural
     assert len(results) == 0
 
 
-def test_procedural_backend_prune_low_confidence(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_prune_low_confidence(  # noqa: E501
+    procedural_backend: ProceduralMemoryBackend,
+) -> None:
     """Verify prune_low_confidence removes patterns below threshold."""
     procedural_backend.store(
         data={
@@ -150,7 +159,9 @@ def test_procedural_backend_prune_low_confidence(procedural_backend: ProceduralM
     assert results[0]["confidence"] == 0.9
 
 
-def test_procedural_backend_hard_cap_enforcement(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_hard_cap_enforcement(  # noqa: E501
+    procedural_backend: ProceduralMemoryBackend,
+) -> None:
     """Verify hard cap enforcement evicts oldest patterns when exceeded."""
     from sovereignai.memory.procedural_backend import MAX_PATTERNS
 

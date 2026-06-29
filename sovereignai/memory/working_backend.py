@@ -23,7 +23,7 @@ class WorkingMemoryBackend:
     """
 
     def __init__(self, trace: TraceEmitter) -> None:
-        """Create a working memory backend with an in-memory store.
+        """Create a working memory backend with an in-memory data store.
 
         Args:
             trace: Trace emitter for logging operations and errors.
@@ -67,7 +67,7 @@ class WorkingMemoryBackend:
         return record_id
 
     def query(self, query: dict) -> list[dict]:
-        """Query working memory records matching the criteria.
+        """Query working memory records matching the specified criteria and filters.
 
         Args:
             query: Query parameters. Supported keys:
@@ -96,7 +96,7 @@ class WorkingMemoryBackend:
         return results
 
     def delete(self, record_id: str) -> bool:
-        """Delete a working memory record by its id.
+        """Delete a working memory record by its unique identifier string.
 
         Args:
             record_id: The id of the record to delete.
@@ -119,7 +119,7 @@ class WorkingMemoryBackend:
         return False
 
     def cleanup(self, task_id: str) -> None:
-        """Remove all working memory records for a given task.
+        """Remove all working memory records for a given task identifier.
 
         Called when a task reaches a terminal state (COMPLETE or FAILED).
 

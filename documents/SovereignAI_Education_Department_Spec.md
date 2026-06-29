@@ -6,6 +6,7 @@
 **Status:** Draft v2 — amended to integrate Research Department upstream dependency  
 **Date:** 2026-06-29  
 **Depends on:** `SovereignAI_Architecture_Decisions.md`, `project-vision-Rev5.md`, `models-panel-spec.md`, `SovereignAI_Research_Department_Spec.md`
+**Note on direction:** this is a genuine runtime dependency, not a documentation cross-reference — the Education Manager cannot start Stage 1 without a completed Research Brief (§7.1 of the Research spec; Stage 0 below). This is the asymmetric half of the Research↔Education relationship; see the Research spec's header note for why Research's own reference to Education does not run the other way.
 
 ---
 
@@ -47,7 +48,7 @@ Each output is called an **Expert Model**. An Expert Model is:
 - A manifest (`expert-model.toml`) declaring the domain, base model lineage, training dataset hash, benchmark scores, and VRAM requirement
 - A LoRA adapter archive (kept separately so the user can re-merge onto a newer base model later without retraining)
 
-Expert Models are registered in the Models panel under a new provider tab: **[Education]**, where they appear alongside downloaded Ollama/HuggingFace models. They can be set as the default model for a specific SovereignAI department (e.g., "Python Coder Model" set as default for Engineering Department).
+Expert Models are registered in the Models panel under a new provider tab: **[Education]**, where they appear alongside downloaded Ollama/HuggingFace models. They can be set as the default model for a specific SovereignAI department (e.g., "Python Coder Model" set as default for the Coding Department).
 
 ---
 
@@ -261,7 +262,7 @@ max_mmlu_delta = -0.03                # general capability must not drop more th
 [output]
 gguf_quantization = "q4_k_m"
 register_in_models_panel = true
-set_as_engineering_dept_default = false
+set_as_coding_dept_default = false
 ```
 
 ### Stage 2: Dataset Construction
@@ -489,7 +490,7 @@ MMLU delta: -0.8% (within acceptable range)
 Size: 4.1GB (Q4_K_M GGUF)
 VRAM required: ~5.2GB
 Status: Registered in Models panel under [Education] → Python Expert → Python Coder v1
-Action: Set as Engineering Department default? [Yes / No / Later]
+Action: Set as Coding Department default? [Yes / No / Later]
 ```
 
 ---

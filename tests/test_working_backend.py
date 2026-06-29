@@ -90,7 +90,9 @@ def test_working_backend_delete_removes_record(working_backend: WorkingMemoryBac
     assert len(results) == 0
 
 
-def test_working_backend_cleanup_removes_all_task_records(working_backend: WorkingMemoryBackend) -> None:
+def test_working_backend_cleanup_removes_all_task_records(  # noqa: E501
+    working_backend: WorkingMemoryBackend,
+) -> None:
     """Verify cleanup removes all records for a task."""
     working_backend.store(
         data={
@@ -125,12 +127,16 @@ def test_working_backend_cleanup_removes_all_task_records(working_backend: Worki
     assert len(results) == 1
 
 
-def test_working_backend_cleanup_nonexistent_task_no_error(working_backend: WorkingMemoryBackend) -> None:
+def test_working_backend_cleanup_nonexistent_task_no_error(  # noqa: E501
+    working_backend: WorkingMemoryBackend,
+) -> None:
     """Verify cleanup on nonexistent task does not raise an error."""
     working_backend.cleanup("nonexistent-task")  # Should not raise
 
 
-def test_working_backend_enum_string_comparison_robustness(working_backend: WorkingMemoryBackend) -> None:
+def test_working_backend_enum_string_comparison_robustness(  # noqa: E501
+    working_backend: WorkingMemoryBackend,
+) -> None:
     """Verify enum/string comparison works for both enum and string values."""
     # This test validates the robustness check in main.py's _on_task_state_changed handler
     terminal_states = (TaskState.COMPLETE.value, TaskState.FAILED.value)

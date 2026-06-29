@@ -5,13 +5,14 @@
 **Audience:** GLM (implementing agent) + Round Table review
 **Status:** Draft v1 — ready for Round Table review
 **Date:** 2026-06-29
-**Depends on:** `SovereignAI_Architecture_Decisions.md`, `project-vision-Rev5.md`, `SovereignAI_Education_Department_Spec.md`
+**Depends on:** `SovereignAI_Architecture_Decisions.md`, `project-vision-Rev5.md`
+**Note on direction:** This document defines the `education_domain_brief_v1` schema (§5.3) and `coding_brief_v1` schema (§7.2) that downstream departments consume. Research does not require those departments' specs to exist or be read first — it only needs to know what they consume, which this document states directly. Education's spec, conversely, has a genuine runtime dependency on this one (it blocks on Research's deliverable before training can start). The relationship is one-directional, not circular, despite Education's header listing this document and this document mentioning Education.
 
 ---
 
 ## 0. Purpose
 
-This document specifies the **Research Department** — SovereignAI's internal capability for conducting deep, multi-source, structured research across any domain. The department is not training-specific. It serves every other department in the system: the Education Department receives dataset briefs and base model recommendations; the Engineering Department receives technical landscape reports; the Communication Department receives audience research and competitor analysis; the Owner receives direct research outputs for personal or professional use.
+This document specifies the **Research Department** — SovereignAI's internal capability for conducting deep, multi-source, structured research across any domain. The department is not training-specific. It serves every other department in the system: the Education Department receives dataset briefs and base model recommendations; the **Coding Department** receives technical landscape reports; the Communication Department receives audience research and competitor analysis; the Owner receives direct research outputs for personal or professional use.
 
 The Research Department is the system's epistemic infrastructure. Wherever the system or the user needs to know something that isn't already in memory, the Research Department finds, evaluates, synthesizes, and delivers it.
 
@@ -44,13 +45,13 @@ Each output is called a **Research Deliverable**. The deliverable type is declar
 
 | Deliverable Type | Description | Typical Requester |
 |-----------------|-------------|------------------|
-| **Domain Brief** | Structured handoff for another department — schema-compliant TOML/JSON summarising key findings, ranked recommendations, and open questions | Education Department, Engineering Department |
+| **Domain Brief** | Structured handoff for another department — schema-compliant TOML/JSON summarising key findings, ranked recommendations, and open questions | Education Department, Coding Department |
 | **Research Report** | Long-form narrative document covering a topic in depth, with sourced claims, conflict flags, and a conclusions section | Owner (personal/professional use) |
 | **Comparison Table** | Side-by-side structured comparison of options, tools, datasets, models, vendors, etc. | Owner, any department |
-| **Source Inventory** | A curated list of sources relevant to a domain, annotated with relevance scores, recency, authority ratings, and license notes | Education Department (dataset discovery), Engineering (tool evaluation) |
+| **Source Inventory** | A curated list of sources relevant to a domain, annotated with relevance scores, recency, authority ratings, and license notes | Education Department (dataset discovery), Coding Department (tool evaluation) |
 | **Fact Sheet** | Short, dense summary of key facts about a specific entity, concept, or event | Owner, CEO for context injection |
 | **Competitive Intelligence Report** | Analysis of competing products, projects, or organisations in a target space | Owner, Communication Department |
-| **Gap Analysis** | Identifies what is missing from a given body of knowledge, dataset, or capability landscape | Education Department, Engineering Department |
+| **Gap Analysis** | Identifies what is missing from a given body of knowledge, dataset, or capability landscape | Education Department, Coding Department |
 | **Ongoing Monitor** | A recurring research job that watches a topic for new developments and delivers delta summaries on a schedule | Owner (set up via Tasks panel) |
 
 All deliverables are stored in the Research Registry and can be retrieved by any department or the Owner without re-running the research. Deliverables carry a `freshness_score` that degrades over time — the Manager can flag stale deliverables and offer to re-run.
@@ -449,11 +450,11 @@ Research Manager responds (via event bus): ResearchBriefComplete {
 Education Manager reads deliverable and proceeds to Stage 1 (Domain Specification).
 ```
 
-### 7.2 Engineering Department
+### 7.2 Coding Department
 
-The Engineering Department requests research for technical decisions: library selection, API evaluation, performance benchmarks for candidate approaches, security vulnerability research, and dependency audits. The deliverable type is typically `comparison_table` or `source_inventory`.
+The Coding Department requests research for technical decisions: library selection, API evaluation, performance benchmarks for candidate approaches, security vulnerability research, and dependency audits. The deliverable type is typically `comparison_table` or `source_inventory`.
 
-Example Research Brief triggers from Engineering:
+Example Research Brief triggers from Coding:
 - "Which Python async HTTP libraries are actively maintained and support HTTP/3 as of 2026?"
 - "What are known CVEs for the current version of dependency X?"
 - "Compare vLLM vs SGLang vs llama.cpp for throughput on 7B models with 8K context"
@@ -545,7 +546,7 @@ The Security Guard can audit any deliverable's provenance chain on demand. The p
       /synthesis
         base.py                 # SynthesisWorker interface
         report.py               # long-form narrative reports
-        domain_brief.py         # structured TOML brief (for Education, Engineering)
+        domain_brief.py         # structured TOML brief (for Education, Coding)
         comparison_table.py     # side-by-side comparison output
         source_inventory.py     # annotated source list
         fact_sheet.py           # short dense summary
@@ -554,7 +555,7 @@ The Security Guard can audit any deliverable's provenance chain on demand. The p
         monitor_delta.py        # delta summary for ongoing monitors
     /schemas
       education_domain_brief_v1.toml  # schema definition for Education handoff
-      engineering_brief_v1.toml
+      coding_brief_v1.toml             # schema definition for Coding handoff (renamed from engineering_brief_v1 — see header note)
       # ... extensible: new department schemas added here without changing core
     api.py                      # REST endpoints
       # GET  /research/jobs
@@ -598,7 +599,7 @@ The Security Guard has audit hooks into the Research Department at the following
 
 1. **Brief issuance authority:** Should workers from other departments be able to issue Research Briefs directly, or must all briefs pass through the CEO → Research Manager chain? Direct issuance is faster (no CEO round-trip latency) but bypasses the CEO's scope-validation and prompt-cleaning function. Recommend: department Managers can issue briefs directly; individual workers cannot.
 
-2. **Research as a blocking dependency:** The Education Department spec proposes that a training job cannot start without a completed Research Brief. Is this the right pattern for all departments? Engineering might want to start work while research runs in parallel, accepting a research update mid-task. A `research_dependency_mode` flag on the brief (blocking | advisory) could handle both cases.
+2. **Research as a blocking dependency:** The Education Department spec proposes that a training job cannot start without a completed Research Brief. Is this the right pattern for all departments? The Coding Department might want to start work while research runs in parallel, accepting a research update mid-task. A `research_dependency_mode` flag on the brief (blocking | advisory) could handle both cases.
 
 3. **Deliverable format for Owner consumption:** Domain Briefs in TOML are machine-readable but not human-friendly. Should the Research Department produce a parallel human-readable version (Markdown summary) of every Domain Brief, stored alongside the TOML? This adds synthesis cost but makes deliverables usable without a viewer component.
 

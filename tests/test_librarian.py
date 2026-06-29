@@ -30,7 +30,10 @@ def test_librarian_store_no_provider_raises_error() -> None:
     librarian = Librarian(capability_graph=graph, trace=trace)
 
     with pytest.raises(NoActiveProviderError):
-        librarian.store(memory_type="episodic", data={"component": "test", "event_type": "test", "data": "{}"})
+        librarian.store(
+            memory_type="episodic",
+            data={"component": "test", "event_type": "test", "data": "{}"},
+        )  # noqa: E501
 
 
 def test_librarian_query_no_provider_raises_error() -> None:
