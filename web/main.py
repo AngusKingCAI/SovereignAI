@@ -689,12 +689,13 @@ async def get_model_catalog(
     request: Request,
     search: str = "",
     limit: int = 50,
+    offset: int = 0,
 ) -> list[dict]:
     """Browse available GGUF models from HuggingFace."""
     container: Any = request.app.state.container
     trace: Any = container.retrieve(TraceEmitter)
     from sovereignai.shared.hf_catalog import fetch_gguf_models
-    return fetch_gguf_models(trace, search=search, limit=limit)
+    return fetch_gguf_models(trace, search=search, limit=limit, offset=offset)
 
 
 def extract_quant_from_filename(path: str) -> str:
@@ -718,54 +719,99 @@ async def get_model_detail(request: Request, model_id: str) -> dict:
     return {"model_id": model_id, "files": files}
 
 
+# Pull status tracking (module-level dict for in-memory state)
+_pull_status: dict[str, dict] = {}  # model_id -> {status, message, progress}
+
+
 @app.post("/api/models/pull", dependencies=[Depends(get_current_user)])
 async def pull_model(request: Request) -> dict:
-    """Pull a model via Ollama. Returns task_id for progress tracking."""
+    """Pull a model. Returns immediately; poll /api/models/pull-status for progress."""
     container: Any = request.app.state.container
     trace: Any = container.retrieve(TraceEmitter)
     data = await request.json()
     model_name = data.get("model", "")
+    quant = data.get("quant", "Q4_K_M")
     if not model_name:
         raise HTTPException(status_code=400, detail="model is required")
 
-    # Prefix with hf.co/ for HuggingFace models
+    # Build ollama pull name
     if "/" in model_name and not model_name.startswith("hf.co/"):
-        ollama_name = f"hf.co/{model_name}"
+        ollama_name = f"hf.co/{model_name}:{quant}"
     else:
         ollama_name = model_name
 
-    # Add quant if specified
-    quant = data.get("quant", "")
-    if quant:
-        ollama_name = f"{ollama_name}:{quant}"
-
-    trace.emit(component="models", level=TraceLevel.INFO,
-               message=f"Pulling model: {ollama_name}")
-
-    # Run ollama pull in background (it's a long operation)
-    import subprocess
-    import threading
+    # Initialize status
+    _pull_status[model_name] = {
+        "status": "pulling",
+        "message": f"Pulling {ollama_name}...",
+        "progress": 0,
+    }
 
     def _pull() -> None:
+        import subprocess
         try:
+            trace.emit(
+                component="models",
+                level=TraceLevel.INFO,
+                message=f"Pulling: {ollama_name}",
+            )
             result = subprocess.run(
                 ["ollama", "pull", ollama_name],
-                capture_output=True, text=True, timeout=3600,
+                capture_output=True,
+                text=True,
+                timeout=3600,
             )
             if result.returncode == 0:
-                trace.emit(component="models", level=TraceLevel.INFO,
-                           message=f"Model {ollama_name} pulled successfully")
+                _pull_status[model_name] = {
+                    "status": "done",
+                    "message": f"Pulled {ollama_name} successfully",
+                    "progress": 100,
+                }
+                trace.emit(
+                    component="models",
+                    level=TraceLevel.INFO,
+                    message=f"Pull success: {ollama_name}",
+                )
             else:
-                trace.emit(component="models", level=TraceLevel.ERROR,
-                           message=f"Model pull failed: {result.stderr}")
+                err = result.stderr.strip()[:200] if result.stderr else "Unknown error"
+                _pull_status[model_name] = {
+                    "status": "error",
+                    "message": f"Pull failed: {err}",
+                    "progress": 0,
+                }
+                trace.emit(
+                    component="models",
+                    level=TraceLevel.ERROR,
+                    message=f"Pull failed: {err}",
+                )
         except Exception as exc:
-            trace.emit(component="models", level=TraceLevel.ERROR,
-                       message=f"Model pull error: {exc}")
+            _pull_status[model_name] = {
+                "status": "error",
+                "message": f"Pull error: {exc}",
+                "progress": 0,
+            }
+            trace.emit(
+                component="models",
+                level=TraceLevel.ERROR,
+                message=f"Pull error: {exc}",
+            )
 
+    import threading
     thread = threading.Thread(target=_pull, daemon=True)
     thread.start()
+    return {"status": "pulling", "model": model_name}
 
-    return {"status": "pulling", "model": ollama_name}
+
+@app.get("/api/models/pull-status", dependencies=[Depends(get_current_user)])
+async def get_pull_status(request: Request) -> dict:
+    """Get status of all active/recent model pulls."""
+    return _pull_status
+
+
+@app.get("/api/models/pull-status/{model_id:path}", dependencies=[Depends(get_current_user)])
+async def get_pull_status_for_model(model_id: str) -> dict:
+    """Get status of a specific model pull."""
+    return _pull_status.get(model_id, {"status": "unknown", "message": "No pull in progress"})
 
 
 @app.get("/api/models", dependencies=[Depends(get_current_user)])

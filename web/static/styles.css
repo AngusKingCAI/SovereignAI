@@ -592,6 +592,68 @@ body {
 .model-publisher-section { margin-bottom: 16px; }
 .model-publisher-section h3 { color: #aaa; margin: 8px 0 4px; font-size: 14px; }
 
+.model-family-section {
+    margin-bottom: 12px;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.model-family-section h3 {
+    padding: 10px 12px;
+    background: #2d2d2d;
+    color: #ccc;
+    cursor: pointer;
+    margin: 0;
+    font-size: 14px;
+    user-select: none;
+}
+.model-family-section h3:hover {
+    background: #333;
+}
+.model-family-section.collapsed .family-models {
+    display: none;
+}
+.family-models {
+    padding: 4px 0;
+}
+.model-entry.catalog {
+    display: grid;
+    grid-template-columns: 120px 1fr 80px 60px;
+    gap: 8px;
+    padding: 6px 12px;
+    border-bottom: 1px solid #2a2a2a;
+    align-items: center;
+}
+.model-publisher {
+    color: #888;
+    font-size: 12px;
+}
+.model-name {
+    color: #ddd;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.model-downloads {
+    color: #666;
+    font-size: 12px;
+    text-align: right;
+}
+.load-more-btn {
+    display: block;
+    margin: 16px auto;
+    padding: 8px 24px;
+    background: #3d3d3d;
+    border: 1px solid #4d4d4d;
+    color: #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.load-more-btn:hover {
+    background: #4d4d4d;
+}
+
 /* Pull dialog */
 .pull-dialog {
     position: fixed;

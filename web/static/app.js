@@ -631,6 +631,8 @@ function renderTraces() {
 
 // Models panel functions
 let currentModelsTab = 'installed';
+let hfOffset = 0;
+const HF_PAGE_SIZE = 50;
 
 function switchModelsTab(tab) {
     currentModelsTab = tab;
@@ -662,41 +664,77 @@ function loadInstalledModels() {
         });
 }
 
-function loadHFCatalog() {
+function loadHFCatalog(reset = true) {
+    if (reset) {
+        hfOffset = 0;
+        document.getElementById('hf-models-list').innerHTML = '';
+    }
     const search = document.getElementById('hf-search').value;
-    const url = `/api/models/catalog${search ? '?search=' + encodeURIComponent(search) : ''}`;
+    let url = `/api/models/catalog?limit=${HF_PAGE_SIZE}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    if (hfOffset > 0) url += `&offset=${hfOffset}`;
+
     fetch(url)
         .then(r => r.json())
         .then(models => {
             const list = document.getElementById('hf-models-list');
-            list.innerHTML = '';
-            if (models.length === 0) {
+            if (reset && models.length === 0) {
                 list.innerHTML = '<p>No models found. Try a different search.</p>';
                 return;
             }
-            // Group by publisher
-            const byPublisher = {};
+
+            // Remove existing Load More
+            const existingBtn = document.getElementById('load-more-btn');
+            if (existingBtn) existingBtn.remove();
+
+            // Group by family (Meta / Llama, Google / Gemma, etc.)
+            const byFamily = {};
             models.forEach(m => {
-                const pub = m.id.split('/')[0];
-                if (!byPublisher[pub]) byPublisher[pub] = [];
-                byPublisher[pub].push(m);
+                const fam = m.family || 'Other';
+                if (!byFamily[fam]) byFamily[fam] = [];
+                byFamily[fam].push(m);
             });
-            for (const [publisher, pubModels] of Object.entries(byPublisher)) {
+
+            // Sort families by total downloads (most popular first)
+            const sortedFamilies = Object.entries(byFamily)
+                .sort((a, b) => {
+                    const aTotal = a[1].reduce((s, m) => s + m.downloads, 0);
+                    const bTotal = b[1].reduce((s, m) => s + m.downloads, 0);
+                    return bTotal - aTotal;
+                });
+
+            for (const [family, familyModels] of sortedFamilies) {
                 const section = document.createElement('div');
-                section.className = 'model-publisher-section';
-                section.innerHTML = `<h3>${publisher}</h3>`;
-                pubModels.forEach(m => {
+                section.className = 'model-family-section';
+                const totalDownloads = familyModels.reduce((s, m) => s + m.downloads, 0);
+                section.innerHTML = `<h3 onclick="this.parentElement.classList.toggle('collapsed')">${family} (${familyModels.length} models, ⬇${(totalDownloads/1000).toFixed(0)}K)</h3>`;
+                const modelList = document.createElement('div');
+                modelList.className = 'family-models';
+                familyModels.forEach(m => {
                     const entry = document.createElement('div');
                     entry.className = 'model-entry catalog';
                     const downloads = m.downloads > 1000 ? `${(m.downloads / 1000).toFixed(0)}K` : m.downloads;
                     entry.innerHTML = `
+                        <span class="model-publisher">${m.publisher}</span>
                         <span class="model-name">${m.name}</span>
                         <span class="model-downloads">⬇ ${downloads}</span>
                         <button class="pull-btn" onclick="showPullDialog('${m.id}')">Pull</button>
                     `;
-                    section.appendChild(entry);
+                    modelList.appendChild(entry);
                 });
+                section.appendChild(modelList);
                 list.appendChild(section);
+            }
+
+            // Add Load More if full page returned
+            if (models.length === HF_PAGE_SIZE) {
+                hfOffset += HF_PAGE_SIZE;
+                const btn = document.createElement('button');
+                btn.id = 'load-more-btn';
+                btn.className = 'load-more-btn';
+                btn.textContent = 'Load More Models';
+                btn.onclick = () => loadHFCatalog(false);
+                list.appendChild(btn);
             }
         });
 }
@@ -728,6 +766,10 @@ function showPullDialog(modelId) {
 
 function confirmPull(modelId) {
     const quant = document.getElementById('pull-quant').value;
+    const btn = document.querySelector('.pull-dialog button');
+    btn.textContent = 'Starting pull...';
+    btn.disabled = true;
+
     fetch('/api/models/pull', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -736,9 +778,37 @@ function confirmPull(modelId) {
     })
     .then(r => r.json())
     .then(result => {
-        alert(`Pulling ${modelId}:${quant}... Check the log drawer for progress.`);
+        document.querySelector('.pull-dialog').remove();
+        // Open log drawer so user sees progress
+        document.getElementById('log-drawer').classList.add('open');
+        // Poll for status
+        pollPullStatus(modelId);
+    })
+    .catch(err => {
+        alert('Failed to start pull: ' + err);
         document.querySelector('.pull-dialog').remove();
     });
+}
+
+function pollPullStatus(modelId) {
+    const interval = setInterval(() => {
+        fetch(`/api/models/pull-status/${encodeURIComponent(modelId)}`)
+            .then(r => r.json())
+            .then(status => {
+                if (status.status === 'done') {
+                    clearInterval(interval);
+                    alert(`Model ${modelId} pulled successfully!`);
+                    // Refresh installed models
+                    loadInstalledModels();
+                    loadModelSelector();
+                } else if (status.status === 'error') {
+                    clearInterval(interval);
+                    alert(`Pull failed: ${status.message}`);
+                }
+                // Status updates are in the log drawer via traces
+            })
+            .catch(() => {});
+    }, 5000); // Poll every 5 seconds
 }
 
 // Orchestrator model selector
