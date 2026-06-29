@@ -218,6 +218,20 @@ OR74. Workflow files are Architect-authored. `.devin/workflows/*.md` is authored
 
 OR75. Stage all changes with `git add -A`; verify with `git status` before every commit. Before every `git commit` in `/close` (steps 15 and 18), run `git status -s` to see ALL modified/deleted/new files, then `git add -A` to stage them all (including auto-fixes from ruff `--fix`/detect-secrets AND deletions from `mv` operations). Do not use explicit `git add <file1> <file2> ...` lists — they miss auto-fixed files and `mv` deletions. After `git add -A`, run `git status -s` again to verify the staging area is clean (all changes staged, no unstaged lines). If any unstaged changes remain, STOP. Source: L34, L35.
 
+OR76. Create `git tag prompt-{N}` only after the final code commit is made and verified. Never create a tag pointing at a placeholder or intermediate commit. If a tag was created prematurely, `git tag -d prompt-{N}` locally, complete the work, then create the tag at the final commit. Never `git push origin prompt-{N} --force` to move a tag — if a tag was pushed prematurely, STOP and report to the User; the User decides whether to force-push or accept the stale tag. Source: L36.
+
+OR77. Coverage is measured at every `/close` for plans that touch Python source files. Run `python -m pytest tests/ --cov=. --cov-report=term-missing` as part of Step 1 (or as a new Step 1.5). If coverage dropped >5% from the PLANS.md baseline, STOP. If coverage is "N/A" for a plan that edited `.py` files, STOP. Docs-only plans (no `.py` edits) may report "N/A" with a one-line reason. Update PLANS.md coverage baseline at every `/close` where coverage was measured. Source: L37.
+
+OR78. Update the Bandit baseline in PLANS.md at every `/close` where tests were added or removed. The B101 (assert_used) count grows with test count — this is expected. Record the actual count, not a stale number. If the count changed by >20% from the PLANS.md baseline without a corresponding test count change, STOP and investigate (may indicate a new non-test Low finding). Source: L38.
+
+OR79. If a plan session is interrupted by quota exhaustion, model timeout, or session reset, the Executor MUST re-read the plan file (`prompts/plan-{N}.md`) and `AGENTS.md` in full before continuing. The Executor must also review the TODO list and verify the last completed step. Do not resume from a cached mental model — context may have been lost. If the interrupt happened mid-`/close`, re-read `.devin/workflows/close.md` fresh (per OR71) and verify which step was last completed before resuming. Source: L39.
+
+OR80. `git add -A` is mandatory for EVERY commit, not just `/close` steps 15 and 18. This includes governance patches made during the plan body (S0.3 rule commits, mid-plan fixes, workflow patches, L32-L33 landmine additions). After `git add -A`, run `git status -s` to verify the staging area is clean. Never use `git add <file1> <file2> ...` — explicit lists miss auto-fixes, deletions, and untracked files. OR75 applies to all commits, not just close-workflow commits. Source: OR75 (clarified and broadened).
+
+OR81. The `.secrets.baseline` file is never edited manually. To remove a false positive, run `detect-secrets audit txt/.secrets.baseline` (interactive tool) — never open the JSON in an editor. Manual edits break the baseline's signature and cause false "new secrets detected" results. If `detect-secrets audit` is unavailable or fails, STOP and report — do not fall back to manual editing. Source: L26 (promoted to rule).
+
+OR82. Never use `git mv` — it errors unreliably in Git Bash on Windows. Use plain `mv` to move files, then `git add -A` (per OR75/OR80) to stage both the new paths and the deletions of the old paths. Verify with `git ls-files '<old-path-glob>'` that git no longer tracks the old paths. Source: L34 (clarified).
+
 ---
 
 ## Landmines → Rules
