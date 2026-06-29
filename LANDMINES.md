@@ -146,12 +146,6 @@ Append-only. L1–L9, L11, L12, L17 inherited from sovereign-ai (only those refe
 
 ---
 
-## Capturing new landmines (L34+)
+## Capturing new landmines (L40+)
 
-At `/close` step 11, append:
-```markdown
-## L{n} — <one-line title>
-**Trigger**: <Plan #, step, command/file/context>
-**Impact**: <What broke>
-```
-Trigger and impact only. No narrative, no cross-references, no proposed fixes.
+See `AGENTS.md` "LANDMINES.md — when to read/write" for format and graduation procedure. Append-only — entries are never edited or removed. New landmines continue from L40 (per OR84).

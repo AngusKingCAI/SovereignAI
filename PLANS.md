@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-29 (prompt-10)
+**Last updated**: 2026-06-29 (prompt-10.3)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -22,6 +22,7 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 10**: Baseline → 169 tests. Delta: 0 — see CHANGELOG prompt-10.
 **Plan 10.1**: Baseline → 169 tests. Delta: 0 — see CHANGELOG prompt-10.1.
 **Plan 10.2**: Baseline → 169 tests. Delta: 0 — governance patch, no test changes.
+**Plan 10.3**: Baseline → 169 tests. Delta: 0 — governance condensation patch, no test changes.
 
 ---
 
@@ -121,6 +122,8 @@ Tracked solely in `project-vision-Rev5.md` (SSOT) — do not duplicate the full 
 | `.devin/workflows/verify.md` | Per-edit verification |
 | `.devin/workflows/close.md` | Closing workflow |
 | `.devin/workflows/scan.md` | Scan workflow |
+
+**Numbering policy** (per OR84): Rule and landmine numbers are frozen — never renumbered. Gaps from retired slots are documented in AGENTS.md's "Retired slots" block. New rules continue from OR85; new landmines from L40.
 
 ---
 

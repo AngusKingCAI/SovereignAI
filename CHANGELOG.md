@@ -584,3 +584,26 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Removed premature prompt-11 tag (pointed to 6fa8d73, a pre-10.1 commit)
 - OR76: no premature tags; OR77: coverage mandatory; OR78: bandit reconciliation; OR79: quota-exhaustion re-read; OR80: git add -A for all commits; OR81: detect-secrets audit only; OR82: never git mv
 - close.md now requires coverage measurement, tag existence check, and bandit count reconciliation
+## prompt-10.3 — Governance Condensation + Numbering Policy
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-10.3-Rev1.md
+
+**Files changed**:
+- AGENTS.md (OR83-OR85 added; OR35+OR36 merged; OR9+OR10+OR11 merged; retired slots consolidated; Landmines→Rules table updated)
+- LANDMINES.md (footer replaced with pointer)
+- PLANS.md (reconciliation note, last-updated, numbering policy note)
+
+**Results**:
+- Tests: 169 passed, 3 skipped
+- Ruff: 0 findings
+- Mypy: 0 findings
+- Bandit: 332 Low (B101)
+- Vulture: 0 findings
+- Detect-secrets: pass
+- Coverage: 93%
+
+**Notes**:
+- Governance condensation patch: ~20 lines saved via rule merges
+- OR84 establishes numbering policy: rule/landmine numbers never renumbered
+- OR83 clarifies git add -A is the ONLY allowed staging command

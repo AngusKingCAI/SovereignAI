@@ -4,6 +4,8 @@
 Authority: `project-vision-Rev5.md` (locked). New rules must be checked against it before being added.
 **Rule style**: one to three sentences, actionable content only. No explanatory backstory, no "this applies to all layers" tail-clauses, no repeated framing. Source citations use short form: `(Source: P7)` or `(Source: L24)`.
 
+> **Retired slots** (do not reuse — per OR84): AR8 (AR7 covers it), OR10 (merged into OR9, prompt-10.3), OR11 (merged into OR9, prompt-10.3), OR36 (merged into OR35, prompt-10.3), OR38 (plan files kept forever), OR51 (never assigned), OR53 (never assigned).
+
 ---
 
 ## Architecture Rules
@@ -24,8 +26,6 @@ AR6. No component may accept a generic context object, untyped dict, or `**kwarg
 
 ### UI / Panel separation
 AR7. UI processes (web, TUI, CLI, phone) consume the Capability API only. No imports from `orchestrator/`, `managers/`, `workers/`, `librarian/`, `adapters/`, or `skills/`. Business logic, routing, and state management live in core/pluggable layers — never in a UI process.
-
-> **AR8 permanently retired** — AR7 already enforces this; do not reuse slot AR8.
 
 AR9. No component references another component by hard-coded name. Component discovery always routes through the capability graph (capability requirement → routing engine → registered component). If a capability is missing at runtime, degrade gracefully and report — no silent failure. **Exemptions**: Composition Root (`main.py`), test files, and skill/adapter manifests may reference component names directly (none are runtime discovery paths).
 
@@ -85,11 +85,12 @@ OR7. Structured-markdown edits (`AGENTS.md`, `AI_HANDOFF.md`, plan files, `CHANG
 OR8. Diff check after every file edit: `git diff --stat <file>`. Confirm only intended files changed.
 
 ### Git discipline
-OR9. Tag EVERY prompt. Even docs-only plans must have `git tag prompt-{N}`.
+OR9. Tag every prompt at `/close` step 16, and verify at two stages:
+- **Before create**: `git tag --list prompt-{N}` must be empty (premature-tag check per OR76). If not empty, STOP — do not force-push.
+- **Create**: `git tag prompt-{N}`. Even docs-only plans must be tagged.
+- **Post-push verify (mandatory)**: `git ls-remote --tags origin | grep "prompt-{N}"`. If empty, push failed — STOP.
 
-OR10. Tag verification before push: `git tag --list prompt-{N}`. If empty, tag wasn't created.
-
-OR11. Post-push verification (mandatory): `git ls-remote --tags origin | grep "prompt-{N}"`. If empty, push failed.
+> **OR10 and OR11 permanently retired** — merged into OR9 (prompt-10.3).
 
 OR32. Never use `git commit --no-verify`. If a hook fails, fix the issue. Only acceptable exception: hotfix to a broken hook itself — document the bypass in the commit message. (Source: L11)
 
@@ -138,31 +139,23 @@ OR33. Never exclude files from pre-commit hooks to bypass errors. If a hook fail
 OR34. Execute plan steps in strict numerical order (S0 → S1 → … → Sn). Do not start a later step until the current step is complete. Do not mark a task complete based on work done elsewhere. If a step cannot proceed due to an unresolved dependency, STOP and report the dependency conflict — do not jump ahead. (Source: L17)
 
 ### Git output discipline
-OR35. Use token-efficient git commands:
-- `git status -s` not `git status`
-- `git diff --stat` not `git diff` (full diff only when line changes are needed)
-- `git log --oneline -N` never bare `git log`
-- Pipe through `tail -n N` to truncate
+OR35. Minimize command output. Pipe through `tail -n N` (default N=5) unless full output is needed. Never run a command producing >20 lines without truncation. Specifics:
+- git: `git status -s` not `git status`; `git diff --stat` not `git diff` (full diff only when line changes needed); `git log --oneline -N` never bare `git log`
+- ruff/mypy: `| tail -n 3` (you only need the error count)
+- pre-commit hooks: `2>&1 | tail -n 10`; if hook fails, re-run without truncation for full output
+- pytest: always full verbose `-vvv`, no `-q`, no `--tb=short`, no piping (full output required for hangs/stuck tests/failure details)
+- Chain multi-command verifications with `;`; capture only final summary line
 - If full output is needed, note why before running
 
-### Git Bash output discipline
-OR36. Minimize Git Bash output:
-- Pipe through `tail -n N` (default N=5) unless more is needed
-- Chain multi-command verifications with `;`; capture only final summary line
-- Never run a command producing >20 lines without truncation
-- Pre-commit hooks: `2>&1 | tail -n 10`; if hook fails, re-run without truncation for full output
-- **pytest**: always full verbose `-vvv`, no `-q`, no `--tb=short`, no piping to `tail` (full output required for hangs/stuck tests/failure details)
-- ruff/mypy: `| tail -n 3` (you only need the error count)
+> **OR36 permanently retired** — merged into OR35 (prompt-10.3). See OR35 for the unified output-minimization rule.
 
 ### Batch verification
 OR37. Batch verification commands to reduce execution blocks:
 - Chain syntax, ruff, mypy, detect-secrets, vulture with `;` and capture final summary
 - Example: `python -c "import ast; ast.parse(open('file.py').read())" ; ruff check file.py ; mypy file.py --ignore-missing-imports ; echo "---DONE---" 2>&1 | tail -n 5`
 - On failure, re-run failing check individually for full output
-- **pytest is exempt** — always separate command with full `-vvv` per OR36
+- **pytest is exempt** — always separate command with full `-vvv` per OR35
 - After batching, verify each tool produced output; missing output + exit 0 = success; missing output + non-zero = failure (re-run individually)
-
-> **OR38 permanently retired** — all plan files kept forever; do not reuse slot.
 
 ### Worker / batch verification
 OR29. Zero output from a command (e.g. empty `git tag --list`) is data, not success. Re-run with a confirmation command that explicitly verifies the expected state exists.
@@ -264,6 +257,14 @@ OR85. Governance doc condensation merges document the retired slot in the "Retir
 | L29 | OR45 | python and pip resolve to different interpreters on Windows |
 | L30 | OR46 | source .venv/Scripts/activate does not persist in Git Bash on Windows |
 | L31 | OR47 | Mypy fails when passed markdown or other non-Python files |
+| L32 | OR71 | Executor paraphrases workflow commands instead of running them verbatim |
+| L33 | OR72 | Executor weakens AR check scripts or tests to make a failure pass |
+| L34 | OR75 | mv + git add <new> leaves old path tracked in git |
+| L35 | OR75 | ruff --fix / detect-secrets auto-modified files missed by explicit git add lists |
+| L36 | OR76 | Premature git tag creation requires force-push to move |
+| L37 | OR77 | Coverage skipped or unmeasured |
+| L38 | OR78 | Bandit Low count drifted without baseline reconciliation |
+| L39 | OR79 | Quota exhaustion mid-plan causes context loss |
 
 ---
 
