@@ -117,6 +117,15 @@ OR19. Test fixture parameters may be required by pytest/middleware/pydantic even
 
 OR25. Test deletion is a scope deviation. If a specified test can't be made to pass, STOP and report. Do NOT delete, comment out, or defer the test. Tests in the plan spec are in scope; removing them is a HARD STOP under OR16.
 
+### Conformance testing
+OR60. Every capability class (adapter, skill, memory_backend) SHOULD have a conformance test suite. The conformance runner lives in `sovereignai/conformance/` (a runtime-safe package, shipped in production). The pytest-discoverable test suites live in `tests/conformance/` and import from `sovereignai/conformance/`. The runtime gate in `CapabilityGraph.register()` imports from `sovereignai/conformance/` ONLY — never from `tests/`. The gate is fail-closed for first-party components (installed inside `adapters/internal/`, `skills/official/`) — missing tests = STOP. The gate is fail-open for third-party components — missing tests = WARN + allow registration. If tests exist and FAIL, block registration for ALL components. Conformance tests must be <100ms each (cache results per `(component_id, content_hash)` to avoid re-running on every startup). `capability_class` is derived from the manifest's first `provides` entry's `category` field. Third-party components MAY ship conformance tests via Python entry points (`[project.entry-points.'sovereignai.conformance']`). A dev-mode bypass is available via `--dev` CLI flag (passed as a constructor arg to `CapabilityGraph`, not via `os.environ`); emits a WARN trace when active. Source: Plan 13 Rev3 (N1, N12, N13, N18) + Rev5 (F2, F3, F8).
+
+OR61. Contract tests verify backward compatibility of core public APIs. A contract test failure blocks the build. Source: Plan 13.
+
+OR62. Property-based tests run on every commit. They ARE CI gate blockers. Source: Plan 13 Rev2 (F-29).
+
+OR68. Test dependencies (`hypothesis`, `pytest-cov`) are declared in `pyproject.toml` only. Source: Plan 13 Rev2 (F-28).
+
 ### Datetime, temp files, always-on
 OR20. Never mix naive/aware `datetime`. Use `datetime.now(timezone.utc)` everywhere. Never `datetime.utcnow()`, bare `datetime.now()`, or `default_factory=datetime.utcnow`. (Source: L6)
 
