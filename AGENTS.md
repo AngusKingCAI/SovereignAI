@@ -216,6 +216,8 @@ OR73. `/close` is mandatory and atomic. Completing a plan's body (S1–Sn) does 
 
 OR74. Workflow files are Architect-authored. `.devin/workflows/*.md` is authored by the Architect per the Document Relationships table in `AI_HANDOFF.md`. The Executor may apply a minimal patch to unblock the current close if a workflow bug is discovered mid-`/close`, but must (a) flag the patch in the execution log (Step 13 C9 mechanism) and (b) note it for the Architect to formally adopt in the next plan's S0.3. The Executor must not make undocumented workflow changes. Source: AI_HANDOFF.md Document Relationships.
 
+OR75. Stage all changes with `git add -A`; verify with `git status` before every commit. Before every `git commit` in `/close` (steps 15 and 18), run `git status -s` to see ALL modified/deleted/new files, then `git add -A` to stage them all (including auto-fixes from ruff `--fix`/detect-secrets AND deletions from `mv` operations). Do not use explicit `git add <file1> <file2> ...` lists — they miss auto-fixed files and `mv` deletions. After `git add -A`, run `git status -s` again to verify the staging area is clean (all changes staged, no unstaged lines). If any unstaged changes remain, STOP. Source: L34, L35.
+
 ---
 
 ## Landmines → Rules
