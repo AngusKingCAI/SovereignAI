@@ -26,6 +26,13 @@
   <main id="main-content">
     <section id="panel-orchestrator" class="panel active">
       <h2>Orchestrator</h2>
+      <div id="orchestrator-thinking" style="display: none;">
+        <div id="thinking-header" onclick="toggleThinking()">
+          <span id="thinking-status">Working...</span>
+          <span id="thinking-arrow">▼</span>
+        </div>
+        <div id="thinking-content" style="display: none;"></div>
+      </div>
       <div id="chat-messages"></div>
       <form id="chat-form"><input type="text" id="chat-input" placeholder="Message..."><button>Send</button></form>
     </section>
@@ -71,16 +78,17 @@
     </section>
   </main>
 
-  <div id="log-drawer">
+  <div id="log-drawer" class="open">
     <div id="log-controls">
-      <label><input type="checkbox" checked data-level="ERROR"> ERROR</label>
-      <label><input type="checkbox" checked data-level="WARN"> WARN</label>
-      <label><input type="checkbox" checked data-level="INFO"> INFO</label>
-      <label><input type="checkbox" data-level="DEBUG"> DEBUG</label>
-      <label><input type="checkbox" data-level="TRACE"> TRACE</label>
+      <label><input type="checkbox" checked data-level="error"> ERROR</label>
+      <label><input type="checkbox" checked data-level="warn"> WARN</label>
+      <label><input type="checkbox" checked data-level="info"> INFO</label>
+      <label><input type="checkbox" data-level="debug"> DEBUG</label>
+      <label><input type="checkbox" data-level="trace"> TRACE</label>
       <input type="text" id="log-search" placeholder="Search traces...">
       <button id="log-clear">Clear</button>
     </div>
+    <div id="log-components"></div>
     <div id="log-content"></div>
   </div>
 

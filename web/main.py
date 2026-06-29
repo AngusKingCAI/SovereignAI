@@ -34,6 +34,7 @@ from sovereignai.shared.types import (
     CapabilityCategory,
     TaskState,
     TaskStateChanged,
+    TraceLevel,
 )
 from web.schemas import (
     CapabilityResponseDTO,
@@ -438,6 +439,53 @@ async def get_hardware(request: Request) -> dict:
     }
 
 
+@app.get("/api/traces", dependencies=[Depends(get_current_user)])
+async def get_traces(
+    request: Request,
+    task_id: str | None = None,
+    level: str | None = None,
+    component: str | None = None,
+    limit: int = 100,
+    offset: int = 0,
+) -> list[dict]:
+    """Query historical trace events with optional filters.
+
+    Args:
+        request: The FastAPI request object.
+        task_id: Filter by task ID (correlation_id).
+        level: Filter by trace level (error, warn, info, debug, trace).
+        component: Filter by component name.
+        limit: Maximum number of results (default 100, max 1000).
+        offset: Pagination offset.
+    """
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
+    events = trace.get_events(
+        level=TraceLevel(level) if level else None,
+        component=component,
+    )
+
+    # Filter by task_id if provided
+    if task_id:
+        events = [e for e in events if str(e.correlation_id) == task_id]
+
+    # Apply pagination
+    limit = min(limit, 1000)
+    paginated = events[offset:offset + limit]
+
+    return [
+        {
+            "timestamp": e.timestamp.isoformat(),
+            "level": e.level.value,
+            "component": e.component,
+            "message": e.message,
+            "correlation_id": str(e.correlation_id),
+        }
+        for e in paginated
+    ]
+
+
 @app.get("/api/traces/stream")
 async def get_traces_stream(request: Request) -> StreamingResponse:
     """Stream trace events to the client using Server-Sent Events for real-time updates.
@@ -564,3 +612,27 @@ async def get_traces_stream(request: Request) -> StreamingResponse:
             "X-Accel-Buffering": "no",
         },
     )
+
+
+@app.get("/api/traces/{task_id}", dependencies=[Depends(get_current_user)])
+async def get_traces_for_task(
+    request: Request,
+    task_id: str,
+) -> list[dict]:
+    """Get all trace events for a specific task."""
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
+    events = trace.get_events()
+    task_events = [e for e in events if str(e.correlation_id) == task_id]
+
+    return [
+        {
+            "timestamp": e.timestamp.isoformat(),
+            "level": e.level.value,
+            "component": e.component,
+            "message": e.message,
+            "correlation_id": str(e.correlation_id),
+        }
+        for e in task_events
+    ]

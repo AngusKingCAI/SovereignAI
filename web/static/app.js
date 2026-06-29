@@ -3,6 +3,7 @@
 let traces = [];
 let maxTraces = 1000;
 let eventSource = null;
+let currentTaskId = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Check auth status on page load
@@ -298,6 +299,10 @@ async function setupSSE() {
             traces.shift();
         }
         renderTraces();
+        // Update thinking display when new traces arrive
+        if (currentTaskId) {
+            renderThinkingTraces();
+        }
     });
 
     eventSource.addEventListener('gap', (event) => {
@@ -331,11 +336,14 @@ async function setupSSE() {
         updateChatTaskState(data);
     });
 
-    eventSource.addEventListener('error', async () => {
-        console.error('SSE error, closing connection and checking auth');
+    eventSource.addEventListener('error', () => {
+        console.error('SSE connection error');
         eventSource.close();
-        eventSource = null;
-        await checkAuthStatus();
+        // Reconnect after 3 seconds
+        setTimeout(() => {
+            console.log('SSE reconnecting...');
+            setupSSE();
+        }, 3000);
     });
 }
 
@@ -387,6 +395,12 @@ function setupChatForm() {
             assistantMessage.className = 'chat-message assistant';
             assistantMessage.textContent = result.response || 'Task submitted';
             chatMessages.appendChild(assistantMessage);
+
+            // Show thinking display for this task
+            if (result.task_id) {
+                showThinking(result.task_id);
+                pollTaskCompletion(result.task_id);
+            }
         } catch (error) {
             console.error('Failed to dispatch message:', error);
             showNetworkError();
@@ -445,6 +459,85 @@ function updateChatTaskState(data) {
     chatMessages.appendChild(stateMessage);
 }
 
+function showThinking(taskId) {
+    currentTaskId = taskId;
+    document.getElementById('orchestrator-thinking').style.display = 'block';
+    document.getElementById('thinking-status').textContent = 'Working...';
+    document.getElementById('thinking-content').style.display = 'none';
+}
+
+function hideThinking() {
+    document.getElementById('orchestrator-thinking').style.display = 'none';
+    currentTaskId = null;
+}
+
+function toggleThinking() {
+    const content = document.getElementById('thinking-content');
+    const arrow = document.getElementById('thinking-arrow');
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        arrow.textContent = '▲';
+        renderThinkingTraces();
+    } else {
+        content.style.display = 'none';
+        arrow.textContent = '▼';
+    }
+}
+
+function renderThinkingTraces() {
+    if (!currentTaskId) return;
+    const content = document.getElementById('thinking-content');
+    // Filter traces by this task's ID (correlation_id or task_id)
+    const taskTraces = traces.filter(t =>
+        t.task_id === currentTaskId || t.trace_id === currentTaskId
+    );
+    content.innerHTML = '';
+    taskTraces.forEach(trace => {
+        const entry = document.createElement('div');
+        entry.className = `trace-entry trace-${trace.level}`;
+        entry.textContent = `[${trace.level.toUpperCase()}] [${trace.component}] ${trace.message}`;
+        content.appendChild(entry);
+    });
+    content.scrollTop = content.scrollHeight;
+}
+
+async function pollTaskCompletion(taskId) {
+    const maxPolls = 150; // 5 minutes at 2s intervals
+    for (let i = 0; i < maxPolls; i++) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        try {
+            const response = await fetch(`/api/tasks/${taskId}`, { credentials: 'same-origin' });
+            if (!response.ok) continue;
+            const task = await response.json();
+            if (task.state === 'complete' || task.state === 'failed') {
+                hideThinking();
+                displayTaskResult(task);
+                return;
+            }
+            // Update thinking status with current state
+            document.getElementById('thinking-status').textContent =
+                `Working... (${task.state})`;
+        } catch (error) {
+            console.error('Task poll failed:', error);
+        }
+    }
+    hideThinking();
+    displayTaskResult({ state: 'timeout', error: 'Task did not complete within 5 minutes' });
+}
+
+function displayTaskResult(task) {
+    const chatMessages = document.getElementById('chat-messages');
+    const entry = document.createElement('div');
+    entry.className = `chat-message chat-${task.state === 'complete' ? 'response' : 'error'}`;
+    if (task.state === 'complete') {
+        entry.textContent = task.result || 'Task completed successfully.';
+    } else {
+        entry.textContent = `Task failed: ${task.error || 'Unknown error'}`;
+    }
+    chatMessages.appendChild(entry);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
 function setupLogDrawer() {
     const toggleButton = document.getElementById('log-toggle');
     const logDrawer = document.getElementById('log-drawer');
@@ -468,13 +561,42 @@ function setupLogDrawer() {
     });
 }
 
+function updateComponentFilters() {
+    const components = [...new Set(traces.map(t => t.component))].sort();
+    const container = document.getElementById('log-components');
+    if (!container) return;
+
+    // Only add checkboxes for components not already present
+    const existing = new Set(Array.from(container.querySelectorAll('input[type="checkbox"][data-component]'))
+        .map(cb => cb.getAttribute('data-component')));
+
+    components.forEach(comp => {
+        if (!existing.has(comp)) {
+            const label = document.createElement('label');
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.checked = true;
+            cb.setAttribute('data-component', comp);
+            cb.addEventListener('change', renderTraces);
+            label.appendChild(cb);
+            label.appendChild(document.createTextNode(' ' + comp));
+            container.appendChild(label);
+        }
+    });
+}
+
 function renderTraces() {
     const logContent = document.getElementById('log-content');
     const filters = {
         levels: Array.from(document.querySelectorAll('#log-controls input[type="checkbox"][data-level]:checked'))
             .map(cb => cb.getAttribute('data-level')),
+        components: Array.from(document.querySelectorAll('#log-components input[type="checkbox"][data-component]:checked'))
+            .map(cb => cb.getAttribute('data-component')),
         search: document.getElementById('log-search').value.toLowerCase()
     };
+
+    // Update component filters (add new components seen in traces)
+    updateComponentFilters();
 
     const filteredTraces = filterTraces(traces, filters);
 

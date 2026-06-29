@@ -120,11 +120,11 @@ def test_log_drawer_controls_exist(client: TestClient) -> None:
     html = response.text
 
     assert 'id="log-controls"' in html
-    assert 'data-level="ERROR"' in html
-    assert 'data-level="WARN"' in html
-    assert 'data-level="INFO"' in html
-    assert 'data-level="DEBUG"' in html
-    assert 'data-level="TRACE"' in html
+    assert 'data-level="error"' in html
+    assert 'data-level="warn"' in html
+    assert 'data-level="info"' in html
+    assert 'data-level="debug"' in html
+    assert 'data-level="trace"' in html
     assert 'id="log-search"' in html
     assert 'id="log-clear"' in html
 

@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-29 (prompt-14)
+**Last updated**: 2026-06-29 (prompt-16)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -28,12 +28,14 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 12**: Baseline → 271 tests. Delta: +88 — see CHANGELOG prompt-12.
 **Plan 13**: Baseline → 288 tests. Delta: +17 — see CHANGELOG prompt-13.
 **Plan 14**: Baseline → 320 tests. Delta: +32 — see CHANGELOG prompt-14.
+**Plan 15**: Baseline → 320 tests. Delta: 0 — see CHANGELOG prompt-15.
+**Plan 16**: Baseline → 332 tests. Delta: +12 — see CHANGELOG prompt-16.
 
 ---
 
 ## Test Baseline
 
-**Current**: 320 tests (Plan 14 `/close`)
+**Current**: 332 tests (Plan 16 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -91,12 +93,13 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-13 | `prompt-13` | Conformance and Property Testing — framework, contracts, Hypothesis | 288 | 0 | 0 | 2026-06-29 |
 | prompt-14 | `prompt-14` | Education Department — Teacher worker, Self-correction skill, QLoRA | 320 | 0 | 0 | 2026-06-29 |
 | prompt-15 | `prompt-15` | Scan 15 — mechanical verification scan | 320 | 0 | 0 | 2026-06-29 |
+| prompt-16 | `prompt-16` | Fix Log Drawer and Add Orchestrator Thinking | 332 | 0 | 0 | 2026-06-29 |
 
 ---
 
 ## Active Plan
 
-**None** — awaiting next plan
+**Plan 17** — Memory panel API + UI wiring
 
 ---
 
@@ -104,11 +107,11 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 16 | Logging & observability — fix Log Drawer, add Orchestrator "thinking", verify trace persistence | Scan 15 | ⏳ Pending |
-| 2 | Plan 17 | Memory panel API + UI wiring | Plan 16 | ⏳ Pending |
-| 3 | Plan 18 | Tasks panel — active/scheduled/completed tabs + task detail + manual task creation | Plan 17 | ⏳ Pending |
-| 4 | Plan 19 | Tools panel — list + run tools with input schema forms | Plan 18 | ⏳ Pending |
-| 5 | Scan 20 | Fourth whole-repo scan | Plan 19 | ⏳ Pending |
+| 1 | Plan 18 | Tasks panel — active/scheduled/completed tabs + task detail + manual task creation | Plan 17 | ⏳ Pending |
+| 2 | Plan 19 | Tools panel — list + run tools with input schema forms | Plan 18 | ⏳ Pending |
+| 3 | Scan 20 | Fourth whole-repo scan | Plan 19 | ⏳ Pending |
+| 4 | TBD | TBD | TBD | ⏳ Pending |
+| 5 | TBD | TBD | TBD | ⏳ Pending |
 
 ---
 
