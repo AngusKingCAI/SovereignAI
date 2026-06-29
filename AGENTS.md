@@ -239,6 +239,14 @@ OR88. Crash recovery is automatic and non-blocking. On startup, if a `~/.soverei
 
 OR89. All durable memory backends use atomic writes. SQLite backends use transactions (WAL mode, `busy_timeout=5000`). The JSON procedural backend writes to a temp file then `os.replace()`. No backend may use bare `open().write()`. The procedural backend's lock file is NEVER force-acquired — if the lock is held >5 seconds, the write fails with a WARN trace (preserving mutex safety per P9). Source: Plan 11 Rev3 (N8).
 
+OR57. Core components (EventBus, CapabilityGraph, TaskStateMachine, etc.) use strict versioning — incompatible versions prevent startup. Plugins use lenient versioning — incompatible versions are disabled with a WARN trace. A component is classified as "core" if its manifest declares `core = true` AND it is installed inside the `sovereignai/` package directory; otherwise it is a plugin. Per Rev5 F13: the `core = true` field is IGNORED for components installed outside the sovereignai package (e.g., `~/.sovereignai/plugins/`) — a third-party plugin setting `core = true` is still classified as a plugin. A core component manifest without a `version` field is an error (rejects registration); a plugin manifest without `version` defaults to `"0.0.0"` and passes. Source: Plan 12 Rev3 (N10, N21) + Rev5 (F13).
+
+OR58. "Latest wins" applies ONLY to cosmetic attributes. "Latest" = highest SemVer; ties broken by registration order (first-registered wins). Source: Plan 12 Rev2 (F-38).
+
+OR59. The compatibility matrix is stored in `~/.sovereignai/compatibility.json`, updated on registration, uses atomic writes (`os.replace`), includes `schema_version`, prunes to last 1000 entries, and records `content_hash_a`/`content_hash_b` per entry. On startup, if a component's current `content_hash` differs from the hash in a matrix entry, that entry is invalidated (treated as "unknown"). If the file is corrupted, the system restores from the last `.backup` file (written on every successful `record()`); if no backup exists, rebuilds with "unknown" statuses treated as permissive (startup proceeds, re-test on next registration). Source: Plan 12 Rev3 (N4, N16).
+
+OR67. The VersionNegotiator raises a typed `FatalIncompatibilityError`. The composition root catches this, emits an ERROR trace, and prints the message to stderr. The process exits with code 1: after a 30-second countdown by default (interactive mode); immediately if the `--no-wait` CLI flag is passed. Per Rev5 F7: `sys.stdin.isatty()` is NOT used as a hard gate (it returns False in IDE terminals like PyCharm/VS Code). If `isatty()` is False, print a hint suggesting `--no-wait` but still wait the 30s. Source: Plan 12 Rev3 (N7) + Rev5 (F7).
+
 ---
 
 ## Landmines → Rules
