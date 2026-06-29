@@ -188,11 +188,17 @@ if [ "$remaining" -gt 0 ]; then
   STOP
 fi
 # Also verify git no longer tracks the old paths (per L34 — catches mv+add-not-rm bug)
+# Per L40 fix: do NOT use 'git rm' — it DELETES files. Use 'git add -A' to stage the renames.
 tracked_old=$(git ls-files 'prompts/plan-{N}-Rev*.md' | wc -l)
 if [ "$tracked_old" -gt 0 ]; then
-  echo "STOP: git still tracks $tracked_old plan-{N}-Rev*.md files in prompts/ — run 'git rm' to stage deletions"
-  git ls-files 'prompts/plan-{N}-Rev*.md'
-  STOP
+  echo "git still tracks $tracked_old plan-{N}-Rev*.md files in prompts/ — running 'git add -A' to stage the moves"
+  git add -A
+  tracked_old=$(git ls-files 'prompts/plan-{N}-Rev*.md' | wc -l)
+  if [ "$tracked_old" -gt 0 ]; then
+    echo "STOP: git STILL tracks $tracked_old plan-{N}-Rev*.md files in prompts/ after git add -A — manual investigation needed"
+    git ls-files 'prompts/plan-{N}-Rev*.md'
+    STOP
+  fi
 fi
 # Also verify the base plan and brief were moved (if they existed)
 ```

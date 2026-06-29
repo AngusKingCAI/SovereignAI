@@ -144,8 +144,13 @@ Append-only. L1–L9, L11, L12, L17 inherited from sovereign-ai (only those refe
 **Impact**: Steps skipped, work repeated, `/close` forgotten.
 **Graduated to**: OR79.
 
+## L40 — close.md Step 17 verification check said "run git rm" which DELETES files instead of moving them
+**Trigger**: Prompt-13 close — Executor ran `git rm prompts/plan-13-Rev*.md` because the verification check message literally said "run 'git rm' to stage deletions". This deleted Rev1-Rev9 from git instead of moving them to `prompts/completed/`.
+**Impact**: 9 plan revision files permanently deleted from git history; User had to restore manually.
+**Graduated to**: close.md Step 17 fixed (verification now runs `git add -A` automatically instead of telling Executor to run `git rm`).
+
 ---
 
-## Capturing new landmines (L40+)
+## Capturing new landmines (L41+)
 
-See `AGENTS.md` "LANDMINES.md — when to read/write" for format and graduation procedure. Append-only — entries are never edited or removed. New landmines continue from L40 (per OR84).
+See `AGENTS.md` "LANDMINES.md — when to read/write" for format and graduation procedure. Append-only — entries are never edited or removed. New landmines continue from L41 (per OR84).
