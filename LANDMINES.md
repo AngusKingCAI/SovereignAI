@@ -149,8 +149,43 @@ Append-only. L1–L9, L11, L12, L17 inherited from sovereign-ai (only those refe
 **Impact**: 9 plan revision files permanently deleted from git history; User had to restore manually.
 **Graduated to**: close.md Step 17 fixed (verification now runs `git add -A` automatically instead of telling Executor to run `git rm`).
 
+## L41 — Only working memory backend was registered; episodic/procedural/trace missing
+**Trigger**: Prompt-15 log scan — `build_container()` registered only `WorkingMemoryBackend`; `EpisodicMemoryBackend`, `ProceduralMemoryBackend`, `TraceMemoryBackend` were never registered despite being imported in Plan 11.
+**Impact**: Librarian queries for these backends would fail at runtime; memory topology incomplete.
+**Graduated to**: OR87 (all backends registered via CapabilityGraph).
+
+## L42 — Test mode did not use in-memory SQLite backends
+**Trigger**: Prompt-15 log scan — Tests used disk-based SQLite (`~/.sovereignai/*.db`) despite `SOVEREIGNAI_TEST_MODE` being set. No `:memory:` path override.
+**Impact**: Test runs polluted user's disk with database files; tests not isolated; potential permission errors on CI.
+**Graduated to**: OR88 (test mode uses `:memory:` for SQLite backends).
+
+## L43 — Production-only components not guarded in test mode
+**Trigger**: Prompt-15 log scan — `HardwareProbe`, `TeacherWorker`, `SelfCorrectionSkill`, crash recovery, trace subscriber, and TaskStateChanged subscribers ran in test mode, causing hangs and I/O.
+**Impact**: Tests hung indefinitely; GPU probes attempted in test environment; disk I/O during tests.
+**Graduated to**: OR89 (production-only code wrapped in `if not _test_mode:`).
+
+## L44 — Self-correction skill filtered on non-existent `component` field
+**Trigger**: Prompt-15 log scan — `SelfCorrectionSkill` checked `getattr(event, 'component', None) == self.COMPONENT_NAME` but `TaskStateChanged` has no `component` field. Filter was dead code.
+**Impact**: Filter never triggered; `_recently_analyzed` guard was the actual recursion prevention. Tests crashed with `FrozenInstanceError` when trying to `setattr(event, 'component', ...)`.
+**Graduated to**: OR69 (removed dead filter; `_recently_analyzed` guard is sufficient).
+
+## L45 — Librarian registered in test mode despite no backends needing routing
+**Trigger**: Prompt-15 log scan — `Librarian` was registered unconditionally in test mode, but backends were not all registered (L41). Librarian requires all backends to function.
+**Impact**: Librarian queries would fail in test mode; tests could not verify memory routing.
+**Graduated to**: OR87 (Librarian registration guarded with `if not _test_mode:`).
+
+## L46 — Crash recovery disabled despite being non-blocking per Plan 11 Rev3
+**Trigger**: Prompt-15 log scan — Crash recovery block had `pass` (disabled) despite Plan 11 Rev3 N9 specifying it should be automatic and non-blocking.
+**Impact**: Tasks in non-terminal states after crash were never marked FAILED; no recovery trace emitted.
+**Graduated to**: OR89 (crash recovery re-enabled and guarded with `if not _test_mode:`).
+
+## L47 — Trace and TaskStateChanged subscribers not wired to backends
+**Trigger**: Prompt-15 log scan — No subscribers wired `TraceEmitter` → `TraceMemoryBackend` or `TaskStateChanged` → backends. Traces and state changes were not persisted.
+**Impact**: Trace logs not written to database; task state history not persisted; observability incomplete.
+**Graduated to**: OR90 (subscribers added and guarded with `if not _test_mode:`).
+
 ---
 
-## Capturing new landmines (L41+)
+## Capturing new landmines (L48+)
 
 See `AGENTS.md` "LANDMINES.md — when to read/write" for format and graduation procedure. Append-only — entries are never edited or removed. New landmines continue from L41 (per OR84).
