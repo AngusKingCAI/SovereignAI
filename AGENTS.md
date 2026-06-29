@@ -231,6 +231,14 @@ OR84. Rule and landmine numbers are NEVER renumbered. Existing numbers (AR1–AR
 
 OR85. Governance doc condensation merges document the retired slot in the "Retired slots" block with a one-line reason and a pointer to the merged rule. Example: `OR36 — merged into OR35 (prompt-10.3)`. The merged rule's source citation is updated to include the retired rule's landmine sources. Source: OR84 (clarified).
 
+OR86. Memory backends are pluggable components discovered via the CapabilityGraph, not hardcoded in the core. The Librarian queries the graph for backends declaring `memory_storage` and `memory_query` capabilities. Routing is by capability `name` string — any backend declaring a new memory type name is routed to automatically. Source: Plan 11 Rev2 (F-15).
+
+OR87. Each SQLite memory backend owns a separate database file: `~/.sovereignai/episodic.db`, `~/.sovereignai/trace.db`. Procedural memory uses a JSON file at `~/.sovereignai/procedural_memory.json`. Working memory is in-process only. Source: Plan 11 Rev2 (F-3).
+
+OR88. Crash recovery is automatic and non-blocking. On startup, if a `~/.sovereignai/.shutdown_marker` file exists (indicating a clean previous shutdown), skip recovery entirely. If the marker does NOT exist (indicating a crash), scan for tasks whose last `TaskStateChanged` event has a non-terminal state; mark each as FAILED with a WARN trace. Side effects are NOT replayed. The entire recovery loop is wrapped in `try/except` — on any failure, log to stderr and continue startup. Source: Plan 11 Rev3 (N5, N9).
+
+OR89. All durable memory backends use atomic writes. SQLite backends use transactions (WAL mode, `busy_timeout=5000`). The JSON procedural backend writes to a temp file then `os.replace()`. No backend may use bare `open().write()`. The procedural backend's lock file is NEVER force-acquired — if the lock is held >5 seconds, the write fails with a WARN trace (preserving mutex safety per P9). Source: Plan 11 Rev3 (N8).
+
 ---
 
 ## Landmines → Rules
