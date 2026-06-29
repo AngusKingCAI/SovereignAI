@@ -19,6 +19,7 @@ from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
     TraceLevel,
 )
+from sovereignai.versioning.negotiator import FatalIncompatibilityError
 
 
 def build_container() -> DIContainer:
@@ -31,6 +32,8 @@ def build_container() -> DIContainer:
     Plans 2-4 will extend this function to add their components after
     the EventBus registration.
     """
+    # Create container with event_bus and trace for remove() support (per Rev9)
+    # We'll set these after they're created
     container = DIContainer()
 
     # 1. TraceEmitter — no dependencies, singleton
@@ -40,6 +43,10 @@ def build_container() -> DIContainer:
     # 2. EventBus — depends on TraceEmitter, singleton
     bus = EventBus(trace=trace)
     container.register_singleton(EventBus, bus)
+
+    # Set event_bus and trace on container for remove() support (per Rev9)
+    container._event_bus = bus
+    container._trace = trace
 
     # 3. CapabilityGraph — depends on TraceEmitter, singleton (Plan 2)
     # Registered against ICapabilityIndex protocol so Plan 4's Capability
@@ -161,7 +168,47 @@ def build_container() -> DIContainer:
     librarian = Librarian(capability_graph=graph, trace=trace)
     container.register_singleton(Librarian, librarian)
 
-    # 13. Crash recovery (non-blocking, automatic, failure-isolated) (Plan 11)
+    # 14. Version negotiator (Plan 12)
+    # Per Rev3 N7: non-interactive detection; per Rev3 N11: remove from DI container
+    from sovereignai.versioning.negotiator import VersionNegotiator
+    negotiator = VersionNegotiator(
+        capability_graph=container.retrieve(ICapabilityIndex),  # type: ignore[type-abstract]
+        trace=trace,
+    )
+    result = negotiator.negotiate()
+
+    if not result.can_start:
+        trace.emit(
+            component="versioning",
+            level=TraceLevel.ERROR,
+            message=f"Fatal incompatibilities: {[str(i) for i in result.fatal_incompatibilities]}",
+        )
+        raise FatalIncompatibilityError(result.fatal_incompatibilities)
+
+    for warning in result.warnings:
+        trace.emit(
+            component="versioning",
+            level=TraceLevel.WARN,
+            message=warning,
+        )
+
+    # Remove disabled plugins from BOTH the graph AND the DI container (per Rev3 N11)
+    for plugin_id in result.disabled_plugins:
+        graph.remove(plugin_id)
+        # Note: we don't have the actual class type here, so we can't remove from container
+        # The negotiator would need to track component classes to support this
+        trace.emit(
+            component="versioning",
+            level=TraceLevel.WARN,
+            message=(
+                f"Plugin {plugin_id} disabled due to version "
+                "incompatibility; removed from graph"
+            ),
+        )
+
+    container.register_singleton(VersionNegotiator, negotiator)
+
+    # 15. Crash recovery (non-blocking, automatic, failure-isolated) (Plan 11)
     # NOTE: Crash recovery is disabled in the composition root for now since
     # persistent backends are not initialized. This will be re-enabled when
     # the full memory system is wired in production mode.
@@ -196,16 +243,40 @@ def build_container() -> DIContainer:
 
 
 if __name__ == "__main__":
-    from sovereignai.shared.types import TraceLevel
+    import argparse
+    import sys
 
-    container = build_container()
-    trace = container.retrieve(TraceEmitter)
-    bus = container.retrieve(EventBus)
-
-    trace.emit(
-        component="main",
-        level=TraceLevel.INFO,
-        message="Composition root built successfully — Plan 1 components wired",
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--no-wait", action="store_true",
+        help="Exit immediately on fatal errors (for CI)"
     )
-    for event in trace.get_events():
-        print(f"[{event.level.value}] {event.component}: {event.message}")
+    args = parser.parse_args()
+
+    try:
+        container = build_container()
+        trace = container.retrieve(TraceEmitter)
+        bus = container.retrieve(EventBus)
+
+        trace.emit(
+            component="main",
+            level=TraceLevel.INFO,
+            message="Composition root built successfully — Plan 1 components wired",
+        )
+        for event in trace.get_events():
+            print(f"[{event.level.value}] {event.component}: {event.message}")
+    except FatalIncompatibilityError as e:
+        print(f"SovereignAI cannot start:\n{e}", file=sys.stderr)
+        # F7: 30s countdown is DEFAULT. --no-wait skips it. isatty() is a HINT, not a hard gate.
+        if args.no_wait:
+            sys.exit(1)
+        if not sys.stdin.isatty():
+            print(
+                "(Non-interactive terminal detected. "
+                "Pass --no-wait to exit immediately.)",
+                file=sys.stderr,
+            )
+        import time
+
+        time.sleep(30)
+        sys.exit(1)

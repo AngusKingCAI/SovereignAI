@@ -153,3 +153,29 @@ class CapabilityGraph:
         """
         with self._lock:
             return tuple(self._manifests.values())
+
+    def remove(self, component_id: ComponentId) -> None:
+        """Remove a component from the capability graph and delete its capability entries.
+
+        Used by the version negotiator to disable incompatible plugins.
+        Removes all capability entries for the component and deletes its manifest.
+
+        Args:
+            component_id: The component ID to remove.
+        """
+        with self._lock:
+            # Remove from manifests
+            manifest = self._manifests.pop(component_id, None)
+            if manifest is None:
+                return
+
+            # Remove all capability entries for this component
+            for cap in manifest.provides:
+                key = (cap.category, cap.name)
+                if key in self._index:
+                    self._index[key] = [
+                        entry for entry in self._index[key]
+                        if entry[0] != component_id
+                    ]
+                    if not self._index[key]:
+                        del self._index[key]

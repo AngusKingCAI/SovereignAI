@@ -59,7 +59,6 @@ def test_procedural_backend_lock_timeout_raises_exception(  # noqa: E501
         f.write("test-pid")
 
     # Try to store with a short timeout
-    original_acquire = procedural_backend._acquire_lock
     procedural_backend._acquire_lock = lambda timeout_s=0.1: False  # type: ignore[method-assign]
     with pytest.raises(ProceduralMemoryLockTimeoutError):
         procedural_backend.store(

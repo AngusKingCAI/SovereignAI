@@ -145,8 +145,10 @@ class ComponentManifest:
     version: str  # component semver, e.g. "1.2.0"
     provides: tuple[CapabilityDeclaration, ...]  # capabilities this component offers
     requires: tuple[CapabilityDeclaration, ...]  # capabilities needed (empty for Plan 2 MVP)
-    author: str                           # provenance — who built it (P14)
-    content_hash: str                     # provenance — verified on install (P14)
+    author: str  # provenance — who built it (P14)
+    content_hash: str  # provenance — verified on install (P14)
+    core: bool = False  # per OR57: core=true only respected if inside sovereignai/
+    _source_path: str = ""  # Rev8: source path for first-party detection
 
 
 # ============================================================================

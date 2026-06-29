@@ -34,11 +34,18 @@ class DIContainer:
     from different components.
     """
 
-    def __init__(self) -> None:
-        """Create an empty container instance with no registered components yet."""
+    def __init__(self, event_bus: Any = None, trace: Any = None) -> None:
+        """Create an empty container instance with no registered components yet.
+
+        Args:
+            event_bus: Optional EventBus instance for event unsubscription on remove().
+            trace: Optional TraceEmitter for logging on remove().
+        """
         self._instances: dict[type[Any], Any] = {}
         self._factories: dict[type[Any], Callable[[], Any]] = {}
         self._lock = Lock()
+        self._event_bus = event_bus
+        self._trace = trace
 
     def register_singleton(self, interface: type[T], instance: T) -> None:
         """Register a single instance that all callers will share in the container registry.
@@ -95,3 +102,35 @@ class DIContainer:
         # Call factory outside the lock so slow factories do not block
         # other retrieve() or register() calls.
         return cast(T, factory())
+
+    def remove(self, component_type: type) -> None:
+        """Remove a registered singleton from the container and unsubscribe its event handlers.
+
+        Used by the version negotiator to disable incompatible plugins.
+        Per Rev6 F5: also unsubscribes all event handlers registered by this component.
+        Per Rev9: DIContainer.__init__ must accept event_bus and trace as constructor args
+        (stored as self._event_bus and self._trace) so remove() can access them.
+
+        Args:
+            component_type: The type key of the singleton to remove.
+        """
+        with self._lock:
+            instance = self._instances.pop(component_type, None)
+
+        if instance is not None and self._event_bus is not None:
+            component_id = getattr(instance, "component_id", None) or getattr(
+                instance, "_component_id", None
+            )
+            subscriber_id = component_id if component_id else id(instance)
+            self._event_bus.unsubscribe_all(subscriber_id=subscriber_id)
+            if self._trace is not None:
+                from sovereignai.shared.types import TraceLevel
+
+                self._trace.emit(
+                    component="container",
+                    level=TraceLevel.WARN,
+                    message=(
+                        f"Removed {component_type} from container "
+                        "and unsubscribed all its event handlers"
+                    ),
+                )

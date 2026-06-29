@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-29 (prompt-11)
+**Last updated**: 2026-06-29 (prompt-12)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -24,13 +24,14 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 10.2**: Baseline → 169 tests. Delta: 0 — governance patch, no test changes.
 **Plan 10.3**: Baseline → 169 tests. Delta: 0 — governance condensation patch, no test changes.
 **Plan 10.4**: Baseline → 177 tests. Delta: +8 — see CHANGELOG prompt-10.4.
-Plan 10.5**: Baseline → 183 tests. Delta: +6 — see CHANGELOG prompt-10.5.
+**Plan 10.5**: Baseline → 183 tests. Delta: +6 — see CHANGELOG prompt-10.5.
+**Plan 12**: Baseline → 271 tests. Delta: +88 — see CHANGELOG prompt-12.
 
 ---
 
 ## Test Baseline
 
-**Current**: 183 tests (Plan 11 `/close`)
+**Current**: 271 tests (Plan 12 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -84,6 +85,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-10.4 | `prompt-10.4` | Web UI Hotfix Patch — 3 bugs (manifest parser, dispatch kwargs, first-run 401) | 177 | 0 | 0 | 2026-06-29 |
 | prompt-10.5 | `prompt-10.5` | Web UI Hotfix: /api/tasks 500 + Panel Population | 183 | 0 | 0 | 2026-06-29 |
 | prompt-11 | `prompt-11` | Memory layer — Librarian, backends (episodic, procedural, working, trace) | 183 | 0 | 0 | 2026-06-29 |
+| prompt-12 | `prompt-12` | Version Negotiation — SemVer, negotiator, compatibility matrix | 271 | 0 | 0 | 2026-06-29 |
 
 ---
 

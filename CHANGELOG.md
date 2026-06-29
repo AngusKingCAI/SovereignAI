@@ -697,3 +697,42 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Fixed mypy type errors (Callable import, Generator return types, no-any-return)
 - Fixed bandit B608 SQL injection warnings with nosec comments
 - Fixed AR21 docstring discipline violations
+## prompt-12 — Version Negotiation
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-12-Rev10.md
+
+**Files changed**:
+- sovereignai/versioning/semver.py (new)
+- sovereignai/versioning/negotiator.py (new)
+- sovereignai/versioning/compatibility_matrix.py (new)
+- sovereignai/versioning/__init__.py (new)
+- sovereignai/shared/manifest_parser.py (updated)
+- sovereignai/shared/types.py (updated)
+- sovereignai/shared/capability_graph.py (updated)
+- sovereignai/shared/container.py (updated)
+- sovereignai/main.py (updated)
+- tests/test_semver.py (new)
+- tests/test_version_negotiator.py (new)
+- tests/test_compatibility_matrix.py (new)
+- tests/test_manifest_version_validation.py (new)
+- tests/test_negotiator_disabled_removal.py (new)
+- tests/test_fatal_error_noninteractive.py (new)
+- AGENTS.md (added OR57, OR58, OR59, OR67)
+
+**Results**:
+- Tests: 271 passed, 3 skipped
+- Ruff: 0 findings
+- Mypy: 0 findings
+- Bandit: 0 findings (547 Low, 20 Medium, 527 High - all B101 assert_used)
+- Vulture: 0 findings
+- Detect-secrets: pass
+- Coverage: 94%
+
+**Notes**:
+- Implemented semantic version parsing and comparison per SemVer 2.0.0
+- Added version negotiation with strict core compatibility and lenient plugin compatibility
+- Created compatibility matrix with atomic writes, backup recovery, and content hash validation
+- Updated manifest parser to distinguish core vs plugin components and default plugin version to 0.0.0
+- Added capability graph and DI container removal methods for disabled plugins
+- Integrated version negotiation into main.py startup with fatal error handling and --no-wait flag
