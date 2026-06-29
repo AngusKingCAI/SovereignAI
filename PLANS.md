@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-29 (prompt-10.3)
+**Last updated**: 2026-06-29 (prompt-10.4)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -23,12 +23,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 10.1**: Baseline → 169 tests. Delta: 0 — see CHANGELOG prompt-10.1.
 **Plan 10.2**: Baseline → 169 tests. Delta: 0 — governance patch, no test changes.
 **Plan 10.3**: Baseline → 169 tests. Delta: 0 — governance condensation patch, no test changes.
+**Plan 10.4**: Baseline → 177 tests. Delta: +8 — see CHANGELOG prompt-10.4.
 
 ---
 
 ## Test Baseline
 
-**Current**: 169 tests (Plan 10 `/close`)
+**Current**: 177 tests (Plan 10.4 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -49,7 +50,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 |---|---|---|---|
 | **Ruff** | 0 errors | Plan 1 | D100/D104 excluded per pyproject.toml |
 | **Mypy (file-scoped)** | 0 errors | Plan 1 | File-scoped per OR2 |
-| **Bandit** | 332 Low (B101) | Plan 10 | All test assertions; filter `>> Issue: [B` per OR4. Bandit count reconciled at every /close per OR78. |
+| **Bandit** | 355 Low (B101) | Plan 10.4 | All test assertions; filter `>> Issue: [B` per OR4. Bandit count reconciled at every /close per OR78. |
 | **pip-audit** | 0 CVEs | Plan 1 | Scans txt/requirements.txt only per OR39 (file empty — no runtime deps) |
 | **Vulture** | 0 findings | Plan 1 | High-confidence (≥80) only |
 | **detect-secrets** | pass | Plan 1 | Baseline established prompt-0 |
@@ -79,6 +80,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-10 | `prompt-10` | Scan 10 — mechanical verification scan | 169 | 0 | 0 | 2026-06-29 |
 | prompt-10.1 | `prompt-10.1` | Post-Scan-10 Cleanup Patch — OR75, L34-L35, close.md hardening | N/A | N/A | N/A | 2026-06-29 |
 | prompt-10.2 | `prompt-10.2` | Governance Patch: Rule Gap Fixes + Premature Tag Cleanup — OR76-OR82, L36-L39 | N/A | N/A | N/A | 2026-06-29 |
+| prompt-10.4 | `prompt-10.4` | Web UI Hotfix Patch — 3 bugs (manifest parser, dispatch kwargs, first-run 401) | 177 | 0 | 0 | 2026-06-29 |
 
 ---
 

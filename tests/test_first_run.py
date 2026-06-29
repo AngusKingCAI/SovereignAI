@@ -80,12 +80,12 @@ def test_api_returns_401_on_first_run(client: TestClient, container: Any) -> Non
     # Ensure no users exist
     auth._password_hashes.clear()
 
-    # Access API endpoint - should raise HTTPException 401
-    with pytest.raises(Exception) as exc_info:
-        client.get("/api/capabilities")
+    # Access API endpoint - should return JSONResponse 401 (not raise exception)
+    response = client.get("/api/capabilities")
 
     # Verify it's a 401 error
-    assert "401" in str(exc_info.value)
+    assert response.status_code == 401
+    assert "detail" in response.json()
 
 
 def test_auth_endpoints_allowed_on_first_run(client: TestClient, container: Any) -> None:

@@ -42,7 +42,13 @@ def parse_manifest(path: Path) -> ComponentManifest:
     with path.open("rb") as f:
         data = tomllib.load(f)
 
-    # Required top-level fields
+    # Support both flat format (component_id at root) and [component] table format.
+    # The [component] table is idiomatic TOML and used by all real manifest files;
+    # flat format is used by tests for simplicity. Unwrap if needed.
+    if "component" in data and isinstance(data["component"], dict):
+        data = {**data["component"], **{k: v for k, v in data.items() if k != "component"}}
+
+    # Required top-level fields (now flat after unwrap)
     component_id = data.get("component_id")
     version = data.get("version")
     author = data.get("author")

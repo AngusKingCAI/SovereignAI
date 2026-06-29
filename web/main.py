@@ -23,7 +23,7 @@ from typing import Any
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from starlette.responses import RedirectResponse, StreamingResponse
+from starlette.responses import JSONResponse, RedirectResponse, StreamingResponse
 
 from sovereignai.main import build_container
 from sovereignai.shared.auth import AuthMiddleware
@@ -87,8 +87,12 @@ async def first_run_redirect(request: Request, call_next: Any) -> Response:
     auth: Any = container.retrieve(AuthMiddleware)
     if len(auth._password_hashes) == 0:
         if path.startswith("/api/"):
-            raise HTTPException(
-                status_code=401, detail="No user registered — complete first-run setup"
+            # Return JSONResponse directly — raising HTTPException inside BaseHTTPMiddleware
+            # gets swallowed by Starlette and turned into a 500. The frontend's auth check
+            # (app.js) expects a clean 401 JSON response.
+            return JSONResponse(
+                status_code=401,
+                content={"detail": "No user registered — complete first-run setup"},
             )
         return RedirectResponse(url="/register")  # type: ignore[no-any-return]
 
@@ -385,10 +389,10 @@ async def dispatch(request: Request) -> TaskResponseDTO:
 
     try:
         task_id = capability_api.submit_task(
-            capability=CapabilityCategory.TOOL,
-            name="websearch",
-            payload=message,
             token=token,
+            category=CapabilityCategory.TOOL,
+            capability_name="web_search",
+            payload=message,
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc

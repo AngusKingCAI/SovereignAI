@@ -607,3 +607,27 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Governance condensation patch: ~20 lines saved via rule merges
 - OR84 establishes numbering policy: rule/landmine numbers never renumbered
 - OR83 clarifies git add -A is the ONLY allowed staging command
+## prompt-10.4 — Web UI Hotfix Patch
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-10.4-Rev1.md
+
+**Files changed**:
+- sovereignai/shared/manifest_parser.py
+- web/main.py
+- tests/test_web_ui_integration.py (NEW)
+- tests/test_first_run.py
+
+**Results**:
+- Tests: 177 passed, 3 skipped
+- Ruff: 0 findings
+- Mypy: 0 findings
+- Bandit: 355 Low (B101) findings
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- Fixed Bug 1: Manifest parser now unwraps [component] table for real manifests
+- Fixed Bug 2: Dispatch route uses correct submit_task kwarg names (category=, capability_name=)
+- Fixed Bug 3: First-run middleware returns JSONResponse(401) instead of raising HTTPException
+- Added 8 integration tests to catch these bugs in future
