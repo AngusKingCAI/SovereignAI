@@ -232,6 +232,11 @@ function loadHardware() {
         .then(data => {
             const info = document.getElementById('hardware-info');
             info.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+
+            // Update Education section
+            document.getElementById('gpu-status').textContent = data.has_nvidia_gpu ? 'Available' : 'Not available';
+            document.getElementById('vram-info').textContent = data.vram_mb ? `${data.vram_mb} MB` : 'N/A';
+            document.getElementById('teacher-status').textContent = data.teacher_available ? 'Ready' : 'Unavailable';
         })
         .catch(error => {
             if (error.message !== 'Unauthorized' && error.message !== 'Server error') {
@@ -239,6 +244,26 @@ function loadHardware() {
                 showNetworkError();
             }
         });
+
+    // Setup Education department buttons
+    setupEducationButtons();
+}
+
+function setupEducationButtons() {
+    const curateBtn = document.getElementById('curate-dataset-btn');
+    const finetuneBtn = document.getElementById('finetune-btn');
+
+    if (curateBtn) {
+        curateBtn.addEventListener('click', () => {
+            showToast('Dataset curation requires explicit consent — see API documentation', 'info');
+        });
+    }
+
+    if (finetuneBtn) {
+        finetuneBtn.addEventListener('click', () => {
+            showToast('Fine-tuning requires GPU and QLoRA dependencies — see API documentation', 'info');
+        });
+    }
 }
 
 async function setupSSE() {

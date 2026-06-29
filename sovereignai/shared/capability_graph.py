@@ -12,7 +12,7 @@ Capability API; they never reach into core internals).
 from __future__ import annotations
 
 from threading import Lock
-from typing import Protocol, runtime_checkable, Any
+from typing import Any, Protocol, runtime_checkable
 
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (

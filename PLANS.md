@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-29 (prompt-13)
+**Last updated**: 2026-06-29 (prompt-14)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -27,12 +27,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 10.5**: Baseline → 183 tests. Delta: +6 — see CHANGELOG prompt-10.5.
 **Plan 12**: Baseline → 271 tests. Delta: +88 — see CHANGELOG prompt-12.
 **Plan 13**: Baseline → 288 tests. Delta: +17 — see CHANGELOG prompt-13.
+**Plan 14**: Baseline → 320 tests. Delta: +32 — see CHANGELOG prompt-14.
 
 ---
 
 ## Test Baseline
 
-**Current**: 288 tests (Plan 13 `/close`)
+**Current**: 320 tests (Plan 14 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -58,7 +59,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | **Vulture** | 0 findings | Plan 1 | High-confidence (≥80) only |
 | **detect-secrets** | pass | Plan 1 | Baseline established prompt-0 |
 | **pre-commit** | pass | Plan 1 | Hooks configured at prompt-0 |
-| **Coverage** | 93% | Plan 13 | Dropped from 94% (Plan 12) to 93% — within 5% threshold. Conformance framework added. Target: 90% floor. Coverage measured at every /close per OR77. |
+| **Coverage** | 91% | Plan 14 | Dropped from 93% (Plan 13) to 91% — within 5% threshold. Education department added. Target: 90% floor. Coverage measured at every /close per OR77. |
 
 ---
 
@@ -88,6 +89,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-11 | `prompt-11` | Memory layer — Librarian, backends (episodic, procedural, working, trace) | 183 | 0 | 0 | 2026-06-29 |
 | prompt-12 | `prompt-12` | Version Negotiation — SemVer, negotiator, compatibility matrix | 271 | 0 | 0 | 2026-06-29 |
 | prompt-13 | `prompt-13` | Conformance and Property Testing — framework, contracts, Hypothesis | 288 | 0 | 0 | 2026-06-29 |
+| prompt-14 | `prompt-14` | Education Department — Teacher worker, Self-correction skill, QLoRA | 320 | 0 | 0 | 2026-06-29 |
 
 ---
 

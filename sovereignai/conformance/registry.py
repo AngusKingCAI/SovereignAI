@@ -3,21 +3,22 @@
 First-party tests are registered here. Third-party tests are discovered via
 Python entry points ('sovereignai.conformance' group).
 """
-from typing import Type, Callable, Any
 import importlib.metadata
+from collections.abc import Callable
+from typing import Any
 
-_CONFORMANCE_TESTS: dict[str, list[Type]] = {}
+_CONFORMANCE_TESTS: dict[str, list[type]] = {}
 
 
-def register(capability_class: str) -> Callable[[Type], Type]:
+def register(capability_class: str) -> Callable[[type], type]:
     """Decorator: register a conformance test class for a capability class."""
-    def decorator(cls: Type) -> Type:
+    def decorator(cls: type) -> type:
         _CONFORMANCE_TESTS.setdefault(capability_class, []).append(cls)
         return cls
     return decorator
 
 
-def get_conformance_tests_for_class(capability_class: str) -> list[Type]:
+def get_conformance_tests_for_class(capability_class: str) -> list[type]:
     """Return all conformance test classes for a capability class.
 
     Combines first-party (registered via decorator) and third-party (entry points).
@@ -35,7 +36,7 @@ def get_conformance_tests_for_class(capability_class: str) -> list[Type]:
         for ep in eps:
             if ep.name == capability_class:  # Filter by name, not capability_class
                 try:
-                    cls: Type = ep.load()
+                    cls: type = ep.load()
                     tests.append(cls)
                 except Exception:
                     pass

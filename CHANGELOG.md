@@ -777,3 +777,42 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Added contract tests for Capability API in tests/contracts/
 - Added property-based tests with Hypothesis in tests/property/
 - Integrated conformance gate in CapabilityGraph.register() with --dev CLI flag bypass
+## prompt-14 — Education Department Implementation
+
+**Date**: 2026-06-29
+**Plan file**: prompts/plan-14-Rev10.md
+
+**Files changed**:
+- sovereignai/shared/hardware_probe.py
+- sovereignai/workers/education/teacher_worker.py
+- sovereignai/workers/education/manifest.toml
+- sovereignai/skills/official/self_correction/skill.py
+- sovereignai/skills/official/self_correction/manifest.toml
+- sovereignai/main.py
+- web/templates/index.html
+- web/static/app.js
+- web/static/styles.css
+- tests/test_teacher_worker.py
+- tests/test_self_correction_skill.py
+- tests/test_qlora_integration.py
+- tests/test_education_department.py
+- tests/test_gpu_lock.py
+- tests/test_model_registry.py
+- sovereignai/librarian/__init__.py
+- AGENTS.md
+
+**Results**:
+- Tests: 311 passed, 9 skipped
+- Ruff: 0 findings
+- Mypy: 0 findings
+- Bandit: 636 Low, 2 Medium (B615 - HuggingFace downloads, nosec added)
+- Vulture: 0 findings
+- Detect-secrets: pass
+- Coverage: 91%
+
+**Notes**:
+- Added Education department with Teacher worker (QLoRA fine-tuning, dataset curation, model registry)
+- Added Self-correction skill for procedural memory updates
+- Updated web UI with Education section showing GPU status and fine-tuning controls
+- Added 32 new tests for Education department components
+- Fixed AR4 violation in librarian/__init__.py (mutable __all__ → tuple)

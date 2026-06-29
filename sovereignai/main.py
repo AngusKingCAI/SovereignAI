@@ -130,11 +130,12 @@ def build_container(dev_mode: bool = False) -> DIContainer:
 
     from sovereignai.shared.manifest_parser import parse_manifest
 
-    # Scan skills/user/, skills/external/, adapters/external/, and adapters/internal/  # noqa: E501
+    # Scan skills/user/, skills/external/, skills/official/, adapters/external/, and adapters/internal/  # noqa: E501
     # for manifest.toml files
     manifest_dirs = [
         Path("skills/user"),
         Path("skills/external"),
+        Path("skills/official"),
         Path("adapters/external"),
         Path("adapters/internal"),
     ]
@@ -212,7 +213,39 @@ def build_container(dev_mode: bool = False) -> DIContainer:
 
     container.register_singleton(VersionNegotiator, negotiator)
 
-    # 15. Crash recovery (non-blocking, automatic, failure-isolated) (Plan 11)
+    # 16. HardwareProbe — no dependencies, singleton (Plan 14)
+    from sovereignai.shared.hardware_probe import HardwareProbe
+    hardware_probe = HardwareProbe()
+    container.register_singleton(HardwareProbe, hardware_probe)
+
+    # 17. Teacher worker — depends on CapabilityAPI + TraceEmitter + HardwareProbe (Plan 14)
+    # NOTE: Teacher worker is registered as a factory (not singleton) per AR18
+    # The actual instantiation happens on-demand via the LifecycleManager
+    from sovereignai.workers.education.teacher_worker import TeacherWorker
+    # Register as a factory function
+    def teacher_worker_factory() -> TeacherWorker:
+        """Create a new Teacher worker instance on demand with injected dependencies."""
+        return TeacherWorker(
+            capability_api=container.retrieve(CapabilityAPI),
+            trace=trace,
+            hardware_probe=container.retrieve(HardwareProbe),
+        )
+    container.register_factory(TeacherWorker, teacher_worker_factory)
+
+    # 18. Self-correction skill — depends on Librarian + TraceEmitter (Plan 14)
+    # NOTE: Self-correction skill subscribes to TaskStateChanged events
+    from sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
+    self_correction = SelfCorrectionSkill(
+        librarian=container.retrieve(Librarian),
+        trace=trace,
+    )
+    container.register_singleton(SelfCorrectionSkill, self_correction)
+
+    # 19. Wire self-correction skill to TaskStateChanged events (Plan 14)
+    # Subscribe to the EventBus to receive task state change notifications
+    bus.subscribe("TaskStateChanged", self_correction.on_task_state_changed)
+
+    # 20. Crash recovery (non-blocking, automatic, failure-isolated) (Plan 11)
     # NOTE: Crash recovery is disabled in the composition root for now since
     # persistent backends are not initialized. This will be re-enabled when
     # the full memory system is wired in production mode.

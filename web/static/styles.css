@@ -181,6 +181,49 @@ body {
     overflow-x: auto;
 }
 
+#education-info {
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+#education-info h3 {
+    color: #ffffff;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #3d3d3d;
+    padding-bottom: 10px;
+}
+
+#education-info p {
+    margin: 10px 0;
+    color: #e0e0e0;
+}
+
+#education-info span {
+    font-weight: bold;
+    color: #4a9eff;
+}
+
+#curate-dataset-btn,
+#finetune-btn {
+    margin: 5px;
+    padding: 8px 16px;
+    background-color: #4a9eff;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#curate-dataset-btn:hover,
+#finetune-btn:hover {
+    background-color: #3a8eef;
+}
+
 #log-drawer {
     position: fixed;
     bottom: 0;

@@ -5,4 +5,4 @@ may query a memory backend directly.
 """
 from sovereignai.librarian.librarian import Librarian
 
-__all__ = ["Librarian"]
+__all__ = ("Librarian",)
