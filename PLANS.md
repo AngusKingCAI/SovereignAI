@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-30 (prompt-17.7)
+**Last updated**: 2026-06-30 (prompt-18.0)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -38,12 +38,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 17.5**: Baseline → 342 tests. Delta: 0 — see CHANGELOG prompt-17.5.
 **Plan 17.6**: Baseline → 342 tests. Delta: 0 — see CHANGELOG prompt-17.6.
 **Plan 17.7**: Baseline → 352 tests. Delta: +10 — see CHANGELOG prompt-17.7.
+**Plan 18.0**: Baseline → 355 tests. Delta: +3 — see CHANGELOG prompt-18.0.
 
 ---
 
 ## Test Baseline
 
-**Current**: 352 tests (Plan 17.7 `/close`)
+**Current**: 355 tests (Plan 18.0 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -110,6 +111,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-17.5 | `prompt-17.5` | Fix Registration Block + Cookie Secure Flag | 342 | 3 pre-existing | 4 pre-existing | 2026-06-30 |
 | prompt-17.6 | `prompt-17.6` | Fix Model Pull 500 + Collapsible Family Sections + Load More + Provider Search | 342 | 2 pre-existing | 4 pre-existing | 2026-06-30 |
 | prompt-17.7 | `prompt-17.7` | Fix Auth Deletion + Pull Method + Load More + Log Toggle Button | 352 | 0 | 5 pre-existing | 2026-06-30 |
+| prompt-18.0 | `prompt-18.0` | Web UI Polish + Download Pipeline Fix | 355 | 0 | 0 | 2026-06-30 |
 
 ---
 
@@ -123,9 +125,9 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 18 | Tasks panel — active/scheduled/completed tabs + task detail + manual task creation | Plan 17 | ⏳ Pending |
-| 2 | Plan 19 | Tools panel — list + run tools with input schema forms | Plan 18 | ⏳ Pending |
-| 3 | Scan 20 | Fourth whole-repo scan | Plan 19 | ⏳ Pending |
+| 1 | TBD | TBD | TBD | ⏳ Pending |
+| 2 | TBD | TBD | TBD | ⏳ Pending |
+| 3 | TBD | TBD | TBD | ⏳ Pending |
 | 4 | TBD | TBD | TBD | ⏳ Pending |
 | 5 | TBD | TBD | TBD | ⏳ Pending |
 

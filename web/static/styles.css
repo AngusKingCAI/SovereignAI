@@ -72,6 +72,7 @@ body {
     margin-left: 200px;
     min-height: 100vh;
     padding: 20px;
+    padding-bottom: 220px;
 }
 
 .panel {
@@ -236,9 +237,20 @@ body {
     flex-direction: column;
     z-index: 1000;
     transition: height 0.2s ease;
-    resize: vertical;
+    resize: none;
     overflow: hidden;
     min-height: 0;
+}
+
+.log-drawer-handle {
+    height: 4px;
+    background-color: #3d3d3d;
+    cursor: ns-resize;
+    flex-shrink: 0;
+}
+
+.log-drawer-handle:hover {
+    background-color: #4a9eff;
 }
 
 #log-drawer.open {
@@ -249,11 +261,71 @@ body {
 #log-controls {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 8px 12px;
     background-color: #2d2d2d;
     border-bottom: 1px solid #3d3d3d;
     gap: 12px;
     flex-wrap: wrap;
+}
+
+.log-controls-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.log-drawer-close-btn {
+    padding: 4px 10px;
+    background-color: #3d3d3d;
+    color: #ccc;
+    border: 1px solid #4d4d4d;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    min-width: 24px;
+}
+
+.log-drawer-close-btn:hover {
+    background-color: #4d4d4d;
+}
+
+.log-drawer-reopen {
+    display: none;
+    padding: 8px 12px;
+    background-color: #2d2d2d;
+    border-top: 2px solid #3d3d3d;
+    cursor: pointer;
+    align-items: center;
+    gap: 8px;
+    color: #888;
+    font-size: 12px;
+}
+
+.log-drawer-reopen:hover {
+    background-color: #3d3d3d;
+    color: #ccc;
+}
+
+.log-drawer-reopen .chevron {
+    font-size: 10px;
+}
+
+#log-drawer.collapsed {
+    height: auto !important;
+    min-height: auto !important;
+}
+
+#log-drawer.collapsed #log-controls,
+#log-drawer.collapsed #log-components,
+#log-drawer.collapsed #log-content {
+    display: none;
+}
+
+#log-drawer.collapsed .log-drawer-reopen {
+    display: flex;
 }
 
 #log-controls label {
@@ -739,4 +811,96 @@ body {
 .api-key-entry { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #333; color: #ddd; }
 .api-key-form { display: flex; gap: 8px; margin-top: 12px; }
 .api-key-form input { padding: 6px; background: #2d2d2d; border: 1px solid #4d4d4d; color: #ddd; border-radius: 4px; }
+
+/* Ollama status */
+.ollama-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #888;
+}
+
+.status-dot.running {
+    background-color: #6bff6b;
+    box-shadow: 0 0 6px #6bff6b;
+}
+
+.status-dot.not-running {
+    background-color: #ff6b6b;
+}
+
+.ollama-start-btn {
+    padding: 6px 12px;
+    background-color: #4a9eff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.ollama-start-btn:hover {
+    background-color: #3a8eef;
+}
+
+.ollama-start-btn:disabled {
+    background-color: #3d3d3d;
+    cursor: not-allowed;
+}
+
+.reveal-btn {
+    padding: 4px 12px;
+    background-color: #3d3d3d;
+    color: #ccc;
+    border: 1px solid #4d4d4d;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-right: 8px;
+}
+
+.reveal-btn:hover {
+    background-color: #4d4d4d;
+    color: #fff;
+}
+
+/* VRAM badges */
+.vram-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-left: 8px;
+}
+
+.vram-ok {
+    background-color: #2d5a2d;
+    color: #6bff6b;
+    border: 1px solid #3a7a3a;
+}
+
+.vram-caution {
+    background-color: #5a5a2d;
+    color: #ffd93d;
+    border: 1px solid #7a7a3a;
+}
+
+.vram-warning {
+    background-color: #5a3a2d;
+    color: #ffaa6b;
+    border: 1px solid #7a5a3a;
+}
+
+.vram-error {
+    background-color: #5a2d2d;
+    color: #ff6b6b;
+    border: 1px solid #7a3a3a;
+}
 

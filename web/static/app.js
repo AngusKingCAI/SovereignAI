@@ -33,6 +33,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Load model selector on startup
     loadModelSelector();
+
+    // Start Ollama status polling
+    startOllamaStatusPolling();
 });
 
 async function checkAuthStatus() {
@@ -556,9 +559,72 @@ function displayTaskResult(task) {
 function setupLogDrawer() {
     const toggleButton = document.getElementById('log-toggle');
     const logDrawer = document.getElementById('log-drawer');
+    const closeButton = document.getElementById('log-drawer-close');
+    const reopenButton = document.getElementById('log-drawer-reopen');
+    const dragHandle = document.getElementById('log-drawer-handle');
+
+    // Restore open/closed state from localStorage
+    const savedState = localStorage.getItem('logDrawerState');
+    if (savedState === 'collapsed') {
+        logDrawer.classList.remove('open');
+        logDrawer.classList.add('collapsed');
+    }
+
+    // Restore height from localStorage
+    const savedHeight = localStorage.getItem('logDrawerHeight');
+    if (savedHeight && logDrawer.classList.contains('open')) {
+        logDrawer.style.height = savedHeight;
+    }
 
     toggleButton.addEventListener('click', () => {
         logDrawer.classList.toggle('open');
+        logDrawer.classList.remove('collapsed');
+        localStorage.setItem('logDrawerState', 'open');
+    });
+
+    closeButton.addEventListener('click', () => {
+        logDrawer.classList.remove('open');
+        logDrawer.classList.add('collapsed');
+        localStorage.setItem('logDrawerState', 'collapsed');
+    });
+
+    reopenButton.addEventListener('click', () => {
+        logDrawer.classList.remove('collapsed');
+        logDrawer.classList.add('open');
+        const savedHeight = localStorage.getItem('logDrawerHeight');
+        if (savedHeight) {
+            logDrawer.style.height = savedHeight;
+        }
+        localStorage.setItem('logDrawerState', 'open');
+    });
+
+    // Drag-to-resize functionality
+    let isDragging = false;
+    let startY = 0;
+    let startHeight = 0;
+
+    dragHandle.addEventListener('mousedown', (e) => {
+        if (!logDrawer.classList.contains('open')) return;
+        isDragging = true;
+        startY = e.clientY;
+        startHeight = logDrawer.offsetHeight;
+        document.body.style.userSelect = 'none';
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const deltaY = startY - e.clientY;
+        const newHeight = Math.max(80, Math.min(window.innerHeight * 0.6, startHeight + deltaY));
+        logDrawer.style.height = newHeight + 'px';
+        localStorage.setItem('logDrawerHeight', newHeight + 'px');
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            document.body.style.userSelect = '';
+        }
     });
 
     const levelCheckboxes = document.querySelectorAll('#log-controls input[type="checkbox"][data-level]');
@@ -677,7 +743,9 @@ function loadHFCatalog(reset) {
 
     fetch(url)
         .then(r => r.json())
-        .then(models => {
+        .then(data => {
+            const models = data.models || [];
+            const hardware = data.hardware || {};
             const list = document.getElementById('hf-models-list');
             if (reset && models.length === 0) {
                 list.innerHTML = '<p>No models found. Try a different search.</p>';
@@ -725,10 +793,15 @@ function loadHFCatalog(reset) {
                     const entry = document.createElement('div');
                     entry.className = 'model-entry catalog';
                     const dl = m.downloads > 1000 ? `${(m.downloads / 1000).toFixed(0)}K` : (m.downloads || 0);
+
+                    // Compute VRAM badge
+                    const vramBadge = computeVRAMBadge(m.size_mb || 0, hardware.gpu_vram_mb, hardware.ram_total_mb);
+
                     entry.innerHTML = `
                         <span class="model-publisher">${m.publisher || ''}</span>
                         <span class="model-name">${m.name}</span>
                         <span class="model-downloads">⬇ ${dl}</span>
+                        ${vramBadge}
                         <button class="pull-btn" onclick="showPullDialog('${m.id}')">Pull</button>
                     `;
                     modelList.appendChild(entry);
@@ -853,13 +926,31 @@ function pollPullStatus(modelId) {
             .then(status => {
                 if (status.status === 'done') {
                     clearInterval(interval);
-                    alert(`Model ${modelId} pulled successfully!`);
+                    const locationMsg = status.ollama_path
+                        ? `Model ${modelId} pulled successfully!\n\nStored at: ${status.ollama_path}`
+                        : `Model ${modelId} pulled successfully!`;
+                    alert(locationMsg);
                     // Refresh installed models
                     loadInstalledModels();
                     loadModelSelector();
                 } else if (status.status === 'error') {
                     clearInterval(interval);
                     alert(`Pull failed: ${status.message}`);
+                } else if (status.download_path) {
+                    // Update message to show download path during download
+                    const traceMsg = `Downloading to: ${status.download_path}`;
+                    // Add to traces if not already there
+                    const logContent = document.getElementById('log-content');
+                    const existingMsg = Array.from(logContent.children).find(
+                        el => el.textContent.includes('Downloading to:')
+                    );
+                    if (!existingMsg) {
+                        const entry = document.createElement('div');
+                        entry.className = 'trace-entry trace-info';
+                        entry.textContent = traceMsg;
+                        logContent.appendChild(entry);
+                        logContent.scrollTop = logContent.scrollHeight;
+                    }
                 }
                 // Status updates are in the log drawer via traces
             })
@@ -869,6 +960,45 @@ function pollPullStatus(modelId) {
 
 // Orchestrator model selector
 let selectedModel = null;
+
+function computeVRAMBadge(modelSizeMb, gpuVramMb, ramTotalMb) {
+    // Compute VRAM badge based on model size vs available hardware
+    // Returns HTML string for badge or empty string if no GPU detected
+
+    if (!gpuVramMb) {
+        // No GPU detected, show RAM-based badge
+        if (!ramTotalMb) return '';
+        const ramGb = (ramTotalMb / 1024).toFixed(0);
+        const modelGb = (modelSizeMb / 1024).toFixed(1);
+        const ratio = modelSizeMb / ramTotalMb;
+
+        if (ratio > 0.8) {
+            return `<span class="vram-badge vram-warning" title="Requires ${modelGb}GB RAM, you have ${ramGb}GB">⚠ RAM</span>`;
+        } else if (ratio > 0.5) {
+            return `<span class="vram-badge vram-caution" title="Requires ${modelGb}GB RAM, you have ${ramGb}GB">RAM</span>`;
+        }
+        return '';
+    }
+
+    // GPU detected
+    const gpuVramGb = (gpuVramMb / 1024).toFixed(0);
+    const modelGb = (modelSizeMb / 1024).toFixed(1);
+    const ratio = modelSizeMb / gpuVramMb;
+
+    if (ratio > 1.2) {
+        // Model significantly larger than GPU VRAM
+        return `<span class="vram-badge vram-error" title="Requires ${modelGb}GB VRAM, GPU has ${gpuVramGb}GB">✗ ${modelGb}GB</span>`;
+    } else if (ratio > 0.9) {
+        // Model close to GPU VRAM limit
+        return `<span class="vram-badge vram-warning" title="Requires ${modelGb}GB VRAM, GPU has ${gpuVramGb}GB">⚠ ${modelGb}GB</span>`;
+    } else if (ratio > 0.5) {
+        // Model uses significant portion of VRAM
+        return `<span class="vram-badge vram-caution" title="Requires ${modelGb}GB VRAM, GPU has ${gpuVramGb}GB">${modelGb}GB</span>`;
+    } else {
+        // Model fits comfortably
+        return `<span class="vram-badge vram-ok" title="Requires ${modelGb}GB VRAM, GPU has ${gpuVramGb}GB">${modelGb}GB</span>`;
+    }
+}
 
 function loadModelSelector() {
     fetch('/api/models/installed')
@@ -932,6 +1062,14 @@ function loadOptions() {
             }
             document.getElementById('ollama-host-display').textContent = config.ollama_host;
         });
+
+    // Load storage paths
+    fetch('/api/storage/paths')
+        .then(r => r.json())
+        .then(paths => {
+            document.getElementById('cache-dir-display').textContent = paths.cache_dir;
+            document.getElementById('ollama-models-dir-display').textContent = paths.ollama_models_dir;
+        });
 }
 
 function saveApiKey() {
@@ -961,8 +1099,112 @@ function deleteApiKey(provider) {
         method: 'DELETE',
         credentials: 'same-origin',
     })
-    .then(r => r.json())
-    .then(result => {
-        loadOptions();
-    });
+    .then(() => loadOptions());
 }
+
+function startOllamaStatusPolling() {
+    updateOllamaStatus();
+    setInterval(updateOllamaStatus, 10000); // Poll every 10 seconds
+}
+
+async function updateOllamaStatus() {
+    try {
+        const response = await fetch('/api/ollama/status');
+        const data = await response.json();
+        const dot = document.getElementById('ollama-status-dot');
+        const text = document.getElementById('ollama-status-text');
+        const startBtn = document.getElementById('ollama-start-btn');
+
+        if (data.status === 'running') {
+            dot.className = 'status-dot running';
+            text.textContent = `Running (v${data.version})`;
+            startBtn.style.display = 'none';
+        } else {
+            dot.className = 'status-dot not-running';
+            text.textContent = 'Not running';
+            startBtn.style.display = 'inline-block';
+        }
+    } catch (error) {
+        console.error('Failed to check Ollama status:', error);
+        const dot = document.getElementById('ollama-status-dot');
+        const text = document.getElementById('ollama-status-text');
+        const startBtn = document.getElementById('ollama-start-btn');
+        dot.className = 'status-dot not-running';
+        text.textContent = 'Not running';
+        startBtn.style.display = 'inline-block';
+    }
+}
+
+async function startOllamaServe() {
+    const startBtn = document.getElementById('ollama-start-btn');
+    startBtn.disabled = true;
+    startBtn.textContent = 'Starting...';
+
+    try {
+        const response = await fetch('/api/ollama/start', { method: 'POST' });
+        const data = await response.json();
+        if (data.status === 'starting') {
+            // Poll for up to 10 seconds to check if it started successfully
+            let attempts = 0;
+            const maxAttempts = 10;
+            const checkInterval = setInterval(async () => {
+                attempts++;
+                try {
+                    const statusResponse = await fetch('/api/ollama/status');
+                    const statusData = await statusResponse.json();
+                    if (statusData.status === 'running') {
+                        clearInterval(checkInterval);
+                        updateOllamaStatus();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(checkInterval);
+                        startBtn.disabled = false;
+                        startBtn.textContent = 'Start ollama serve';
+                        alert('Ollama failed to start within 10 seconds. Check if it is installed.');
+                    }
+                } catch (error) {
+                    if (attempts >= maxAttempts) {
+                        clearInterval(checkInterval);
+                        startBtn.disabled = false;
+                        startBtn.textContent = 'Start ollama serve';
+                        alert('Failed to check Ollama status after starting.');
+                    }
+                }
+            }, 1000);
+        }
+    } catch (error) {
+        startBtn.disabled = false;
+        startBtn.textContent = 'Start ollama serve';
+        alert('Failed to start Ollama: ' + error.message);
+    }
+}
+
+// Add event listener for Start button
+document.addEventListener('DOMContentLoaded', () => {
+    const startBtn = document.getElementById('ollama-start-btn');
+    if (startBtn) {
+        startBtn.addEventListener('click', startOllamaServe);
+    }
+
+    // Add event listeners for reveal buttons
+    const revealCacheBtn = document.getElementById('reveal-cache-btn');
+    if (revealCacheBtn) {
+        revealCacheBtn.addEventListener('click', () => {
+            const cacheDir = document.getElementById('cache-dir-display').textContent;
+            if (cacheDir && cacheDir !== 'Loading...') {
+                // On Windows, use explorer to open the directory
+                window.open(`file:///${cacheDir.replace(/\\/g, '/')}`);
+            }
+        });
+    }
+
+    const revealOllamaBtn = document.getElementById('reveal-ollama-btn');
+    if (revealOllamaBtn) {
+        revealOllamaBtn.addEventListener('click', () => {
+            const ollamaDir = document.getElementById('ollama-models-dir-display').textContent;
+            if (ollamaDir && ollamaDir !== 'Loading...') {
+                // On Windows, use explorer to open the directory
+                window.open(`file:///${ollamaDir.replace(/\\/g, '/')}`);
+            }
+        });
+    }
+});

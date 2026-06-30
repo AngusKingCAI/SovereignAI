@@ -103,24 +103,45 @@
       </div>
       <div class="options-section">
         <h3>Ollama</h3>
+        <div id="ollama-status-block">
+          <div class="ollama-status-indicator">
+            <span id="ollama-status-dot" class="status-dot"></span>
+            <span id="ollama-status-text">Checking...</span>
+          </div>
+          <button id="ollama-start-btn" class="ollama-start-btn" style="display: none;">Start ollama serve</button>
+        </div>
         <p>Host: <span id="ollama-host-display">Loading...</span></p>
-        <p>Ensure Ollama is running: <code>ollama serve</code></p>
+      </div>
+      <div class="options-section">
+        <h3>Storage</h3>
+        <p>SovereignAI cache: <span id="cache-dir-display">Loading...</span></p>
+        <p>Ollama models: <span id="ollama-models-dir-display">Loading...</span></p>
+        <button id="reveal-cache-btn" class="reveal-btn">Reveal Cache</button>
+        <button id="reveal-ollama-btn" class="reveal-btn">Reveal Ollama Models</button>
       </div>
     </section>
   </main>
 
   <div id="log-drawer" class="open">
+    <div id="log-drawer-handle" class="log-drawer-handle"></div>
     <div id="log-controls">
-      <label><input type="checkbox" checked data-level="error"> ERROR</label>
-      <label><input type="checkbox" checked data-level="warn"> WARN</label>
-      <label><input type="checkbox" checked data-level="info"> INFO</label>
-      <label><input type="checkbox" data-level="debug"> DEBUG</label>
-      <label><input type="checkbox" data-level="trace"> TRACE</label>
-      <input type="text" id="log-search" placeholder="Search traces...">
-      <button id="log-clear">Clear</button>
+      <div class="log-controls-left">
+        <label><input type="checkbox" checked data-level="error"> ERROR</label>
+        <label><input type="checkbox" checked data-level="warn"> WARN</label>
+        <label><input type="checkbox" checked data-level="info"> INFO</label>
+        <label><input type="checkbox" data-level="debug"> DEBUG</label>
+        <label><input type="checkbox" data-level="trace"> TRACE</label>
+        <input type="text" id="log-search" placeholder="Search traces...">
+        <button id="log-clear">Clear</button>
+      </div>
+      <button id="log-drawer-close" class="log-drawer-close-btn">×</button>
     </div>
     <div id="log-components"></div>
     <div id="log-content"></div>
+    <div id="log-drawer-reopen" class="log-drawer-reopen">
+      <span>Logs</span>
+      <span class="chevron">▲</span>
+    </div>
   </div>
 
   <script src="/static/logic.js"></script>

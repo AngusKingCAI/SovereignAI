@@ -684,12 +684,26 @@ async def get_model_catalog(
     search: str = "",
     limit: int = 50,
     offset: int = 0,
-) -> list[dict]:
-    """Browse available GGUF models from HuggingFace."""
+) -> dict:
+    """Browse available GGUF models from HuggingFace with hardware context for VRAM badges."""
     container: Any = request.app.state.container
     trace: Any = container.retrieve(TraceEmitter)
     from sovereignai.shared.hf_catalog import fetch_gguf_models
-    return fetch_gguf_models(trace, search=search, limit=limit, offset=offset)
+    from web.hardware_probe import HardwareProbe
+
+    models = fetch_gguf_models(trace, search=search, limit=limit, offset=offset)
+
+    # Get hardware info for VRAM badge computation
+    probe = HardwareProbe()
+    hardware_info = await probe.probe_async()
+
+    return {
+        "models": models,
+        "hardware": {
+            "gpu_vram_mb": hardware_info.gpu_vram_mb,
+            "ram_total_mb": hardware_info.ram_total_mb,
+        },
+    }
 
 
 def extract_quant_from_filename(path: str) -> str:
@@ -807,6 +821,13 @@ async def pull_model(request: Request) -> dict:
             temp_dir = tempfile.mkdtemp(prefix="sovereignai_pull_")
             local_path = os.path.join(temp_dir, os.path.basename(target_file))
 
+            _pull_status[model_name] = {
+                "status": "pulling",
+                "message": f"Downloading to: {local_path}",
+                "progress": 0,
+                "download_path": local_path,
+            }
+
             req = urllib.request.Request(download_url, headers={"User-Agent": "SovereignAI/0.1"})
             with urllib.request.urlopen(req, timeout=3600) as resp:  # nosec B310
                 total = int(resp.headers.get("Content-Length", 0))
@@ -845,15 +866,18 @@ async def pull_model(request: Request) -> dict:
             )
 
             if result.returncode == 0:
+                # Get Ollama models directory
+                ollama_models_dir = os.path.expanduser("~/.ollama/models")
                 _pull_status[model_name] = {
                     "status": "done",
                     "message": f"Created {ollama_name}",
                     "progress": 100,
+                    "ollama_path": ollama_models_dir,
                 }
                 trace.emit(
                     component="models",
                     level=TraceLevel.INFO,
-                    message=f"Model {ollama_name} created successfully",
+                    message=f"Model {ollama_name} created successfully at {ollama_models_dir}",
                 )
             else:
                 err = result.stderr.strip()[:200] if result.stderr else "Unknown error"
@@ -930,6 +954,66 @@ async def get_all_models(request: Request) -> dict:
             {"id": "huggingface", "name": "HuggingFace", "type": "catalog"},
             {"id": "ollama", "name": "Ollama (Installed)", "type": "local"},
         ],
+    }
+
+
+@app.get("/api/ollama/status", dependencies=[Depends(get_current_user)])
+async def get_ollama_status(request: Request) -> dict:
+    """Check Ollama service status and version."""
+    try:
+        import ollama
+        # Check if Ollama is running by listing models
+        ollama.list()
+        # Get version
+        version_info = getattr(ollama, "__version__", "unknown")
+        return {"status": "running", "version": version_info}
+    except Exception:
+        return {"status": "not_running", "version": None}
+
+
+@app.post("/api/ollama/start", dependencies=[Depends(get_current_user)])
+async def start_ollama(request: Request) -> dict:
+    """Start Ollama serve as a subprocess."""
+    import os
+    import subprocess
+
+    try:
+        # Start ollama serve as detached process on Windows
+        if os.name == 'nt':
+            # Windows: use DETACHED_PROCESS flag
+            process = subprocess.Popen(
+                ["ollama", "serve"],
+                creationflags=subprocess.DETACHED_PROCESS,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+        else:
+            # Unix: use nohup
+            process = subprocess.Popen(
+                ["ollama", "serve"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+        return {"status": "starting", "pid": process.pid}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/storage/paths", dependencies=[Depends(get_current_user)])
+async def get_storage_paths(request: Request) -> dict:
+    """Get storage directory paths for SovereignAI cache and Ollama models."""
+    import os
+    import tempfile
+
+    # SovereignAI cache directory (temp directory for downloads)
+    cache_dir = tempfile.gettempdir()
+
+    # Ollama models directory
+    ollama_models_dir = os.path.expanduser("~/.ollama/models")
+
+    return {
+        "cache_dir": cache_dir,
+        "ollama_models_dir": ollama_models_dir,
     }
 
 

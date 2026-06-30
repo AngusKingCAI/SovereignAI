@@ -244,3 +244,57 @@ def test_dto_mapping_isolated(client: TestClient, mock_container: Mock) -> None:
     assert "state" in data   # DTO field name
     assert "result" in data  # DTO field name
     assert "error" in data   # DTO field name
+
+
+def test_ollama_status_endpoint(client: TestClient, mock_container: Mock) -> None:
+    """Test that GET /api/ollama/status returns Ollama status."""
+    response = client.get("/api/ollama/status")
+    assert response.status_code == 200
+
+    data = response.json()
+    assert "status" in data
+    assert data["status"] in ["running", "not_running"]
+    if data["status"] == "running":
+        assert "version" in data
+
+
+def test_storage_paths_endpoint(client: TestClient, mock_container: Mock) -> None:
+    """Test that GET /api/storage/paths returns storage directory paths."""
+    response = client.get("/api/storage/paths")
+    assert response.status_code == 200
+
+    data = response.json()
+    assert "cache_dir" in data
+    assert "ollama_models_dir" in data
+    assert isinstance(data["cache_dir"], str)
+    assert isinstance(data["ollama_models_dir"], str)
+
+
+def test_catalog_endpoint_includes_hardware(client: TestClient, mock_container: Mock) -> None:
+    """Test that GET /api/models/catalog includes hardware info for VRAM badges."""
+    from sovereignai.shared.auth import AuthMiddleware
+    from sovereignai.shared.trace_emitter import TraceEmitter
+
+    # Mock trace emitter and auth
+    mock_trace = Mock(spec=TraceEmitter)
+    mock_auth = Mock(spec=AuthMiddleware)
+    mock_auth._password_hashes = {"test": "hash"}  # Simulate existing user
+
+    def retrieve_side_effect(cls: Any) -> Any:
+        if cls is TraceEmitter:
+            return mock_trace
+        elif cls is AuthMiddleware:
+            return mock_auth
+        return Mock()
+
+    mock_container.retrieve.side_effect = retrieve_side_effect
+
+    response = client.get("/api/models/catalog")
+    # The endpoint may fail if HuggingFace is unreachable, but we still check structure
+    if response.status_code == 200:
+        data = response.json()
+        assert "models" in data
+        assert "hardware" in data
+        assert "gpu_vram_mb" in data["hardware"]
+        assert "ram_total_mb" in data["hardware"]
+

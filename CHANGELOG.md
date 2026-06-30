@@ -1100,3 +1100,30 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 **Notes**:
 - All planned fixes (S1-S4) were already implemented in the codebase
 - Only fixed a ruff E501 line length error in teacher_worker.py docstrings
+## prompt-18.0 — Web UI Polish + Download Pipeline Fix
+
+**Date**: 2026-06-30
+**Plan file**: prompts/sovereignai-plan-18-draft.md
+
+**Files changed**:
+- web/templates/index.html
+- web/static/styles.css
+- web/static/app.js
+- web/main.py
+- tests/test_web_server.py
+
+**Results**:
+- Tests: 343 passed, 12 skipped
+- Ruff: 0 findings
+- Mypy: 0 findings in edited files (pre-existing errors in sovereignai/)
+- Bandit: 0 findings
+- Vulture: 0 findings
+- Detect-secrets: pass
+- Coverage: 89%
+
+**Notes**:
+- Log drawer now has close/toggle button and drag-to-resize with localStorage persistence
+- Ollama status panel shows live status with Start button
+- Storage paths displayed in Options panel with reveal buttons
+- VRAM badges added to model catalog based on hardware detection
+- Download destination surfaced in pull status and completion alert
