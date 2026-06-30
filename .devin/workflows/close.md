@@ -6,7 +6,7 @@ Run at end of every plan. Don't skip steps. STOP only on failure.
 
 ## Static analysis
 
-1. **Tests + coverage**: `.venv/Scripts/python.exe -m pytest tests/ -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <89% (OR43). STOP if N/A for `.py`-editing plan.
+1. **Tests + coverage**: `.venv/Scripts/python.exe -m pytest tests/ -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90% (OR43). STOP if N/A for `.py`-editing plan.
 
 2. **Ruff**: `.venv/Scripts/ruff.exe check .` — STOP on errors.
 

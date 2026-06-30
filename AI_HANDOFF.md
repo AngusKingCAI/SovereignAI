@@ -4,7 +4,7 @@
 
 Local-first modular AI assistant for one user. Strong modular core. Wire as you go. UIs are separate processes consuming capability API. Every adapter/skill/memory backend/model interchangeable.
 
-**Vision**: `project-vision-Rev5.md` (locked). 14 principles.
+**Vision**: `principles.md`. 14 principles + workflow principles.
 **Stack**: Python v1, Windows only. Rust-migratable later.
 
 ---
@@ -13,7 +13,7 @@ Local-first modular AI assistant for one user. Strong modular core. Wire as you 
 
 1. **Read execution logs end-to-end.** Extract test counts, scan results, STOPs, deviations.
 2. **Verify repo state.** Tag on origin, CHANGELOG matches, PLANS.md updated, no scope creep.
-3. **Re-read** `LANDMINES.md` + `project-vision-Rev5.md`.
+3. **Re-read** `LANDMINES.md` + `principles.md`.
 4. **Review C9 proposals + scan for patterns.** Propose new rules or reject. Include in next plan's S0.
 5. **Make plan files + context brief.** N files at `/home/z/my-project/download/plan-{N}-Rev1.md` + 1 brief.
 6. **Pause for Round Table.** Runs until clean pass. Apply findings at discretion.
@@ -74,7 +74,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 | Document | Responsibility | Who writes |
 |---|---|---|
 | `AI_HANDOFF.md` | Process guide | Architect |
-| `project-vision-Rev5.md` | Vision, principles, open questions | User + Architect |
+| `principles.md` | Living principles (14 core + workflow) | User + Architect |
 | `PLANS.md` | Dynamic state, baselines, queue | Executor |
 | `LANDMINES.md` | Failure patterns | Executor |
 | `CHANGELOG.md` | Per-plan change log | Executor |
@@ -86,7 +86,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 **SSOT**: Each fact in one document only.
 
 **Read order**:
-- Architect (new chat): AI_HANDOFF → vision → PLANS → LANDMINES → DECISIONS → DEBT
+- Architect (new chat): AI_HANDOFF → principles → PLANS → LANDMINES → DECISIONS → DEBT
 - Executor (S0.2): AGENTS.md (consult LANDMINES if ambiguous)
 
 ---

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**AR** = Architecture Rules · **OR** = Operational Rules. Ambiguous → read `LANDMINES.md`. Authority: `project-vision-Rev5.md` (locked).
+**AR** = Architecture Rules · **OR** = Operational Rules. Ambiguous → read `LANDMINES.md`. Authority: `principles.md`.
 
 ---
 
@@ -128,7 +128,7 @@ OR41. `git add -A` is the ONLY staging command for ALL commits. No explicit file
 
 OR42. Tag only after final commit verified. Never force-push a tag.
 
-OR43. Coverage ≥89% at `/close` for `.py`-editing plans. N/A = STOP. >5% drop = STOP.
+OR43. Coverage ≥90% at `/close` for `.py`-editing plans. N/A = STOP. >5% drop = STOP.
 
 OR44. Update Bandit baseline in PLANS.md at every `/close` where tests added/removed.
 
