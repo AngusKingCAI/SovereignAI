@@ -9,6 +9,22 @@ Local-first modular AI assistant for one user. Strong modular core. Wire as you 
 
 ---
 
+## Repository
+
+- **Repo**: https://github.com/AngusKingCAI/SovereignAI · **Branch**: `main`
+- **Executor tree**: `C:/SovereignAI/`
+- **Architect review clone**: `/tmp/SovereignAI/` (read-only)
+- **Plan files**: `C:/SovereignAI/prompts/plan-{N}-Rev{n}.md`
+- **All paths use `/``
+
+**Clone instructions**: When the User says "log uploaded" or "check the repo", clone the latest state:
+```
+cd /tmp && rm -rf SovereignAI && git clone --depth 1 https://github.com/AngusKingCAI/SovereignAI.git
+```
+This ensures the Architect always reviews current state, not a stale clone.
+
+---
+
 ## Architect Workflow
 
 1. **Read execution logs end-to-end.** Extract test counts, scan results, STOPs, deviations.
