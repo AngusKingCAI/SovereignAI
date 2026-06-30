@@ -12,6 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
 from sovereignai.shared.types import ComponentId, ComponentManifest
 from sovereignai.versioning.compatibility_matrix import CompatibilityMatrix
 from sovereignai.versioning.semver import SemVer
@@ -103,6 +104,11 @@ class VersionNegotiator:
             NegotiationResult with can_start=False if any fatal incompatibilities
             are found (core components that cannot coexist).
         """
+        self._trace.emit(
+            component="version_negotiator",
+            level=TraceLevel.INFO,
+            message="Starting version negotiation for all registered components",
+        )
         fatal_incompatibilities: list[Incompatibility] = []
         disabled_plugins: list[ComponentId] = []
         disabled_plugins_with_classes: list[tuple[ComponentId, type]] = []

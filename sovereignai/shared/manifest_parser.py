@@ -129,6 +129,13 @@ def _parse_caps(raw: list[dict], path: Path) -> list[CapabilityDeclaration]:
             name, version) or has an invalid category. Per Finding 2,
             all required fields are validated before construction.
     """
+    from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
+    trace = TraceEmitter()
+    trace.emit(
+        component="manifest_parser",
+        level=TraceLevel.DEBUG,
+        message=f"Parsing {len(raw)} capability declarations from {path}",
+    )
     result: list[CapabilityDeclaration] = []
     for i, entry in enumerate(raw):
         # Validate required fields per Finding 2

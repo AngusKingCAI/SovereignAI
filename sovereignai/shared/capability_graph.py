@@ -213,6 +213,11 @@ class CapabilityGraph:
         Args:
             component_id: The component ID to remove.
         """
+        self._trace.emit(
+            component="capability_graph",
+            level=TraceLevel.INFO,
+            message=f"Removing component {component_id} from capability graph",
+        )
         with self._lock:
             # Remove from manifests
             manifest = self._manifests.pop(component_id, None)

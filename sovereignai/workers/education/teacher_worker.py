@@ -297,6 +297,11 @@ class TeacherWorker:
 
     def _register_model(self, name: str, path: str, dataset: list) -> None:
         """Register a fine-tuned model in the model registry (per Rev2 F-43)."""
+        self._trace.emit(
+            component="teacher_worker",
+            level=TraceLevel.INFO,
+            message=f"Registering model {name} at {path}",
+        )
         import json
         registry_path = os.path.expanduser("~/.sovereignai/model_registry.json")
         registry = {}

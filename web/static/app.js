@@ -942,7 +942,7 @@ function pollPullStatus(modelId) {
 let selectedModel = null;
 
 function renderVRAMBadge(badge) {
-    """Render VRAM badge with appropriate color based on badge type."""
+    // Render VRAM badge with appropriate color based on badge type.
     if (!badge || badge === 'N/A') {
         return '<span class="vram-badge vram-na">N/A</span>';
     }
@@ -959,7 +959,7 @@ function renderVRAMBadge(badge) {
 }
 
 function renderToksPerSec(toksPerSec) {
-    """Render tok/s estimates for each detected GPU/CPU."""
+    // Render tok/s estimates for each detected GPU/CPU.
     if (!toksPerSec || toksPerSec.length === 0) {
         return '';
     }
@@ -1007,6 +1007,122 @@ function computeVRAMBadge(modelSizeMb, gpuVramMb, ramTotalMb) {
         // Model fits comfortably
         return `<span class="vram-badge vram-ok" title="Requires ${modelGb}GB VRAM, GPU has ${gpuVramGb}GB">${modelGb}GB</span>`;
     }
+}
+
+function downloadService(serviceName) {
+    // Download a service provider (e.g., ollama)
+    fetch(`/api/services/${serviceName}/download`, { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast(`${serviceName} downloaded successfully`);
+                loadServicesStatus();
+            } else {
+                showToast(`Failed to download ${serviceName}: ${data.error}`, 'error');
+            }
+        })
+        .catch(err => showToast(`Error: ${err}`, 'error'));
+}
+
+function updateService(serviceName) {
+    // Update a service provider
+    fetch(`/api/services/${serviceName}/update`, { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast(`${serviceName} updated successfully`);
+                loadServicesStatus();
+            } else {
+                showToast(`Failed to update ${serviceName}: ${data.error}`, 'error');
+            }
+        })
+        .catch(err => showToast(`Error: ${err}`, 'error'));
+}
+
+function uninstallService(serviceName) {
+    // Uninstall a service provider
+    if (!confirm(`Are you sure you want to uninstall ${serviceName}?`)) return;
+    
+    fetch(`/api/services/${serviceName}/uninstall`, { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast(`${serviceName} uninstalled successfully`);
+                loadServicesStatus();
+            } else {
+                showToast(`Failed to uninstall ${serviceName}: ${data.error}`, 'error');
+            }
+        })
+        .catch(err => showToast(`Error: ${err}`, 'error'));
+}
+
+function downloadDatabase(dbName) {
+    // Download a database provider (e.g., huggingface)
+    fetch(`/api/databases/${dbName}/download`, { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast(`${dbName} database downloaded successfully`);
+                loadDatabasesStatus();
+            } else {
+                showToast(`Failed to download ${dbName}: ${data.error}`, 'error');
+            }
+        })
+        .catch(err => showToast(`Error: ${err}`, 'error'));
+}
+
+function updateDatabase(dbName) {
+    // Update a database provider
+    fetch(`/api/databases/${dbName}/update`, { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast(`${dbName} database updated successfully`);
+                loadDatabasesStatus();
+            } else {
+                showToast(`Failed to update ${dbName}: ${data.error}`, 'error');
+            }
+        })
+        .catch(err => showToast(`Error: ${err}`, 'error'));
+}
+
+function uninstallDatabase(dbName) {
+    // Uninstall a database provider
+    if (!confirm(`Are you sure you want to uninstall ${dbName} database?`)) return;
+    
+    fetch(`/api/databases/${dbName}/uninstall`, { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast(`${dbName} database uninstalled successfully`);
+                loadDatabasesStatus();
+            } else {
+                showToast(`Failed to uninstall ${dbName}: ${data.error}`, 'error');
+            }
+        })
+        .catch(err => showToast(`Error: ${err}`, 'error'));
+}
+
+function loadServicesStatus() {
+    // Load status of all services
+    fetch('/api/services')
+        .then(r => r.json())
+        .then(data => {
+            // Update UI with service status
+            console.log('Services status:', data);
+        })
+        .catch(err => console.error('Failed to load services status:', err));
+}
+
+function loadDatabasesStatus() {
+    // Load status of all databases
+    fetch('/api/databases')
+        .then(r => r.json())
+        .then(data => {
+            // Update UI with database status
+            console.log('Databases status:', data);
+        })
+        .catch(err => console.error('Failed to load databases status:', err));
 }
 
 function loadModelSelector() {
@@ -1275,4 +1391,485 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Setup hierarchical catalog
+    setupHierarchicalCatalog();
 });
+
+
+// Hierarchical Models Catalog
+let currentDb = 'huggingface';
+let currentFileType = '';
+let currentSort = 'name';
+let currentSortDir = 'asc';
+let currentSearch = '';
+let selectedCategories = new Set();
+let currentVramFilter = 'all';
+let selectedQuantLevels = new Set();
+let expandedOrgs = new Set();
+let expandedFamilies = new Set();
+let expandedVersions = new Set();
+
+function setupHierarchicalCatalog() {
+    // Load saved state from localStorage
+    const savedExpandedOrgs = localStorage.getItem('sovereignai.models.expanded.orgs');
+    const savedExpandedFamilies = localStorage.getItem('sovereignai.models.expanded.families');
+    const savedExpandedVersions = localStorage.getItem('sovereignai.models.expanded.versions');
+    const savedSort = localStorage.getItem('sovereignai.models.sort.huggingface');
+    const savedSearch = localStorage.getItem('sovereignai.models.search');
+    const savedCategories = localStorage.getItem('sovereignai.models.categories');
+    const savedVramFilter = localStorage.getItem('sovereignai.models.vram_filter');
+    const savedQuantLevels = localStorage.getItem('sovereignai.models.quant_levels');
+
+    if (savedExpandedOrgs) expandedOrgs = new Set(JSON.parse(savedExpandedOrgs));
+    if (savedExpandedFamilies) expandedFamilies = new Set(JSON.parse(savedExpandedFamilies));
+    if (savedExpandedVersions) expandedVersions = new Set(JSON.parse(savedExpandedVersions));
+    if (savedSort) {
+        const [field, dir] = savedSort.split(',');
+        currentSort = field;
+        currentSortDir = dir;
+    }
+    if (savedSearch) {
+        currentSearch = savedSearch;
+        document.getElementById('model-search').value = savedSearch;
+        if (savedSearch) searchModels();
+    }
+    if (savedCategories) selectedCategories = new Set(JSON.parse(savedCategories));
+    if (savedVramFilter) currentVramFilter = savedVramFilter;
+    if (savedQuantLevels) selectedQuantLevels = new Set(JSON.parse(savedQuantLevels));
+
+    // Load category filters
+    loadCategoryFilters();
+
+    // Setup file type tabs
+    document.querySelectorAll('.file-type-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.file-type-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentFileType = tab.dataset.type;
+            if (currentSearch) {
+                searchModels();
+            } else {
+                loadOrgs();
+            }
+        });
+    });
+
+    // Load initial orgs if no search
+    if (!currentSearch) {
+        loadOrgs();
+    }
+}
+
+function loadCategoryFilters() {
+    const container = document.getElementById('category-filters');
+    const categories = [
+        { group: 'multimodal', name: 'Multimodal' },
+        { group: 'nlp', name: 'NLP' },
+        { group: 'computer_vision', name: 'Computer Vision' },
+        { group: 'audio', name: 'Audio' },
+        { group: 'tabular', name: 'Tabular' },
+        { group: 'rl', name: 'Reinforcement Learning' },
+        { group: 'robotics', name: 'Robotics' },
+        { group: 'other', name: 'Other' },
+    ];
+
+    container.innerHTML = '';
+    categories.forEach(cat => {
+        const label = document.createElement('label');
+        label.innerHTML = `
+            <input type="checkbox" value="${cat.group}" 
+                   ${selectedCategories.has(cat.group) ? 'checked' : ''} 
+                   onchange="toggleCategory('${cat.group}')">
+            ${cat.name}
+        `;
+        container.appendChild(label);
+    });
+}
+
+function toggleFilters() {
+    const content = document.getElementById('filter-content');
+    const arrow = document.getElementById('filters-arrow');
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        arrow.textContent = '▼';
+    } else {
+        content.style.display = 'none';
+        arrow.textContent = '▶';
+    }
+}
+
+function toggleCategory(category) {
+    if (selectedCategories.has(category)) {
+        selectedCategories.delete(category);
+    } else {
+        selectedCategories.add(category);
+    }
+    localStorage.setItem('sovereignai.models.categories', JSON.stringify([...selectedCategories]));
+    applyFilters();
+}
+
+function applyFilters() {
+    // Get VRAM filter
+    const vramRadios = document.getElementsByName('vram-filter');
+    for (const radio of vramRadios) {
+        if (radio.checked) {
+            currentVramFilter = radio.value;
+            break;
+        }
+    }
+    localStorage.setItem('sovereignai.models.vram_filter', currentVramFilter);
+
+    // Get quant level filters
+    selectedQuantLevels.clear();
+    const quantCheckboxes = document.querySelectorAll('.quant-filters input[type="checkbox"]');
+    for (const checkbox of quantCheckboxes) {
+        if (checkbox.checked) {
+            selectedQuantLevels.add(parseInt(checkbox.value));
+        }
+    }
+    localStorage.setItem('sovereignai.models.quant_levels', JSON.stringify([...selectedQuantLevels]));
+
+    // Reload with filters applied
+    if (currentSearch) {
+        searchModels();
+    } else {
+        loadOrgs();
+    }
+}
+
+async function loadOrgs() {
+    const container = document.getElementById('orgs-list');
+    container.innerHTML = '<div class="loading">Loading...</div>';
+
+    try {
+        const response = await fetch(`/api/models/catalog/hierarchical?db=${currentDb}&file_type=${currentFileType}`);
+        const data = await response.json();
+        renderOrgs(data.orgs || []);
+    } catch (error) {
+        console.error('Failed to load orgs:', error);
+        container.innerHTML = '<div class="error">Failed to load. <button onclick="loadOrgs()">Retry</button></div>';
+    }
+}
+
+function renderOrgs(orgs) {
+    const container = document.getElementById('orgs-list');
+    container.innerHTML = '';
+
+    if (orgs.length === 0) {
+        container.innerHTML = '<div class="empty">No models in this category</div>';
+        return;
+    }
+
+    orgs.forEach(org => {
+        const div = document.createElement('div');
+        div.className = 'dropdown-item org-item';
+        div.innerHTML = `
+            <div class="dropdown-header" onclick="toggleOrg('${org.name}')">
+                <span class="dropdown-arrow">${expandedOrgs.has(org.name) ? '▼' : '▶'}</span>
+                <span class="dropdown-name">${org.name}</span>
+                <span class="dropdown-count">${org.model_count}</span>
+            </div>
+            <div class="dropdown-children" id="families-${org.name.replace(/\./g, '-')}" style="display: ${expandedOrgs.has(org.name) ? 'block' : 'none'}"></div>
+        `;
+        container.appendChild(div);
+
+        if (expandedOrgs.has(org.name)) {
+            loadFamilies(org.name);
+        }
+    });
+}
+
+function toggleOrg(orgName) {
+    if (expandedOrgs.has(orgName)) {
+        expandedOrgs.delete(orgName);
+    } else {
+        expandedOrgs.add(orgName);
+    }
+    localStorage.setItem('sovereignai.models.expanded.orgs', JSON.stringify([...expandedOrgs]));
+    loadOrgs();
+}
+
+async function loadFamilies(orgName) {
+    const containerId = `families-${orgName.replace(/\./g, '-')}`;
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = '<div class="loading">Loading...</div>';
+
+    try {
+        const response = await fetch(`/api/models/catalog/hierarchical?db=${currentDb}&file_type=${currentFileType}&org=${orgName}`);
+        const data = await response.json();
+        renderFamilies(orgName, data.families || []);
+    } catch (error) {
+        console.error('Failed to load families:', error);
+        container.innerHTML = '<div class="error">Failed to load. <button onclick="loadFamilies(\'' + orgName + '\')">Retry</button></div>';
+    }
+}
+
+function renderFamilies(orgName, families) {
+    const containerId = `families-${orgName.replace(/\./g, '-')}`;
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    families.forEach(family => {
+        const div = document.createElement('div');
+        div.className = 'dropdown-item family-item';
+        const categoryBadge = getCategoryBadge(family.category, family.category_group);
+        div.innerHTML = `
+            <div class="dropdown-header" onclick="toggleFamily('${orgName}', '${family.name}')">
+                <span class="dropdown-arrow">${expandedFamilies.has(`${orgName}:${family.name}`) ? '▼' : '▶'}</span>
+                <span class="dropdown-name">${family.name}</span>
+                ${categoryBadge}
+                <span class="dropdown-count">${family.model_count}</span>
+            </div>
+            <div class="dropdown-children" id="versions-${orgName.replace(/\./g, '-')}-${family.name.replace(/\./g, '-')}" style="display: ${expandedFamilies.has(`${orgName}:${family.name}`) ? 'block' : 'none'}"></div>
+        `;
+        container.appendChild(div);
+
+        if (expandedFamilies.has(`${orgName}:${family.name}`)) {
+            loadVersions(orgName, family.name);
+        }
+    });
+}
+
+function getCategoryBadge(category, categoryGroup) {
+    const colors = {
+        'multimodal': 'blue',
+        'nlp': 'green',
+        'computer_vision': 'orange',
+        'audio': 'purple',
+        'other': 'gray'
+    };
+    const color = colors[categoryGroup] || 'gray';
+    return `<span class="category-badge category-${color}">[${categoryGroup.toUpperCase()} · ${category}]</span>`;
+}
+
+function toggleFamily(orgName, familyName) {
+    const key = `${orgName}:${familyName}`;
+    if (expandedFamilies.has(key)) {
+        expandedFamilies.delete(key);
+    } else {
+        expandedFamilies.add(key);
+    }
+    localStorage.setItem('sovereignai.models.expanded.families', JSON.stringify([...expandedFamilies]));
+    loadFamilies(orgName);
+}
+
+async function loadVersions(orgName, familyName) {
+    const containerId = `versions-${orgName.replace(/\./g, '-')}-${familyName.replace(/\./g, '-')}`;
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = '<div class="loading">Loading...</div>';
+
+    try {
+        const response = await fetch(`/api/models/catalog/hierarchical?db=${currentDb}&file_type=${currentFileType}&org=${orgName}&family=${familyName}`);
+        const data = await response.json();
+        renderVersions(orgName, familyName, data.model_versions || []);
+    } catch (error) {
+        console.error('Failed to load versions:', error);
+        container.innerHTML = '<div class="error">Failed to load. <button onclick="loadVersions(\'' + orgName + '\', \'' + familyName + '\')">Retry</button></div>';
+    }
+}
+
+function renderVersions(orgName, familyName, versions) {
+    const containerId = `versions-${orgName.replace(/\./g, '-')}-${familyName.replace(/\./g, '-')}`;
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    versions.forEach(version => {
+        const div = document.createElement('div');
+        div.className = 'dropdown-item version-item';
+        div.innerHTML = `
+            <div class="dropdown-header" onclick="toggleVersion('${orgName}', '${familyName}', '${version.name}')">
+                <span class="dropdown-arrow">${expandedVersions.has(`${orgName}:${familyName}:${version.name}`) ? '▼' : '▶'}</span>
+                <span class="dropdown-name">${version.name}</span>
+                <span class="dropdown-count">${version.model_count}</span>
+            </div>
+            <div class="dropdown-children quant-variants" id="variants-${orgName.replace(/\./g, '-')}-${familyName.replace(/\./g, '-')}-${version.name.replace(/\./g, '-')}" style="display: ${expandedVersions.has(`${orgName}:${familyName}:${version.name}`) ? 'block' : 'none'}"></div>
+        `;
+        container.appendChild(div);
+
+        if (expandedVersions.has(`${orgName}:${familyName}:${version.name}`)) {
+            loadVariants(orgName, familyName, version.name);
+        }
+    });
+}
+
+function toggleVersion(orgName, familyName, versionName) {
+    const key = `${orgName}:${familyName}:${versionName}`;
+    if (expandedVersions.has(key)) {
+        expandedVersions.delete(key);
+    } else {
+        expandedVersions.add(key);
+    }
+    localStorage.setItem('sovereignai.models.expanded.versions', JSON.stringify([...expandedVersions]));
+    loadVersions(orgName, familyName);
+}
+
+async function loadVariants(orgName, familyName, versionName) {
+    const containerId = `variants-${orgName.replace(/\./g, '-')}-${familyName.replace(/\./g, '-')}-${versionName.replace(/\./g, '-')}`;
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = '<div class="loading">Loading...</div>';
+
+    try {
+        const response = await fetch(`/api/models/catalog/hierarchical?db=${currentDb}&file_type=${currentFileType}&org=${orgName}&family=${familyName}&model_version=${versionName}&sort=${currentSort}&dir=${currentSortDir}`);
+        const data = await response.json();
+        renderVariants(data.quant_variants || []);
+    } catch (error) {
+        console.error('Failed to load variants:', error);
+        container.innerHTML = '<div class="error">Failed to load. <button onclick="loadVariants(\'' + orgName + '\', \'' + familyName + '\', \'' + versionName + '\')">Retry</button></div>';
+    }
+}
+
+function renderVariants(variants) {
+    const container = document.querySelector('.quant-variants:last-child');
+    if (!container) return;
+
+    if (variants.length === 0) {
+        container.innerHTML = '<div class="empty">No variants found</div>';
+        return;
+    }
+
+    let html = `
+        <table class="variants-table">
+            <thead>
+                <tr>
+                    <th onclick="sortVariants('name')">Name ${getSortIndicator('name')}</th>
+                    <th onclick="sortVariants('size')">Size (GB) ${getSortIndicator('size')}</th>
+                    <th onclick="sortVariants('downloads')">Downloads ${getSortIndicator('downloads')}</th>
+                    <th onclick="sortVariants('likes')">Likes ${getSortIndicator('likes')}</th>
+                    <th onclick="sortVariants('quant_level')">Quant Level ${getSortIndicator('quant_level')}</th>
+                    <th onclick="sortVariants('vram_required')">VRAM Required (GB) ${getSortIndicator('vram_required')}</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    variants.forEach(variant => {
+        html += `
+            <tr>
+                <td>${variant.name}</td>
+                <td>${variant.size_gb.toFixed(2)}</td>
+                <td>${variant.downloads.toLocaleString()}</td>
+                <td>${variant.likes}</td>
+                <td>${variant.quant_level}</td>
+                <td>${variant.vram_required_gb.toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function getSortIndicator(field) {
+    if (currentSort !== field) return '';
+    return currentSortDir === 'asc' ? '▲' : '▼';
+}
+
+function sortVariants(field) {
+    if (currentSort === field) {
+        currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort = field;
+        currentSortDir = 'asc';
+    }
+    localStorage.setItem('sovereignai.models.sort.huggingface', `${currentSort},${currentSortDir}`);
+    
+    // Reload the currently expanded version
+    const expandedVersion = [...expandedVersions].find(key => key.includes(':'));
+    if (expandedVersion) {
+        const [orgName, familyName, versionName] = expandedVersion.split(':');
+        loadVariants(orgName, familyName, versionName);
+    }
+}
+
+async function searchModels() {
+    const searchInput = document.getElementById('model-search');
+    currentSearch = searchInput.value.trim();
+    localStorage.setItem('sovereignai.models.search', currentSearch);
+
+    if (!currentSearch) {
+        clearSearch();
+        return;
+    }
+
+    // Show clear button
+    document.getElementById('clear-search-btn').style.display = 'inline';
+
+    // Hide hierarchical view, show search results
+    document.getElementById('hierarchical-catalog').style.display = 'none';
+    document.getElementById('search-results').style.display = 'block';
+
+    const container = document.getElementById('search-results');
+    container.innerHTML = '<div class="loading">Searching...</div>';
+
+    try {
+        const response = await fetch(`/api/models/catalog?search=${encodeURIComponent(currentSearch)}&limit=100`);
+        const data = await response.json();
+        renderSearchResults(data.models || []);
+    } catch (error) {
+        console.error('Failed to search:', error);
+        container.innerHTML = '<div class="error">Failed to search. <button onclick="searchModels()">Retry</button></div>';
+    }
+}
+
+function clearSearch() {
+    currentSearch = '';
+    localStorage.setItem('sovereignai.models.search', '');
+    document.getElementById('model-search').value = '';
+    document.getElementById('clear-search-btn').style.display = 'none';
+
+    // Show hierarchical view, hide search results
+    document.getElementById('hierarchical-catalog').style.display = 'block';
+    document.getElementById('search-results').style.display = 'none';
+
+    loadOrgs();
+}
+
+function renderSearchResults(models) {
+    const container = document.getElementById('search-results');
+    container.innerHTML = '';
+
+    if (models.length === 0) {
+        container.innerHTML = '<div class="empty">No results found</div>';
+        return;
+    }
+
+    let html = `
+        <table class="search-results-table">
+            <thead>
+                <tr>
+                    <th>Repo ID</th>
+                    <th>Filename</th>
+                    <th>Size (GB)</th>
+                    <th>Downloads</th>
+                    <th>VRAM Required (GB)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    models.forEach(model => {
+        html += `
+            <tr>
+                <td>${model.repo_id}</td>
+                <td>${model.filename}</td>
+                <td>${model.size_gb.toFixed(2)}</td>
+                <td>${model.downloads.toLocaleString()}</td>
+                <td>${model.vram_required_gb.toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}

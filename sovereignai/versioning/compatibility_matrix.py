@@ -92,6 +92,13 @@ class CompatibilityMatrix:
             content_hash_b: Second component content hash.
             status: "compatible" or "incompatible".
         """
+        from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
+        trace = TraceEmitter()
+        trace.emit(
+            component="compatibility_matrix",
+            level=TraceLevel.DEBUG,
+            message=f"Recording compatibility: {component_a} v{version_a} <-> {component_b} v{version_b} = {status}",
+        )
         entry = {
             "component_a": component_a,
             "version_a": version_a,

@@ -229,6 +229,12 @@ async def get_capabilities(request: Request) -> list[CapabilityResponseDTO]:
     call list_all_components(), map to CapabilityResponseDTO list.
     """
     container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+    trace.emit(
+        component="web_endpoint",
+        level=TraceLevel.INFO,
+        message="GET /api/capabilities - listing all capabilities",
+    )
     capability_index: Any = container.retrieve(ICapabilityIndex)  # type: ignore[type-abstract]
     manifests = capability_index.list_all_components()
 
@@ -279,9 +285,15 @@ async def get_tasks(request: Request) -> list[TaskResponseDTO]:
     (get_state). result/error are not stored in v1 (no result-storage layer);
     return null until a future plan adds task result persistence.
     """
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+    trace.emit(
+        component="web_endpoint",
+        level=TraceLevel.INFO,
+        message="GET /api/tasks - listing all tasks",
+    )
     from sovereignai.shared.task_state_machine import ITaskStateQuery
 
-    container: Any = request.app.state.container
     task_state_query: Any = container.retrieve(ITaskStateQuery)  # type: ignore[type-abstract]
     tasks = task_state_query.list_tasks()
 
@@ -660,17 +672,47 @@ async def get_traces_for_task(
 
 @app.get("/api/models/installed", dependencies=[Depends(get_current_user)])
 async def get_installed_models(request: Request) -> list[dict]:
-    """List models installed locally via Ollama."""
+    """List models installed locally via Ollama with VRAM badges from DB."""
+    from sovereignai.shared.models_db import get_models, init_db
+    from web.hardware_probe import HardwareProbe
+
     models = []
     try:
         import ollama
         result = ollama.list()
+
+        # Get hardware info for VRAM badge computation
+        probe = HardwareProbe()
+        hardware_info = await probe.probe_async()
+
+        # Get all models from DB for cross-reference
+        conn = init_db()
+        db_models = get_models(conn, limit=1000)
+        conn.close()
+
+        # Create lookup map by repo_id
+        db_model_map = {m.get("repo_id", ""): m for m in db_models}
+
         for m in result.get("models", []):
+            model_name = m.get("name", "unknown")
+            # Try to find matching DB entry
+            db_entry = None
+            for repo_id, db_model in db_model_map.items():
+                if repo_id in model_name or model_name in repo_id:
+                    db_entry = db_model
+                    break
+
+            # Compute VRAM badge if we have DB entry
+            vram_badge = "N/A"
+            if db_entry:
+                vram_badge = compute_vram_badge(db_entry, hardware_info)
+
             models.append({
-                "id": m.get("name", "unknown"),
+                "id": model_name,
                 "provider": "ollama",
                 "size": m.get("size", 0),
                 "status": "installed",
+                "vram_badge": vram_badge,
             })
     except Exception:
         # Ollama not running or not installed
@@ -721,6 +763,7 @@ def compute_toks_per_sec(model: dict[str, Any], hardware_info: Any) -> list[dict
     Uses the memory bandwidth formula: toks = bandwidth / active_bytes_gb * 0.65.
     CPU fallback assumes DDR5 ~80 GB/s.
     """
+    # Pure computation function - no tracing needed
     toks_per_sec = []
     active_bytes_gb = model.get("active_bytes_gb", 1.0)
     vram_required_gb = model.get("vram_required_gb", 1.0)
@@ -792,9 +835,148 @@ def extract_quant_from_filename(path: str) -> str:
     return match.group(1) if match else ""
 
 
+@app.get("/api/models/catalog/hierarchical", dependencies=[Depends(get_current_user)])
+async def get_hierarchical_catalog(
+    request: Request,
+    db: str = "huggingface",
+    file_type: str = "",
+    org: str = "",
+    family: str = "",
+    model_version: str = "",
+    sort: str = "name",
+    dir: str = "asc",
+) -> dict:
+    """Get hierarchical models catalog for 4-level dropdown browsing.
+
+    Returns orgs, families, model versions, and quant variants based on
+    the requested depth level (lazy loading).
+    """
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+    trace.emit(
+        component="web_endpoint",
+        level=TraceLevel.INFO,
+        message=f"GET /api/models/catalog/hierarchical - db={db}, file_type={file_type}, org={org}, family={family}",
+    )
+
+    import sqlite3
+
+    from sovereignai.databases.huggingface.schema import get_db_path
+
+    db_path = get_db_path()
+    if not db_path.exists():
+        return {"orgs": []}
+
+    conn = sqlite3.connect(str(db_path))
+    cursor = conn.cursor()
+
+    # Build query based on depth level
+    if not org:
+        # Level 1: Return org list
+        cursor.execute("""
+            SELECT org, COUNT(*) as count
+            FROM models
+            WHERE file_type = ? OR ? = ''
+            GROUP BY org
+            ORDER BY org ASC
+        """, (file_type, file_type))
+        orgs = [{"name": row[0], "model_count": row[1]} for row in cursor.fetchall()]
+        conn.close()
+        return {"orgs": orgs}
+
+    elif org and not family:
+        # Level 2: Return families for this org
+        cursor.execute("""
+            SELECT family, category, category_group, COUNT(*) as count
+            FROM models
+            WHERE org = ? AND (file_type = ? OR ? = '')
+            GROUP BY family, category, category_group
+            ORDER BY family ASC
+        """, (org, file_type, file_type))
+        families = [
+            {
+                "name": row[0],
+                "category": row[1] or "other",
+                "category_group": row[2] or "other",
+                "model_count": row[3],
+            }
+            for row in cursor.fetchall()
+        ]
+        conn.close()
+        return {"families": families}
+
+    elif org and family and not model_version:
+        # Level 3: Return model versions for this family
+        cursor.execute("""
+            SELECT model_version, COUNT(*) as count
+            FROM models
+            WHERE org = ? AND family = ? AND (file_type = ? OR ? = '')
+            GROUP BY model_version
+            ORDER BY model_version ASC
+        """, (org, family, file_type, file_type))
+        versions = [{"name": row[0], "model_count": row[1]} for row in cursor.fetchall()]
+        conn.close()
+        return {"model_versions": versions}
+
+    else:
+        # Level 4: Return quant variants for this model version
+        order_dir = "ASC" if dir == "asc" else "DESC"
+
+        # Map sort field to column (whitelist to prevent SQL injection)
+        sort_columns = {
+            "name": "quantization",
+            "size": "size_gb",
+            "downloads": "downloads",
+            "likes": "likes",
+            "quant_level": "quant_level",
+            "vram_required": "vram_required_gb",
+            "last_modified": "last_modified",
+        }
+        column = sort_columns.get(sort, "quantization")
+
+        cursor.execute("""
+            SELECT id, repo_id, filename, quantization, size_gb, vram_required_gb,
+                   active_bytes_gb, downloads, likes, last_modified, quant_level,
+                   parameter_count, context_length, license, architecture
+            FROM models
+            WHERE org = ? AND family = ? AND model_version = ? AND (file_type = ? OR ? = '')
+            ORDER BY ? ?
+        """, (org, family, model_version, file_type, file_type, column, order_dir))
+
+        variants = []
+        for row in cursor.fetchall():
+            variants.append({
+                "id": row[0],
+                "name": row[3] or "unknown",
+                "size_gb": row[4],
+                "vram_required_gb": row[5],
+                "active_bytes_gb": row[6],
+                "downloads": row[7],
+                "likes": row[8],
+                "last_modified": row[9],
+                "quant_level": row[10],
+                "parameter_count": row[11],
+                "context_length": row[12],
+                "license": row[13],
+                "architecture": row[14],
+                "repo_id": row[1],
+                "filename": row[2],
+            })
+
+        conn.close()
+        return {"quant_variants": variants}
+
+
 @app.get("/api/models/catalog/{model_id:path}", dependencies=[Depends(get_current_user)])
 async def get_model_detail(request: Request, model_id: str) -> dict:
     """Get available quantizations for a specific model from the database."""
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+    trace.emit(
+        component="web_endpoint",
+        level=TraceLevel.INFO,
+        message=f"GET /api/models/catalog/{model_id} - getting model details",
+    )
     from sovereignai.shared.models_db import get_models, init_db
 
     conn = init_db()
@@ -1075,6 +1257,7 @@ async def start_ollama(request: Request) -> dict:
     """Start Ollama serve as a subprocess with TRACE-level logging."""
     import os
     import subprocess
+    import threading
 
     container: Any = request.app.state.container
     trace: Any = container.retrieve(TraceEmitter)
@@ -1115,6 +1298,59 @@ async def start_ollama(request: Request) -> dict:
             message=f"Ollama serve spawned with PID={process.pid}"
         )
 
+        # Background thread to poll stdout/stderr and log at TRACE level
+        def _poll_output() -> None:
+            """Poll subprocess stdout/stderr and emit TRACE events."""
+            try:
+                while True:
+                    # Check if process is still running
+                    retcode = process.poll()
+                    if retcode is not None:
+                        # Process exited
+                        trace.emit(
+                            component="ollama_subprocess",
+                            level=TraceLevel.TRACE,
+                            message=f"Ollama serve exited with code={retcode}"
+                        )
+                        break
+
+                    # Read stdout/stderr if available
+                    try:
+                        if process.stdout:
+                            stdout_line = process.stdout.readline()
+                            if stdout_line:
+                                trace.emit(
+                                    component="ollama_subprocess",
+                                    level=TraceLevel.TRACE,
+                                    message=f"stdout: {stdout_line.decode('utf-8', errors='ignore').strip()}"
+                                )
+                    except Exception:
+                        pass
+
+                    try:
+                        if process.stderr:
+                            stderr_line = process.stderr.readline()
+                            if stderr_line:
+                                trace.emit(
+                                    component="ollama_subprocess",
+                                    level=TraceLevel.TRACE,
+                                    message=f"stderr: {stderr_line.decode('utf-8', errors='ignore').strip()}"
+                                )
+                    except Exception:
+                        pass
+
+                    import time
+                    time.sleep(0.5)  # Poll every 500ms
+            except Exception as exc:
+                trace.emit(
+                    component="ollama_subprocess",
+                    level=TraceLevel.ERROR,
+                    message=f"Error polling ollama subprocess: {exc}"
+                )
+
+        poll_thread = threading.Thread(target=_poll_output, daemon=True)
+        poll_thread.start()
+
         return {"status": "starting", "pid": process.pid}
     except Exception as exc:
         trace.emit(
@@ -1128,6 +1364,13 @@ async def start_ollama(request: Request) -> dict:
 @app.get("/api/storage/paths", dependencies=[Depends(get_current_user)])
 async def get_storage_paths(request: Request) -> dict:
     """Get storage directory paths for SovereignAI cache and Ollama models."""
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+    trace.emit(
+        component="web_endpoint",
+        level=TraceLevel.DEBUG,
+        message="GET /api/storage/paths - getting storage paths",
+    )
     import os
     import tempfile
 
@@ -1147,6 +1390,12 @@ async def get_storage_paths(request: Request) -> dict:
 async def get_memory_backends(request: Request) -> list[dict]:
     """List registered memory backends with type and storage info."""
     container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+    trace.emit(
+        component="web_endpoint",
+        level=TraceLevel.DEBUG,
+        message="GET /api/memory/backends - listing memory backends",
+    )
     backends = []
 
     backend_specs = [
@@ -1237,3 +1486,269 @@ async def delete_api_key_endpoint(provider: str) -> dict:
     from sovereignai.shared.config_loader import delete_api_key
     delete_api_key(provider)
     return {"status": "deleted"}
+
+
+# Services endpoints
+@app.get("/api/services", dependencies=[Depends(get_current_user)])
+async def get_services(request: Request) -> dict:
+    """List all registered service providers."""
+    from sovereignai.services.registry import ServiceRegistry
+    services = ServiceRegistry.list_all()
+    return {"services": list(services.keys())}
+
+
+@app.post("/api/services/{service_name}/download", dependencies=[Depends(get_current_user)])
+async def download_service_endpoint(request: Request, service_name: str) -> dict:
+    """Download and install a service provider."""
+    from sovereignai.services.registry import ServiceRegistry
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
+    service_class = ServiceRegistry.get(service_name)
+    if not service_class:
+        raise HTTPException(status_code=404, detail=f"Service {service_name} not found")
+
+    service = service_class(trace)
+    try:
+        service.download()
+        return {"success": True, "service": service_name}
+    except Exception as exc:
+        trace.emit(
+            component="services",
+            level=TraceLevel.ERROR,
+            message=f"Failed to download {service_name}: {exc}",
+        )
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/services/{service_name}/update", dependencies=[Depends(get_current_user)])
+async def update_service_endpoint(request: Request, service_name: str) -> dict:
+    """Update a service provider to the latest version."""
+    from sovereignai.services.registry import ServiceRegistry
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
+    service_class = ServiceRegistry.get(service_name)
+    if not service_class:
+        raise HTTPException(status_code=404, detail=f"Service {service_name} not found")
+
+    service = service_class(trace)
+    try:
+        service.update()
+        return {"success": True, "service": service_name}
+    except Exception as exc:
+        trace.emit(
+            component="services",
+            level=TraceLevel.ERROR,
+            message=f"Failed to update {service_name}: {exc}",
+        )
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/services/{service_name}/uninstall", dependencies=[Depends(get_current_user)])
+async def uninstall_service_endpoint(request: Request, service_name: str) -> dict:
+    """Uninstall a service provider."""
+    from sovereignai.services.registry import ServiceRegistry
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
+    service_class = ServiceRegistry.get(service_name)
+    if not service_class:
+        raise HTTPException(status_code=404, detail=f"Service {service_name} not found")
+
+    service = service_class(trace)
+    try:
+        service.uninstall()
+        return {"success": True, "service": service_name}
+    except Exception as exc:
+        trace.emit(
+            component="services",
+            level=TraceLevel.ERROR,
+            message=f"Failed to uninstall {service_name}: {exc}",
+        )
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/services/{service_name}/start", dependencies=[Depends(get_current_user)])
+async def start_service_endpoint(request: Request, service_name: str) -> dict:
+    """Start a service provider."""
+    from sovereignai.services.registry import ServiceRegistry
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
+    service_class = ServiceRegistry.get(service_name)
+    if not service_class:
+        raise HTTPException(status_code=404, detail=f"Service {service_name} not found")
+
+    service = service_class(trace)
+    try:
+        service.start()
+        return {"success": True, "service": service_name}
+    except Exception as exc:
+        trace.emit(
+            component="services",
+            level=TraceLevel.ERROR,
+            message=f"Failed to start {service_name}: {exc}",
+        )
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/services/{service_name}/stop", dependencies=[Depends(get_current_user)])
+async def stop_service_endpoint(request: Request, service_name: str) -> dict:
+    """Stop a service provider."""
+    from sovereignai.services.registry import ServiceRegistry
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
+    service_class = ServiceRegistry.get(service_name)
+    if not service_class:
+        raise HTTPException(status_code=404, detail=f"Service {service_name} not found")
+
+    service = service_class(trace)
+    try:
+        service.stop()
+        return {"success": True, "service": service_name}
+    except Exception as exc:
+        trace.emit(
+            component="services",
+            level=TraceLevel.ERROR,
+            message=f"Failed to stop {service_name}: {exc}",
+        )
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/services/{service_name}/restart", dependencies=[Depends(get_current_user)])
+async def restart_service_endpoint(request: Request, service_name: str) -> dict:
+    """Restart a service provider."""
+    from sovereignai.services.registry import ServiceRegistry
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
+    service_class = ServiceRegistry.get(service_name)
+    if not service_class:
+        raise HTTPException(status_code=404, detail=f"Service {service_name} not found")
+
+    service = service_class(trace)
+    try:
+        service.restart()
+        return {"success": True, "service": service_name}
+    except Exception as exc:
+        trace.emit(
+            component="services",
+            level=TraceLevel.ERROR,
+            message=f"Failed to restart {service_name}: {exc}",
+        )
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+# Databases endpoints
+@app.get("/api/databases", dependencies=[Depends(get_current_user)])
+async def get_databases(request: Request) -> dict:
+    """List all registered database providers."""
+    from sovereignai.databases.registry import DatabaseRegistry
+    databases = DatabaseRegistry.list_all()
+    return {"databases": list(databases.keys())}
+
+
+@app.post("/api/databases/{db_name}/download", dependencies=[Depends(get_current_user)])
+async def download_database_endpoint(request: Request, db_name: str) -> dict:
+    """Download and install a database provider."""
+    from sovereignai.databases.registry import DatabaseRegistry
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
+    db_class = DatabaseRegistry.get(db_name)
+    if not db_class:
+        raise HTTPException(status_code=404, detail=f"Database {db_name} not found")
+
+    db = db_class(trace)
+    try:
+        db.download()
+        return {"success": True, "database": db_name}
+    except Exception as exc:
+        trace.emit(
+            component="databases",
+            level=TraceLevel.ERROR,
+            message=f"Failed to download {db_name}: {exc}",
+        )
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/databases/{db_name}/update", dependencies=[Depends(get_current_user)])
+async def update_database_endpoint(request: Request, db_name: str) -> dict:
+    """Update a database provider to the latest version."""
+    from sovereignai.databases.registry import DatabaseRegistry
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
+    db_class = DatabaseRegistry.get(db_name)
+    if not db_class:
+        raise HTTPException(status_code=404, detail=f"Database {db_name} not found")
+
+    db = db_class(trace)
+    try:
+        db.update()
+        return {"success": True, "database": db_name}
+    except Exception as exc:
+        trace.emit(
+            component="databases",
+            level=TraceLevel.ERROR,
+            message=f"Failed to update {db_name}: {exc}",
+        )
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/databases/{db_name}/uninstall", dependencies=[Depends(get_current_user)])
+async def uninstall_database_endpoint(request: Request, db_name: str) -> dict:
+    """Uninstall a database provider."""
+    from sovereignai.databases.registry import DatabaseRegistry
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
+    db_class = DatabaseRegistry.get(db_name)
+    if not db_class:
+        raise HTTPException(status_code=404, detail=f"Database {db_name} not found")
+
+    db = db_class(trace)
+    try:
+        db.uninstall()
+        return {"success": True, "database": db_name}
+    except Exception as exc:
+        trace.emit(
+            component="databases",
+            level=TraceLevel.ERROR,
+            message=f"Failed to uninstall {db_name}: {exc}",
+        )
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+# Auth tokens endpoints
+@app.get("/api/auth/tokens", dependencies=[Depends(get_current_user)])
+async def get_auth_tokens(request: Request) -> dict:
+    """List all stored API tokens (masked)."""
+    from sovereignai.shared.config_loader import load_config
+    config = load_config()
+    api_keys = {}
+    for provider, key in config.get("api_keys", {}).items():
+        api_keys[provider] = f"{key[:4]}...{key[-4:]}" if len(key) > 8 else "****"
+    return {"tokens": api_keys}
+
+
+@app.post("/api/auth/tokens/{provider}", dependencies=[Depends(get_current_user)])
+async def set_auth_token(request: Request, provider: str) -> dict:
+    """Set an API token for a provider."""
+    from sovereignai.shared.config_loader import set_api_key
+    data = await request.json()
+    key = data.get("key", "")
+    if not key:
+        raise HTTPException(status_code=400, detail="key is required")
+    set_api_key(provider, key)
+    return {"status": "saved", "provider": provider}
+
+
+@app.delete("/api/auth/tokens/{provider}", dependencies=[Depends(get_current_user)])
+async def delete_auth_token(request: Request, provider: str) -> dict:
+    """Delete an API token for a provider."""
+    from sovereignai.shared.config_loader import delete_api_key
+    delete_api_key(provider)
+    return {"status": "deleted", "provider": provider}

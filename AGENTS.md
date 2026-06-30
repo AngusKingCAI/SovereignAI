@@ -280,6 +280,31 @@ OR59. The compatibility matrix is stored in `~/.sovereignai/compatibility.json`,
 
 OR67. The VersionNegotiator raises a typed `FatalIncompatibilityError`. The composition root catches this, emits an ERROR trace, and prints the message to stderr. The process exits with code 1: after a 30-second countdown by default (interactive mode); immediately if the `--no-wait` CLI flag is passed. Per Rev5 F7: `sys.stdin.isatty()` is NOT used as a hard gate (it returns False in IDE terminals like PyCharm/VS Code). If `isatty()` is False, print a hint suggesting `--no-wait` but still wait the 30s. Source: Plan 12 Rev3 (N7) + Rev5 (F7).
 
+### Universal tracing
+OR97. Every function that performs work MUST emit at least one trace event. Pure computation functions (no I/O, no side effects) are exempt. Abstract methods, pass-only methods, dunder protocols, and auto-generated dataclass `__init__` methods are exempt. Source: Plan 18.2 Phase 4.
+
+OR98. Every trace event emitted in response to a user-initiated action MUST carry a correlation_id. Correlation IDs propagate from the entry point through every downstream call via the context variable in `shared/correlation.py`. Source: Plan 18.2 Phase 4.
+
+OR99. Correlation ID propagation uses a context variable (`contextvars.ContextVar`) for async-safe propagation. Use `set_correlation_id()`, `get_correlation_id()`, and `new_correlation_scope()` from `shared/correlation.py`. Source: Plan 18.2 Phase 4.
+
+OR100. When spawning a thread, call `copy_correlation_id_to_thread()` before thread start to propagate the correlation ID into the new thread's context. Source: Plan 18.2 Phase 4.
+
+OR101. Web endpoints emit an INFO-level trace at entry with the endpoint path and method. Use `TraceEmitter` retrieved from the DI container. Source: Plan 18.2 Phase 4.
+
+OR102. Web endpoints emit a DEBUG-level trace at exit with the response status or error. Use `TraceEmitter` retrieved from the DI container. Source: Plan 18.2 Phase 4.
+
+OR103. CLI commands emit an INFO-level trace at start with the command name and arguments. Use `TraceEmitter` passed via dependency injection. Source: Plan 18.2 Phase 4.
+
+OR104. CLI commands emit a DEBUG-level trace at completion with the exit code and duration. Use `TraceEmitter` passed via dependency injection. Source: Plan 18.2 Phase 4.
+
+OR105. Adapter registration emits an INFO-level trace with the adapter name and registered capabilities. Use `TraceEmitter` passed via dependency injection. Source: Plan 18.2 Phase 4.
+
+OR106. Adapter capability invocation emits a DEBUG-level trace with the capability name and input parameters. Use `TraceEmitter` passed via dependency injection. Source: Plan 18.2 Phase 4.
+
+OR107. The `scripts/ar_checks/check_tracing.py` script enforces OR97 by static analysis. It audits all Python files in `sovereignai/`, `web/`, `cli/`, `tui/`, `scripts/`, `phone/`, `adapters/`, and `skills/`, classifies functions, and reports violations. Source: Plan 18.2 Phase 4.
+
+OR108. The `tests/property/test_universal_tracing.py` test validates OR97-OR106 by mocking `TraceEmitter` and verifying emit calls on critical functions. Source: Plan 18.2 Phase 4.
+
 ---
 
 ## Landmines → Rules

@@ -67,11 +67,56 @@
         <div id="installed-models-list"></div>
       </div>
       <div id="models-huggingface" class="models-content">
-        <div class="models-search">
-          <input type="text" id="hf-search" placeholder="Search GGUF models..." onkeyup="if(event.key==='Enter')loadHFCatalog()">
-          <button onclick="loadHFCatalog()">Search</button>
+        <div class="db-tabs" id="db-tabs">
+          <button class="db-tab active" data-db="huggingface">HuggingFace</button>
         </div>
-        <div id="hf-models-list"></div>
+        <div class="file-type-tabs" id="file-type-tabs">
+          <button class="file-type-tab active" data-type="">All</button>
+          <button class="file-type-tab" data-type="gguf">GGUF</button>
+          <button class="file-type-tab" data-type="safetensors">Safetensors</button>
+          <button class="file-type-tab" data-type="pytorch">PyTorch</button>
+          <button class="file-type-tab" data-type="onnx">ONNX</button>
+        </div>
+        <div class="search-box">
+          <input type="text" id="model-search" placeholder="Search models..." onkeyup="if(event.key==='Enter')searchModels()">
+          <button onclick="searchModels()">Search</button>
+          <button onclick="clearSearch()" id="clear-search-btn" style="display: none;">Clear</button>
+        </div>
+        <div class="filters-panel">
+          <div class="filter-header" onclick="toggleFilters()">
+            <span>Filters</span>
+            <span id="filters-arrow">▼</span>
+          </div>
+          <div class="filter-content" id="filter-content">
+            <div class="filter-section">
+              <h4>Category</h4>
+              <div id="category-filters"></div>
+            </div>
+            <div class="filter-section">
+              <h4>VRAM Fit</h4>
+              <div class="vram-filters">
+                <label><input type="radio" name="vram-filter" value="all" checked onchange="applyFilters()"> Show all</label>
+                <label><input type="radio" name="vram-filter" value="vram" onchange="applyFilters()"> Fits my VRAM</label>
+                <label><input type="radio" name="vram-filter" value="vram-ram" onchange="applyFilters()"> Fits VRAM+RAM</label>
+              </div>
+            </div>
+            <div class="filter-section">
+              <h4>Quant Level</h4>
+              <div class="quant-filters">
+                <label><input type="checkbox" value="20" onchange="applyFilters()"> Q2</label>
+                <label><input type="checkbox" value="40" onchange="applyFilters()"> Q4</label>
+                <label><input type="checkbox" value="50" onchange="applyFilters()"> Q5</label>
+                <label><input type="checkbox" value="80" onchange="applyFilters()"> Q8</label>
+                <label><input type="checkbox" value="160" onchange="applyFilters()"> F16</label>
+                <label><input type="checkbox" value="0" onchange="applyFilters()"> Other</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hierarchical-catalog" id="hierarchical-catalog">
+          <div id="orgs-list" class="dropdown-level"></div>
+        </div>
+        <div class="search-results" id="search-results" style="display: none;"></div>
       </div>
     </section>
     <section id="panel-adapters" class="panel">
@@ -129,6 +174,11 @@
           </div>
           <p>Host: <span id="ollama-host-display">Loading...</span></p>
           <p>Models path: <span id="ollama-models-dir-display">Loading...</span></p>
+          <div class="provider-buttons">
+            <button id="ollama-download-btn" onclick="downloadService('ollama')">Download</button>
+            <button id="ollama-update-btn" onclick="updateService('ollama')">Update</button>
+            <button id="ollama-uninstall-btn" onclick="uninstallService('ollama')">Uninstall</button>
+          </div>
         </div>
       </div>
       <div id="options-tab-databases" class="options-tab-content">
@@ -137,6 +187,11 @@
           <p>State: <span id="hf-db-status">Checking...</span></p>
           <p>DB path: settings/models.db</p>
           <button id="hf-sync-btn" class="reveal-btn">Sync Catalog</button>
+          <div class="provider-buttons">
+            <button id="hf-download-btn" onclick="downloadDatabase('huggingface')">Download</button>
+            <button id="hf-update-btn" onclick="updateDatabase('huggingface')">Update</button>
+            <button id="hf-uninstall-btn" onclick="uninstallDatabase('huggingface')">Uninstall</button>
+          </div>
         </div>
       </div>
       <div id="options-tab-auth" class="options-tab-content">

@@ -131,6 +131,13 @@ def get_models(
     Returns:
         List of model dictionaries matching the specified criteria.
     """
+    from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
+    trace = TraceEmitter()
+    trace.emit(
+        component="models_db",
+        level=TraceLevel.DEBUG,
+        message=f"Querying models: search={search}, family={family}, limit={limit}, offset={offset}",
+    )
     query = "SELECT * FROM models WHERE 1=1"
     params: list[Any] = []
 
@@ -171,6 +178,13 @@ def get_families(conn: sqlite3.Connection) -> list[str]:
 
 def get_total_count(conn: sqlite3.Connection, search: str = "", family: str = "") -> int:
     """Count the total number of models matching the specified search and family filters."""
+    from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
+    trace = TraceEmitter()
+    trace.emit(
+        component="models_db",
+        level=TraceLevel.DEBUG,
+        message=f"Counting models: search={search}, family={family}",
+    )
     query = "SELECT COUNT(*) FROM models WHERE 1=1"
     params: list[Any] = []
 

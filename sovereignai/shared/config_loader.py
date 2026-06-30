@@ -52,6 +52,13 @@ def set_api_key(provider: str, key: str) -> None:
 
 def delete_api_key(provider: str) -> None:
     """Remove the stored API key for a specific provider from the configuration."""
+    from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
+    trace = TraceEmitter()
+    trace.emit(
+        component="config_loader",
+        level=TraceLevel.INFO,
+        message=f"Deleting API key for provider={provider}",
+    )
     config = load_config()
     config.get("api_keys", {}).pop(provider, None)
     save_config(config)

@@ -64,6 +64,11 @@ class ProceduralMemoryBackend:
         Returns:
             True if lock acquired, False if timeout exceeded.
         """
+        self._trace.emit(
+            component="procedural_backend",
+            level=TraceLevel.TRACE,
+            message=f"Attempting to acquire lock with timeout={timeout_s}s",
+        )
         lock_path = self._path + ".lock"
         deadline = time.monotonic() + timeout_s
         while time.monotonic() < deadline:
@@ -71,9 +76,19 @@ class ProceduralMemoryBackend:
                 fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 os.write(fd, str(os.getpid()).encode())
                 os.close(fd)
+                self._trace.emit(
+                    component="procedural_backend",
+                    level=TraceLevel.TRACE,
+                    message="Lock acquired successfully",
+                )
                 return True
             except FileExistsError:
                 time.sleep(0.1)
+        self._trace.emit(
+            component="procedural_backend",
+            level=TraceLevel.WARN,
+            message="Lock acquisition timed out",
+        )
         return False  # Timed out — do NOT force-acquire
 
     def _release_lock(self) -> None:
@@ -89,6 +104,11 @@ class ProceduralMemoryBackend:
         Args:
             patterns: The list of pattern dicts to write.
         """
+        self._trace.emit(
+            component="procedural_backend",
+            level=TraceLevel.DEBUG,
+            message=f"Atomic writing {len(patterns)} patterns to {self._path}",
+        )
         tmp_path = self._path + ".tmp"
         with open(tmp_path, "w") as f:
             json.dump(patterns, f, indent=2)

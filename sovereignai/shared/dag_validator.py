@@ -12,7 +12,10 @@ be outputs of other skills). The validator checks:
 """
 from __future__ import annotations
 
+from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
 from sovereignai.shared.types import DAGValidationError
+
+_trace = TraceEmitter()
 
 
 def validate_dag(nodes: list[str], edges: list[tuple[str, str]],
@@ -31,6 +34,11 @@ def validate_dag(nodes: list[str], edges: list[tuple[str, str]],
         DAGValidationError: If the graph has a cycle or an input has no
             matching producer.
     """
+    _trace.emit(
+        component="dag_validator",
+        level=TraceLevel.DEBUG,
+        message=f"Validating DAG with {len(nodes)} nodes and {len(edges)} edges",
+    )
     # 1. Type-matching: every input must have a producer with matching type
     available_types: dict[str, str] = {}  # type_name -> producer node
     for node, out_type in output_types.items():

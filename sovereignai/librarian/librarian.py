@@ -206,6 +206,11 @@ class Librarian:
         Returns:
             Merged and sorted results.
         """
+        self._trace.emit(
+            component="librarian",
+            level=TraceLevel.DEBUG,
+            message=f"Merging {len(results)} results for memory_type={memory_type}",
+        )
         if memory_type == "working":
             # First-backend-wins: return first backend's results only
             return [results[0]] if results else []

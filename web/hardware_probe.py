@@ -177,6 +177,13 @@ class HardwareProbe:
         Returns:
             Tuple of (total_mb, available_mb).
         """
+        from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
+        trace = TraceEmitter()
+        trace.emit(
+            component="hardware_probe",
+            level=TraceLevel.DEBUG,
+            message="Reading RAM from /proc/meminfo",
+        )
         try:
             with open("/proc/meminfo") as f:
                 meminfo = f.read()
