@@ -24,7 +24,7 @@ class TeacherWorker:
         trace: TraceEmitter,
         hardware_probe: HardwareProbe,
     ):
-        """Create a Teacher worker that detects GPU availability and manages QLoRA fine-tuning tasks."""
+        """Create a Teacher worker that detects GPU availability and manages QLoRA fine-tuning."""
         self._capability_api = capability_api
         self._trace = trace
         self._hardware_probe = hardware_probe
@@ -179,9 +179,9 @@ class TeacherWorker:
         self._cancel_requested = True
 
     def evaluate(self, model_path: str, dataset: list) -> dict:
-        """Evaluate a fine-tuned model using the provided dataset and return loss and perplexity metrics.
+        """Evaluate a fine-tuned model and return loss and perplexity metrics.
 
-        Returns {'loss': float, 'perplexity': float} only (no accuracy — per F-33).
+        Returns only loss and perplexity (no accuracy per F-33).
         """
         # Placeholder implementation — actual evaluation logic to be added
         return {"loss": 0.0, "perplexity": 0.0}
