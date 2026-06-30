@@ -1010,3 +1010,24 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 
 **Notes**:
 - Pre-existing ruff/mypy errors in out-of-scope files documented for future cleanup
+## prompt-17.5 — Fix Registration Block + Cookie Secure Flag
+
+**Date**: 2026-06-30
+**Plan file**: prompts/plan-17.5-Rev1.md
+
+**Files changed**:
+- web/main.py
+- tests/test_web_auth.py
+
+**Results**:
+- Tests: 342 passed, 0 failed
+- Ruff: 3 errors (pre-existing in teacher_worker.py, log_drawer_integration.py)
+- Mypy: 4 errors (pre-existing in config_loader.py, main.py)
+- Bandit: 0 findings
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- Removed registration endpoint block that prevented multiple users
+- Changed duplicate username error from 403 to 409 (Conflict)
+- Changed cookie secure flag from True to False for localhost HTTP compatibility

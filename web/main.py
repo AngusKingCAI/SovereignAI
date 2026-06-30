@@ -163,7 +163,7 @@ async def login(request: Request, response: Response) -> dict:
             key="session_id",
             value=session.token,
             httponly=True,
-            secure=True,
+            secure=False,
             samesite="lax",
             max_age=86400,
         )
@@ -181,17 +181,15 @@ async def logout(response: Response) -> dict:
 
 @app.post("/api/auth/register")
 async def register(request: Request) -> dict:
-    """First-run registration. Only allowed when no users exist."""
+    """Register a new user account."""
     data = await request.json()
     container: Any = request.app.state.container
     auth: Any = container.retrieve(AuthMiddleware)
-    if len(auth._password_hashes) > 0:
-        raise HTTPException(status_code=403, detail="Registration closed — user already exists")
     try:
         auth.register_user(data["username"], data["password"])
     except ValueError as exc:
         raise HTTPException(
-            status_code=403, detail="Registration closed — user already exists"
+            status_code=409, detail=str(exc)
         ) from exc
     return {"status": "created"}
 

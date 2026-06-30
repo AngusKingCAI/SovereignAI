@@ -84,19 +84,19 @@ def test_register_first_run(client: TestClient, container: Any) -> None:
 
 
 def test_register_after_user_exists(client: TestClient, container: Any) -> None:
-    """Test that registration fails when a user already exists."""
+    """Test that registration fails when a duplicate username is registered."""
     auth = container.retrieve(AuthMiddleware)
     # Register first user
     auth.register_user("firstuser", "password123")
 
-    # Try to register second user
+    # Try to register the same username again
     response = client.post("/api/auth/register", json={
-        "username": "seconduser",
+        "username": "firstuser",
         "password": "password123"
     })
 
-    assert response.status_code == 403
-    assert "Registration closed" in response.json()["detail"]
+    assert response.status_code == 409
+    assert "already registered" in response.json()["detail"]
 
 
 def test_protected_endpoint_without_cookie(client: TestClient, container: Any) -> None:
