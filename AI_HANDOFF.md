@@ -9,16 +9,6 @@ Local-first modular AI assistant for one user. Strong modular core. Wire as you 
 
 ---
 
-## Roles
-
-| Actor | Job | Tools |
-|---|---|---|
-| **User** | Bridges Architect ↔ Executor ↔ Round Table. Copies files between. Pastes logs. | IM chat |
-| **Architect** | 7-step workflow. Creates plans/briefs. Never edits repo directly. Read-only git. | Review clone |
-| **Executor** | Executes plans. Runs `/open`, `/verify`, `/close`, `/scan`. Commits/tags/pushes. | Git Bash, `C:/SovereignAI/` |
-
----
-
 ## Architect Workflow
 
 1. **Read execution logs end-to-end.** Extract test counts, scan results, STOPs, deviations.
@@ -40,8 +30,6 @@ Runs until clean pass (no unaddressed CRITICAL/HIGH). Each rev brings new eviden
 - **HIGH**: Executor STOP, test failure, broken build. Blocks.
 - **MEDIUM**: Degraded functionality, tech debt. Address or document.
 - **LOW**: Style, naming. Architect discretion.
-
-**Adjudication (GR4)**: Architect explicitly accepts/rejects every finding with reasoning.
 
 ---
 
@@ -75,7 +63,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 - S0.2.5: Re-read `AGENTS.md` if governance patch added rules
 - S0.3: Add new rules, commit before coding
 
-**Plan body (S1-Sn)**: Execute steps. Run `/verify` after each edit. For HTML/CSS/JS plans: include a "WILL edit" UI element list (element IDs to verify at `/close` step 15).
+**Plan body (S1-Sn)**: Execute steps. Run `/verify` after each edit. For HTML/CSS/JS plans: include a "WILL edit" UI element list.
 
 **Closing**: Run `/close`.
 
@@ -109,4 +97,3 @@ GR1. Every plan header lists `Vision principles:` satisfied/affected.
 GR2. Every plan header lists `Open questions resolved:`.
 GR3. Every brief requires panelist sign-off: `**Panelist**: <name/model>`.
 GR4. Architect explicitly accepts/rejects every Round Table finding with reasoning.
-GR5. Claude version for OR73 spec-match review: Sonnet 4.6 or later. Update this line when bumping.

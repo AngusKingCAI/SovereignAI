@@ -6,13 +6,15 @@ Run at scan prompts (5, 10, 15, 20...). Whole-repo scan. No new features. Fixes 
 
 1. Run `/close` steps 1-8 (tests, ruff, mypy full repo, bandit, pip-audit, vulture, detect-secrets, AR checks). Additionally run auto-discovered tools from `pyproject.toml`/`.pre-commit-config.yaml`. For each tool: if exit≠0, STOP that tool's check, fix it, then continue. Do NOT cascade — once a tool passes (or is fixed), proceed to next tool. After all tools pass, continue to steps 2-13 regardless of what was found.
 
-2. Scan `LANDMINES.md` — propose rules for any landmine without corresponding OR. If new OR added: append to OR16 always-on subset if it targets an 18.x failure class; otherwise note in plan brief.
+2. Scan `LANDMINES.md` — propose rules for any landmine without corresponding OR. If new OR added: append to OR14 always-on subset if it targets an 18.x failure class; otherwise note in plan brief.
 
 3. Scan `CHANGELOG.md` — verify every plan in completed batch has entry.
 
 4. Scan `PLANS.md` — verify baselines current, queue reflects state. Update if stale.
 
-5. Scan all docstrings for references to removed/renamed modules. Fix mechanically.
+5. Scan all source for references to removed/renamed modules. Fix mechanically.
+
+5.5. **Cross-reference check**: Extract all `OR\d+` and `AR\d+` tokens from PLANS.md, DEBT.md, DECISIONS.md, AI_HANDOFF.md. Diff against rules defined in AGENTS.md. Any token not defined in AGENTS.md = STOP. `DEFINED=$(grep -oE '^(OR|AR)[0-9]+' AGENTS.md | sort); CITED=$(grep -rohE '(OR|AR)[0-9]+' PLANS.md DEBT.md DECISIONS.md AI_HANDOFF.md | sort -u); comm -23 <(echo "$CITED") <(echo "$DEFINED")` — output must be empty.
 
 6. Full test suite: `.venv/Scripts/python.exe -m pytest tests/ -vvv`
 

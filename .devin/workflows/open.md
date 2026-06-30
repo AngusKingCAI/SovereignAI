@@ -11,7 +11,7 @@ Run at start of every plan. Don't skip steps.
 
 ## Read context
 
-5. Read `AGENTS.md` in full (OR16).
+5. Read `AGENTS.md` in full (OR14).
 6. Read the plan file (`prompts/plan-{N}-Rev{X}.md`) in full.
 7. Read predecessor close report (`documents/plan-{N-1}-report.md`) if exists.
 
