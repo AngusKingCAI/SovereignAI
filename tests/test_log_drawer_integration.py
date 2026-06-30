@@ -19,21 +19,21 @@ from sovereignai.shared.types import TraceLevel
 @pytest.fixture
 def client() -> TestClient:
     """Create a test client for the FastAPI app with lifespan context."""
+    import os
+    # Set test mode to prevent auth disk writes
+    os.environ["SOVEREIGNAI_TEST_MODE"] = "1"
     from web.main import app
     container = build_container()
     app.state.container = container
-    return TestClient(app)
+    yield TestClient(app)
+    # Clean up
+    del os.environ["SOVEREIGNAI_TEST_MODE"]
 
 
 @pytest.fixture
 def container(client: TestClient) -> Any:  # type: ignore[misc]
-    """Get the container from the app state and clear auth users for fresh test state."""
-    container = client.app.state.container  # type: ignore[attr-defined]
-    # Clear persisted users to ensure fresh test state
-    auth = container.retrieve(AuthMiddleware)
-    auth._password_hashes.clear()
-    auth._salts.clear()
-    return container
+    """Get the container from the app state."""
+    return client.app.state.container  # type: ignore[attr-defined]
 
 
 @pytest.fixture
@@ -53,6 +53,9 @@ def test_rest_traces_api_returns_filtered_results(
     """Test that the REST trace API returns filtered results."""
     # Register and login for auth
     auth = container.retrieve(AuthMiddleware)
+    # Clear in-memory state for fresh test
+    auth._password_hashes.clear()
+    auth._salts.clear()
     auth.register_user("testuser", "password123")
     login_response = client.post("/api/auth/login", json={
         "username": "testuser",
@@ -101,6 +104,9 @@ def test_task_specific_trace_endpoint(
 
     # Register and login for auth
     auth = container.retrieve(AuthMiddleware)
+    # Clear in-memory state for fresh test
+    auth._password_hashes.clear()
+    auth._salts.clear()
     auth.register_user("testuser", "password123")
     login_response = client.post("/api/auth/login", json={
         "username": "testuser",

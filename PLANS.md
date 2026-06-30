@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-30 (prompt-17.6)
+**Last updated**: 2026-06-30 (prompt-17.7)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -37,12 +37,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 17.4**: Baseline → 342 tests. Delta: -10 — see CHANGELOG prompt-17.4.
 **Plan 17.5**: Baseline → 342 tests. Delta: 0 — see CHANGELOG prompt-17.5.
 **Plan 17.6**: Baseline → 342 tests. Delta: 0 — see CHANGELOG prompt-17.6.
+**Plan 17.7**: Baseline → 352 tests. Delta: +10 — see CHANGELOG prompt-17.7.
 
 ---
 
 ## Test Baseline
 
-**Current**: 342 tests (Plan 17.6 `/close`)
+**Current**: 352 tests (Plan 17.7 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -108,6 +109,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-17.4 | `prompt-17.4` | Fix Register Page Redirect + Autocomplete Attributes | 342 | 3 pre-existing | 4 pre-existing | 2026-06-30 |
 | prompt-17.5 | `prompt-17.5` | Fix Registration Block + Cookie Secure Flag | 342 | 3 pre-existing | 4 pre-existing | 2026-06-30 |
 | prompt-17.6 | `prompt-17.6` | Fix Model Pull 500 + Collapsible Family Sections + Load More + Provider Search | 342 | 2 pre-existing | 4 pre-existing | 2026-06-30 |
+| prompt-17.7 | `prompt-17.7` | Fix Auth Deletion + Pull Method + Load More + Log Toggle Button | 352 | 0 | 5 pre-existing | 2026-06-30 |
 
 ---
 

@@ -84,7 +84,9 @@ class AuthMiddleware:
             )
 
     def _save_users(self) -> None:
-        """Persist user hashes and salts to disk."""
+        """Persist user hashes and salts to disk. Skipped in test mode."""
+        if os.environ.get("SOVEREIGNAI_TEST_MODE") == "1":
+            return  # Never write auth file in test mode
         _AUTH_FILE.parent.mkdir(parents=True, exist_ok=True)
         data = {
             username: {

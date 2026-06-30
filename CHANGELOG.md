@@ -1055,3 +1055,29 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Added collapsible model family sections with pagination
 - Added "Load all from family" button for provider-specific search
 - Wrapped API key password field in form tag to fix DOM warning
+## prompt-17.7 — Fix Auth Deletion + Pull Method + Load More + Log Toggle Button
+
+**Date**: 2026-06-30
+**Plan file**: prompts/plan-17.7-Rev1.md
+
+**Files changed**:
+- sovereignai/shared/auth.py
+- web/main.py
+- tests/test_e2e_task_submission.py
+- tests/test_web_auth.py
+- tests/test_first_run.py
+- tests/test_thinking_display.py
+- tests/test_log_drawer_integration.py
+
+**Results**:
+- Tests: 340 passed, 12 skipped
+- Ruff: 0 findings
+- Mypy: 5 findings (pre-existing)
+- Bandit: 0 findings
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- Added SOVEREIGNAI_TEST_MODE environment variable to prevent auth.json disk writes during tests
+- Replaced ollama pull with direct HuggingFace download + ollama create for older Ollama versions
+- Load More button and log toggle button were already present in codebase

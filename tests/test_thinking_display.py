@@ -19,28 +19,31 @@ from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskState
 @pytest.fixture
 def client() -> Generator[TestClient, None, None]:
     """Create a test client for the FastAPI app with lifespan context."""
+    import os
+    # Set test mode to prevent auth disk writes
+    os.environ["SOVEREIGNAI_TEST_MODE"] = "1"
     from web.main import app
     container = build_container()
     app.state.container = container
     with TestClient(app) as test_client:
         yield test_client
+    # Clean up
+    del os.environ["SOVEREIGNAI_TEST_MODE"]
 
 
 @pytest.fixture
 def container(client: TestClient) -> Any:  # type: ignore[misc]
-    """Get the container from the app state and clear auth users for fresh test state."""
-    container = client.app.state.container  # type: ignore[attr-defined]
-    # Clear persisted users to ensure fresh test state
-    auth = container.retrieve(AuthMiddleware)
-    auth._password_hashes.clear()
-    auth._salts.clear()
-    return container
+    """Get the container from the app state."""
+    return client.app.state.container  # type: ignore[attr-defined]
 
 
 def test_dispatch_returns_task_id(client: TestClient, container: Any) -> None:
     """Test that dispatch returns a task ID that can be used for polling."""
     # Register and login
     auth = container.retrieve(AuthMiddleware)
+    # Clear in-memory state for fresh test
+    auth._password_hashes.clear()
+    auth._salts.clear()
     auth.register_user("testuser9", "testpass")
     response = client.post(
         "/api/auth/login", json={"username": "testuser9", "password": "testpass"}
@@ -63,6 +66,9 @@ def test_task_state_polling_endpoint(client: TestClient, container: Any) -> None
 
     # Register and login
     auth = container.retrieve(AuthMiddleware)
+    # Clear in-memory state for fresh test
+    auth._password_hashes.clear()
+    auth._salts.clear()
     auth.register_user("testuser10", "testpass")
     response = client.post(
         "/api/auth/login", json={"username": "testuser10", "password": "testpass"}
@@ -86,6 +92,9 @@ def test_task_list_includes_dispatched_tasks(client: TestClient, container: Any)
     """Test that the task list includes tasks created via dispatch."""
     # Register and login
     auth = container.retrieve(AuthMiddleware)
+    # Clear in-memory state for fresh test
+    auth._password_hashes.clear()
+    auth._salts.clear()
     auth.register_user("testuser11", "testpass")
     response = client.post(
         "/api/auth/login", json={"username": "testuser11", "password": "testpass"}

@@ -742,56 +742,140 @@ async def pull_model(request: Request) -> dict:
     }
 
     def _pull() -> None:
+        import json as _json
+        import os
         import subprocess
+        import tempfile
+        import urllib.request
         try:
             trace.emit(
                 component="models", level=TraceLevel.INFO,
-                message=f"Starting pull: {ollama_name}"
+                message=f"Starting pull: {model_name} ({quant})"
             )
             _pull_status[model_name] = {
                 "status": "pulling",
-                "message": f"Pulling {ollama_name}...",
+                "message": f"Downloading {model_name}...",
                 "progress": 0,
             }
 
-            # Stream output line by line so progress appears in log drawer
-            process = subprocess.Popen(
-                ["ollama", "pull", ollama_name],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-            )
+            # Step 1: Get GGUF file list from HuggingFace
+            hf_api_url = f"https://huggingface.co/api/models/{model_name}"
+            req = urllib.request.Request(hf_api_url, headers={"User-Agent": "SovereignAI/0.1"})
+            with urllib.request.urlopen(req, timeout=15) as resp:  # nosec B310
+                model_data = _json.loads(resp.read().decode("utf-8"))
 
-            if process.stdout:
-                for line in process.stdout:
-                    line = line.strip()
-                    if line:
-                        # Emit each line as a trace — shows download progress in log drawer
-                        trace.emit(component="models", level=TraceLevel.INFO,
-                                   message=f"Pull: {line}")
+            siblings = model_data.get("siblings", [])
+            gguf_files = [
+                s.get("rfilename", "")
+                for s in siblings
+                if s.get("rfilename", "").endswith(".gguf")
+            ]
 
-            process.wait(timeout=3600)
-
-            if process.returncode == 0:
-                _pull_status[model_name] = {
-                    "status": "done",
-                    "message": f"Pulled {ollama_name}",
-                    "progress": 100,
-                }
-                trace.emit(
-                    component="models", level=TraceLevel.INFO,
-                    message=f"Pull complete: {ollama_name}"
-                )
-            else:
+            if not gguf_files:
                 _pull_status[model_name] = {
                     "status": "error",
-                    "message": f"Pull failed (exit {process.returncode})",
+                    "message": "No GGUF files found",
                     "progress": 0,
                 }
                 trace.emit(
-                    component="models", level=TraceLevel.ERROR,
-                    message=f"Pull failed (exit {process.returncode}): {ollama_name}"
+                    component="models",
+                    level=TraceLevel.ERROR,
+                    message=f"No GGUF files in {model_name}",
                 )
+                return
+
+            # Step 2: Find the requested quantization
+            target_file = None
+            for f in gguf_files:
+                if quant.lower() in f.lower():
+                    target_file = f
+                    break
+            if not target_file:
+                # Fallback: find Q4_K_M, then any file
+                for f in gguf_files:
+                    if "q4_k_m" in f.lower():
+                        target_file = f
+                        break
+            if not target_file:
+                target_file = gguf_files[0]
+
+            download_url = f"https://huggingface.co/{model_name}/resolve/main/{target_file}"
+            trace.emit(component="models", level=TraceLevel.INFO,
+                       message=f"Downloading {target_file} from HuggingFace...")
+
+            # Step 3: Download to temp directory
+            temp_dir = tempfile.mkdtemp(prefix="sovereignai_pull_")
+            local_path = os.path.join(temp_dir, os.path.basename(target_file))
+
+            req = urllib.request.Request(download_url, headers={"User-Agent": "SovereignAI/0.1"})
+            with urllib.request.urlopen(req, timeout=3600) as resp:  # nosec B310
+                total = int(resp.headers.get("Content-Length", 0))
+                downloaded = 0
+                with open(local_path, "wb") as f:
+                    while True:
+                        chunk = resp.read(1024 * 1024)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+                        downloaded += len(chunk)
+                        if total > 0:
+                            pct = int(downloaded * 100 / total)
+                            trace.emit(
+                                component="models",
+                                level=TraceLevel.INFO,
+                                message=(
+                                    f"Download: {pct}% "
+                                    f"({downloaded // 1048576}MB / "
+                                    f"{total // 1048576}MB)"
+                                ),
+                            )
+
+            trace.emit(component="models", level=TraceLevel.INFO,
+                       message="Download complete, creating Ollama model...")
+
+            # Step 4: Create Modelfile and register with Ollama
+            ollama_name = model_name.replace("/", "_").lower()
+            modelfile_path = os.path.join(temp_dir, "Modelfile")
+            with open(modelfile_path, "w") as f:
+                f.write(f"FROM {local_path}\n")
+
+            result = subprocess.run(
+                ["ollama", "create", ollama_name, "-f", modelfile_path],
+                capture_output=True, text=True, timeout=300,
+            )
+
+            if result.returncode == 0:
+                _pull_status[model_name] = {
+                    "status": "done",
+                    "message": f"Created {ollama_name}",
+                    "progress": 100,
+                }
+                trace.emit(
+                    component="models",
+                    level=TraceLevel.INFO,
+                    message=f"Model {ollama_name} created successfully",
+                )
+            else:
+                err = result.stderr.strip()[:200] if result.stderr else "Unknown error"
+                _pull_status[model_name] = {
+                    "status": "error",
+                    "message": f"ollama create failed: {err}",
+                    "progress": 0,
+                }
+                trace.emit(
+                    component="models",
+                    level=TraceLevel.ERROR,
+                    message=f"ollama create failed: {err}",
+                )
+
+            # Cleanup temp files
+            try:
+                os.remove(local_path)
+                os.remove(modelfile_path)
+                os.rmdir(temp_dir)
+            except OSError:
+                pass
+
         except Exception as exc:
             _pull_status[model_name] = {
                 "status": "error",
@@ -799,8 +883,9 @@ async def pull_model(request: Request) -> dict:
                 "progress": 0,
             }
             trace.emit(
-                component="models", level=TraceLevel.ERROR,
-                message=f"Pull error: {exc}"
+                component="models",
+                level=TraceLevel.ERROR,
+                message=f"Pull error: {exc}",
             )
 
     import threading
