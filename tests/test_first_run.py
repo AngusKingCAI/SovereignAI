@@ -47,18 +47,17 @@ def test_no_users_redirects_to_register(client: TestClient, container: Any) -> N
     assert response.headers["location"] == "/register"
 
 
-def test_after_register_redirects_to_login(client: TestClient, container: Any) -> None:
-    """Test that accessing register after user exists redirects to login."""
+def test_after_register_allows_additional_accounts(client: TestClient, container: Any) -> None:
+    """Test that accessing register after user exists allows additional account creation."""
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     # Register a user
     auth.register_user("testuser", "password123")
 
-    # Try to access register page
+    # Try to access register page - should now render (not redirect)
     response = client.get("/register", follow_redirects=False)
 
-    assert response.status_code == 307  # Redirect
-    assert response.headers["location"] == "/login"
+    assert response.status_code == 200  # Register page renders
 
 
 def test_static_files_not_redirected(client: TestClient, container: Any) -> None:

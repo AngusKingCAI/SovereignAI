@@ -12,15 +12,15 @@
     <form id="register-form">
       <div class="form-group">
         <label for="username">Username</label>
-        <input type="text" id="username" name="username" required>
+        <input type="text" id="username" name="username" autocomplete="username" required>
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" required minlength="8">
+        <input type="password" id="password" name="password" autocomplete="new-password" required minlength="8">
       </div>
       <div class="form-group">
         <label for="confirm-password">Confirm Password</label>
-        <input type="password" id="confirm-password" name="confirm-password" required minlength="8">
+        <input type="password" id="confirm-password" name="confirm-password" autocomplete="new-password" required minlength="8">
       </div>
       <button type="submit">Create Account</button>
     </form>

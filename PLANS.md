@@ -34,12 +34,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 17.1**: Baseline → 352 tests. Delta: 0 — hotfix, no test changes.
 **Plan 17.2**: Baseline → 352 tests. Delta: 0 — hotfix, no test changes.
 **Plan 17.3**: Baseline → 352 tests. Delta: 0 — hotfix, no test changes.
+**Plan 17.4**: Baseline → 342 tests. Delta: -10 — see CHANGELOG prompt-17.4.
 
 ---
 
 ## Test Baseline
 
-**Current**: 352 tests (Plan 17 `/close`)
+**Current**: 342 tests (Plan 17.4 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -102,6 +103,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-17.1 | `prompt-17.1` | Fix model pull to use hf.co/ prefix | 352 | 0 | 0 | 2026-06-29 |
 | prompt-17.2 | `prompt-17.2` | Fix Model Pull + Organize HF Catalog by Family | 352 | 0 | 0 | 2026-06-30 |
 | prompt-17.3 | `prompt-17.3` | Fix Auth Tests + Resizable Log + Verbose Pull Logging + Close Discipline | 352 | 0 | 0 | 2026-06-30 |
+| prompt-17.4 | `prompt-17.4` | Fix Register Page Redirect + Autocomplete Attributes | 342 | 3 pre-existing | 4 pre-existing | 2026-06-30 |
 
 ---
 

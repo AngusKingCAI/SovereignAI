@@ -204,11 +204,7 @@ async def login_page(request: Request) -> Response:
 
 @app.get("/register")
 async def register_page(request: Request) -> Response:
-    """Render the registration page. Only accessible when no users exist."""
-    container: Any = request.app.state.container
-    auth: Any = container.retrieve(AuthMiddleware)
-    if len(auth._password_hashes) > 0:
-        return RedirectResponse(url="/login")
+    """Render the registration page."""
     return templates.TemplateResponse(request, "register.html")
 
 

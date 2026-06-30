@@ -989,3 +989,24 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Added resizable log drawer with CSS resize property
 - Streamed ollama pull output line-by-line to traces for visibility
 - Added OR92 to AGENTS.md mandating full close workflow compliance
+## prompt-17.4 — Fix Register Page Redirect + Autocomplete Attributes
+
+**Date**: 2026-06-30
+**Plan file**: prompts/plan-17.4-Rev1.md
+
+**Files changed**:
+- web/main.py (removed register redirect)
+- web/templates/login.html (added autocomplete attributes)
+- web/templates/register.html (added autocomplete attributes)
+- tests/test_first_run.py (updated test for new behavior)
+
+**Results**:
+- Tests: 342 passed, 10 skipped
+- Ruff: 3 pre-existing findings (teacher_worker.py, test_log_drawer_integration.py)
+- Mypy: 4 pre-existing findings (config_loader.py, main.py)
+- Bandit: 718 Low findings (B101 assert_used)
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- Pre-existing ruff/mypy errors in out-of-scope files documented for future cleanup
