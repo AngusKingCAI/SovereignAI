@@ -1157,3 +1157,23 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Created SQLite database for HuggingFace GGUF model catalog
 - Implemented VRAM badges and tok/s display based on detected hardware
 - Restructured Options panel with three tabs (Model Services/Model Databases/Authentication)
+## prompt-18.1.1 — Fix Options Tab Click Handler
+
+**Date**: 2026-06-30
+**Plan file**: prompts/sovereignai-plan-18.1.1-draft.md
+
+**Files changed**:
+- web/templates/index.html
+
+**Results**:
+- Tests: 351 passed, 12 skipped
+- Ruff: 0 findings
+- Mypy: N/A (no Python files edited)
+- Bandit: N/A (no Python files edited)
+- Vulture: N/A (no Python files edited)
+- Detect-secrets: N/A (no Python files edited)
+- Coverage: 89%
+
+**Notes**:
+- Fixed duplicate class attribute on first Options tab button
+- Tab navigation now works correctly

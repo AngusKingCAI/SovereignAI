@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-30 (prompt-18.1)
+**Last updated**: 2026-06-30 (prompt-18.1.1)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -40,6 +40,7 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 17.7**: Baseline → 352 tests. Delta: +10 — see CHANGELOG prompt-17.7.
 **Plan 18.0**: Baseline → 355 tests. Delta: +3 — see CHANGELOG prompt-18.0.
 **Plan 18.1**: Baseline → 363 tests. Delta: +8 — see CHANGELOG prompt-18.1.
+**Plan 18.1.1**: Baseline → 363 tests. Delta: 0 — hotfix, no test changes.
 
 ---
 
@@ -114,6 +115,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-17.7 | `prompt-17.7` | Fix Auth Deletion + Pull Method + Load More + Log Toggle Button | 352 | 0 | 5 pre-existing | 2026-06-30 |
 | prompt-18.0 | `prompt-18.0` | Web UI Polish + Download Pipeline Fix | 355 | 0 | 0 | 2026-06-30 |
 | prompt-18.1 | `prompt-18.1` | Logs Panel Restructure + Verbose Logging + Model Database + Options Tabs | 363 | 0 | 0 | 2026-06-30 |
+| prompt-18.1.1 | `prompt-18.1.1` | Fix Options Tab Click Handler | 363 | 0 | N/A | 2026-06-30 |
 
 ---
 
