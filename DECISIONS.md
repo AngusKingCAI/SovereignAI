@@ -12,7 +12,7 @@ Append-only. Each entry: context, options considered, decision, rationale, trade
 **Rationale**: Speed of iteration for a single developer. Python's ecosystem (pydantic, pytest, ruff, mypy) provides mature tooling. Contracts are language-agnostic; future Rust rewrite is not precluded.
 **Trade-offs**: Slower runtime, higher memory usage, GIL limits parallelism. Acceptable for v1 single-user local-first target.
 **Status**: Active. Revisit after Plan 20+.
-**Source**: `project-vision-Rev5.md` Q10 (resolved).
+**Source**: `principles.md` Q10 (resolved).
 
 ---
 
@@ -36,7 +36,7 @@ Append-only. Each entry: context, options considered, decision, rationale, trade
 **Rationale**: Single developer on Windows. Reduces complexity. Architecture must not foreclose cross-platform support.
 **Trade-offs**: Linux/macOS users cannot run v1. Path handling uses forward slashes (Windows accepts both).
 **Status**: Active. Revisit for packaging plan (Q31).
-**Source**: `project-vision-Rev5.md` P4, Q31 (open).
+**Source**: `principles.md` P4, Q31 (open).
 
 ---
 
@@ -48,13 +48,13 @@ Append-only. Each entry: context, options considered, decision, rationale, trade
 **Rationale**: Explicit wiring is transparent, debuggable, and aligns with AR4 (no global mutable state, DI container for shared state). Runtime magic obscures dependency graph and makes testing harder. Per A3, this decision is confirmed at Plan 4 /close.
 **Trade-offs**: More verbose than auto-discovery. Requires manual updates when adding components. Acceptable given the small component count (9) and the benefit of clarity.
 **Status**: Active. All 9 components wired: TraceEmitter, EventBus, CapabilityGraph, LifecycleManager, RoutingEngine, TaskStateMachine, AuthMiddleware, CapabilityAPI, RelayPlaceholder.
-**Source**: `project-vision-Rev5.md` Q26 (resolved at Plan 4).
+**Source**: `principles.md` Q26 (resolved at Plan 4).
 
 ---
 
 ## D5 — Governance documentation optimization (SSOT cleanup + script externalization)
 
-**Context**: A documentation review found duplicate maintenance burden across the governance docs: `scan.md` restated `close.md`'s tool commands verbatim; open questions were tracked in both `PLANS.md` and `project-vision-Rev5.md`; the Test Baseline's per-suite breakdown was hand-summed and had already drifted once (Plan 5); Custom AR checks (`/close` step 8) were free-text prose re-derived from memory each close instead of committed code; CHANGELOG entries were exceeding OR14's line guidance with implementation rationale that duplicated DECISIONS.md's purpose; DEBT.md had logged the same Q8 versioning deferral twice.
+**Context**: A documentation review found duplicate maintenance burden across the governance docs: `scan.md` restated `close.md`'s tool commands verbatim; open questions were tracked in both `PLANS.md` and `principles.md`; the Test Baseline's per-suite breakdown was hand-summed and had already drifted once (Plan 5); Custom AR checks (`/close` step 8) were free-text prose re-derived from memory each close instead of committed code; CHANGELOG entries were exceeding OR14's line guidance with implementation rationale that duplicated DECISIONS.md's purpose; DEBT.md had logged the same Q8 versioning deferral twice.
 **Options considered**: A) Leave as-is — duplication is explicit and intentional caching; B) Fix each instance individually, converting prose-duplicated facts to single-source pointers and prose-duplicated commands to committed scripts; C) Full rewrite of governance doc structure.
 **Decision**: Option B — targeted fixes, no structural rewrite.
 **Rationale**: The underlying document-responsibility design (one fact, one writer) stated in `AI_HANDOFF.md`'s SSOT mapping was already correct; the duplication was drift from that design, not a design flaw. Minimal targeted fixes restore the original intent without requiring re-validation of the whole governance system.

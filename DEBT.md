@@ -25,7 +25,7 @@ Append-only. Each entry: deferred at, reason, trigger condition, target plan.
 ## Deferred: Model loading/unloading based on hardware
 
 **Deferred at**: prompt-0 (bootstrap)
-**Reason**: VRAM management, GPU detection, and dynamic model loading are advanced features. Core needs to exist first. Per `project-vision-Rev5.md` Models section: "Model loading/unloading based on system hardware is a planned feature for a later plan, not Plan 1."
+**Reason**: VRAM management, GPU detection, and dynamic model loading are advanced features. Core needs to exist first. Per `principles.md` Models section: "Model loading/unloading based on system hardware is a planned feature for a later plan, not Plan 1."
 **Trigger condition**: When local model adapters (Ollama, llama.cpp) are wired and working.
 **Target plan**: TBD (post Plan 4).
 
