@@ -3,8 +3,10 @@
 This module handles fetching model data from HuggingFace and populating the
 hierarchical browsing fields (org, family, model_version, quant_level, etc.).
 """
+import json
 import re
 import sqlite3
+import urllib.request
 from pathlib import Path
 
 from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
@@ -68,16 +70,102 @@ class HuggingFaceSync:
             message="Starting HuggingFace database download",
         )
 
-        # In a real implementation, this would fetch from HuggingFace API
-        # For now, create empty database with schema
         self._db_path.parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(str(self._db_path))
 
         from sovereignai.databases.huggingface.schema import init_schema
         init_schema(conn, self._trace)
 
-        # TODO: Fetch actual data from HuggingFace API
-        # This is a placeholder for the actual sync logic
+        # Fetch popular GGUF models from HuggingFace
+        # Search for models with GGUF files
+        search_url = "https://huggingface.co/api/models?filter=gguf&sort=downloads&limit=100"
+        req = urllib.request.Request(search_url, headers={"User-Agent": "SovereignAI/0.1"})
+
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
+                models_data = json.loads(resp.read().decode("utf-8"))
+
+                cursor = conn.cursor()
+                inserted_count = 0
+
+                for model_info in models_data:
+                    model_id = model_info.get("modelId", "")
+                    if not model_id:
+                        continue
+
+                    # Parse org and family
+                    org = self.parse_org(model_id)
+                    family = self.map_arch_to_family(model_info.get("architecture", ""))
+                    model_version = self.parse_model_version(model_id)
+
+                    # Get model details
+                    model_url = f"https://huggingface.co/api/models/{model_id}"
+                    try:
+                        model_req = urllib.request.Request(model_url, headers={"User-Agent": "SovereignAI/0.1"})
+                        with urllib.request.urlopen(model_req, timeout=15) as model_resp:  # nosec B310
+                            model_detail = json.loads(model_resp.read().decode("utf-8"))
+
+                            # Extract siblings (files)
+                            siblings = model_detail.get("siblings", [])
+                            for sibling in siblings:
+                                filename = sibling.get("rfilename", "")
+                                if not filename.endswith(".gguf"):
+                                    continue
+
+                                # Parse quantization
+                                quant_tag, quant_level = self.parse_quant_tag(filename)
+                                file_type = self.parse_file_type(filename)
+
+                                # Get pipeline tags for category
+                                tags = model_detail.get("pipeline_tag", "")
+                                category = tags if tags else "other"
+                                category_group = self.map_category_to_group(category)
+
+                                # Insert into database
+                                cursor.execute("""
+                                    INSERT OR REPLACE INTO models (
+                                        repo_id, filename, quantization, org, family,
+                                        model_version, quant_level, file_type, category,
+                                        category_group, downloads, likes, last_modified
+                                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                """, (
+                                    model_id,
+                                    filename,
+                                    quant_tag,
+                                    org,
+                                    family,
+                                    model_version,
+                                    quant_level,
+                                    file_type,
+                                    category,
+                                    category_group,
+                                    model_detail.get("downloads", 0),
+                                    model_detail.get("likes", 0),
+                                    model_detail.get("lastModified", "")
+                                ))
+                                inserted_count += 1
+                    except Exception as e:
+                        self._trace.emit(
+                            component="huggingface_sync",
+                            level=TraceLevel.WARN,
+                            message=f"Failed to fetch details for {model_id}: {e}",
+                        )
+                        continue
+
+                conn.commit()
+                self._trace.emit(
+                    component="huggingface_sync",
+                    level=TraceLevel.INFO,
+                    message=f"Inserted {inserted_count} model variants",
+                )
+
+        except Exception as e:
+            self._trace.emit(
+                component="huggingface_sync",
+                level=TraceLevel.ERROR,
+                message=f"Failed to fetch models from HuggingFace: {e}",
+            )
+            raise
 
         conn.close()
         self._trace.emit(
@@ -109,8 +197,107 @@ class HuggingFaceSync:
         from sovereignai.databases.huggingface.schema import migrate_to_v2
         migrate_to_v2(conn, self._trace)
 
-        # TODO: Fetch and update data from HuggingFace API
-        # This is a placeholder for the actual sync logic
+        # Fetch latest models and update existing entries
+        search_url = "https://huggingface.co/api/models?filter=gguf&sort=downloads&limit=100"
+        req = urllib.request.Request(search_url, headers={"User-Agent": "SovereignAI/0.1"})
+
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
+                models_data = json.loads(resp.read().decode("utf-8"))
+
+                cursor = conn.cursor()
+                updated_count = 0
+
+                for model_info in models_data:
+                    model_id = model_info.get("modelId", "")
+                    if not model_id:
+                        continue
+
+                    # Check if model already exists
+                    cursor.execute("SELECT repo_id FROM models WHERE repo_id = ?", (model_id,))
+                    if cursor.fetchone():
+                        # Update existing model
+                        cursor.execute("""
+                            UPDATE models SET
+                                downloads = ?,
+                                likes = ?,
+                                last_modified = ?
+                            WHERE repo_id = ?
+                        """, (
+                            model_info.get("downloads", 0),
+                            model_info.get("likes", 0),
+                            model_info.get("lastModified", ""),
+                            model_id
+                        ))
+                        updated_count += 1
+                    else:
+                        # Insert new model
+                        org = self.parse_org(model_id)
+                        family = self.map_arch_to_family(model_info.get("architecture", ""))
+                        model_version = self.parse_model_version(model_id)
+
+                        model_url = f"https://huggingface.co/api/models/{model_id}"
+                        try:
+                            model_req = urllib.request.Request(model_url, headers={"User-Agent": "SovereignAI/0.1"})
+                            with urllib.request.urlopen(model_req, timeout=15) as model_resp:  # nosec B310
+                                model_detail = json.loads(model_resp.read().decode("utf-8"))
+
+                                siblings = model_detail.get("siblings", [])
+                                for sibling in siblings:
+                                    filename = sibling.get("rfilename", "")
+                                    if not filename.endswith(".gguf"):
+                                        continue
+
+                                    quant_tag, quant_level = self.parse_quant_tag(filename)
+                                    file_type = self.parse_file_type(filename)
+                                    tags = model_detail.get("pipeline_tag", "")
+                                    category = tags if tags else "other"
+                                    category_group = self.map_category_to_group(category)
+
+                                    cursor.execute("""
+                                        INSERT OR REPLACE INTO models (
+                                            repo_id, filename, quantization, org, family,
+                                            model_version, quant_level, file_type, category,
+                                            category_group, downloads, likes, last_modified
+                                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                    """, (
+                                        model_id,
+                                        filename,
+                                        quant_tag,
+                                        org,
+                                        family,
+                                        model_version,
+                                        quant_level,
+                                        file_type,
+                                        category,
+                                        category_group,
+                                        model_detail.get("downloads", 0),
+                                        model_detail.get("likes", 0),
+                                        model_detail.get("lastModified", "")
+                                    ))
+                                    updated_count += 1
+                        except Exception as e:
+                            self._trace.emit(
+                                component="huggingface_sync",
+                                level=TraceLevel.WARN,
+                                message=f"Failed to fetch details for {model_id}: {e}",
+                            )
+                            continue
+
+                conn.commit()
+                self._trace.emit(
+                    component="huggingface_sync",
+                    level=TraceLevel.INFO,
+                    message=f"Updated {updated_count} model variants",
+                )
+
+        except Exception as e:
+            self._trace.emit(
+                component="huggingface_sync",
+                level=TraceLevel.ERROR,
+                message=f"Failed to update models from HuggingFace: {e}",
+            )
+            raise
 
         conn.close()
         self._trace.emit(
@@ -213,3 +400,41 @@ class HuggingFaceSync:
             return config_name
 
         return "unknown"
+
+    def uninstall(self) -> None:
+        """Delete the HuggingFace database and clear any cached data."""
+        self._trace.emit(
+            component="huggingface_sync",
+            level=TraceLevel.INFO,
+            message="Starting HuggingFace database uninstall",
+        )
+
+        if self._db_path.exists():
+            self._db_path.unlink()
+            self._trace.emit(
+                component="huggingface_sync",
+                level=TraceLevel.INFO,
+                message=f"Deleted database at {self._db_path}",
+            )
+        else:
+            self._trace.emit(
+                component="huggingface_sync",
+                level=TraceLevel.WARN,
+                message="Database does not exist, nothing to delete",
+            )
+
+        # Clear any cached token if stored
+        token_path = Path.home() / ".sovereignai" / "databases" / "huggingface" / ".token"
+        if token_path.exists():
+            token_path.unlink()
+            self._trace.emit(
+                component="huggingface_sync",
+                level=TraceLevel.INFO,
+                message="Cleared HuggingFace token",
+            )
+
+        self._trace.emit(
+            component="huggingface_sync",
+            level=TraceLevel.INFO,
+            message="HuggingFace database uninstall completed",
+        )

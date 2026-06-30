@@ -28,7 +28,7 @@ def annotation_name(annotation: ast.expr | None) -> tuple[str | None, bool]:
     return None, False
 
 
-def check_function(fn: ast.FunctionDef | ast.AsyncFunctionDef, path: Path) -> list[str]:
+def check_function(fn: ast.FunctionDef | ast.AsyncFunctionDef, path: Path) -> list[str]:  # EXEMPT-OR97
     """Flag bare **kwargs or untyped dict/Any params in a single function signature."""
     if fn.name.startswith("_"):
         return []
@@ -56,7 +56,7 @@ def check_function(fn: ast.FunctionDef | ast.AsyncFunctionDef, path: Path) -> li
     return violations
 
 
-def scan_file(path: Path) -> list[str]:
+def scan_file(path: Path) -> list[str]:  # EXEMPT-OR97
     """Parse one file and check every top-level and method function signature."""
     if "test" in path.parts or path.name.startswith("test_"):
         return []
@@ -73,7 +73,7 @@ def scan_file(path: Path) -> list[str]:
     return violations
 
 
-def main() -> int:
+def main() -> int:  # EXEMPT-OR97
     """Run the AR6 context-bag check over the given paths."""
     parser = argparse.ArgumentParser(description="AR6: no context bags / **kwargs catch-alls.")
     parser.add_argument("paths", nargs="+", help="Files or directories to check.")

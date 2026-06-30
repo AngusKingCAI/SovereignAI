@@ -1201,6 +1201,10 @@ function loadOptions() {
 
     // Check HuggingFace DB status
     checkHFDBStatus();
+
+    // Load services and databases status
+    loadServicesStatus();
+    loadDatabasesStatus();
 }
 
 function setupOptionsTabs() {
@@ -1284,6 +1288,214 @@ function deleteApiKey(provider) {
         credentials: 'same-origin',
     })
     .then(() => loadOptions());
+}
+
+function loadServicesStatus() {
+    fetch('/api/services')
+        .then(r => r.json())
+        .then(data => {
+            const services = data.services || [];
+            services.forEach(serviceName => {
+                fetch(`/api/services/${serviceName}/status`)
+                    .then(r => r.json())
+                    .then(status => {
+                        updateServiceButton(serviceName, status);
+                    })
+                    .catch(err => console.error(`Failed to load status for ${serviceName}:`, err));
+            });
+        })
+        .catch(err => console.error('Failed to load services:', err));
+}
+
+function loadDatabasesStatus() {
+    fetch('/api/databases')
+        .then(r => r.json())
+        .then(data => {
+            const databases = data.databases || [];
+            databases.forEach(dbName => {
+                fetch(`/api/databases/${dbName}/status`)
+                    .then(r => r.json())
+                    .then(status => {
+                        updateDatabaseButton(dbName, status);
+                    })
+                    .catch(err => console.error(`Failed to load status for ${dbName}:`, err));
+            });
+        })
+        .catch(err => console.error('Failed to load databases:', err));
+}
+
+function updateServiceButton(serviceName, status) {
+    const buttonId = `service-${serviceName}-action-btn`;
+    const button = document.getElementById(buttonId);
+    if (!button) return;
+
+    if (status.installed) {
+        if (status.running) {
+            button.textContent = 'Stop';
+            button.onclick = () => stopService(serviceName);
+        } else {
+            button.textContent = 'Start';
+            button.onclick = () => startService(serviceName);
+        }
+    } else {
+        button.textContent = 'Download';
+        button.onclick = () => downloadService(serviceName);
+    }
+}
+
+function updateDatabaseButton(dbName, status) {
+    const buttonId = `database-${dbName}-action-btn`;
+    const button = document.getElementById(buttonId);
+    if (!button) return;
+
+    if (status.installed) {
+        button.textContent = 'Uninstall';
+        button.onclick = () => uninstallDatabase(dbName);
+    } else {
+        button.textContent = 'Download';
+        button.onclick = () => downloadDatabase(dbName);
+    }
+}
+
+function downloadService(serviceName) {
+    const button = document.getElementById(`service-${serviceName}-action-btn`);
+    if (button) {
+        button.disabled = true;
+        button.textContent = 'Downloading...';
+    }
+    fetch(`/api/services/${serviceName}/download`, {
+        method: 'POST',
+        credentials: 'same-origin',
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast(`Successfully downloaded ${serviceName}`, 'success');
+            loadServicesStatus();
+        }
+    })
+    .catch(err => {
+        console.error(`Failed to download ${serviceName}:`, err);
+        showToast(`Failed to download ${serviceName}`, 'error');
+    })
+    .finally(() => {
+        if (button) {
+            button.disabled = false;
+        }
+    });
+}
+
+function startService(serviceName) {
+    const button = document.getElementById(`service-${serviceName}-action-btn`);
+    if (button) {
+        button.disabled = true;
+        button.textContent = 'Starting...';
+    }
+    fetch(`/api/services/${serviceName}/start`, {
+        method: 'POST',
+        credentials: 'same-origin',
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast(`Successfully started ${serviceName}`, 'success');
+            loadServicesStatus();
+        }
+    })
+    .catch(err => {
+        console.error(`Failed to start ${serviceName}:`, err);
+        showToast(`Failed to start ${serviceName}`, 'error');
+    })
+    .finally(() => {
+        if (button) {
+            button.disabled = false;
+        }
+    });
+}
+
+function stopService(serviceName) {
+    const button = document.getElementById(`service-${serviceName}-action-btn`);
+    if (button) {
+        button.disabled = true;
+        button.textContent = 'Stopping...';
+    }
+    fetch(`/api/services/${serviceName}/stop`, {
+        method: 'POST',
+        credentials: 'same-origin',
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast(`Successfully stopped ${serviceName}`, 'success');
+            loadServicesStatus();
+        }
+    })
+    .catch(err => {
+        console.error(`Failed to stop ${serviceName}:`, err);
+        showToast(`Failed to stop ${serviceName}`, 'error');
+    })
+    .finally(() => {
+        if (button) {
+            button.disabled = false;
+        }
+    });
+}
+
+function downloadDatabase(dbName) {
+    const button = document.getElementById(`database-${dbName}-action-btn`);
+    if (button) {
+        button.disabled = true;
+        button.textContent = 'Downloading...';
+    }
+    fetch(`/api/databases/${dbName}/download`, {
+        method: 'POST',
+        credentials: 'same-origin',
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast(`Successfully downloaded ${dbName}`, 'success');
+            loadDatabasesStatus();
+        }
+    })
+    .catch(err => {
+        console.error(`Failed to download ${dbName}:`, err);
+        showToast(`Failed to download ${dbName}`, 'error');
+    })
+    .finally(() => {
+        if (button) {
+            button.disabled = false;
+        }
+    });
+}
+
+function uninstallDatabase(dbName) {
+    if (!confirm(`Uninstall ${dbName}?`)) return;
+    const button = document.getElementById(`database-${dbName}-action-btn`);
+    if (button) {
+        button.disabled = true;
+        button.textContent = 'Uninstalling...';
+    }
+    fetch(`/api/databases/${dbName}/uninstall`, {
+        method: 'POST',
+        credentials: 'same-origin',
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast(`Successfully uninstalled ${dbName}`, 'success');
+            loadDatabasesStatus();
+        }
+    })
+    .catch(err => {
+        console.error(`Failed to uninstall ${dbName}:`, err);
+        showToast(`Failed to uninstall ${dbName}`, 'error');
+    })
+    .finally(() => {
+        if (button) {
+            button.disabled = false;
+        }
+    });
 }
 
 function startOllamaStatusPolling() {

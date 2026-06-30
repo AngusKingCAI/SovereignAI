@@ -16,10 +16,16 @@ os.environ["SOVEREIGNAI_TEST_MODE"] = "1"
 @pytest.fixture
 def client() -> Generator[TestClient, None, None]:
     """Create a test client for the FastAPI app with auth bypass."""
-    # Set dependency override before creating the client
-    web.main.app.dependency_overrides[web.main.get_current_user] = (
-        lambda request: MagicMock(username="test")
-    )
+    # Build the DI container and set it in app.state (mimics lifespan startup)
+    from sovereignai.main import build_container
+    container = build_container()
+    web.main.app.state.container = container
+
+    # Bypass auth by overriding get_current_user to return a mock user
+    def mock_get_current_user(request: Any = None):
+        return MagicMock(username="test")
+
+    web.main.app.dependency_overrides[web.main.get_current_user] = mock_get_current_user
     client = TestClient(web.main.app)
     yield client
     # Clean up

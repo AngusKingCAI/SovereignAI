@@ -5,7 +5,6 @@ uninstalled, started, stopped, and restarted. Examples include Ollama.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional
 
 from sovereignai.shared.trace_emitter import TraceEmitter
 
@@ -27,7 +26,7 @@ class ServiceBase(ABC):
     download, update, uninstall, start, stop, restart, and status.
     """
 
-    def __init__(self, trace: Optional[TraceEmitter] = None) -> None:
+    def __init__(self, trace: TraceEmitter | None = None) -> None:
         """Initialize the service provider.
 
         Args:

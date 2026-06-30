@@ -5,7 +5,6 @@ updated, and uninstalled. Examples include HuggingFace.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional
 
 from sovereignai.shared.trace_emitter import TraceEmitter
 
@@ -27,7 +26,7 @@ class DatabaseBase(ABC):
     download, update, uninstall, and status.
     """
 
-    def __init__(self, trace: Optional[TraceEmitter] = None) -> None:
+    def __init__(self, trace: TraceEmitter | None = None) -> None:
         """Initialize the database provider.
 
         Args:

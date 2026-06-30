@@ -17,6 +17,10 @@ _correlation_id: contextvars.ContextVar[UUID | None] = contextvars.ContextVar(
 # Thread-local storage for thread propagation
 _thread_local = local()
 
+# Module-level storage for passing correlation ID to new threads
+# (threading.local() is per-thread, so we need a shared variable for propagation)
+_thread_propagation_id: UUID | None = None
+
 
 def set_correlation_id(correlation_id: UUID | None) -> None:
     """Set the current correlation ID in the async context variable for tracing.
@@ -87,18 +91,20 @@ def generate_correlation_id() -> UUID:
 
 
 def copy_correlation_id_to_thread() -> None:
-    """Copy the current correlation ID to thread-local storage for thread propagation.
+    """Copy the current correlation ID to module-level storage for thread propagation.
 
     This should be called when spawning a new thread to propagate the
     correlation ID into the new thread's context.
     """
-    _thread_local.correlation_id = get_correlation_id()
+    global _thread_propagation_id
+    _thread_propagation_id = get_correlation_id()
 
 
 def get_thread_correlation_id() -> UUID | None:
-    """Get the correlation ID from thread-local storage.
+    """Get the correlation ID from module-level propagation storage.
 
     Returns:
-        The thread-local correlation ID, or None if not set.
+        The propagated correlation ID, or None if not set.
     """
-    return getattr(_thread_local, "correlation_id", None)
+    global _thread_propagation_id
+    return _thread_propagation_id

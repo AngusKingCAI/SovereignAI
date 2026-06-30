@@ -49,17 +49,23 @@ def test_copy_correlation_id_to_thread() -> None:
     """Test that copy_correlation_id_to_thread propagates correlation ID to a thread."""
     import threading
 
+    from sovereignai.shared.correlation import get_thread_correlation_id
+
     test_id = uuid4()
     set_correlation_id(test_id)
 
-    thread_local = threading.local()
+    # Copy the correlation ID to module-level storage before starting thread
+    copy_correlation_id_to_thread()
+
+    # Use a list to capture the result from the thread
+    captured_ids = []
 
     def thread_func():
-        copy_correlation_id_to_thread()
-        thread_local.captured_id = get_correlation_id()
+        # Use get_thread_correlation_id to retrieve from module-level storage
+        captured_ids.append(get_thread_correlation_id())
 
     thread = threading.Thread(target=thread_func)
     thread.start()
     thread.join()
 
-    assert thread_local.captured_id == test_id
+    assert captured_ids[0] == test_id

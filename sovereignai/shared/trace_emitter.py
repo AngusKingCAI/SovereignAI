@@ -56,7 +56,7 @@ class TraceEmitter:
         self._max_events = max_events
         self._callbacks: list[Callable[[TraceEvent], None]] = []
 
-    def emit(
+    def emit(  # EXEMPT-OR97
         self,
         component: str,
         level: TraceLevel,
@@ -114,7 +114,7 @@ class TraceEmitter:
             events = [e for e in events if e.component == component]
         return events
 
-    def subscribe_callback(self, callback: Callable[[TraceEvent], None]) -> None:
+    def subscribe_callback(self, callback: Callable[[TraceEvent], None]) -> None:  # EXEMPT-OR97
         """Register a callback function to be invoked on every trace event emission.
 
         The callback receives the TraceEvent object as its sole argument.

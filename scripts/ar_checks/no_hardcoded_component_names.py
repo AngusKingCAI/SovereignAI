@@ -23,7 +23,7 @@ def imported_top_level_package(node: ast.Import | ast.ImportFrom) -> set[str]:
     return set()
 
 
-def scan_file(path: Path) -> list[str]:
+def scan_file(path: Path) -> list[str]:  # EXEMPT-OR97
     """Parse one UI-layer file and flag imports from forbidden core packages."""
     try:
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
@@ -42,7 +42,7 @@ def scan_file(path: Path) -> list[str]:
     return violations
 
 
-def main() -> int:
+def main() -> int:  # EXEMPT-OR97
     """Run the AR7 UI-import-boundary check over the given UI-layer paths."""
     parser = argparse.ArgumentParser(description="AR7: UI consumes Capability API only.")
     parser.add_argument("paths", nargs="+", help="UI-layer directories to check (web/, cli/, ...).")

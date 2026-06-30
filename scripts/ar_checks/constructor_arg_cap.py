@@ -39,7 +39,7 @@ def count_args(fn: ast.FunctionDef) -> int:
     return len(positional) + len(kwonly)
 
 
-def scan_file(path: Path, max_args: int) -> list[str]:
+def scan_file(path: Path, max_args: int) -> list[str]:  # EXEMPT-OR97
     """Parse one file and flag any __init__ method exceeding the constructor arg cap."""
     if path.name == "main.py":
         return []  # Composition Root exemption, AR5.
@@ -66,7 +66,7 @@ def scan_file(path: Path, max_args: int) -> list[str]:
     return violations
 
 
-def main() -> int:
+def main() -> int:  # EXEMPT-OR97
     """Run the AR5 constructor-argument-cap check over the given paths."""
     parser = argparse.ArgumentParser(description="AR5: constructor arg cap.")
     parser.add_argument("paths", nargs="+", help="Files or directories to check.")

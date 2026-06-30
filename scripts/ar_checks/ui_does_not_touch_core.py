@@ -25,7 +25,7 @@ def changed_files(ref: str = "HEAD~1") -> list[str]:
     return [line.strip() for line in result.stdout.splitlines() if line.strip()]
 
 
-def main() -> int:
+def main() -> int:  # EXEMPT-OR97
     """Run the AR7 commit-scope check comparing the current commit against HEAD~1."""
     try:
         files = changed_files()

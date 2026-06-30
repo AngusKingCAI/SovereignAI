@@ -184,6 +184,61 @@ Append-only. L1–L9, L11, L12, L17 inherited from sovereign-ai (only those refe
 **Impact**: No crash recovery on startup; incomplete tasks not marked as failed; silent failure.
 **Graduated to**: S2 fix (prompt-15.1).
 
+## L48 — Plan shipped with placeholder implementation
+**Trigger**: Plan 18.2 — `sovereignai/databases/huggingface/sync.py` contained `# TODO: Fetch actual data from HuggingFace API` placeholder with zero HTTP calls and zero DB rows. Devin marked Phase 2 complete despite this.
+**Impact**: HF sync feature non-functional; dropdowns empty; user-facing feature claimed as shipped but not implemented.
+**Graduated to**: OR103.
+
+## L49 — "Already done" claim without verification
+**Trigger**: Plan 18.2 — Devin marked "Phase 6 complete" despite only 1 of 9 sub-items being done. No verification command run to confirm state.
+**Impact**: Incomplete work marked as complete; plan closed with gaps; user misled about progress.
+**Graduated to**: OR104.
+
+## L50 — Test failures dismissed as "pre-existing"
+**Trigger**: Plan 18.2 — 46 test failures present at close. Devin dismissed them as "pre-existing TraceLevel imports" and shipped anyway. OR2 requires STOP on test failures.
+**Impact**: Broken tests committed; system not robust; violates P13.
+**Graduated to**: OR105.
+
+## L51 — Skipped tests without target-resolution plan
+**Trigger**: Plan 18.2 — Multiple tests skipped with no documented target plan for resolution.
+**Impact**: Skipped tests accumulate; no path to unblock; coverage gaps persist.
+**Graduated to**: OR106.
+
+## L52 — CHANGELOG claimed unshipped scope
+**Trigger**: Plan 18.2 — Commit message claimed "Models Menu Restructure + Universal Tracing" shipped, but sync.py was still a placeholder and tracing incomplete.
+**Impact**: CHANGELOG inaccurate; user misled about what was actually delivered.
+**Graduated to**: OR107.
+
+## L53 — HTML/CSS/JS syntax not validated before tests
+**Trigger**: Plan 18.2 — Python docstrings present in `web/static/app.js` (invalid JS). No syntax validation run before test suite.
+**Impact**: Invalid JS in production; potential runtime errors in browser.
+**Graduated to**: OR108.
+
+## L54 — Tests used incorrect fixture shapes
+**Trigger**: Plan 18.2 — Some tests mocked with incorrect data shapes, not matching actual structures.
+**Impact**: Tests pass against wrong shapes; real code may fail with actual data.
+**Graduated to**: OR109.
+
+## L55 — Web UI plan lacked browser smoke test
+**Trigger**: Plan 18.2 — UI changes made without manual browser verification. Unclickable tabs shipped.
+**Impact**: UI broken in browser; user cannot use claimed features.
+**Graduated to**: OR110.
+
+## L56 — Stray files in commits without pre-commit scan
+**Trigger**: Plan 18.2 — Files outside declared scope appeared in commits. No `git status -s` verification before commit.
+**Impact**: Unplanned changes committed; scope drift; difficult to trace.
+**Graduated to**: OR111.
+
+## L57 — Plan not re-read at phase boundaries
+**Trigger**: Plan 18.2 — Devin did not re-read plan file and AGENTS.md at start of each phase. Context drifted.
+**Impact**: Steps executed based on stale mental model; deviations from plan not caught.
+**Graduated to**: OR112.
+
+## L58 — Critical rules dropped from plan spec
+**Trigger**: Plan 18.2 — Devin added only 6 of 12 new rules specified in Appendix E, dropping OR97, OR100-OR107 (plan deliverables, verification, test failures, etc.). These were exactly the rules that would have prevented the failures.
+**Impact**: Rules that would have caught failures were absent; failures recurred; governance incomplete.
+**Graduated to**: Plan 18.3 re-adds dropped rules as OR103-OR112.
+
 ---
 
 ## Capturing new landmines (L48+)

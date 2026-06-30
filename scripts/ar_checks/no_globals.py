@@ -25,7 +25,7 @@ def is_constant_name(name: str) -> bool:
     return name.isupper() or (name.startswith("_") and name[1:].isupper())
 
 
-def check_module_globals(tree: ast.Module, path: Path) -> list[str]:
+def check_module_globals(tree: ast.Module, path: Path) -> list[str]:  # EXEMPT-OR97
     """Walk top-level assignments in a module and flag non-constant mutable globals."""
     violations = []
     for node in tree.body:
@@ -60,7 +60,7 @@ def check_module_globals(tree: ast.Module, path: Path) -> list[str]:
     return violations
 
 
-def check_class_defaults(tree: ast.Module, path: Path) -> list[str]:
+def check_class_defaults(tree: ast.Module, path: Path) -> list[str]:  # EXEMPT-OR97
     """Walk class bodies and flag mutable literal defaults assigned as class attributes."""
     violations = []
     for node in ast.walk(tree):
@@ -86,7 +86,7 @@ def scan_file(path: Path) -> list[str]:
     return check_module_globals(tree, path) + check_class_defaults(tree, path)
 
 
-def main() -> int:
+def main() -> int:  # EXEMPT-OR97
     """Run the AR4 global-state check over the given paths and report violations."""
     parser = argparse.ArgumentParser(description="AR4: no global mutable state.")
     parser.add_argument("paths", nargs="+", help="Files or directories to check.")

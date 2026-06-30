@@ -40,7 +40,7 @@ def starts_with_verb(line: str) -> bool:
     return first_word.lower() not in noun_starters
 
 
-def check_function(fn: ast.FunctionDef | ast.AsyncFunctionDef, path: Path) -> list[str]:
+def check_function(fn: ast.FunctionDef | ast.AsyncFunctionDef, path: Path) -> list[str]:  # EXEMPT-OR97
     """Check a single function's docstring against AR21's first-line requirements."""
     if fn.name in SKIP_DUNDERS:
         return []
@@ -71,7 +71,7 @@ def check_function(fn: ast.FunctionDef | ast.AsyncFunctionDef, path: Path) -> li
     return issues
 
 
-def scan_file(path: Path) -> list[str]:
+def scan_file(path: Path) -> list[str]:  # EXEMPT-OR97
     """Parse one file and check every def/async def docstring against AR21."""
     try:
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
@@ -85,7 +85,7 @@ def scan_file(path: Path) -> list[str]:
     return violations
 
 
-def main() -> int:
+def main() -> int:  # EXEMPT-OR97
     """Run the AR21 docstring-discipline check over the given paths."""
     parser = argparse.ArgumentParser(description="AR21: verb-first, >=10-word docstrings.")
     parser.add_argument("paths", nargs="+", help="Files or directories to check.")

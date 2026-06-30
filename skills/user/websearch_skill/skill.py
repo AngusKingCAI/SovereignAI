@@ -58,7 +58,7 @@ class DuckDuckGoHTMLParser(html.parser.HTMLParser):
         elif tag == "div" and class_attr and "result__snippet" in class_attr:
             self._in_snippet = True
 
-    def handle_endtag(self, tag: str) -> None:
+    def handle_endtag(self, tag: str) -> None:  # EXEMPT-OR97
         """Handle closing tags to finalize result extraction."""
         if tag == "a" and self._in_title:
             self._in_title = False

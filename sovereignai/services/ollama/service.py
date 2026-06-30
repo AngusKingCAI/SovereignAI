@@ -124,6 +124,16 @@ class OllamaService(ServiceBase):
         if not self._binary_path.exists():
             raise RuntimeError("Ollama is not installed. Run download first.")
 
+        # Pre-flight check: verify Ollama is not already running
+        current_status = self.status()
+        if current_status.running:
+            self._trace.emit(
+                component="OllamaService",
+                level=TraceLevel.WARN,
+                message="Ollama is already running, skipping start",
+            )
+            return
+
         try:
             subprocess.Popen(
                 [str(self._binary_path), "serve"],

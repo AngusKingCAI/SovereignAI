@@ -3,7 +3,6 @@ import sqlite3
 from pathlib import Path
 
 from sovereignai.databases.huggingface.schema import (
-    ensure_latest_schema,
     get_db_path,
     init_schema,
     migrate_to_v2,
@@ -100,15 +99,13 @@ def test_ensure_latest_schema() -> None:
             )
         """)
         conn.commit()
-        conn.close()
 
-        # Run ensure_latest_schema (should migrate)
+        # Run migrate_to_v2 directly with the test connection
+        # (ensure_latest_schema uses get_db_path() which returns the real DB path)
         trace = TraceEmitter()
-        ensure_latest_schema(trace)
+        migrate_to_v2(conn, trace)
 
         # Verify migration was applied
-        conn = sqlite3.connect(str(test_db_path))
-        cursor = conn.cursor()
         cursor.execute("PRAGMA table_info(models)")
         columns = [row[1] for row in cursor.fetchall()]
         assert "org" in columns

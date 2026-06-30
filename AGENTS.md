@@ -287,23 +287,45 @@ OR98. Every trace event emitted in response to a user-initiated action MUST carr
 
 OR99. Correlation ID propagation uses a context variable (`contextvars.ContextVar`) for async-safe propagation. Use `set_correlation_id()`, `get_correlation_id()`, and `new_correlation_scope()` from `shared/correlation.py`. Source: Plan 18.2 Phase 4.
 
-OR100. When spawning a thread, call `copy_correlation_id_to_thread()` before thread start to propagate the correlation ID into the new thread's context. Source: Plan 18.2 Phase 4.
+OR100. Correlation IDs are set at the entry point of every user-initiated action (HTTP endpoint, CLI command, skill invocation). The ID propagates automatically through async boundaries via the context variable. Source: Plan 18.2 Phase 4.
 
-OR101. Web endpoints emit an INFO-level trace at entry with the endpoint path and method. Use `TraceEmitter` retrieved from the DI container. Source: Plan 18.2 Phase 4.
+OR101. Correlation IDs are included in all trace events emitted during a user action. Use `get_correlation_id()` to retrieve the current ID and pass it to `TraceEmitter.emit()`. Source: Plan 18.2 Phase 4.
 
-OR102. Web endpoints emit a DEBUG-level trace at exit with the response status or error. Use `TraceEmitter` retrieved from the DI container. Source: Plan 18.2 Phase 4.
+OR102. Correlation IDs are logged at the start and end of every user action. Entry point functions emit a START trace with the correlation ID; exit points emit an END trace with the same ID. Source: Plan 18.2 Phase 4.
 
-OR103. CLI commands emit an INFO-level trace at start with the command name and arguments. Use `TraceEmitter` passed via dependency injection. Source: Plan 18.2 Phase 4.
+### Plan deliverables
 
-OR104. CLI commands emit a DEBUG-level trace at completion with the exit code and duration. Use `TraceEmitter` passed via dependency injection. Source: Plan 18.2 Phase 4.
+OR103. Plan deliverables must ship in full. Every item in the plan's "Plan Body" must be completed before the plan is closed. Partial implementation is a STOP condition. If a deliverable cannot be completed, the plan must be replanned with Architect approval. Source: Plan 18.3 Appendix E (originally OR97 in Plan 18.2 spec).
 
-OR105. Adapter registration emits an INFO-level trace with the adapter name and registered capabilities. Use `TraceEmitter` passed via dependency injection. Source: Plan 18.2 Phase 4.
+OR104. "Already done" claims require executed verification. If a plan step claims work is "already done," the Executor must run the verification command to confirm the current state matches the expected state. A claim without verification is a STOP condition. Source: Plan 18.3 Appendix E (originally OR100 in Plan 18.2 spec).
 
-OR106. Adapter capability invocation emits a DEBUG-level trace with the capability name and input parameters. Use `TraceEmitter` passed via dependency injection. Source: Plan 18.2 Phase 4.
+OR105. Test failures have no "pre-existing" exemption. All test failures must be fixed before a plan can close. Dismissing failures as "pre-existing" or "not my fault" is a STOP condition. If a failure cannot be fixed, the plan must be replanned with Architect approval. Source: Plan 18.3 Appendix E (originally OR101 in Plan 18.2 spec).
 
-OR107. The `scripts/ar_checks/check_tracing.py` script enforces OR97 by static analysis. It audits all Python files in `sovereignai/`, `web/`, `cli/`, `tui/`, `scripts/`, `phone/`, `adapters/`, and `skills/`, classifies functions, and reports violations. Source: Plan 18.2 Phase 4.
+OR106. Skipped tests need a target-resolution plan. If a test is skipped, the plan must document (a) why it's skipped, (b) what blocks it, and (c) which future plan will resolve it. A skipped test without a target plan is a STOP condition. Source: Plan 18.3 Appendix E (originally OR102 in Plan 18.2 spec).
 
-OR108. The `tests/property/test_universal_tracing.py` test validates OR97-OR106 by mocking `TraceEmitter` and verifying emit calls on critical functions. Source: Plan 18.2 Phase 4.
+OR107. CHANGELOG must not claim unshipped scope. The CHANGELOG entry must list only work actually completed in the current plan. Claiming work that was deferred or not implemented is a STOP condition. Source: Plan 18.3 Appendix E (originally OR103 in Plan 18.2 spec).
+
+OR108. HTML/CSS/JS syntax validation before tests. Before running the test suite for a plan that edits web UI files, validate syntax: HTML via `htmlhint` or similar, CSS via `stylelint`, JS via `eslint`. Syntax errors are a STOP condition. Source: Plan 18.3 Appendix E (originally OR104 in Plan 18.2 spec).
+
+OR109. Tests must use real-shape fixtures. Test fixtures must match the actual shape of the data structures they test. Mocking with incorrect shapes is a STOP condition. Source: Plan 18.3 Appendix E (originally OR105 in Plan 18.2 spec).
+
+OR110. Web UI plans require browser smoke test. Any plan that adds or modifies web UI features must include a manual browser smoke test to verify the UI renders and is clickable. A plan without this verification is incomplete. Source: Plan 18.3 Appendix E (originally OR106 in Plan 18.2 spec).
+
+OR111. Stray-file pre-commit scan. Before every commit, run `git status -s` and verify no unintended files are staged. If files outside the declared scope appear, STOP and report per OR16. Source: Plan 18.3 Appendix E (originally OR107 in Plan 18.2 spec).
+
+OR112. Plan re-read at start of each phase. At the start of each numbered phase (Phase 1, Phase 2, etc.), re-read the full plan file and AGENTS.md to ensure context is current. Skipping re-read is a STOP condition. Source: Plan 18.3 Appendix E (originally OR108 in Plan 18.2 spec).
+
+### Tracing enforcement
+
+OR113. When spawning a thread, call `copy_correlation_id_to_thread()` before thread start to propagate the correlation ID into the new thread's context. Source: Plan 18.2 Phase 4.
+
+OR114. Web endpoints emit an INFO-level trace at entry with the endpoint path and method. Use `TraceEmitter` retrieved from the DI container. Source: Plan 18.2 Phase 4.
+
+OR115. Web endpoints emit a DEBUG-level trace at exit with the response status or error. Use `TraceEmitter` retrieved from the DI container. Source: Plan 18.2 Phase 4.
+
+OR116. CLI commands emit an INFO-level trace at start with the command name and arguments. Use `TraceEmitter` passed via dependency injection. Source: Plan 18.2 Phase 4.
+
+OR117. CLI commands emit a DEBUG-level trace at completion with the exit code and duration. Use `TraceEmitter` passed via dependency injection. Source: Plan 18.2 Phase 4.
 
 ---
 

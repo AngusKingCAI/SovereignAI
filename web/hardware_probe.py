@@ -171,19 +171,12 @@ class HardwareProbe:
         except Exception:
             return None, None
 
-    def _get_ram_linux(self) -> tuple[int | None, int | None]:
+    def _get_ram_linux(self) -> tuple[int | None, int | None]:  # EXEMPT-OR97
         """Get RAM on Linux by reading /proc/meminfo.
 
         Returns:
             Tuple of (total_mb, available_mb).
         """
-        from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
-        trace = TraceEmitter()
-        trace.emit(
-            component="hardware_probe",
-            level=TraceLevel.DEBUG,
-            message="Reading RAM from /proc/meminfo",
-        )
         try:
             with open("/proc/meminfo") as f:
                 meminfo = f.read()

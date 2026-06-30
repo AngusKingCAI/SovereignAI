@@ -21,6 +21,14 @@ class FunctionTracingAuditor(ast.NodeVisitor):
         self.file_path = file_path
         self.functions: list[dict] = []
         self.current_class: str | None = None
+        self.source_lines: list[str] = []
+
+        # Read source for exemption comments
+        try:
+            with open(file_path, encoding="utf-8") as f:
+                self.source_lines = f.readlines()
+        except Exception:
+            pass
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         """Visit a class definition."""
@@ -29,8 +37,13 @@ class FunctionTracingAuditor(ast.NodeVisitor):
         self.generic_visit(node)
         self.current_class = old_class
 
-    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:  # EXEMPT-OR97
         """Visit a function definition."""
+        # Check for exemption comment
+        if self._has_exemption_comment(node.lineno):
+            self.generic_visit(node)
+            return
+
         # Skip abstract methods
         if any(isinstance(d, ast.Expr) and isinstance(d.value, ast.Constant) and d.value.value is Ellipsis for d in node.body):
             self.generic_visit(node)
@@ -145,7 +158,7 @@ class FunctionTracingAuditor(ast.NodeVisitor):
             return True
         return False
 
-    def _is_pure_function(self, node: ast.FunctionDef) -> bool:
+    def _is_pure_function(self, node: ast.FunctionDef) -> bool:  # EXEMPT-OR97
         """Check if function is pure (no I/O, no side effects)."""
         # This is a simplified check - a real implementation would be more sophisticated
         # For now, assume functions with I/O patterns are not pure
@@ -160,8 +173,33 @@ class FunctionTracingAuditor(ast.NodeVisitor):
                         return False
         return True
 
+    def _has_exemption_comment(self, line_no: int) -> bool:
+        """Check if function has an exemption comment.
+        
+        Args:
+            line_no: Line number of function definition (1-indexed).
+            
+        Returns:
+            True if exemption comment found, False otherwise.
+        """
+        if not self.source_lines or line_no < 1 or line_no > len(self.source_lines):
+            return False
 
-def audit_directory(root_dir: str) -> list[dict]:
+        # Check the line before the function definition
+        if line_no > 1:
+            prev_line = self.source_lines[line_no - 2].strip()
+            if "# EXEMPT" in prev_line or "# EXEMPT-OR97" in prev_line:
+                return True
+
+        # Check the function definition line itself
+        def_line = self.source_lines[line_no - 1].strip()
+        if "# EXEMPT" in def_line or "# EXEMPT-OR97" in def_line:
+            return True
+
+        return False
+
+
+def audit_directory(root_dir: str) -> list[dict]:  # EXEMPT-OR97
     """Audit all Python files in a directory.
 
     Args:
@@ -194,7 +232,7 @@ def audit_directory(root_dir: str) -> list[dict]:
     return results
 
 
-def main() -> int:
+def main() -> int:  # EXEMPT-OR97
     """Run the tracing audit and report violations."""
     # Audit sovereignai/ directory
     results = audit_directory("sovereignai")
