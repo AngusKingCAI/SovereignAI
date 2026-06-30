@@ -72,7 +72,7 @@ def client(mock_container: Mock) -> TestClient:
 
 
 def test_all_panels_render(client: TestClient) -> None:
-    """Verify that all 9 panel sections exist in the HTML response.
+    """Verify that all 10 panel sections exist in the HTML response.
 
     GET / and assert all panel-<name> sections are present.
     """
@@ -89,6 +89,7 @@ def test_all_panels_render(client: TestClient) -> None:
         "panel-models",
         "panel-adapters",
         "panel-hardware",
+        "panel-logs",
         "panel-options",
     ]
 
@@ -110,23 +111,26 @@ def test_orchestrator_panel_has_chat_form(client: TestClient) -> None:
     assert '<button>' in html
 
 
-def test_log_drawer_controls_exist(client: TestClient) -> None:
-    """Verify that the log drawer has filter controls.
+def test_logs_panel_controls_exist(client: TestClient) -> None:
+    """Verify that the Logs panel has filter controls.
 
-    Assert level checkboxes, search input, and clear button exist.
+    Assert level checkboxes, search input, source filter, and clear button exist.
     """
     response = client.get("/")
     assert response.status_code == 200
     html = response.text
 
-    assert 'id="log-controls"' in html
+    assert 'class="logs-controls"' in html
     assert 'data-level="error"' in html
     assert 'data-level="warn"' in html
     assert 'data-level="info"' in html
     assert 'data-level="debug"' in html
     assert 'data-level="trace"' in html
-    assert 'id="log-search"' in html
-    assert 'id="log-clear"' in html
+    assert 'id="logs-search"' in html
+    assert 'id="logs-source-filter"' in html
+    assert 'id="logs-clear"' in html
+    assert 'id="logs-autoscroll"' in html
+    assert 'id="logs-linewrap"' in html
 
 
 def test_sidebar_navigation_exists(client: TestClient) -> None:

@@ -682,28 +682,106 @@ async def get_installed_models(request: Request) -> list[dict]:
 async def get_model_catalog(
     request: Request,
     search: str = "",
+    family: str = "",
     limit: int = 50,
     offset: int = 0,
 ) -> dict:
-    """Browse available GGUF models from HuggingFace with hardware context for VRAM badges."""
-    container: Any = request.app.state.container
-    trace: Any = container.retrieve(TraceEmitter)
-    from sovereignai.shared.hf_catalog import fetch_gguf_models
+    """Browse available GGUF models from local SQLite database with VRAM badges."""
+    from sovereignai.shared.models_db import get_models, get_total_count, init_db
     from web.hardware_probe import HardwareProbe
 
-    models = fetch_gguf_models(trace, search=search, limit=limit, offset=offset)
+    # Get models from database
+    conn = init_db()
+    models = get_models(conn, search=search, family=family, limit=limit, offset=offset)
+    total = get_total_count(conn, search=search, family=family)
+    conn.close()
 
     # Get hardware info for VRAM badge computation
     probe = HardwareProbe()
     hardware_info = await probe.probe_async()
 
+    # Compute tok/s for each model based on detected hardware
+    for model in models:
+        model["toks_per_sec"] = compute_toks_per_sec(model, hardware_info)
+        model["vram_badge"] = compute_vram_badge(model, hardware_info)
+
     return {
         "models": models,
+        "total": total,
         "hardware": {
             "gpu_vram_mb": hardware_info.gpu_vram_mb,
             "ram_total_mb": hardware_info.ram_total_mb,
         },
     }
+
+
+def compute_toks_per_sec(model: dict[str, Any], hardware_info: Any) -> list[dict[str, Any]]:
+    """Compute estimated tokens per second for each detected GPU and CPU fallback.
+
+    Uses the memory bandwidth formula: toks = bandwidth / active_bytes_gb * 0.65.
+    CPU fallback assumes DDR5 ~80 GB/s.
+    """
+    toks_per_sec = []
+    active_bytes_gb = model.get("active_bytes_gb", 1.0)
+    vram_required_gb = model.get("vram_required_gb", 1.0)
+
+    # GPU computation (if detected)
+    if hardware_info.gpu_vram_mb:
+        gpu_vram_gb = hardware_info.gpu_vram_mb / 1024
+        # Estimate GPU bandwidth based on VRAM size (simplified table)
+        # This is a rough approximation; Plan 19 will upgrade this
+        if gpu_vram_gb >= 24:
+            bandwidth_gb_s = 1008  # RTX 4090
+        elif gpu_vram_gb >= 16:
+            bandwidth_gb_s = 560  # RTX 4080
+        elif gpu_vram_gb >= 12:
+            bandwidth_gb_s = 360  # RTX 4070
+        elif gpu_vram_gb >= 8:
+            bandwidth_gb_s = 288  # RTX 4060
+        else:
+            bandwidth_gb_s = 192  # RTX 4050
+
+        toks = bandwidth_gb_s / active_bytes_gb * 0.65
+        toks_per_sec.append({
+            "gpu_name": f"GPU ({gpu_vram_gb:.0f}GB)",
+            "gpu_type": "discrete",
+            "toks_per_sec": round(toks, 1),
+            "fits": vram_required_gb <= gpu_vram_gb,
+        })
+
+    # CPU fallback (DDR5 ~80 GB/s)
+    cpu_toks = 80 / active_bytes_gb * 0.65
+    toks_per_sec.append({
+        "gpu_name": "CPU (DDR5)",
+        "gpu_type": "cpu",
+        "toks_per_sec": round(cpu_toks, 1),
+        "fits": True,  # CPU always fits via system RAM
+    })
+
+    return toks_per_sec
+
+
+def compute_vram_badge(model: dict[str, Any], hardware_info: Any) -> str:
+    """Compute VRAM badge based on model requirements vs detected hardware.
+
+    Badge rules per models-panel-design-reference.md:
+    - VRAM (green): vram_required_gb ≤ detected_vram_gb
+    - VRAM+RAM (amber): vram_required_gb > detected_vram_gb AND ≤ detected_vram_gb + detected_ram_gb
+    - Diskspace (red): vram_required_gb > detected_vram_gb + detected_ram_gb
+    - N/A (gray): VRAM not detected
+    """
+    vram_required_gb = model.get("vram_required_gb", 0)
+    detected_vram_gb = hardware_info.gpu_vram_mb / 1024 if hardware_info.gpu_vram_mb else 0
+    detected_ram_gb = hardware_info.ram_total_mb / 1024 if hardware_info.ram_total_mb else 0
+
+    if detected_vram_gb == 0:
+        return "N/A"
+    elif vram_required_gb <= detected_vram_gb:
+        return "VRAM"
+    elif vram_required_gb <= detected_vram_gb + detected_ram_gb:
+        return "VRAM+RAM"
+    else:
+        return "Diskspace"
 
 
 def extract_quant_from_filename(path: str) -> str:
@@ -716,14 +794,23 @@ def extract_quant_from_filename(path: str) -> str:
 
 @app.get("/api/models/catalog/{model_id:path}", dependencies=[Depends(get_current_user)])
 async def get_model_detail(request: Request, model_id: str) -> dict:
-    """Get available GGUF files (quantizations) for a specific model."""
-    container: Any = request.app.state.container
-    trace: Any = container.retrieve(TraceEmitter)
-    from sovereignai.shared.hf_catalog import get_model_files
-    files = get_model_files(trace, model_id)
-    # Enrich with quant labels
-    for f in files:
-        f["quant"] = extract_quant_from_filename(f["filename"])
+    """Get available quantizations for a specific model from the database."""
+    from sovereignai.shared.models_db import get_models, init_db
+
+    conn = init_db()
+    # Get all quantizations for this repo_id
+    models = get_models(conn, search=model_id, limit=100)
+    conn.close()
+
+    files = []
+    for m in models:
+        files.append({
+            "filename": m.get("filename", ""),
+            "quant": m.get("quantization", ""),
+            "file_size_bytes": m.get("file_size_bytes", 0),
+            "file_size_gb": m.get("file_size_gb", 0),
+        })
+
     return {"model_id": model_id, "files": files}
 
 
@@ -770,6 +857,7 @@ async def pull_model(request: Request) -> dict:
                 "status": "pulling",
                 "message": f"Downloading {model_name}...",
                 "progress": 0,
+                "download_path": None,
             }
 
             # Step 1: Get GGUF file list from HuggingFace
@@ -821,11 +909,14 @@ async def pull_model(request: Request) -> dict:
             temp_dir = tempfile.mkdtemp(prefix="sovereignai_pull_")
             local_path = os.path.join(temp_dir, os.path.basename(target_file))
 
+            # Get Ollama models directory for storage path
+            ollama_models_dir = os.path.expanduser("~/.ollama/models")
             _pull_status[model_name] = {
                 "status": "pulling",
                 "message": f"Downloading to: {local_path}",
                 "progress": 0,
                 "download_path": local_path,
+                "storage_path": ollama_models_dir,
             }
 
             req = urllib.request.Request(download_url, headers={"User-Agent": "SovereignAI/0.1"})
@@ -872,7 +963,8 @@ async def pull_model(request: Request) -> dict:
                     "status": "done",
                     "message": f"Created {ollama_name}",
                     "progress": 100,
-                    "ollama_path": ollama_models_dir,
+                    "download_path": local_path,
+                    "storage_path": ollama_models_dir,
                 }
                 trace.emit(
                     component="models",
@@ -880,16 +972,23 @@ async def pull_model(request: Request) -> dict:
                     message=f"Model {ollama_name} created successfully at {ollama_models_dir}",
                 )
             else:
-                err = result.stderr.strip()[:200] if result.stderr else "Unknown error"
+                # Capture full stderr without truncation
+                full_stderr = result.stderr.strip() if result.stderr else "Unknown error"
+                full_stdout = result.stdout.strip() if result.stdout else ""
                 _pull_status[model_name] = {
                     "status": "error",
-                    "message": f"ollama create failed: {err}",
+                    "message": f"ollama create failed (exit code {result.returncode})",
                     "progress": 0,
                 }
+                # Log full stderr and stdout at ERROR level
+                error_msg = (
+                    f"ollama create failed (exit code {result.returncode}): "
+                    f"stderr={full_stderr}, stdout={full_stdout}"
+                )
                 trace.emit(
                     component="models",
                     level=TraceLevel.ERROR,
-                    message=f"ollama create failed: {err}",
+                    message=error_msg,
                 )
 
             # Cleanup temp files
@@ -973,29 +1072,56 @@ async def get_ollama_status(request: Request) -> dict:
 
 @app.post("/api/ollama/start", dependencies=[Depends(get_current_user)])
 async def start_ollama(request: Request) -> dict:
-    """Start Ollama serve as a subprocess."""
+    """Start Ollama serve as a subprocess with TRACE-level logging."""
     import os
     import subprocess
 
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
     try:
+        # Log command and environment at TRACE level
+        spawn_msg = (
+            f"Spawning ollama serve: command=['ollama', 'serve'], "
+            f"cwd={os.getcwd()}, env_vars={len(os.environ)} vars"
+        )
+        trace.emit(
+            component="ollama_subprocess",
+            level=TraceLevel.TRACE,
+            message=spawn_msg,
+        )
+
         # Start ollama serve as detached process on Windows
         if os.name == 'nt':
             # Windows: use DETACHED_PROCESS flag
             process = subprocess.Popen(
                 ["ollama", "serve"],
                 creationflags=subprocess.DETACHED_PROCESS,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
         else:
             # Unix: use nohup
             process = subprocess.Popen(
                 ["ollama", "serve"],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
+
+        # Log PID at TRACE level
+        trace.emit(
+            component="ollama_subprocess",
+            level=TraceLevel.TRACE,
+            message=f"Ollama serve spawned with PID={process.pid}"
+        )
+
         return {"status": "starting", "pid": process.pid}
     except Exception as exc:
+        trace.emit(
+            component="ollama_subprocess",
+            level=TraceLevel.ERROR,
+            message=f"Failed to spawn ollama serve: {exc}"
+        )
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 

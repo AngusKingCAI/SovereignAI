@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Setup chat form
     setupChatForm();
 
-    // Setup log drawer
-    setupLogDrawer();
+    // Setup logs panel
+    setupLogsPanel();
 
     // Add logout button
     addLogoutButton();
@@ -108,6 +108,9 @@ function loadPanelContent(panelName) {
             break;
         case 'hardware':
             loadHardware();
+            break;
+        case 'logs':
+            loadLogsPanel();
             break;
         case 'options':
             loadOptions();
@@ -556,143 +559,111 @@ function displayTaskResult(task) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-function setupLogDrawer() {
-    const toggleButton = document.getElementById('log-toggle');
-    const logDrawer = document.getElementById('log-drawer');
-    const closeButton = document.getElementById('log-drawer-close');
-    const reopenButton = document.getElementById('log-drawer-reopen');
-    const dragHandle = document.getElementById('log-drawer-handle');
+function setupLogsPanel() {
+    // Cleanup old drawer localStorage keys
+    localStorage.removeItem('logDrawerState');
+    localStorage.removeItem('logDrawerHeight');
 
-    // Restore open/closed state from localStorage
-    const savedState = localStorage.getItem('logDrawerState');
-    if (savedState === 'collapsed') {
-        logDrawer.classList.remove('open');
-        logDrawer.classList.add('collapsed');
-    }
-
-    // Restore height from localStorage
-    const savedHeight = localStorage.getItem('logDrawerHeight');
-    if (savedHeight && logDrawer.classList.contains('open')) {
-        logDrawer.style.height = savedHeight;
-    }
-
-    toggleButton.addEventListener('click', () => {
-        logDrawer.classList.toggle('open');
-        logDrawer.classList.remove('collapsed');
-        localStorage.setItem('logDrawerState', 'open');
-    });
-
-    closeButton.addEventListener('click', () => {
-        logDrawer.classList.remove('open');
-        logDrawer.classList.add('collapsed');
-        localStorage.setItem('logDrawerState', 'collapsed');
-    });
-
-    reopenButton.addEventListener('click', () => {
-        logDrawer.classList.remove('collapsed');
-        logDrawer.classList.add('open');
-        const savedHeight = localStorage.getItem('logDrawerHeight');
-        if (savedHeight) {
-            logDrawer.style.height = savedHeight;
-        }
-        localStorage.setItem('logDrawerState', 'open');
-    });
-
-    // Drag-to-resize functionality
-    let isDragging = false;
-    let startY = 0;
-    let startHeight = 0;
-
-    dragHandle.addEventListener('mousedown', (e) => {
-        if (!logDrawer.classList.contains('open')) return;
-        isDragging = true;
-        startY = e.clientY;
-        startHeight = logDrawer.offsetHeight;
-        document.body.style.userSelect = 'none';
-        e.preventDefault();
-    });
-
-    document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        const deltaY = startY - e.clientY;
-        const newHeight = Math.max(80, Math.min(window.innerHeight * 0.6, startHeight + deltaY));
-        logDrawer.style.height = newHeight + 'px';
-        localStorage.setItem('logDrawerHeight', newHeight + 'px');
-    });
-
-    document.addEventListener('mouseup', () => {
-        if (isDragging) {
-            isDragging = false;
-            document.body.style.userSelect = '';
-        }
-    });
-
-    const levelCheckboxes = document.querySelectorAll('#log-controls input[type="checkbox"][data-level]');
+    const levelCheckboxes = document.querySelectorAll('.logs-level-filters input[type="checkbox"][data-level]');
     levelCheckboxes.forEach(cb => {
-        cb.addEventListener('change', renderTraces);
+        cb.addEventListener('change', renderLogs);
     });
 
-    const searchInput = document.getElementById('log-search');
-    searchInput.addEventListener('input', renderTraces);
+    const searchInput = document.getElementById('logs-search');
+    searchInput.addEventListener('input', renderLogs);
 
-    const clearButton = document.getElementById('log-clear');
+    const sourceFilter = document.getElementById('logs-source-filter');
+    sourceFilter.addEventListener('change', renderLogs);
+
+    const clearButton = document.getElementById('logs-clear');
     clearButton.addEventListener('click', () => {
         traces = [];
-        renderTraces();
+        renderLogs();
     });
+
+    const autoscrollCheckbox = document.getElementById('logs-autoscroll');
+    autoscrollCheckbox.addEventListener('change', () => {
+        localStorage.setItem('logsAutoscroll', autoscrollCheckbox.checked);
+    });
+
+    const linewrapCheckbox = document.getElementById('logs-linewrap');
+    linewrapCheckbox.addEventListener('change', () => {
+        localStorage.setItem('logsLinewrap', linewrapCheckbox.checked);
+        renderLogs();
+    });
+
+    // Restore settings from localStorage
+    const savedAutoscroll = localStorage.getItem('logsAutoscroll');
+    if (savedAutoscroll !== null) {
+        autoscrollCheckbox.checked = savedAutoscroll === 'true';
+    }
+
+    const savedLinewrap = localStorage.getItem('logsLinewrap');
+    if (savedLinewrap !== null) {
+        linewrapCheckbox.checked = savedLinewrap === 'true';
+    }
 }
 
-function updateComponentFilters() {
+function loadLogsPanel() {
+    renderLogs();
+}
+
+function updateSourceFilter() {
     const components = [...new Set(traces.map(t => t.component))].sort();
-    const container = document.getElementById('log-components');
-    if (!container) return;
+    const select = document.getElementById('logs-source-filter');
+    if (!select) return;
 
-    // Only add checkboxes for components not already present
-    const existing = new Set(Array.from(container.querySelectorAll('input[type="checkbox"][data-component]'))
-        .map(cb => cb.getAttribute('data-component')));
-
+    const currentValue = select.value;
+    select.innerHTML = '<option value="">All Sources</option>';
     components.forEach(comp => {
-        if (!existing.has(comp)) {
-            const label = document.createElement('label');
-            const cb = document.createElement('input');
-            cb.type = 'checkbox';
-            cb.checked = true;
-            cb.setAttribute('data-component', comp);
-            cb.addEventListener('change', renderTraces);
-            label.appendChild(cb);
-            label.appendChild(document.createTextNode(' ' + comp));
-            container.appendChild(label);
-        }
+        const option = document.createElement('option');
+        option.value = comp;
+        option.textContent = comp;
+        select.appendChild(option);
     });
+    select.value = currentValue;
 }
 
-function renderTraces() {
-    const logContent = document.getElementById('log-content');
+function renderLogs() {
+    const logsContent = document.getElementById('logs-content');
+    if (!logsContent) return;
+
     const filters = {
-        levels: Array.from(document.querySelectorAll('#log-controls input[type="checkbox"][data-level]:checked'))
+        levels: Array.from(document.querySelectorAll('.logs-level-filters input[type="checkbox"][data-level]:checked'))
             .map(cb => cb.getAttribute('data-level')),
-        components: Array.from(document.querySelectorAll('#log-components input[type="checkbox"][data-component]:checked'))
-            .map(cb => cb.getAttribute('data-component')),
-        search: document.getElementById('log-search').value.toLowerCase()
+        source: document.getElementById('logs-source-filter').value,
+        search: document.getElementById('logs-search').value.toLowerCase()
     };
 
-    // Update component filters (add new components seen in traces)
-    updateComponentFilters();
+    // Update source filter dropdown
+    updateSourceFilter();
 
-    const filteredTraces = filterTraces(traces, filters);
+    const filteredTraces = traces.filter(trace => {
+        const levelMatch = filters.levels.includes(trace.level.toLowerCase());
+        const sourceMatch = !filters.source || trace.component === filters.source;
+        const searchMatch = !filters.search || 
+            trace.message.toLowerCase().includes(filters.search) ||
+            trace.component.toLowerCase().includes(filters.search);
+        return levelMatch && sourceMatch && searchMatch;
+    });
 
-    logContent.innerHTML = '';
+    logsContent.innerHTML = '';
     filteredTraces.forEach(trace => {
         const entry = document.createElement('div');
         entry.className = `trace-entry trace-${trace.level.toLowerCase()}`;
         entry.textContent = `[${trace.timestamp}] [${trace.level}] [${trace.component}] ${trace.message}`;
-        logContent.appendChild(entry);
+        logsContent.appendChild(entry);
     });
 
-    const isAtBottom = logContent.scrollHeight - logContent.scrollTop === logContent.clientHeight;
-    if (isAtBottom) {
-        logContent.scrollTop = logContent.scrollHeight;
+    // Auto-scroll if enabled
+    const autoscrollEnabled = document.getElementById('logs-autoscroll').checked;
+    if (autoscrollEnabled) {
+        logsContent.scrollTop = logsContent.scrollHeight;
     }
+
+    // Line wrap
+    const linewrapEnabled = document.getElementById('logs-linewrap').checked;
+    logsContent.style.whiteSpace = linewrapEnabled ? 'pre-wrap' : 'pre';
 }
 
 // Models panel functions
@@ -745,6 +716,7 @@ function loadHFCatalog(reset) {
         .then(r => r.json())
         .then(data => {
             const models = data.models || [];
+            const total = data.total || 0;
             const hardware = data.hardware || {};
             const list = document.getElementById('hf-models-list');
             if (reset && models.length === 0) {
@@ -759,7 +731,7 @@ function loadHFCatalog(reset) {
             // Group by family
             const byFamily = {};
             models.forEach(m => {
-                const fam = m.family || 'Other';
+                const fam = m.model_family || 'Other';
                 if (!byFamily[fam]) byFamily[fam] = [];
                 byFamily[fam].push(m);
             });
@@ -793,16 +765,22 @@ function loadHFCatalog(reset) {
                     const entry = document.createElement('div');
                     entry.className = 'model-entry catalog';
                     const dl = m.downloads > 1000 ? `${(m.downloads / 1000).toFixed(0)}K` : (m.downloads || 0);
+                    const size = m.file_size_gb ? `${m.file_size_gb.toFixed(1)}GB` : '';
 
-                    // Compute VRAM badge
-                    const vramBadge = computeVRAMBadge(m.size_mb || 0, hardware.gpu_vram_mb, hardware.ram_total_mb);
+                    // Use backend-computed VRAM badge
+                    const vramBadge = renderVRAMBadge(m.vram_badge);
+
+                    // Render tok/s for each GPU/CPU
+                    const toksHtml = renderToksPerSec(m.toks_per_sec);
 
                     entry.innerHTML = `
-                        <span class="model-publisher">${m.publisher || ''}</span>
-                        <span class="model-name">${m.name}</span>
+                        <span class="model-name">${m.repo_id}</span>
+                        <span class="model-quant">${m.quantization || ''}</span>
+                        <span class="model-size">${size}</span>
                         <span class="model-downloads">⬇ ${dl}</span>
                         ${vramBadge}
-                        <button class="pull-btn" onclick="showPullDialog('${m.id}')">Pull</button>
+                        ${toksHtml}
+                        <button class="pull-btn" onclick="showPullDialog('${m.repo_id}')">Pull</button>
                     `;
                     modelList.appendChild(entry);
                 });
@@ -908,8 +886,8 @@ function confirmPull(modelId) {
     .then(r => r.json())
     .then(result => {
         document.querySelector('.pull-dialog').remove();
-        // Open log drawer so user sees progress
-        document.getElementById('log-drawer').classList.add('open');
+        // Switch to Logs panel so user sees progress
+        showPanel('logs');
         // Poll for status
         pollPullStatus(modelId);
     })
@@ -926,8 +904,8 @@ function pollPullStatus(modelId) {
             .then(status => {
                 if (status.status === 'done') {
                     clearInterval(interval);
-                    const locationMsg = status.ollama_path
-                        ? `Model ${modelId} pulled successfully!\n\nStored at: ${status.ollama_path}`
+                    const locationMsg = status.storage_path
+                        ? `Model ${modelId} pulled successfully!\n\nStored at: ${status.storage_path}`
                         : `Model ${modelId} pulled successfully!`;
                     alert(locationMsg);
                     // Refresh installed models
@@ -940,19 +918,21 @@ function pollPullStatus(modelId) {
                     // Update message to show download path during download
                     const traceMsg = `Downloading to: ${status.download_path}`;
                     // Add to traces if not already there
-                    const logContent = document.getElementById('log-content');
-                    const existingMsg = Array.from(logContent.children).find(
-                        el => el.textContent.includes('Downloading to:')
-                    );
-                    if (!existingMsg) {
-                        const entry = document.createElement('div');
-                        entry.className = 'trace-entry trace-info';
-                        entry.textContent = traceMsg;
-                        logContent.appendChild(entry);
-                        logContent.scrollTop = logContent.scrollHeight;
+                    const logsContent = document.getElementById('logs-content');
+                    if (logsContent) {
+                        const existingMsg = Array.from(logsContent.children).find(
+                            el => el.textContent.includes('Downloading to:')
+                        );
+                        if (!existingMsg) {
+                            const entry = document.createElement('div');
+                            entry.className = 'trace-entry trace-info';
+                            entry.textContent = traceMsg;
+                            logsContent.appendChild(entry);
+                            logsContent.scrollTop = logsContent.scrollHeight;
+                        }
                     }
                 }
-                // Status updates are in the log drawer via traces
+                // Status updates are in the logs panel via traces
             })
             .catch(() => {});
     }, 5000); // Poll every 5 seconds
@@ -960,6 +940,35 @@ function pollPullStatus(modelId) {
 
 // Orchestrator model selector
 let selectedModel = null;
+
+function renderVRAMBadge(badge) {
+    """Render VRAM badge with appropriate color based on badge type."""
+    if (!badge || badge === 'N/A') {
+        return '<span class="vram-badge vram-na">N/A</span>';
+    }
+    switch (badge) {
+        case 'VRAM':
+            return '<span class="vram-badge vram-ok">VRAM</span>';
+        case 'VRAM+RAM':
+            return '<span class="vram-badge vram-warning">VRAM+RAM</span>';
+        case 'Diskspace':
+            return '<span class="vram-badge vram-error">Disk</span>';
+        default:
+            return '<span class="vram-badge vram-na">N/A</span>';
+    }
+}
+
+function renderToksPerSec(toksPerSec) {
+    """Render tok/s estimates for each detected GPU/CPU."""
+    if (!toksPerSec || toksPerSec.length === 0) {
+        return '';
+    }
+    const parts = toksPerSec.map(t => {
+        const color = t.fits ? 'toks-ok' : 'toks-slow';
+        return `<span class="toks-entry ${color}" title="${t.gpu_name}">${t.toks_per_sec}t/s</span>`;
+    });
+    return `<span class="toks-container">${parts.join(' ')}</span>`;
+}
 
 function computeVRAMBadge(modelSizeMb, gpuVramMb, ramTotalMb) {
     // Compute VRAM badge based on model size vs available hardware
@@ -1046,6 +1055,9 @@ function loadMemory() {
 }
 
 function loadOptions() {
+    // Setup options tab navigation
+    setupOptionsTabs();
+
     fetch('/api/options/config')
         .then(r => r.json())
         .then(config => {
@@ -1069,6 +1081,62 @@ function loadOptions() {
         .then(paths => {
             document.getElementById('cache-dir-display').textContent = paths.cache_dir;
             document.getElementById('ollama-models-dir-display').textContent = paths.ollama_models_dir;
+        });
+
+    // Check HuggingFace DB status
+    checkHFDBStatus();
+}
+
+function setupOptionsTabs() {
+    const tabs = document.querySelectorAll('.options-tab');
+    const contents = document.querySelectorAll('.options-tab-content');
+
+    // Restore active tab from localStorage
+    const savedTab = localStorage.getItem('sovereignai.options.activeTab') || 'services';
+    switchOptionsTab(savedTab);
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabName = tab.getAttribute('data-tab');
+            switchOptionsTab(tabName);
+            localStorage.setItem('sovereignai.options.activeTab', tabName);
+        });
+    });
+}
+
+function switchOptionsTab(tabName) {
+    const tabs = document.querySelectorAll('.options-tab');
+    const contents = document.querySelectorAll('.options-tab-content');
+
+    tabs.forEach(tab => {
+        tab.classList.toggle('active', tab.getAttribute('data-tab') === tabName);
+    });
+
+    contents.forEach(content => {
+        content.classList.toggle('active', content.id === `options-tab-${tabName}`);
+    });
+}
+
+function checkHFDBStatus() {
+    const statusEl = document.getElementById('hf-db-status');
+    if (!statusEl) return;
+
+    // Check if DB file exists by querying the catalog endpoint
+    fetch('/api/models/catalog?limit=1')
+        .then(r => r.json())
+        .then(data => {
+            const total = data.total || 0;
+            if (total > 0) {
+                statusEl.textContent = `installed · ${total} models in DB`;
+                statusEl.style.color = '#4caf50';
+            } else {
+                statusEl.textContent = 'installed · DB empty (sync needed)';
+                statusEl.style.color = '#ff9800';
+            }
+        })
+        .catch(() => {
+            statusEl.textContent = 'not installed';
+            statusEl.style.color = '#9e9e9e';
         });
 }
 

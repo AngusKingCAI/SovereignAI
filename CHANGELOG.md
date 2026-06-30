@@ -1127,3 +1127,33 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Storage paths displayed in Options panel with reveal buttons
 - VRAM badges added to model catalog based on hardware detection
 - Download destination surfaced in pull status and completion alert
+## prompt-18.1 — Logs Panel Restructure + Verbose Logging + Model Database + Options Tabs
+
+**Date**: 2026-06-30
+**Plan file**: prompts/sovereignai-plan-18.1-draft.md
+
+**Files changed**:
+- web/templates/index.html
+- web/static/app.js
+- web/static/styles.css
+- web/main.py
+- sovereignai/shared/models_db.py
+- tests/test_web_ui_panels.py
+- tests/test_hardware_probe.py
+- tests/test_models_db.py
+
+**Results**:
+- Tests: 351 passed, 12 skipped
+- Ruff: 0 findings
+- Mypy: 4 findings (pre-existing baseline)
+- Bandit: 767 Low findings (B101 baseline)
+- Vulture: 0 findings
+- Detect-secrets: pass
+- Coverage: 89%
+
+**Notes**:
+- Moved Logs panel from floating drawer to 10th sidebar item
+- Changed default log level to DEBUG, added TRACE logging for Ollama subprocess
+- Created SQLite database for HuggingFace GGUF model catalog
+- Implemented VRAM badges and tok/s display based on detected hardware
+- Restructured Options panel with three tabs (Model Services/Model Databases/Authentication)

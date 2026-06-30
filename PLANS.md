@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-06-30 (prompt-18.0)
+**Last updated**: 2026-06-30 (prompt-18.1)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -39,12 +39,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 17.6**: Baseline → 342 tests. Delta: 0 — see CHANGELOG prompt-17.6.
 **Plan 17.7**: Baseline → 352 tests. Delta: +10 — see CHANGELOG prompt-17.7.
 **Plan 18.0**: Baseline → 355 tests. Delta: +3 — see CHANGELOG prompt-18.0.
+**Plan 18.1**: Baseline → 363 tests. Delta: +8 — see CHANGELOG prompt-18.1.
 
 ---
 
 ## Test Baseline
 
-**Current**: 355 tests (Plan 18.0 `/close`)
+**Current**: 363 tests (Plan 18.1 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -70,7 +71,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | **Vulture** | 0 findings | Plan 1 | High-confidence (≥80) only |
 | **detect-secrets** | pass | Plan 1 | Baseline established prompt-0 |
 | **pre-commit** | pass | Plan 1 | Hooks configured at prompt-0 |
-| **Coverage** | 91% | Plan 14 | Dropped from 93% (Plan 13) to 91% — within 5% threshold. Education department added. Target: 90% floor. Coverage measured at every /close per OR77. |
+| **Coverage** | 89% | Plan 18.1 | Dropped from 91% to 89% — within 5% threshold. Model database and UI changes added. Target: 90% floor. Coverage measured at every /close per OR77. |
 
 ---
 
@@ -112,6 +113,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-17.6 | `prompt-17.6` | Fix Model Pull 500 + Collapsible Family Sections + Load More + Provider Search | 342 | 2 pre-existing | 4 pre-existing | 2026-06-30 |
 | prompt-17.7 | `prompt-17.7` | Fix Auth Deletion + Pull Method + Load More + Log Toggle Button | 352 | 0 | 5 pre-existing | 2026-06-30 |
 | prompt-18.0 | `prompt-18.0` | Web UI Polish + Download Pipeline Fix | 355 | 0 | 0 | 2026-06-30 |
+| prompt-18.1 | `prompt-18.1` | Logs Panel Restructure + Verbose Logging + Model Database + Options Tabs | 363 | 0 | 0 | 2026-06-30 |
 
 ---
 

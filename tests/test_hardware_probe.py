@@ -132,6 +132,7 @@ def test_probe_graceful_degradation(probe: HardwareProbe) -> None:
     with (
         patch("web.hardware_probe.os.cpu_count", side_effect=Exception("Error")),
         patch("web.hardware_probe.platform.system", return_value="Unknown"),
+        patch("web.hardware_probe.psutil", None),
     ):
         info = probe.probe()
         assert info.cpu_count is None
