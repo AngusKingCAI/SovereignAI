@@ -270,6 +270,8 @@ OR94. Do not filter on attributes that don't exist on the event/dataclass. Verif
 
 OR95. Mypy errors are STOP regardless of "pre-existing." OR2 says STOP on mypy errors — there is no "pre-existing" exemption. Fix each error or document it in DEBT.md with a target plan. Source: L45.
 
+OR96. The `/close` workflow is MANDATORY and must complete ALL 22 steps. If any step fails (tests, ruff, mypy, bandit, etc.), STOP and report to the User — do NOT skip remaining steps, do NOT commit with known failures, do NOT tag until all steps pass. The plan is NOT complete until `/close` step 22 (kill Git Bash) runs. Source: L42 (reinforced), prompt-17.2 close failure.
+
 OR57. Core components (EventBus, CapabilityGraph, TaskStateMachine, etc.) use strict versioning — incompatible versions prevent startup. Plugins use lenient versioning — incompatible versions are disabled with a WARN trace. A component is classified as "core" if its manifest declares `core = true` AND it is installed inside the `sovereignai/` package directory; otherwise it is a plugin. Per Rev5 F13: the `core = true` field is IGNORED for components installed outside the sovereignai package (e.g., `~/.sovereignai/plugins/`) — a third-party plugin setting `core = true` is still classified as a plugin. A core component manifest without a `version` field is an error (rejects registration); a plugin manifest without `version` defaults to `"0.0.0"` and passes. Source: Plan 12 Rev3 (N10, N21) + Rev5 (F13).
 
 OR58. "Latest wins" applies ONLY to cosmetic attributes. "Latest" = highest SemVer; ties broken by registration order (first-registered wins). Source: Plan 12 Rev2 (F-38).
