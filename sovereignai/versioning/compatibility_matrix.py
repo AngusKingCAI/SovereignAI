@@ -1,17 +1,3 @@
-"""Store and query version compatibility test results.
-
-Per OR59: the compatibility matrix is stored in ~/.sovereignai/compatibility.json,
-updated on registration, uses atomic writes (os.replace), includes schema_version,
-prunes to last 1000 entries, and records content_hash_a/content_hash_b per entry.
-
-On startup, if a component's current content_hash differs from the hash in a
-matrix entry, that entry is invalidated (treated as "unknown").
-
-If the file is corrupted, the system restores from the last .backup file
-(written on every successful record()); if no backup exists, rebuilds with
-"unknown" statuses treated as permissive (startup proceeds, re-test on next
-registration).
-"""
 from __future__ import annotations
 
 import json
@@ -28,7 +14,6 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class MatrixEntry:
-    """Single entry in the compatibility matrix."""
 
     component_a: str
     version_a: str
@@ -41,11 +26,6 @@ class MatrixEntry:
 
 
 class CompatibilityMatrix:
-    """Manage the compatibility matrix storage and queries.
-
-    Per Rev9: uses an in-memory buffer for record() calls, then batch-writes
-    via flush() to avoid write-storm during startup with many plugins.
-    """
 
     SCHEMA_VERSION = 1
     MAX_ENTRIES = 1000
@@ -53,19 +33,11 @@ class CompatibilityMatrix:
     BACKUP_PATH = Path.home() / ".sovereignai" / "compatibility.json.backup"
 
     def __init__(self, trace: TraceEmitter) -> None:
-        """Create a compatibility matrix instance.
-
-        Stores and queries version compatibility test results.
-
-        Args:
-            trace: Trace emitter for logging matrix operations.
-        """
         self._trace = trace
         self._buffer: list[dict] = []
         self._ensure_storage_dir()
 
     def _ensure_storage_dir(self) -> None:
-        """Ensure the storage directory for the compatibility matrix exists on the filesystem."""
         self.STORAGE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     def record(
@@ -78,20 +50,6 @@ class CompatibilityMatrix:
         content_hash_b: str,
         status: str,
     ) -> None:
-        """Buffer a compatibility test result for later batch writing to disk.
-
-        Per Rev9: appends to an in-memory buffer (does NOT write to disk
-        immediately). The buffer is flushed by flush() to avoid write-storm.
-
-        Args:
-            component_a: First component ID.
-            version_a: First component version.
-            content_hash_a: First component content hash.
-            component_b: Second component ID.
-            version_b: Second component version.
-            content_hash_b: Second component content hash.
-            status: "compatible" or "incompatible".
-        """
         entry = {
             "component_a": component_a,
             "version_a": version_a,
@@ -105,13 +63,6 @@ class CompatibilityMatrix:
         self._buffer.append(entry)
 
     def flush(self) -> None:
-        """Write all buffered entries to disk atomically and validate the written file.
-
-        Per Rev9: writes all buffered entries to compatibility.json atomically
-        (temp + os.replace), then validates the loaded JSON before copying to
-        .backup (per F11). Called once at the end of negotiate() after all
-        pairs are checked.
-        """
         if not self._buffer:
             return
 
@@ -161,22 +112,6 @@ class CompatibilityMatrix:
         version_b: str,
         content_hash_b: str,
     ) -> bool:
-        """Check if a combination was tested AND both content_hashes match.
-
-        Per OR59: if content_hash differs, return False (stale entry).
-
-        Args:
-            component_a: First component ID.
-            version_a: First component version.
-            content_hash_a: First component content hash.
-            component_b: Second component ID.
-            version_b: Second component version.
-            content_hash_b: Second component content hash.
-
-        Returns:
-            True if the combination was tested with matching content hashes,
-            False otherwise.
-        """
         data = self._load_with_recovery(self.STORAGE_PATH)
 
         for entry in data["entries"]:
@@ -212,21 +147,6 @@ class CompatibilityMatrix:
         version_b: str,
         content_hash_b: str,
     ) -> str:
-        """Return the compatibility status for a component pair.
-
-        Invalidates on content hash mismatch.
-
-        Args:
-            component_a: First component ID.
-            version_a: First component version.
-            content_hash_a: First component content hash.
-            component_b: Second component ID.
-            version_b: Second component version.
-            content_hash_b: Second component content hash.
-
-        Returns:
-            "compatible", "incompatible", or "unknown".
-        """
         data = self._load_with_recovery(self.STORAGE_PATH)
 
         for entry in data["entries"]:
@@ -237,7 +157,7 @@ class CompatibilityMatrix:
                 and entry["version_a"] == version_a
                 and entry["version_b"] == version_b
             ):
-                # Per OR59: invalidate if content_hash differs
+                # Invalidate if content_hash differs
                 if (
                     entry["content_hash_a"] != content_hash_a
                     or entry["content_hash_b"] != content_hash_b
@@ -262,20 +182,6 @@ class CompatibilityMatrix:
         return "unknown"  # type: ignore[no-any-return]
 
     def _load_with_recovery(self, path: Path) -> dict:  # type: ignore[no-any-return]
-        """Load the compatibility matrix with corruption recovery and backup restoration.
-
-        Per OR59: if json.load() raises on compatibility.json, try
-        compatibility.json.backup. If backup also fails, rename corrupted
-        file, log WARN, return empty matrix. When the matrix is empty
-        (rebuilt), all statuses are "unknown" — the negotiator treats
-        "unknown" as permissive (allows startup; re-tests on next registration).
-
-        Args:
-            path: Path to the matrix file to load.
-
-        Returns:
-            Dict with schema_version and entries list.
-        """
         try:
             with path.open("r") as f:
                 return json.load(f)  # type: ignore[no-any-return]
@@ -300,14 +206,6 @@ class CompatibilityMatrix:
                 return {"schema_version": self.SCHEMA_VERSION, "entries": []}  # type: ignore[no-any-return]
 
     def _get_trace_level(self, level: str) -> TraceLevel:
-        """Convert a string level name to the corresponding TraceLevel enum value.
-
-        Args:
-            level: String level name.
-
-        Returns:
-            TraceLevel enum value.
-        """
         from sovereignai.shared.types import TraceLevel
 
         return TraceLevel(level.lower())  # type: ignore[return-value]

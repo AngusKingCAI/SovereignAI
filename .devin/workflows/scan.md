@@ -14,7 +14,7 @@ Run at scan prompts (5, 10, 15, 20...). Whole-repo scan. No new features. Fixes 
 
 5. Scan all source for references to removed/renamed modules. Fix mechanically.
 
-5.5. **Cross-reference check**: Extract all `OR\d+` and `AR\d+` tokens from PLANS.md, DEBT.md, DECISIONS.md, AI_HANDOFF.md. Diff against rules defined in AGENTS.md. Any token not defined in AGENTS.md = STOP. `DEFINED=$(grep -oE '^(OR|AR)[0-9]+' AGENTS.md | sort); CITED=$(grep -rohE '(OR|AR)[0-9]+' PLANS.md DEBT.md DECISIONS.md AI_HANDOFF.md | sort -u); comm -23 <(echo "$CITED") <(echo "$DEFINED")` — output must be empty.
+5.5. **Cross-reference check**: Extract all `OR\d+` and `AR\d+` tokens from PLANS.md, DEBT.md, DECISIONS.md, AI_HANDOFF.md (excluding sections marked with historical disclaimers). Diff against rules defined in AGENTS.md. Any token not defined in AGENTS.md = STOP. Exempt: CHANGELOG.md (has disclaimer), PLANS.md "Completed Prompts" table rows (historical, has disclaimer). `DEFINED=$(grep -oE '^(OR|AR)[0-9]+' AGENTS.md | sort); CITED=$(grep -rohE '(OR|AR)[0-9]+' PLANS.md DEBT.md DECISIONS.md AI_HANDOFF.md | sort -u); comm -23 <(echo "$CITED") <(echo "$DEFINED")` — output must be empty (manual review to exclude historical-table entries before STOPping).
 
 6. Full test suite: `.venv/Scripts/python.exe -m pytest tests/ -vvv`
 

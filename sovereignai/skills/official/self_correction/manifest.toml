@@ -3,7 +3,7 @@ component_id = "self_correction_skill"
 name = "Self-Correction Skill"
 version = "0.1.0"
 author = "user"
-content_hash = "<computed at /close per OR48>"
+content_hash = "<computed at /close>"
 department = "education"
 core = false
 

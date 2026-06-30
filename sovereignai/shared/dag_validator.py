@@ -1,15 +1,3 @@
-"""Validate skill DAGs for acyclicity and type-matching before execution.
-
-Per A6: composite skills must pass DAG validation before entering the
-task state machine. Without this check, composite tasks with cycles
-or type mismatches would enter the state machine and fail at runtime
-(a silent failure, violating P9).
-
-Per Q20: DAG-based execution. Each skill declares inputs (which can
-be outputs of other skills). The validator checks:
-  1. Acyclicity — no skill depends on its own output transitively
-  2. Type-matching — every input has a producer with a matching type
-"""
 from __future__ import annotations
 
 from sovereignai.shared.types import DAGValidationError
@@ -18,19 +6,6 @@ from sovereignai.shared.types import DAGValidationError
 def validate_dag(nodes: list[str], edges: list[tuple[str, str]],
                  input_types: dict[str, str],
                  output_types: dict[str, str]) -> None:
-    """Check that a skill DAG is acyclic and that all input types are produced.
-
-    Args:
-        nodes: List of skill node IDs (e.g. ["open_browser", "register_email"]).
-        edges: List of (source, target) pairs meaning source's output
-            feeds into target's input.
-        input_types: Map of node ID -> type name it requires as input.
-        output_types: Map of node ID -> type name it produces as output.
-
-    Raises:
-        DAGValidationError: If the graph has a cycle or an input has no
-            matching producer.
-    """
     # 1. Type-matching: every input must have a producer with matching type
     available_types: dict[str, str] = {}  # type_name -> producer node
     for node, out_type in output_types.items():

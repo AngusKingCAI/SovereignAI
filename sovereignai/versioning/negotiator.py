@@ -1,12 +1,3 @@
-"""Negotiate version compatibility between components at startup.
-
-Per OR57: core components use strict versioning (incompatible versions prevent
-startup). Plugins use lenient versioning (incompatible versions are disabled
-with a WARN trace).
-
-Per OR67: raises FatalIncompatibilityError for fatal incompatibilities, which
-the composition root catches and exits with code 1.
-"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -22,20 +13,8 @@ if TYPE_CHECKING:
 
 
 class FatalIncompatibilityError(Exception):
-    """Raised when core components have incompatible versions that prevent startup.
-
-    Per OR67: the composition root catches this, emits an ERROR trace, prints
-    the message to stderr, and exits with code 1 after a 30-second countdown
-    (or immediately if --no-wait is passed).
-    """
 
     def __init__(self, incompatibilities: list[Incompatibility]) -> None:
-        """Create a fatal incompatibility error with a list of incompatibility details.
-
-        Args:
-            incompatibilities: List of Incompatibility instances describing
-                each incompatible pair.
-        """
         self.incompatibilities = incompatibilities
         messages = [str(inc) for inc in incompatibilities]
         super().__init__("Fatal incompatibilities detected:\n" + "\n".join(messages))
@@ -43,7 +22,6 @@ class FatalIncompatibilityError(Exception):
 
 @dataclass(frozen=True)
 class Incompatibility:
-    """Describe a version incompatibility between two components."""
 
     component_a: ComponentId
     version_a: str
@@ -55,7 +33,6 @@ class Incompatibility:
 
 @dataclass(frozen=True)
 class NegotiationResult:
-    """Result of version negotiation across all registered components."""
 
     can_start: bool
     fatal_incompatibilities: list[Incompatibility]
@@ -65,44 +42,17 @@ class NegotiationResult:
 
 
 class VersionNegotiator:
-    """Negotiate version compatibility between components at startup.
-
-    Per OR57: core components (those with manifest.core=true inside the
-    sovereignai package) use strict versioning. Plugins use lenient
-    versioning and are disabled on incompatibility.
-    """
 
     def __init__(
         self,
         capability_graph: ICapabilityIndex,
         trace: TraceEmitter,
     ) -> None:
-        """Create a version negotiator instance for checking component version compatibility.
-
-        Args:
-            capability_graph: The capability graph to query for registered components.
-            trace: Trace emitter for logging negotiation events.
-        """
         self._graph = capability_graph
         self._trace = trace
         self._matrix = CompatibilityMatrix(trace=trace)
 
     def negotiate(self) -> NegotiationResult:
-        """Check compatibility between all registered component pairs.
-
-        Record results in the matrix.
-
-        For each pair of components:
-        - If either is core, use strict checking (fatal on mismatch).
-        - If both are plugins, use lenient checking (disable on mismatch).
-
-        Per Rev9: record BOTH compatible and incompatible results to the
-        compatibility matrix, then batch-write at the end.
-
-        Returns:
-            NegotiationResult with can_start=False if any fatal incompatibilities
-            are found (core components that cannot coexist).
-        """
         fatal_incompatibilities: list[Incompatibility] = []
         disabled_plugins: list[ComponentId] = []
         disabled_plugins_with_classes: list[tuple[ComponentId, type]] = []
@@ -167,26 +117,11 @@ class VersionNegotiator:
         )
 
     def _all_components(self) -> list[ComponentManifest]:
-        """Return all registered components from the capability graph for version checking.
-
-        Returns:
-            List of ComponentManifest instances.
-        """
         return list(self._graph.list_all_components())
 
     def _check_pair(
         self, component: ComponentManifest, other: ComponentManifest
     ) -> Incompatibility:
-        """Check if two components are compatible based on their version strings and core status.
-
-        Args:
-            component: First component to check.
-            other: Second component to check.
-
-        Returns:
-            Incompatibility instance if incompatible, or a compatible Incompatibility
-            with empty reason if compatible.
-        """
         is_core_a = self._is_core(component)
         is_core_b = self._is_core(other)
 
@@ -198,18 +133,6 @@ class VersionNegotiator:
             return self._check_plugin_compatibility(component, other)
 
     def _is_core(self, manifest: ComponentManifest) -> bool:
-        """Determine if a component is core based on manifest and location.
-
-        Per OR57: a component is core if its manifest declares core=true AND
-        it is installed inside the sovereignai/ package directory. The
-        core=true field is ignored for components outside sovereignai/.
-
-        Args:
-            manifest: The component manifest to check.
-
-        Returns:
-            True if the component is core, False if it is a plugin.
-        """
         # Check if manifest has core field (will be added in S4)
         is_core_declared = getattr(manifest, "core", False)
 
@@ -234,18 +157,6 @@ class VersionNegotiator:
     def _check_core_compatibility(
         self, component: ComponentManifest, other: ComponentManifest
     ) -> Incompatibility:
-        """Perform strict compatibility check for core components.
-
-        Requires exact major version match.
-        A core component without a version field is an error (fatal).
-
-        Args:
-            component: First component to check.
-            other: Second component to check.
-
-        Returns:
-            Incompatibility with empty reason if compatible, or with reason if incompatible.
-        """
         # Check for missing version fields
         if not component.version:
             return Incompatibility(
@@ -306,17 +217,6 @@ class VersionNegotiator:
     def _check_plugin_compatibility(
         self, component: ComponentManifest, other: ComponentManifest
     ) -> Incompatibility:
-        """Perform lenient compatibility check for plugins that defaults missing versions to zero.
-
-        A plugin without a version defaults to "0.0.0" and passes.
-
-        Args:
-            component: First component to check.
-            other: Second component to check.
-
-        Returns:
-            Incompatibility with empty reason if compatible, or with reason if incompatible.
-        """
         # Default missing versions to 0.0.0
         version_a = component.version or "0.0.0"
         version_b = other.version or "0.0.0"

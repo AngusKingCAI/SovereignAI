@@ -144,3 +144,4 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Reason**: Multiple components have docstrings that don't meet AR21 requirements (≥10 words, verb-first, no jargon). These include conformance framework, versioning components, and self-correction skill. Fixing all violations would be a large docstring rewrite effort across many files.
 **Trigger condition**: When a focused docstring cleanup plan is scheduled.
 **Target plan**: TBD (docs-only cleanup plan).
+**Resolved at**: prompt-cleanup (AR21 retired in workflow rev 12. Docstrings now prohibited per AR17. Reversed by design — see DECISIONS.md D6.)

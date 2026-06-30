@@ -1,8 +1,3 @@
-"""Episodic memory backend using SQLite for durable storage.
-
-Per OR87: Stores episodic memory in ~/.sovereignai/episodic.db with WAL mode
-and busy_timeout=5000 for atomic writes.
-"""
 from __future__ import annotations
 
 import json
@@ -19,30 +14,14 @@ if TYPE_CHECKING:
 
 
 class EpisodicMemoryBackend:
-    """SQLite backend for episodic memory — stores task events and observations.
-
-    Per OR89: Uses atomic writes with WAL mode and busy_timeout=5000.
-    Per OR87: Database file is ~/.sovereignai/episodic.db.
-    """
 
     def __init__(self, trace: TraceEmitter, db_path: str | None = None) -> None:
-        """Create an episodic memory backend with a dedicated SQLite database.
-
-        Args:
-            trace: Trace emitter for logging operations and errors.
-            db_path: Database file path. If ":memory:", uses in-memory SQLite.
-                If None, uses default ~/.sovereignai/episodic.db.
-        """
         self._trace = trace
         self._db_path = db_path if db_path else os.path.expanduser("~/.sovereignai/episodic.db")
         self._conn: sqlite3.Connection | None = None
         self._initialize_db()
 
     def _initialize_db(self) -> None:
-        """Create the database file and schema if they do not exist.
-
-        Creates the episodes table with indexes for task_id and timestamp queries.
-        """
         if self._db_path != ":memory:":
             os.makedirs(os.path.dirname(self._db_path), exist_ok=True)
         self._conn = sqlite3.connect(self._db_path)
@@ -71,16 +50,6 @@ class EpisodicMemoryBackend:
         self._conn.commit()
 
     def store(self, data: dict, metadata: dict | None = None) -> str:
-        """Store an episodic memory record and return the generated record id.
-
-        Args:
-            data: Episode fields. Must contain: component (str), event_type (str),
-                data (str). Optional: timestamp (float), task_id (str).
-            metadata: Optional metadata dict (not used by episodic backend).
-
-        Returns:
-            The generated record id (UUID string).
-        """
         record_id = str(uuid.uuid4())
         timestamp = data.get("timestamp", now_utc().timestamp())
         component = data["component"]
@@ -108,21 +77,6 @@ class EpisodicMemoryBackend:
         return record_id
 
     def query(self, query: dict) -> list[dict]:
-        """Query episodic memory records matching the specified criteria and filters.
-
-        Supports batch query via task_ids: list[str] for WHERE task_id IN (...).
-
-        Args:
-            query: Query parameters. Supported keys:
-                - task_id: Single task ID (str)
-                - task_ids: List of task IDs (list[str])
-                - component: Filter by component name (str)
-                - event_type: Filter by event type (str)
-                - limit: Maximum number of results (int)
-
-        Returns:
-            List of matching episode records as dicts, sorted by timestamp ascending.
-        """
         if not self._conn:
             return []
 
@@ -179,14 +133,6 @@ class EpisodicMemoryBackend:
         return results
 
     def delete(self, record_id: str) -> bool:
-        """Delete an episodic memory record by its unique identifier string.
-
-        Args:
-            record_id: The id of the record to delete.
-
-        Returns:
-            True if the record was deleted, False if not found.
-        """
         if not self._conn:
             return False
 
@@ -204,7 +150,6 @@ class EpisodicMemoryBackend:
         return deleted
 
     def close(self) -> None:
-        """Close the database connection and clean up all related resources."""
         if self._conn:
             self._conn.close()
             self._conn = None

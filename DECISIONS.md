@@ -64,6 +64,30 @@ Append-only. Each entry: context, options considered, decision, rationale, trade
 
 ---
 
+## D6 — Prohibit docstrings (AR17) — reverse AR21 docstring discipline
+
+**Context**: AR21 required docstrings with specific formatting (≥10 words, verb-first, no jargon). This created maintenance burden and violated the principle of self-documenting code.
+**Options considered**: A) Keep AR21 docstring discipline; B) Prohibit all docstrings per AR17; C) Allow docstrings but remove formatting requirements.
+**Decision**: Option B — Prohibit all docstrings per AR17.
+**Rationale**: Code should be self-documenting through clear function/class/variable names (per AR17). Docstrings add maintenance burden, drift from implementation, and duplicate what good naming already conveys. Removing docstrings simplifies the codebase and enforces better naming practices.
+**Trade-offs**: Loss of inline documentation. IDE hover tooltips will show signatures only. Accepted: external documentation (DECISIONS.md, CHANGELOG.md, vision docs) provides architectural context; function names should be descriptive enough to convey purpose without docstrings.
+**Status**: Active. All docstrings removed from sovereignai/, web/, tests/ in prompt-cleanup. AR21 retired.
+**Source**: AR17, prompt-cleanup.
+
+---
+
+## D7 — Remove OR governance references from code and documentation
+
+**Context**: OR (Operational Rule) references were embedded in code comments, docstrings, and configuration files. This created coupling between governance numbering and implementation details.
+**Options considered**: A) Keep OR references in code; B) Remove all OR references from code but keep in governance docs; C) Replace OR references with descriptive comments.
+**Decision**: Option B — Remove all OR references from code and configuration files; keep only in governance docs (AGENTS.md, PLANS.md, DEBT.md).
+**Rationale**: Governance numbering is subject to change (e.g., Rev 9 renumbering). Embedding OR references in code creates maintenance burden when rules are renumbered or retired. Code should reference the actual requirement (e.g., "UTC, timezone-aware") not the rule number (e.g., "per OR20"). Governance docs are the SSOT for rule citations.
+**Trade-offs**: Loss of traceability from code to specific rules. Accepted: governance docs provide the mapping; code should explain the "what" not the "why".
+**Status**: Active. All OR references removed from Python files, TOML manifests, and pyproject.toml in prompt-cleanup.
+**Source**: prompt-cleanup plan.
+
+---
+
 ## How to add a new decision
 
 At `/close` step (when a decision is codified), append an entry in the format above. Do not edit or remove existing entries — DECISIONS.md is append-only.

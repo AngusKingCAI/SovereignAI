@@ -1,8 +1,3 @@
-"""Detect system hardware resources for the Hardware panel.
-
-This module probes CPU, RAM, GPU, and VRAM availability using
-platform-appropriate methods. It runs in the web layer, not the core.
-"""
 from __future__ import annotations
 
 import asyncio
@@ -24,7 +19,6 @@ except ImportError:
 
 @dataclass
 class HardwareInfo:
-    """Snapshot of system hardware resources."""
     cpu_count: int | None
     cpu_freq_mhz: int | None
     ram_total_mb: int | None
@@ -35,31 +29,14 @@ class HardwareInfo:
 
 
 class HardwareProbe:
-    """Probe system hardware resources using platform-appropriate methods.
-
-    This class provides methods to detect CPU, RAM, GPU, and VRAM on
-    Windows, macOS, and Linux. It uses asyncio.to_thread() to wrap
-    blocking calls when called from async contexts.
-    """
 
     def __init__(self) -> None:
-        """Create a hardware probe instance."""
         pass
 
     async def probe_async(self) -> HardwareInfo:
-        """Probe hardware asynchronously using asyncio.to_thread.
-
-        Returns:
-            HardwareInfo with current system resource snapshot.
-        """
         return await asyncio.to_thread(self.probe)
 
     def probe(self) -> HardwareInfo:
-        """Probe hardware synchronously.
-
-        Returns:
-            HardwareInfo with current system resource snapshot.
-        """
         import time
         timestamp = time.time()
 
@@ -79,25 +56,12 @@ class HardwareProbe:
         )
 
     def _get_cpu_count(self) -> int | None:
-        """Get the number of CPU cores.
-
-        Returns:
-            CPU count or None if detection fails.
-        """
         try:
             return os.cpu_count()
         except Exception:
             return None
 
     def _get_cpu_freq(self) -> int | None:
-        """Get CPU frequency in MHz.
-
-        Per Finding 20: Use psutil.cpu_freq() if available, else None.
-        Do NOT use os.cpu_freq() (requires Python 3.13+).
-
-        Returns:
-            CPU frequency in MHz or None if detection fails.
-        """
         if psutil is not None:
             try:
                 freq = psutil.cpu_freq()
@@ -108,11 +72,6 @@ class HardwareProbe:
         return None
 
     def _get_ram(self) -> tuple[int | None, int | None]:
-        """Get total and available RAM in MB.
-
-        Returns:
-            Tuple of (total_mb, available_mb) or (None, None) if detection fails.
-        """
         system = platform.system()
         try:
             if system == "Windows":
@@ -126,11 +85,6 @@ class HardwareProbe:
         return None, None
 
     def _get_ram_windows(self) -> tuple[int | None, int | None]:
-        """Get RAM on Windows using ctypes.
-
-        Returns:
-            Tuple of (total_mb, available_mb).
-        """
         if ctypes is None:
             return None, None
         try:
@@ -157,11 +111,6 @@ class HardwareProbe:
             return None, None
 
     def _get_ram_macos(self) -> tuple[int | None, int | None]:
-        """Get RAM on macOS using sysctl.
-
-        Returns:
-            Tuple of (total_mb, available_mb).
-        """
         try:
             import sysctl
             total_bytes = sysctl.control("hw.memsize")
@@ -172,11 +121,6 @@ class HardwareProbe:
             return None, None
 
     def _get_ram_linux(self) -> tuple[int | None, int | None]:
-        """Get RAM on Linux by reading /proc/meminfo.
-
-        Returns:
-            Tuple of (total_mb, available_mb).
-        """
         try:
             with open("/proc/meminfo") as f:
                 meminfo = f.read()
@@ -250,11 +194,6 @@ class HardwareProbe:
         return None, None
 
     def _get_gpu_macos(self) -> tuple[str | None, int | None]:
-        """Get GPU on macOS using system_profiler.
-
-        Returns:
-            Tuple of (gpu_name, vram_mb).
-        """
         try:
             result = subprocess.run(
                 ["system_profiler", "SPDisplaysDataType"],
@@ -280,11 +219,6 @@ class HardwareProbe:
         return None, None
 
     def _get_gpu_linux(self) -> tuple[str | None, int | None]:
-        """Get GPU on Linux using lspci.
-
-        Returns:
-            Tuple of (gpu_name, vram_mb).
-        """
         try:
             result = subprocess.run(
                 ["lspci", "-vmm"],
@@ -320,14 +254,6 @@ class HardwareProbe:
         return None, None
 
     def _parse_vram_string(self, vram_str: str) -> int | None:
-        """Parse VRAM string like "8 GB" or "256M" into MB.
-
-        Args:
-            vram_str: String like "8 GB", "256M", "4096 MB".
-
-        Returns:
-            VRAM in MB or None if parsing fails.
-        """
         try:
             vram_str = vram_str.strip().upper()
             if "GB" in vram_str:

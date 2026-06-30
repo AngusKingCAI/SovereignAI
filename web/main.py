@@ -1,15 +1,3 @@
-"""FastAPI web application for SovereignAI UI.
-
-Per OR49: This runs as a separate process, not embedded in the core runtime.
-The web server imports from sovereignai/ only via the public API surface
-(CapabilityAPI, protocols). It does not import core internals directly.
-
-Per OR50: SSE connections authenticate via standard HTTP session cookie.
-No query-parameter tokens are used for auth.
-
-Per OR52: Web-layer DTOs (in web/schemas.py) are the canonical HTTP contract.
-Core domain types are never returned directly from HTTP endpoints.
-"""
 from __future__ import annotations
 
 import asyncio
@@ -49,11 +37,6 @@ if os.environ.get("UVICORN_WORKERS", "1") != "1":
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    """Manage the FastAPI application lifecycle by building the DI container on startup.
-
-    Startup builds the DI container and stores it in app.state.
-    Shutdown is currently a no-op but may close connections in future plans.
-    """
     # Startup
     container = build_container()
     app.state.container = container
@@ -70,11 +53,6 @@ templates = Jinja2Templates(directory="web/templates")
 
 @app.middleware("http")
 async def first_run_redirect(request: Request, call_next: Any) -> Response:
-    """Redirect to registration page on first run when no users exist.
-
-    API paths return 401 instead of redirect to avoid JSON parsing errors.
-    Static files, auth endpoints, and login/register pages are always allowed.
-    """
     path = request.url.path
     if (
         path.startswith("/static/")
@@ -100,20 +78,6 @@ async def first_run_redirect(request: Request, call_next: Any) -> Response:
 
 
 def get_session_token(request: Request) -> str:
-    """Extract the session token from the HTTP cookie for authentication.
-
-    Per OR50: SSE connections authenticate via standard HTTP session cookie.
-    No query-parameter tokens are used for auth.
-
-    Args:
-        request: The FastAPI request object.
-
-    Returns:
-        The session token string.
-
-    Raises:
-        HTTPException: If no session cookie is present.
-    """
     token = request.cookies.get("session_id")
     if not token:
         raise HTTPException(status_code=401, detail="No session cookie")
@@ -121,17 +85,6 @@ def get_session_token(request: Request) -> str:
 
 
 async def get_current_user(request: Request) -> Any:
-    """Validate the session cookie and return the authenticated user.
-
-    Args:
-        request: The FastAPI request object.
-
-    Returns:
-        The authenticated user object.
-
-    Raises:
-        HTTPException: If session is invalid or expired.
-    """
     session_id = request.cookies.get("session_id")
     if not session_id:
         raise HTTPException(status_code=401, detail="Not authenticated")
@@ -146,13 +99,11 @@ async def get_current_user(request: Request) -> Any:
 
 @app.get("/")
 async def get_index(request: Request) -> Response:
-    """Render the main index HTML template for the SovereignAI web interface."""
     return templates.TemplateResponse(request, "index.html")
 
 
 @app.post("/api/auth/login")
 async def login(request: Request, response: Response) -> dict:
-    """Validate credentials and set session cookie."""
     data = await request.json()
     container: Any = request.app.state.container
     auth: Any = container.retrieve(AuthMiddleware)
@@ -173,14 +124,12 @@ async def login(request: Request, response: Response) -> dict:
 
 @app.post("/api/auth/logout")
 async def logout(response: Response) -> dict:
-    """Clear session cookie."""
     response.delete_cookie(key="session_id")
     return {"status": "logged_out"}
 
 
 @app.post("/api/auth/register")
 async def register(request: Request) -> dict:
-    """First-run registration. Only allowed when no users exist."""
     data = await request.json()
     container: Any = request.app.state.container
     auth: Any = container.retrieve(AuthMiddleware)
@@ -197,13 +146,11 @@ async def register(request: Request) -> dict:
 
 @app.get("/login")
 async def login_page(request: Request) -> Response:
-    """Render the login page."""
     return templates.TemplateResponse(request, "login.html")
 
 
 @app.get("/register")
 async def register_page(request: Request) -> Response:
-    """Render the registration page. Only accessible when no users exist."""
     container: Any = request.app.state.container
     auth: Any = container.retrieve(AuthMiddleware)
     if len(auth._password_hashes) > 0:
@@ -213,7 +160,6 @@ async def register_page(request: Request) -> Response:
 
 @app.get("/api/auth/status")
 async def auth_status(request: Request) -> dict:
-    """Check if session is valid. Used by SSE 401 handler in app.js."""
     session_id = request.cookies.get("session_id")
     if not session_id:
         raise HTTPException(status_code=401, detail="Not authenticated")
@@ -228,11 +174,6 @@ async def auth_status(request: Request) -> dict:
 
 @app.get("/api/capabilities", dependencies=[Depends(get_current_user)])
 async def get_capabilities(request: Request) -> list[CapabilityResponseDTO]:
-    """Return all registered capabilities as a JSON list of capability response DTOs.
-
-    Per Finding 7 (Rev4): Retrieve ICapabilityIndex from container,
-    call list_all_components(), map to CapabilityResponseDTO list.
-    """
     container: Any = request.app.state.container
     capability_index: Any = container.retrieve(ICapabilityIndex)  # type: ignore[type-abstract]
     manifests = capability_index.list_all_components()
@@ -256,11 +197,6 @@ async def get_capabilities(request: Request) -> list[CapabilityResponseDTO]:
 
 @app.get("/api/workers", dependencies=[Depends(get_current_user)])
 async def get_workers(request: Request) -> list[dict]:
-    """Return all registered components from the capability graph.
-
-    Per Finding 8 (Rev4): CapabilityCategory.WORKER does not exist.
-    Use list_all_components() and return all — UI filters client-side.
-    """
     container: Any = request.app.state.container
     capability_index: Any = container.retrieve(ICapabilityIndex)  # type: ignore[type-abstract]
     components = capability_index.list_all_components()
@@ -277,13 +213,6 @@ async def get_workers(request: Request) -> list[dict]:
 
 @app.get("/api/tasks", dependencies=[Depends(get_current_user)])
 async def get_tasks(request: Request) -> list[TaskResponseDTO]:
-    """Return all tasks from the task state machine.
-
-    The Task dataclass holds task_id, capability, payload, submitted_at —
-    NOT state/result/error. State is tracked separately by the state machine
-    (get_state). result/error are not stored in v1 (no result-storage layer);
-    return null until a future plan adds task result persistence.
-    """
     from sovereignai.shared.task_state_machine import ITaskStateQuery
 
     container: Any = request.app.state.container
@@ -310,12 +239,6 @@ async def post_task(
     request: Request,
     task_dto: TaskSubmitDTO,
 ) -> TaskResponseDTO:
-    """Submit a new task to the system and return its tracking identifier.
-
-    Per Finding 9 (Rev4): Parse expanded TaskSubmitDTO (category, capability_name, payload),
-    retrieve CapabilityAPI, call submit_task(token, category, capability_name, payload),
-    map result to TaskResponseDTO.
-    """
     container: Any = request.app.state.container
     api: Any = container.retrieve(CapabilityAPI)
     token = get_session_token(request)
@@ -348,10 +271,6 @@ async def post_task(
 
 @app.get("/api/tasks/{task_id}", dependencies=[Depends(get_current_user)])
 async def get_task(request: Request, task_id: str) -> TaskResponseDTO:
-    """Return the current state of a task by its ID.
-
-    Retrieve CapabilityAPI, call get_task_state(), map to TaskResponseDTO.
-    """
     container: Any = request.app.state.container
     api: Any = container.retrieve(CapabilityAPI)
     token = get_session_token(request)
@@ -377,12 +296,6 @@ async def get_task(request: Request, task_id: str) -> TaskResponseDTO:
 
 @app.post("/api/dispatch", dependencies=[Depends(get_current_user)])
 async def dispatch(request: Request) -> TaskResponseDTO:
-    """Submit a natural language message to the Capability API.
-
-    Per Finding 2 (Rev5): Extract session cookie as token for CapabilityAPI.submit_task().
-    Retrieve CapabilityAPI from container, call submit_task() with the message,
-    return TaskResponseDTO with the submitted task.
-    """
     from sovereignai.shared.capability_api import CapabilityAPI
     from sovereignai.shared.task_state_machine import ITaskStateQuery
 
@@ -419,10 +332,6 @@ async def dispatch(request: Request) -> TaskResponseDTO:
 
 @app.get("/api/hardware", dependencies=[Depends(get_current_user)])
 async def get_hardware(request: Request) -> dict:
-    """Return current hardware probe results.
-
-    Retrieve HardwareProbe, call probe_async(), return hardware info dict.
-    """
     from web.hardware_probe import HardwareProbe
 
     probe = HardwareProbe()
@@ -440,22 +349,6 @@ async def get_hardware(request: Request) -> dict:
 
 @app.get("/api/traces/stream")
 async def get_traces_stream(request: Request) -> StreamingResponse:
-    """Stream trace events to the client using Server-Sent Events for real-time updates.
-
-    Per Finding 2 (Rev4): TraceEmitter does NOT have a subscribe() method or ring buffer.
-    SSE endpoint uses get_events() polling: every 100ms, call trace.get_events(),
-    compare with last-seen timestamp, emit new events as SSE data.
-
-    Per Finding 5 (Rev4): SSE endpoint also subscribes to EventBus TASK_STATE_CHANNEL
-    and forwards TaskStateChanged events as event: task_state.
-
-    Per Finding 16 (Rev3): Each SSE event includes id: <monotonic_seq> for client-side dedup.
-
-    Per Finding 5 (Rev3): Backpressure: maintain max queue of 1000 events per client.
-    When events are dropped, send event: gap marker.
-
-    Per Finding 12 (Rev3): Add 60-second timeout on the SSE queue.
-    """
     container: Any = request.app.state.container
     trace: Any = container.retrieve(TraceEmitter)
     auth: Any = container.retrieve(AuthMiddleware)
@@ -468,7 +361,6 @@ async def get_traces_stream(request: Request) -> StreamingResponse:
         raise HTTPException(status_code=401, detail="Invalid session token") from exc
 
     async def event_generator() -> AsyncGenerator[str, None]:
-        """Generate SSE events by polling TraceEmitter and subscribing to EventBus."""
         from datetime import UTC
         last_timestamp = datetime.min.replace(tzinfo=UTC)
         sequence = 0
@@ -480,7 +372,6 @@ async def get_traces_stream(request: Request) -> StreamingResponse:
         task_state_queue: asyncio.Queue[TaskStateChanged] = asyncio.Queue()
 
         def on_task_state(event: TaskStateChanged) -> None:
-            """Forward TaskStateChanged events from the event bus to the SSE queue."""
             task_state_queue.put_nowait(event)
 
         # Subscribe to the event bus (simplified - in a real implementation,

@@ -1,13 +1,3 @@
-"""Librarian — the memory router for all SovereignAI components.
-
-Per AR10: All memory access routes through the Librarian. No component
-may query a memory backend directly. The Librarian enforces access control,
-routing, and backend selection per current memory topology.
-
-Per OR86: Memory backends are pluggable components discovered via the
-CapabilityGraph, not hardcoded in the core. The Librarian queries the graph
-for backends declaring memory_storage and memory_query capabilities.
-"""
 from __future__ import annotations
 
 import uuid
@@ -26,45 +16,16 @@ if TYPE_CHECKING:
 
 
 class Librarian:
-    """Route memory operations to pluggable backends based on capability declarations.
-
-    The Librarian does not store data itself — it routes store, query, and delete
-    requests to backends that declare the appropriate capabilities. Backends are
-    discovered via the CapabilityGraph (per OR86), not hardcoded.
-
-    Per AR10: All memory access routes through the Librarian. No component may
-    instantiate, import, or query a memory backend directly.
-    """
 
     def __init__(
         self,
         capability_graph: ICapabilityIndex,
         trace: TraceEmitter,
     ) -> None:
-        """Create a librarian instance wired to the capability graph for backend discovery.
-
-        Args:
-            capability_graph: Index of registered components and their capabilities.
-                Used to find backends declaring memory_storage and memory_query.
-            trace: Trace emitter for logging routing decisions and errors.
-        """
         self._graph = capability_graph
         self._trace = trace
 
     def store(self, memory_type: str, data: dict, metadata: dict | None = None) -> str:
-        """Route a store request to the highest-priority backend declaring memory_storage.
-
-        Args:
-            memory_type: The type of memory being stored (e.g. "episodic", "procedural").
-            data: The data to store. Structure is backend-specific.
-            metadata: Optional metadata dict (e.g. task_id for trace backend).
-
-        Returns:
-            The generated record id from the backend.
-
-        Raises:
-            NoActiveProviderError: If no backend declares memory_storage for this memory_type.
-        """
         from sovereignai.shared.types import NoActiveProviderError
 
         providers = self._route(memory_type, "memory_storage")
@@ -91,20 +52,6 @@ class Librarian:
         return record_id
 
     def query(self, memory_type: str, query: dict) -> list[dict]:
-        """Route a query request to backends declaring memory_query for the memory type.
-
-        If multiple backends match, performs scatter-gather with merge semantics per memory type.
-
-        Args:
-            memory_type: The type of memory being queried (e.g. "episodic", "procedural").
-            query: The query parameters. Structure is backend-specific.
-
-        Returns:
-            List of matching records, merged according to memory type semantics.
-
-        Raises:
-            NoActiveProviderError: If no backend declares memory_query for this memory_type.
-        """
         from sovereignai.shared.types import NoActiveProviderError
 
         providers = self._route(memory_type, "memory_query")
@@ -134,18 +81,6 @@ class Librarian:
         return merged
 
     def delete(self, memory_type: str, record_id: str) -> bool:
-        """Route a delete request to the backend that owns the record.
-
-        Args:
-            memory_type: The type of memory (e.g. "episodic", "procedural").
-            record_id: The id of the record to delete.
-
-        Returns:
-            True if the record was deleted, False if not found.
-
-        Raises:
-            NoActiveProviderError: If no backend declares memory_storage for this memory_type.
-        """
         from sovereignai.shared.types import NoActiveProviderError
 
         providers = self._route(memory_type, "memory_storage")
@@ -170,15 +105,6 @@ class Librarian:
         return True
 
     def _route(self, memory_type: str, capability: str) -> list[ComponentId]:
-        """Query the CapabilityGraph for backends declaring a capability for a memory type.
-
-        Args:
-            memory_type: The memory type name (used as the capability name).
-            capability: The capability category (e.g. "memory_storage", "memory_query").
-
-        Returns:
-            List of component IDs, sorted by priority (highest first).
-        """
         # Map capability string to CapabilityCategory
         if capability == "memory_storage" or capability == "memory_query":
             category = CapabilityCategory.MEMORY
@@ -190,22 +116,6 @@ class Librarian:
         return [component_id for component_id, _ in providers]
 
     def _merge_results(self, memory_type: str, results: list[dict]) -> list[dict]:
-        """Apply scatter-gather merge semantics for a memory type based on the plan.
-
-        Merge semantics per plan:
-        - episodic: union, dedupe by id, sort by timestamp ascending
-        - procedural: union, dedupe by pattern id, keep highest confidence
-        - trace: union, dedupe by id, sort by timestamp ascending
-        - working: first-backend-wins
-        - Future types: union, dedupe by id
-
-        Args:
-            memory_type: The memory type being merged.
-            results: List of result dicts from multiple backends.
-
-        Returns:
-            Merged and sorted results.
-        """
         if memory_type == "working":
             # First-backend-wins: return first backend's results only
             return [results[0]] if results else []

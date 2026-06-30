@@ -7,7 +7,6 @@ if TYPE_CHECKING:
 
 
 class CapabilityResponseDTO(BaseModel):
-    """Data transfer object for capability responses."""
 
     id: str
     name: str
@@ -19,7 +18,6 @@ class CapabilityResponseDTO(BaseModel):
 
 
 class TaskSubmitDTO(BaseModel):
-    """Data transfer object for task submission."""
 
     category: str
     capability_name: str
@@ -27,7 +25,6 @@ class TaskSubmitDTO(BaseModel):
 
 
 class TaskResponseDTO(BaseModel):
-    """Data transfer object for task responses."""
 
     task_id: str
     state: str
@@ -36,7 +33,6 @@ class TaskResponseDTO(BaseModel):
 
 
 class TraceEventDTO(BaseModel):
-    """Data transfer object for trace events."""
 
     sequence: int          # Per Finding 16: monotonic sequence for SSE replay
     timestamp: str

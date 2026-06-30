@@ -129,10 +129,12 @@ These files reference the OLD numbering scheme (pre-Rev 9 renumber). Fix them:
 - Find: "Numbering policy (per OR84)" → Replace with: "Numbering policy (per OR46)"
 - Find: "New rules continue from OR85" → Replace with: "New rules continue from OR66"
 - Find: "new landmines from L40" → Replace with: "new landmines from L47"
+- Find: "Coverage measured at every /close per OR77" → Replace with: "Coverage measured at every /close per OR43"
 - Find any other references to OR66-OR120 or AR18-AR21 → update to current numbering or remove
+- **Historical rows exemption**: The "Completed Prompts" table (rows like "prompt-10.1 ... OR75" and "prompt-10.2 ... OR76-OR82") contains historical references to old rule numbers. These are historical records, not live citations. Add a disclaimer above the Completed Prompts table: `> **Note**: Rule numbers in historical rows refer to the numbering scheme active at that time.`
 
 ### DEBT.md
-- Find the AR21 deferred item (docstring discipline) → Mark as RESOLVED with note: "AR21 retired in workflow rev 12. Docstrings now prohibited per AR17. Reversed by design — see DECISIONS.md."
+- Find the AR21 deferred item (docstring discipline) → Mark as RESOLVED with note: "AR21 retired in workflow rev 12. Docstrings now prohibited per AR17. Reversed by design — see DECISIONS.md D6."
 - Find any references to OR66-OR120 or AR18-AR21 → update to current numbering or remove
 
 ### DECISIONS.md
@@ -149,6 +151,21 @@ These files reference the OLD numbering scheme (pre-Rev 9 renumber). Fix them:
   **Trade-off**: Future human contributors will find code harder to onboard to. Revisit if human contributors join.
   
   **Date**: Workflow rev 12 (post-18.3 audit)
+  ```
+
+- Add second decision entry:
+  ```
+  ## D7 — OR65 spec-match: mechanical-only, LLM layer removed
+  
+  **Context**: OR65 originally had two layers — Layer 1 (mechanical `spec_match.py`) and Layer 2 (Claude semantic review if available). Layer 2 was the primary defense against L46 (rules dropped from plan spec).
+  
+  **Decision**: Layer 2 removed. `spec_match.py` is the sole gate. No LLM dependency in governance files.
+  
+  **Rationale**: Governance files should not reference external tools (Claude) by name. The mechanical gate catches rule-ID diffs, placeholder markers, artifact existence, and scope contraction. Semantic gaps that the mechanical gate misses are caught by the Round Table review process (pre-execution) and OR52 (logged verification per "already done" claim).
+  
+  **Trade-off**: A mechanical script cannot detect prose-level spec drift (e.g., "plan said implement feature X, code implements feature Y"). This is accepted — the Round Table catches spec issues before execution, and the close report + execution log provide human reviewable artifacts post-execution.
+  
+  **Date**: Workflow rev 14
   ```
 
 ### Verification after repo-side fixes

@@ -1,4 +1,3 @@
-"""Teacher worker — performs model improvement tasks (QLoRA fine-tuning, evaluation)."""
 import importlib
 import importlib.util
 import os
@@ -16,7 +15,6 @@ _GPU_LOCK = threading.Lock()
 
 
 class TeacherWorker:
-    """Perform model improvement: QLoRA fine-tuning, evaluation, dataset curation."""
 
     def __init__(
         self,
@@ -24,23 +22,12 @@ class TeacherWorker:
         trace: TraceEmitter,
         hardware_probe: HardwareProbe,
     ):
-        """Create a Teacher worker.
-
-        Detects GPU availability and manages QLoRA fine-tuning tasks.
-        """
         self._capability_api = capability_api
         self._trace = trace
         self._hardware_probe = hardware_probe
         self._cancel_requested = False  # Rev8: initialize in __init__, not finetune()
 
     def health_check(self) -> bool:
-        """Check whether GPU and QLoRA dependencies are available for fine-tuning.
-
-        Per Rev6 F12: uses find_spec() FIRST (fast, ~1ms, no import side effects),
-        then imports the module ONLY if find_spec succeeds. This catches both
-        ImportError (missing package) and OSError (missing CUDA DLLs) without
-        the multi-second import cost on every startup.
-        """
         required = [
             "torch",
             "peft",
@@ -96,12 +83,6 @@ class TeacherWorker:
         return True
 
     def finetune(self, base_model: str, dataset: list, output_name: str) -> str:
-        """Fine-tune a model using QLoRA. Acquires in-process GPU lock. Returns model path.
-
-        Per Rev3 N3: the GPU lock is in-process only. It does NOT prevent Ollama
-        (a separate process) from using the GPU concurrently. If the user fine-tunes
-        while Ollama is running, Ollama may fail with CUDA OOM. This is a known v1 limitation.
-        """
         import datasets
         import torch
         from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
@@ -178,25 +159,15 @@ class TeacherWorker:
             _GPU_LOCK.release()
 
     def cancel(self) -> None:
-        """Request cancellation of an in-progress fine-tuning operation by setting a flag."""
         self._cancel_requested = True
 
     def evaluate(self, model_path: str, dataset: list) -> dict:
-        """Evaluate a model.
-
-        Returns {'loss': float, 'perplexity': float} only (no accuracy — per F-33).
-        """
         # Placeholder implementation — actual evaluation logic to be added
         return {"loss": 0.0, "perplexity": 0.0}
 
     def curate_dataset(
         self, trace_ids: list[str], _criteria: dict[str, object], consent: bool
     ) -> list:
-        """Extract training examples from episodic memory with explicit user consent.
-
-        Per Rev2 OR70: consent=False returns empty list with WARN.
-        PII filter (regex: email/phone/SSN/credit-card) + 30-day retention.
-        """
         if not consent:
             self._trace.emit(
                 component="teacher",
@@ -256,7 +227,6 @@ class TeacherWorker:
         return examples
 
     def _enforce_model_size_limit(self) -> None:
-        """Evict oldest fine-tuned models if total size exceeds 50GB (per Rev2 F-44)."""
         models_dir = os.path.expanduser("~/.sovereignai/models")
         if not os.path.isdir(models_dir):
             return
@@ -299,7 +269,6 @@ class TeacherWorker:
             models.remove(oldest)
 
     def _register_model(self, name: str, path: str, dataset: list) -> None:
-        """Register a fine-tuned model in the model registry (per Rev2 F-43)."""
         import json
         registry_path = os.path.expanduser("~/.sovereignai/model_registry.json")
         registry = {}

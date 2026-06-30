@@ -1,16 +1,3 @@
-"""Composition root — wires all Plan 1 core components explicitly.
-
-Per A3: this file is incremental. Plan 1 wires only the Event Bus,
-TraceEmitter, DI container, and shared types. Plans 2, 3, and 4 will
-extend this file to add their components. Plan 4 performs the final
-wiring audit.
-
-Per AR4: this is the ONLY file that instantiates core components.
-Every other file receives dependencies via constructor injection.
-
-Per AR5: this file is exempt from the 15-argument constructor cap —
-it wires all components explicitly in topological order.
-"""
 from __future__ import annotations
 
 from sovereignai.shared.container import DIContainer
@@ -23,18 +10,6 @@ from sovereignai.versioning.negotiator import FatalIncompatibilityError
 
 
 def build_container(dev_mode: bool = False) -> DIContainer:
-    """Create and populate the dependency injection container with Plan 1 components.
-
-    Wires components in topological order: TraceEmitter first (no deps),
-    then EventBus (depends on TraceEmitter). Registers both as singletons
-    in the container. Returns the populated container.
-
-    Plans 2-4 will extend this function to add their components after
-    the EventBus registration.
-
-    Args:
-        dev_mode: If True, skip conformance gate (development only).
-    """
     import os
     _test_mode = os.environ.get("SOVEREIGNAI_TEST_MODE") == "1"
 
@@ -265,7 +240,6 @@ def build_container(dev_mode: bool = False) -> DIContainer:
         # Subscribe to the EventBus to receive task state change notifications
         from sovereignai.shared.types import Channel, Event
         def _wrap_task_state_changed(event: Event) -> None:
-            """Wrap EventBus Event to call self-correction's TaskStateChanged handler."""
             if (
                 hasattr(event, "task_id")
                 and hasattr(event, "old_state")

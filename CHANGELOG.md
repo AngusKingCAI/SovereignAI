@@ -2,6 +2,8 @@
 
 Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 
+> **Note**: Rule numbers in historical entries refer to the numbering scheme active at that time.
+
 ---
 
 ## prompt-0 — Bootstrap: Governance docs and infrastructure

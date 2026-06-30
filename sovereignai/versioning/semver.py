@@ -1,4 +1,3 @@
-"""Parse and compare semantic version strings according to SemVer 2.0.0 specification."""
 
 from dataclasses import dataclass
 from typing import Self
@@ -6,7 +5,6 @@ from typing import Self
 
 @dataclass(frozen=True)
 class SemVer:
-    """Represent a semantic version with major, minor, patch, and optional prerelease/build metadata."""  # noqa: E501
 
     major: int
     minor: int
@@ -16,17 +14,6 @@ class SemVer:
 
     @classmethod
     def parse(cls, version_str: str) -> Self:
-        """Parse a version string into a SemVer instance according to SemVer 2.0.0 specification.
-
-        Args:
-            version_str: A version string like "1.2.3", "1.2.3-alpha", or "1.2.3-alpha+build".
-
-        Returns:
-            A SemVer instance.
-
-        Raises:
-            ValueError: If the version string is invalid.
-        """
         if not version_str:
             raise ValueError("Version string cannot be empty")
 
@@ -58,7 +45,6 @@ class SemVer:
         return cls(major, minor, patch, prerelease, build)
 
     def __str__(self) -> str:
-        """Return the canonical string representation of this version."""
         result = f"{self.major}.{self.minor}.{self.patch}"
         if self.prerelease:
             result += f"-{self.prerelease}"
@@ -67,14 +53,6 @@ class SemVer:
         return result
 
     def __lt__(self, other: Self) -> bool:
-        """Compare versions for less-than using SemVer 2.0.0 precedence rules and specification.
-
-        Args:
-            other: The version to compare against.
-
-        Returns:
-            True if this version is less than other.
-        """
         if self.major != other.major:
             return self.major < other.major
         if self.minor != other.minor:
@@ -110,7 +88,6 @@ class SemVer:
         return len(self_identifiers) < len(other_identifiers)
 
     def __eq__(self, other: object) -> bool:
-        """Check equality of versions (ignoring build metadata)."""
         if not isinstance(other, SemVer):
             return NotImplemented
         return (
@@ -121,61 +98,18 @@ class SemVer:
         )
 
     def __le__(self, other: Self) -> bool:
-        """Check if this version is less than or equal to the other version.
-
-        Args:
-            other: The version to compare against.
-
-        Returns:
-            True if this version is less than or equal to other.
-        """
         return self < other or self == other
 
     def __gt__(self, other: Self) -> bool:
-        """Check if this version is greater than the other version.
-
-        Args:
-            other: The version to compare against.
-
-        Returns:
-            True if this version is greater than other.
-        """
         return not self <= other
 
     def __ge__(self, other: Self) -> bool:
-        """Check if this version is greater than or equal to the other version.
-
-        Args:
-            other: The version to compare against.
-
-        Returns:
-            True if this version is greater than or equal to other.
-        """
         return not self < other
 
     def __ne__(self, other: object) -> bool:
-        """Check if this version is not equal to the other version.
-
-        Args:
-            other: The version to compare against.
-
-        Returns:
-            True if this version is not equal to other.
-        """
         return not self == other
 
     def is_compatible_with(self, other: Self) -> bool:
-        """Check if this version is compatible with another for core components.
-
-        For core components, exact match on major version is required.
-        Minor and patch must be >= the required version.
-
-        Args:
-            other: The required version to check against.
-
-        Returns:
-            True if compatible, False otherwise.
-        """
         # Major version must match exactly
         if self.major != other.major:
             return False

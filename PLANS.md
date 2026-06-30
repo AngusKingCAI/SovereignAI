@@ -60,11 +60,13 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | **Vulture** | 0 findings | Plan 1 | High-confidence (≥80) only |
 | **detect-secrets** | pass | Plan 1 | Baseline established prompt-0 |
 | **pre-commit** | pass | Plan 1 | Hooks configured at prompt-0 |
-| **Coverage** | 89% | Plan 15.1 | Dropped from 91% (Plan 14) to 89% — within 5% threshold. Test mode fixes added. Target: 90% floor. Coverage measured at every /close per OR77. |
+| **Coverage** | 89% | Plan 15.1 | Dropped from 91% (Plan 14) to 89% — within 5% threshold. Test mode fixes added. Target: 90% floor. Coverage measured at every /close per OR43. |
 
 ---
 
 ## Completed Prompts
+
+> **Note**: Rule numbers in historical rows refer to the numbering scheme active at that time.
 
 | Prompt | Tag | Description | Tests | Ruff | Mypy | Date |
 |---|---|---|---|---|---|---|
@@ -137,7 +139,7 @@ Tracked solely in `project-vision-Rev5.md` (SSOT) — do not duplicate the full 
 | `.devin/workflows/close.md` | Closing workflow |
 | `.devin/workflows/scan.md` | Scan workflow |
 
-**Numbering policy** (per OR84): Rule and landmine numbers are frozen — never renumbered. Gaps from retired slots are documented in AGENTS.md's "Retired slots" block. New rules continue from OR85; new landmines from L40.
+**Numbering policy** (per OR46): Rule and landmine numbers are frozen — never renumbered. Gaps from retired slots are documented in AGENTS.md's "Retired slots" block. New rules continue from OR66; new landmines from L47.
 
 ---
 

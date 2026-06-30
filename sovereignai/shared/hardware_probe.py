@@ -1,12 +1,9 @@
-"""Hardware probe — detect GPU availability and specifications."""
 import platform
 
 
 class HardwareProbe:
-    """Probe system hardware capabilities for GPU and memory."""
 
     def has_nvidia_gpu(self) -> bool:
-        """Check if an NVIDIA GPU is present on the system."""
         if platform.system() == "Windows":
             try:
                 import subprocess
@@ -28,7 +25,6 @@ class HardwareProbe:
                 return False
 
     def get_vram_mb(self) -> int:
-        """Get total VRAM in megabytes for the first NVIDIA GPU."""
         if platform.system() == "Windows":
             try:
                 import subprocess
@@ -45,7 +41,6 @@ class HardwareProbe:
         return 0
 
     def has_cuda_via_torch(self) -> bool:
-        """Check if CUDA is available through PyTorch without importing torch at module level."""
         try:
             import importlib.util
             if importlib.util.find_spec("torch") is None:

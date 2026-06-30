@@ -1,10 +1,3 @@
-"""Trace memory backend using SQLite for durable trace event storage.
-
-Per OR87: Stores trace events in ~/.sovereignai/trace.db with WAL mode
-and busy_timeout=5000 for atomic writes.
-Per Rev7: get_last_task_states() uses MAX(timestamp) not MAX(id) because
-UUID4 is random, not monotonic.
-"""
 from __future__ import annotations
 
 import sqlite3
@@ -19,33 +12,14 @@ if TYPE_CHECKING:
 
 
 class TraceMemoryBackend:
-    """SQLite backend for trace memory — stores observability events for crash recovery.
-
-    Per OR89: Uses atomic writes with WAL mode and busy_timeout=5000.
-    Per OR87: Database file is ~/.sovereignai/trace.db.
-
-    The store() method conforms to the standard memory backend contract:
-    store(data: dict, metadata: dict) -> str.
-    """
 
     def __init__(self, trace: TraceEmitter, db_path: str | None = None) -> None:
-        """Create a trace memory backend with a dedicated SQLite database.
-
-        Args:
-            trace: Trace emitter for logging operations and errors.
-            db_path: Database file path. If ":memory:", uses in-memory SQLite.
-                If None, uses default ~/.sovereignai/trace.db.
-        """
         self._trace = trace
         self._db_path = db_path if db_path else "~/.sovereignai/trace.db"
         self._conn: sqlite3.Connection | None = None
         self._initialize_db()
 
     def _initialize_db(self) -> None:
-        """Create the database file and schema if they do not exist.
-
-        Creates the traces table with indexes for correlation_id, task_id, and timestamp.
-        """
         import os
 
         db_path = os.path.expanduser(self._db_path)
@@ -78,18 +52,6 @@ class TraceMemoryBackend:
         self._conn.commit()
 
     def store(self, data: dict, metadata: dict | None = None) -> str:
-        """Store a trace event and return the generated record id.
-
-        Conforms to the standard memory backend contract per Rev3 N2.
-
-        Args:
-            data: Trace event fields. Must contain: component (str), level (str),
-                message (str), correlation_id (str). Optional: timestamp (float).
-            metadata: Optional dict with task_id (str) and task_state (str).
-
-        Returns:
-            The generated record id (UUID string).
-        """
         record_id = str(uuid.uuid4())
         event = TraceEvent(
             component=data["component"],
@@ -129,19 +91,6 @@ class TraceMemoryBackend:
         return record_id
 
     def query(self, query: dict) -> list[dict]:
-        """Query trace events matching the specified criteria and filters list.
-
-        Args:
-            query: Query parameters. Supported keys:
-                - task_id: Filter by task ID (str)
-                - correlation_id: Filter by correlation ID (str)
-                - component: Filter by component name (str)
-                - level: Filter by trace level (str)
-                - limit: Maximum number of results (int)
-
-        Returns:
-            List of matching trace records as dicts, sorted by timestamp ascending.
-        """
         if not self._conn:
             return []
 
@@ -197,14 +146,6 @@ class TraceMemoryBackend:
         return results
 
     def delete(self, record_id: str) -> bool:
-        """Delete a trace event by its unique identifier from storage.
-
-        Args:
-            record_id: The id of the trace event to delete.
-
-        Returns:
-            True if the record was deleted, False if not found.
-        """
         if not self._conn:
             return False
 
@@ -222,14 +163,6 @@ class TraceMemoryBackend:
         return deleted
 
     def get_last_task_states(self) -> dict[str, str]:
-        """Return the last recorded state for each task that has a task_state.
-
-        Per Rev7: Uses MAX(timestamp) not MAX(id) because UUID4 is random,
-        not monotonic. This returns the LAST recorded state by timestamp.
-
-        Returns:
-            Dict mapping task_id (str) to task_state (str).
-        """
         if not self._conn:
             return {}
 
@@ -249,7 +182,6 @@ class TraceMemoryBackend:
         return {row[0]: row[1] for row in cursor}
 
     def close(self) -> None:
-        """Close the database connection and clean up all related resources."""
         if self._conn:
             self._conn.close()
             self._conn = None
