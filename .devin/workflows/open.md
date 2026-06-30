@@ -1,64 +1,41 @@
 # /open Workflow
 
-Run at the start of every plan.
+Run at start of every plan. Don't skip steps.
 
-## Steps
+## Pre-flight
 
-1. Kill orphaned bash.exe processes from previous sessions (Windows-specific):
-   ```
-   taskkill //F //IM bash.exe 2>&1 || true
-   ```
-   This kills all `bash.exe` processes, including the current session. The Executor's agent process is not affected — it spawns a fresh bash session for the next command automatically. This step cleans up orphans from previous sessions that may have crashed, been interrupted, or skipped `/close` step 21. The `|| true` ensures the workflow continues even if no bash.exe processes are running (taskkill exits non-zero when no processes match). Do NOT skip this step — orphaned bash processes accumulate across sessions and consume system resources.
-   
-   Note: a second `taskkill //F //IM bash.exe` runs at `/close` step 21 to clean up the current session's bash processes. Both are mandatory.
+1. Kill orphaned bash: `taskkill //F //IM bash.exe 2>&1 || true`
+2. Verify previous tag: `git fetch origin && git ls-remote --tags origin | grep "prompt-{N-1}"` — STOP if missing (skip Plan 1)
+3. Confirm clean + on main: `git status -s | tail -n 10 && git branch --show-current` — STOP if dirty or wrong branch
+4. Verify venv: `if [ ! -d ".venv" ]; then py -3.11 -m venv .venv && .venv/Scripts/pip.exe install -e .[dev]; fi` then `.venv/Scripts/python.exe --version` — STOP if broken
 
-2. Verify previous plan's tag on origin:
-   ```
-   git fetch origin
-   git ls-remote --tags origin | grep "prompt-{N-1}"
-   ```
-   If missing, STOP. Skip if Plan 1.
+## Read context
 
-3. Confirm working copy is clean and on main:
-   ```
-   git status -s | tail -n 10
-   git branch --show-current
-   ```
-   If dirty (excluding governance docs/plan files) or not on main, STOP.
+5. Read `AGENTS.md` in full (OR16).
+6. Read the plan file (`prompts/plan-{N}-Rev{X}.md`) in full.
+7. Read predecessor close report (`documents/plan-{N-1}-report.md`) if exists.
 
-4. Verify the project-local venv exists (per OR45). If `.venv/` does not exist, create it and install dev dependencies:
-   ```
-   if [ ! -d ".venv" ]; then
-     py -3.11 -m venv .venv
-     .venv/Scripts/pip.exe install -e .[dev]
-   fi
-   ```
-   Verify the venv is functional:
-   ```
-   .venv/Scripts/python.exe --version
-   .venv/Scripts/pip.exe --version
-   ```
-   Both commands must succeed. If either fails, STOP and report — the venv is broken and must be recreated (`rm -rf .venv && py -3.11 -m venv .venv && .venv/Scripts/pip.exe install -e .[dev]`).
-   
-   Note: per OR46, all subsequent commands in this plan and in `/close` use absolute venv paths (`.venv/Scripts/python.exe`, `.venv/Scripts/ruff.exe`, etc.). Do not rely on `source .venv/Scripts/activate` — it does not reliably persist in Git Bash on Windows (L30).
+## Pre-execution clarification
 
-5. Read `AGENTS.md` in full.
+8. Identify 1-3 ambiguities in the plan. Write as questions.
+9. Ask user. Wait for answers.
+10. Append answers to execution log as "Plan {N} clarifications".
+11. If no ambiguities: log "No ambiguities — proceeding with Phase 1".
 
-6. Add any new rules the plan specifies to `AGENTS.md`. Commit:
-   ```
-   git add AGENTS.md
-   git commit -m "docs: add rules for prompt-{N}"
-   ```
+## Setup
 
-7. Check for untracked governance docs or plan files:
-   ```
-   git status -s | grep -E "AGENTS.md|AI_HANDOFF.md|PLANS.md|CHANGELOG.md|LANDMINES.md|DECISIONS.md|CONTEXT.md|DEBT.md|project-vision|prompts/"
-   ```
-   If any found, commit separately:
-   ```
-   git add <files>
-   git commit -m "docs: cleanup pre-prompt-{N}"
-   git tag docs-cleanup-{N}
-   ```
+12. Add new rules to `AGENTS.md`. If changes: `git add -A && git status -s && git commit -m "docs: add rules for prompt-{N}"`. If no new rules: log "N/A — no new rules".
+13. Add new landmines to `LANDMINES.md`. If changes: `git add -A && git status -s && git commit -m "docs: add landmines for prompt-{N}"`. If no new landmines: log "N/A — no new landmines".
+14. Update `PLANS.md` with new plan entry.
+15. Begin Phase 1.
 
-8. Proceed to plan body (S1 onward). Run `/verify` after each file edit.
+## Incremental verification (after each phase)
+
+Before starting next phase, run checks on changed files:
+- `CHANGED_PY=$(git diff --name-only HEAD | grep '\.py$')` — if non-empty: `pytest tests/ -k "<phase-keyword>" --no-cov -q` + `ruff check $CHANGED_PY`
+- `CHANGED_JS=$(git diff --name-only HEAD | grep '\.js$')` — if non-empty: `for f in $CHANGED_JS; do node --check "$f"; done`
+- `CHANGED_HTML=$(git diff --name-only HEAD | grep '\.html$')` — if non-empty: `for f in $CHANGED_HTML; do python -c "from html.parser import HTMLParser; HTMLParser().feed(open('$f').read())"; done`
+- `CHANGED_CSS=$(git diff --name-only HEAD | grep '\.css$')` — if non-empty: `for f in $CHANGED_CSS; do python -c "import tinycss2; list(tinycss2.parse_stylesheet(open('$f').read()))"; done`
+- Log: "Phase {N} verified"
+
+If any fails: STOP, fix, don't proceed.

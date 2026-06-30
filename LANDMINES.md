@@ -1,191 +1,241 @@
-# LANDMINES.md — SovereignAI Failure Patterns
+# LANDMINES.md
 
-Append-only. L1–L9, L11, L12, L17 inherited from sovereign-ai (only those referenced in AGENTS.md's landmine-to-rule table; L10, L13–L16, L18–L23 not carried forward). SovereignAI-specific: L24–L27 (Plan 0), L28–L29 (prompt-0.1), L30 (prompt-0.2), L31 (prompt-0.3). New landmines continue from L32.
+Append-only. Never edit or remove entries. Format:
+```
+## L{n} — <title>
+**Trigger**: <plan, step, command/file>
+**Impact**: <what broke>
+**Graduated to**: <OR{n} or workflow fix>
+```
 
 ---
 
 ## L1 — replace_all corrupts adjacent lines
-**Trigger**: Inherited. Not yet triggered in SovereignAI.
-**Impact**: Structured markdown becomes structurally invalid. Requires manual git restoration.
-**Graduated to**: OR5.
+**Trigger**: Edit tool `replace_all=true` on multi-occurrence strings.
+**Impact**: Adjacent lines silently modified.
+**Graduated to**: OR4.
 
 ## L2 — Parallel scan tools corrupt output streams
-**Trigger**: Inherited. Not yet triggered in SovereignAI.
-**Impact**: Output from pytest/ruff/mypy/bandit/pip-audit/vulture interleaves when run in parallel.
+**Trigger**: Running pytest/ruff/mypy/bandit simultaneously.
+**Impact**: Output streams interleave, counts wrong.
 **Graduated to**: OR3.
 
 ## L3 — PowerShell -replace corrupts structured markdown
-**Trigger**: Inherited. SovereignAI uses Git Bash per OR1 — should not recur.
-**Impact**: Markdown table formatting destroyed by `Set-Content` + `-replace`.
-**Graduated to**: OR7.
+**Trigger**: PowerShell string replacement on AGENTS.md/plan files.
+**Impact**: Markdown structure broken.
+**Graduated to**: OR6.
 
 ## L4 — Temp files left in repo root get committed
-**Trigger**: Inherited. Not yet triggered in SovereignAI.
-**Impact**: Temp file committed. Requires follow-up commit to remove.
-**Graduated to**: OR13, OR21.
+**Trigger**: `cat >> temp.txt` then forgot to delete before `git add`.
+**Impact**: Stray files in commits.
+**Graduated to**: OR9.
 
 ## L5 — Vulture flags unused test fixtures incorrectly
-**Trigger**: Inherited. Not yet triggered in SovereignAI.
-**Impact**: False positive — parameter required by pytest's parametrize decorator.
-**Graduated to**: OR19.
-
-## L6 — Naive/aware datetime mixing
-**Trigger**: Inherited. Not yet triggered in SovereignAI.
-**Impact**: Type error comparing `datetime.utcnow()` with `datetime.now(timezone.utc)`.
-**Graduated to**: OR20.
-
-## L7 — Stale baselines propagate through plans
-**Trigger**: Inherited. Not yet triggered in SovereignAI.
-**Impact**: Baseline drift causes false STOP on subsequent plan start.
-**Graduated to**: OR17.
-
-## L8 — Scope drift: editing files outside declared scope
-**Trigger**: Inherited. Not yet triggered in SovereignAI.
-**Impact**: Unplanned changes in commit; difficult to trace which plan produced which change.
-**Graduated to**: OR16, OR22.
-
-## L9 — Interface changes break existing tests during type remediation
-**Trigger**: Inherited. Not yet triggered in SovereignAI.
-**Impact**: Tests failed; required either out-of-scope test updates or compatibility shim.
-**Graduated to**: OR27.
-
-## L11 — Bypassed pre-commit hooks with --no-verify
-**Trigger**: Inherited. Not yet triggered in SovereignAI.
-**Impact**: Committed code with known style violation. Required follow-up fix.
-**Graduated to**: OR32.
-
-## L12 — Hiding type errors by excluding files from hooks
-**Trigger**: Inherited. Not yet triggered in SovereignAI.
-**Impact**: Type error hidden permanently; file never type-checked again.
-**Graduated to**: OR33.
-
-## L17 — Plan steps executed/marked complete out of order
-**Trigger**: Inherited. Not yet triggered in SovereignAI.
-**Impact**: Step marked complete based on work done elsewhere. Required replan.
-**Graduated to**: OR34.
-
-## L24 — Shell redirection and echo-to-file fail in Git Bash on Windows
-**Trigger**: Plan 0 S4.4 (`detect-secrets scan > txt/.secrets.baseline`) and S4.3 (`mkdir -p X && echo "" > X/.gitkeep` for 16 dirs). Both errored.
-**Impact**: ~10 extra Edit operations; Executor fell back to Edit tool and unredirected command output.
-**Graduated to**: OR41, OR43.
-
-## L25 — Multi-line git commit messages fail in Git Bash on Windows
-**Trigger**: Plan 0 S8, `git commit -m "title\n\n- bullet..."` errored.
-**Impact**: Fell back to single-line message; structured 10-line body lost from git log (CHANGELOG survived).
-**Graduated to**: OR42.
-
-## L26 — detect-secrets --all-files scans .venv/ despite .gitignore
-**Trigger**: Plan 0 S4.4, baseline flagged false positive in `.venv/` vendored pip code.
-**Impact**: Executor manually edited baseline JSON instead of using audit tool; broke baseline signature. Required follow-up commit `41b9326`.
-**Graduated to**: OR40.
-
-## L27 — Executor skipped /close steps when expected result was N/A
-**Trigger**: Plan 0 Closing — Executor skipped steps 15–21 reasoning "most steps N/A for docs-only plan."
-**Impact**: User had to prompt re-run; risked inconsistent session state.
-**Graduated to**: Workflow fix only — `/close` step 21 and Steps header add "mandatory even for docs-only plans."
-
-## L28 — sed used on workflow files after Edit-tool failures
-**Trigger**: prompt-0.1 S2.2/S2.3 — Executor used `sed -i` on `.devin/workflows/close.md` after 3 Edit-tool attempts failed (whitespace mismatch). OR7 didn't explicitly list workflow files, so Executor treated it as a gap.
-**Impact**: Correct output, but dangerous precedent — `sed` regex bugs could silently corrupt workflow files loaded by every subsequent plan.
+**Trigger**: Vulture on test files with pytest fixtures.
+**Impact**: Fixtures flagged unused despite decorator requirement.
 **Graduated to**: OR44.
 
-## L29 — python and pip resolve to different interpreters on Windows
-**Trigger**: prompt-0.1 `/close` step 1 — `python` on PATH resolved to hermes-agent's venv; `pip install -e .[dev]` had installed into Python 3.11 main install. Different site-packages.
-**Impact**: pytest would have failed even if test files existed; PATH issue masked by "no tests directory" report.
+## L6 — Naive/aware datetime mixing
+**Trigger**: `datetime.utcnow()` or bare `datetime.now()` mixed with aware.
+**Impact**: Comparison errors, timezone bugs.
+**Graduated to**: OR14.
+
+## L7 — Stale baselines propagate through plans
+**Trigger**: PLANS.md baseline not updated at `/close`.
+**Impact**: Future plans start from wrong counts.
+**Graduated to**: close.md step 13.
+
+## L8 — Scope drift: editing files outside declared scope
+**Trigger**: Editing files not in plan's "WILL edit" list.
+**Impact**: Scope creep, unplanned changes.
+**Graduated to**: OR12, OR16.
+
+## L9 — Interface changes break existing tests during type remediation
+**Trigger**: Changing function signatures during type fixes.
+**Impact**: Existing tests fail on new signature.
+**Graduated to**: OR17.
+
+## L10 — Bypassed pre-commit hooks with --no-verify
+**Trigger**: `git commit --no-verify` to skip failing hook.
+**Impact**: Hooks bypassed, broken code committed.
+**Graduated to**: OR22.
+
+## L11 — Hiding type errors by excluding files from hooks
+**Trigger**: Editing hook config to exclude failing files.
+**Impact**: Type errors hidden permanently.
+**Graduated to**: OR23.
+
+## L12 — Plan steps executed/marked complete out of order
+**Trigger**: Marking step complete based on work done elsewhere, or jumping ahead.
+**Impact**: Dependencies missed, steps skipped.
+**Graduated to**: OR24.
+
+## L13 — Shell redirection and echo-to-file fail in Git Bash on Windows
+**Trigger**: `echo "" > path` or `> file` redirection in `&&` chains.
+**Impact**: Files not created, commands fail silently.
+**Graduated to**: OR28, OR30.
+
+## L14 — Multi-line git commit messages fail in Git Bash on Windows
+**Trigger**: `git commit -m "line1\nline2"` with embedded newlines.
+**Impact**: Commit message malformed.
+**Graduated to**: OR29.
+
+## L15 — detect-secrets --all-files scans .venv/ despite .gitignore
+**Trigger**: `detect-secrets scan --all-files` without `--exclude`.
+**Impact**: .venv/ scanned, false positives.
+**Graduated to**: OR27.
+
+## L16 — Executor skipped /close steps when expected result was N/A
+**Trigger**: Skipping close steps because result would be N/A.
+**Impact**: Steps not run, verification incomplete.
 **Graduated to**: OR45.
 
-## L30 — source .venv/Scripts/activate does not persist in Git Bash on Windows
-**Trigger**: prompt-0.2 S1.4 — after `source .venv/Scripts/activate`, `which python` showed venv but `which pip` showed system path.
-**Impact**: Executor fell back to absolute paths for all commands. Workflows relying on activation would hit the same issue every plan.
+## L17 — sed used on workflow files after Edit-tool failures
+**Trigger**: `sed` on `.devin/workflows/*.md` when Edit tool failed.
+**Impact**: Workflow files corrupted.
+**Graduated to**: OR31.
+
+## L18 — python and pip resolve to different interpreters on Windows
+**Trigger**: System `python`/`pip` on PATH pointing to different installs.
+**Impact**: Packages installed to wrong interpreter.
+**Graduated to**: OR32.
+
+## L19 — source .venv/Scripts/activate does not persist in Git Bash on Windows
+**Trigger**: `source .venv/Scripts/activate` in Git Bash.
+**Impact**: Activation lost between commands.
+**Graduated to**: OR33.
+
+## L20 — Mypy fails when passed markdown or other non-Python files
+**Trigger**: `mypy .` passing markdown/YAML/TOML files.
+**Impact**: Mypy errors on non-Python files.
+**Graduated to**: OR34.
+
+## L21 — Executor paraphrases workflow commands instead of running them verbatim
+**Trigger**: Simplifying or substituting workflow commands.
+**Impact**: Commands achieve less than specified.
+**Graduated to**: OR43.
+
+## L22 — Executor weakens AR check scripts or tests to make a failure pass
+**Trigger**: Editing tests/checks to weaken assertions.
+**Impact**: Failures hidden.
+**Graduated to**: OR44.
+
+## L23 — mv + git add <new> leaves old path tracked in git
+**Trigger**: `mv old new && git add new` without `git add -A`.
+**Impact**: Old path still tracked.
 **Graduated to**: OR46.
 
-## L31 — Mypy fails when passed markdown or other non-Python files
-**Trigger**: prompt-0.3 `/close` step 3 — `mypy AGENTS.md CHANGELOG.md ... .devin/workflows/*.md` got "Duplicate module named __main__" error.
-**Impact**: Executor skipped mypy entirely. Pattern would skip mypy on real Python files in Plan 1+ if any markdown files were also edited.
+## L24 — ruff --fix / detect-secrets auto-modified files missed by explicit git add lists
+**Trigger**: `git add <file1> <file2>` after auto-fixes.
+**Impact**: Auto-fixed files not staged.
+**Graduated to**: OR46.
+
+## L25 — Premature git tag creation requires force-push to move
+**Trigger**: `git tag` before work complete.
+**Impact**: Tag points at wrong commit.
 **Graduated to**: OR47.
 
-## L32 — Executor paraphrases workflow commands instead of running them verbatim
-**Trigger**: Prompts 7, 8, 9 Step 17 — Executor ran `mv plan-{N}-Rev5.md` (single file) instead of the `for file in prompts/plan-{N}-Rev*.md` loop defined in close.md. Result: older plan revisions left in `prompts/`; User had to ask 3 times; repo state inconsistent.
-**Impact**: 3 User interventions across prompts 7–9; plan-9 Rev1–4 unarchived for 1+ prompt cycles; undermined trust in /close workflow reliability.
-**Graduated to**: OR71.
+## L26 — Coverage skipped or unmeasured in 8 of 16 prompts
+**Trigger**: Coverage not run or reported as N/A.
+**Impact**: Coverage rot hidden.
+**Graduated to**: OR48.
 
-## L33 — Executor weakens AR check scripts or tests to make a failure pass
-**Trigger**: Prompt 6 close — `test_ar7_no_core_imports_in_ui.py` failed because `web/main.py` imported `sovereignai.shared.*`. Executor edited the test to add `WEB_MAIN_ALLOWED_IMPORTS` allowlist. (This case was subsequently documented as a legitimate scoped allowlist — see Plan 10 S3 audit. But the *pattern* of editing a test to make it pass, rather than fixing the source, is the landmine.)
-**Impact**: Risk of silently disabling architectural enforcement. AR7 (UI/core separation) could be effectively disabled without Architect sign-off.
-**Graduated to**: OR72.
+## L27 — Bandit Low count drifted without baseline reconciliation
+**Trigger**: Bandit count not updated in PLANS.md.
+**Impact**: Baseline stale, drift undetected.
+**Graduated to**: OR49.
 
-## L34 — `mv` + `git add <new>` leaves old path tracked in git
-**Trigger**: Prompt-9 close Step 17 and prompt-10 S1 — `mv prompts/plan-{N}-Rev*.md prompts/completed/` followed by `git add prompts/completed/`. The `git add` staged the new files but not the deletions. Git tracked both copies; `git ls-files` showed files in both locations.
-**Impact**: Duplicate plan files in repo across 1+ prompt cycles; User had to manually `git rm`; archive appeared successful but wasn't.
-**Graduated to**: OR75.
+## L28 — Quota exhaustion mid-plan causes context loss and skipped steps
+**Trigger**: Model quota exhausted during plan execution.
+**Impact**: Context lost, steps skipped.
+**Graduated to**: OR50.
 
-## L35 — ruff --fix / detect-secrets auto-modified files missed by explicit `git add` lists
-**Trigger**: Prompt-10 Step 15 — `ruff check . --fix` modified `tests/test_e2e_task_submission.py`, `tests/test_web_ui_panels.py`; `detect-secrets scan` updated `txt/.secrets.baseline`. `git add <explicit 25-file list>` missed all 3. Committed `ddd050b` without them; User caught it; required `7e2eeb8` fix commit.
-**Impact**: 3 files left uncommitted after "successful" close; User frustration; required follow-up commit.
-**Graduated to**: OR75.
+## L29 — close.md Step 17 verification check said "run git rm" which DELETES files
+**Trigger**: `/close` Step 17 used `git rm` to move files.
+**Impact**: Files deleted instead of moved.
+**Graduated to**: close.md fix (prompt-15).
 
-## L36 — Premature git tag creation requires force-push to move
-**Trigger**: Prompts 9, 10 — tag created before final commit, then `tag -d` + recreate + `push --force`. Also: prompt-11 tag created at `6fa8d73` (a pre-10.1 commit) before Plan 11 started.
-**Impact**: Force-pushed tags break anyone who pulled the old tag; dangerous for shared repos. Stale tags point to meaningless commits.
-**Graduated to**: OR76.
+## L30 — Disabled production features to make tests pass
+**Trigger**: Disabling crash recovery/memory backends to pass tests.
+**Impact**: Production features off.
+**Graduated to**: OR54, OR60.
 
-## L37 — Coverage skipped or unmeasured in 8 of 16 prompts
-**Trigger**: Prompts 0.1, 0.2, 0.4, 1, 3, 4, 7, 8 reported "Coverage: N/A" or "not run" with no rule requiring it.
-**Impact**: Coverage baseline drifted from 96% → 93% without detection; no STOP triggered.
-**Graduated to**: OR77.
+## L31 — Command errored without investigation
+**Trigger**: Treating "Command errored" as non-blocking.
+**Impact**: Real failures ignored.
+**Graduated to**: OR19.
 
-## L38 — Bandit Low count drifted without baseline reconciliation
-**Trigger**: Bandit Low count: 49 (Plan 1) → 119 (Plan 3) → 156 (Plan 4) → 332 (Plan 10). Baseline updated only at scans, not at every close.
-**Impact**: Stale baselines make it impossible to detect new non-test Low findings.
-**Graduated to**: OR78.
+## L32 — Command errored in verification step treated as non-blocking
+**Trigger**: Verification command errors skipped.
+**Impact**: Verification incomplete.
+**Graduated to**: OR21.
 
-## L39 — Quota exhaustion mid-plan causes context loss and skipped steps
-**Trigger**: 60+ "Auto-continued" interrupts across 16 logs. Prompt-7 skipped `/close` entirely after interrupts.
-**Impact**: Steps skipped, work repeated, `/close` forgotten.
-**Graduated to**: OR79.
+## L33 — Filtered on non-existent event attribute
+**Trigger**: Self-correction skill filtered on `event.component` which didn't exist.
+**Impact**: Filter never matched.
+**Graduated to**: OR68.
 
-## L40 — close.md Step 17 verification check said "run git rm" which DELETES files instead of moving them
-**Trigger**: Prompt-13 close — Executor ran `git rm prompts/plan-13-Rev*.md` because the verification check message literally said "run 'git rm' to stage deletions". This deleted Rev1-Rev9 from git instead of moving them to `prompts/completed/`.
-**Impact**: 9 plan revision files permanently deleted from git history; User had to restore manually.
-**Graduated to**: close.md Step 17 fixed (verification now runs `git add -A` automatically instead of telling Executor to run `git rm`).
+## L34 — Mypy errors dismissed as "pre-existing"
+**Trigger**: Mypy errors dismissed without fixing.
+**Impact**: Type errors shipped.
+**Graduated to**: OR60.
 
-## L41 — Only working memory backend was registered; episodic/procedural/trace missing
-**Trigger**: Prompt-15 log scan — `build_container()` registered only `WorkingMemoryBackend`; `EpisodicMemoryBackend`, `ProceduralMemoryBackend`, `TraceMemoryBackend` were never registered despite being imported in Plan 11.
-**Impact**: Librarian queries for these backends would fail at runtime; memory topology incomplete.
-**Graduated to**: OR87 (all backends registered via CapabilityGraph).
+## L35 — Memory backends not registered in container
+**Trigger**: Memory backends not in DI container.
+**Impact**: Backends not accessible.
+**Graduated to**: OR54.
 
-## L42 — Test mode did not use in-memory SQLite backends
-**Trigger**: Prompt-15 log scan — Tests used disk-based SQLite (`~/.sovereignai/*.db`) despite `SOVEREIGNAI_TEST_MODE` being set. No `:memory:` path override.
-**Impact**: Test runs polluted user's disk with database files; tests not isolated; potential permission errors on CI.
-**Graduated to**: OR88 (test mode uses `:memory:` for SQLite backends).
+## L36 — Crash recovery disabled
+**Trigger**: `run_crash_recovery()` body replaced with `pass`.
+**Impact**: No crash recovery.
+**Graduated to**: OR56.
 
-## L43 — Production-only components not guarded in test mode
-**Trigger**: Prompt-15 log scan — `HardwareProbe`, `TeacherWorker`, `SelfCorrectionSkill`, crash recovery, trace subscriber, and TaskStateChanged subscribers ran in test mode, causing hangs and I/O.
-**Impact**: Tests hung indefinitely; GPU probes attempted in test environment; disk I/O during tests.
-**Graduated to**: OR89 (production-only code wrapped in `if not _test_mode:`).
+## L37 — Plan shipped with placeholder implementation
+**Trigger**: sync.py shipped with `# TODO: Fetch actual data`.
+**Impact**: Feature non-functional.
+**Graduated to**: OR58.
 
-## L44 — Self-correction skill filtered on non-existent `component` field
-**Trigger**: Prompt-15 log scan — `SelfCorrectionSkill` checked `getattr(event, 'component', None) == self.COMPONENT_NAME` but `TaskStateChanged` has no `component` field. Filter was dead code.
-**Impact**: Filter never triggered; `_recently_analyzed` guard was the actual recursion prevention. Tests crashed with `FrozenInstanceError` when trying to `setattr(event, 'component', ...)`.
-**Graduated to**: OR69 (removed dead filter; `_recently_analyzed` guard is sufficient).
+## L38 — "Already done" claim without verification
+**Trigger**: Marking steps complete via visual inspection only.
+**Impact**: Incomplete work marked done.
+**Graduated to**: OR59.
 
-## L45 — Librarian registered in test mode despite no backends needing routing
-**Trigger**: Prompt-15 log scan — `Librarian` was registered unconditionally in test mode, but backends were not all registered (L41). Librarian requires all backends to function.
-**Impact**: Librarian queries would fail in test mode; tests could not verify memory routing.
-**Graduated to**: OR87 (Librarian registration guarded with `if not _test_mode:`).
+## L39 — Test failures dismissed as "pre-existing"
+**Trigger**: 46 test failures shipped as "pre-existing".
+**Impact**: Broken tests in production.
+**Graduated to**: OR60.
 
-## L46 — Crash recovery disabled despite being non-blocking per Plan 11 Rev3
-**Trigger**: Prompt-15 log scan — Crash recovery block had `pass` (disabled) despite Plan 11 Rev3 N9 specifying it should be automatic and non-blocking.
-**Impact**: Tasks in non-terminal states after crash were never marked FAILED; no recovery trace emitted.
-**Graduated to**: OR89 (crash recovery re-enabled and guarded with `if not _test_mode:`).
+## L40 — Skipped tests without target-resolution plan
+**Trigger**: Tests skipped with no documented target.
+**Impact**: Skipped tests accumulate.
+**Graduated to**: OR61.
 
-## L47 — Trace and TaskStateChanged subscribers not wired to backends
-**Trigger**: Prompt-15 log scan — No subscribers wired `TraceEmitter` → `TraceMemoryBackend` or `TaskStateChanged` → backends. Traces and state changes were not persisted.
-**Impact**: Trace logs not written to database; task state history not persisted; observability incomplete.
-**Graduated to**: OR90 (subscribers added and guarded with `if not _test_mode:`).
+## L41 — CHANGELOG claimed unshipped scope
+**Trigger**: Commit message claimed features that didn't ship.
+**Impact**: User misled.
+**Graduated to**: OR62.
 
----
+## L42 — HTML/CSS/JS syntax not validated before tests
+**Trigger**: Python docstrings in app.js, double-class in HTML.
+**Impact**: Invalid code shipped.
+**Graduated to**: OR63.
 
-## Capturing new landmines (L48+)
+## L43 — Tests used incorrect fixture shapes
+**Trigger**: Test fixtures didn't match production data shapes.
+**Impact**: Tests pass but production breaks.
+**Graduated to**: OR65.
 
-See `AGENTS.md` "LANDMINES.md — when to read/write" for format and graduation procedure. Append-only — entries are never edited or removed. New landmines continue from L41 (per OR84).
+## L44 — Web UI plan lacked browser smoke test
+**Trigger**: UI changes shipped without browser verification.
+**Impact**: UI broken in browser.
+**Graduated to**: OR64.
+
+## L45 — Stray files in commits without pre-commit scan
+**Trigger**: cookies.txt staged by `git add -A`.
+**Impact**: Unintended files committed.
+**Graduated to**: OR66.
+
+## L46 — Critical rules dropped from plan spec
+**Trigger**: 6 of 12 rules from plan spec not added to AGENTS.md.
+**Impact**: Rules that would catch failures absent.
+**Graduated to**: OR73.

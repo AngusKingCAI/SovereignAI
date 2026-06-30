@@ -1,259 +1,90 @@
 # /close Workflow
 
-Run at the end of every plan. Run straight through — STOP only on failure. Do NOT skip steps because a result would be N/A; observe the N/A result and report it in step 20. Only steps explicitly marked "skip if N/A" below may be skipped.
+Run at end of every plan. Don't skip steps. STOP only on failure.
 
-**Prerequisite**: `.venv/` must exist (verified at `/open` step 3). If missing, STOP and run `/open` first. All commands use absolute venv paths per OR46 — do not rely on `source .venv/Scripts/activate` (L30).
+**Prerequisite**: `.venv/` exists (verified at `/open`). All commands use absolute venv paths (OR33).
 
-**Re-read this file in full before starting** (per OR71). Do not use a cached/remembered version of these commands — workflow files change between plans. Copy each command verbatim (after substituting `{N}`), do not paraphrase.
+## Static analysis
 
----
+1. **Tests + coverage**: `.venv/Scripts/python.exe -m pytest tests/ -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <89% (OR48). STOP if N/A for `.py`-editing plan.
 
-**Step 1 — Tests (with coverage)**
-```
-.venv/Scripts/python.exe -m pytest tests/ -vvv --cov=. --cov-report=term-missing
-```
-STOP on any failure. STOP if "no tests ran" and the plan was supposed to add tests (silent collection failure).
+2. **Ruff**: `.venv/Scripts/ruff.exe check .` — STOP on errors.
 
-**Coverage check (per OR77)**: Record the coverage %. Compare against PLANS.md baseline. If coverage dropped >5% from baseline, STOP. If this plan edited `.py` files and coverage is "N/A" or unavailable, STOP. Update PLANS.md coverage baseline in Step 10. Docs-only plans (no `.py` edits) may report "N/A" with a one-line reason.
+3. **Mypy** (`.py` only): `FILES=$(git diff --name-only prompt-{N-1}..HEAD | grep '\.py$'); if [ -n "$FILES" ]; then echo $FILES | xargs -r .venv/Scripts/mypy.exe --ignore-missing-imports; else echo "N/A — no .py changes"; fi` — STOP on errors (OR60). At scan prompts: `.venv/Scripts/mypy.exe . --ignore-missing-imports`.
 
-**Step 2 — Ruff**
-```
-.venv/Scripts/ruff.exe check . 2>&1 | tail -n 3
-```
-STOP on errors.
+4. **Bandit**: `.venv/Scripts/bandit.exe -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache` — STOP on findings.
 
-**Step 3 — Mypy** (`.py` files only — never pass markdown/YAML/TOML, per OR47)
-- At scan prompts (5, 10, 15…): `.venv/Scripts/mypy.exe . --ignore-missing-imports 2>&1 | tail -n 3`
-- At regular prompts:
-  ```
-  EDITED_PY_FILES=$(git diff --name-only HEAD~1 | grep '\.py$' | tr '\n' ' ')
-  if [ -n "$EDITED_PY_FILES" ]; then
-    .venv/Scripts/mypy.exe $EDITED_PY_FILES --ignore-missing-imports 2>&1 | tail -n 3
-  else
-    echo "mypy: N/A (no Python files edited this plan)"
-  fi
-  ```
-STOP on errors on `.py` files.
+5. **pip-audit**: `.venv/Scripts/pip-audit.exe --strict --requirement txt/requirements.txt` — STOP on CVEs.
 
-**Step 4 — Bandit**
-```
-.venv/Scripts/bandit.exe -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache 2>&1 | tail -n 5
-```
-STOP on findings. Update the Bandit Low (B101) count in PLANS.md at Step 10 (per OR78). If the count changed >20% without a corresponding test count change, STOP and investigate.
+6. **Vulture**: `.venv/Scripts/vulture.exe . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,htmlcov` — STOP on new findings vs `txt/vulture-whitelist.txt`.
 
-**Step 5 — pip-audit** (requirements file only per OR39)
-```
-.venv/Scripts/pip-audit.exe --strict --requirement txt/requirements.txt 2>&1 | tail -n 5
-```
-STOP on CVEs.
+7. **detect-secrets**: `.venv/Scripts/detect-secrets.exe scan --baseline txt/.secrets.baseline` — STOP if exit≠0. False positive → `detect-secrets audit txt/.secrets.baseline`.
 
-**Step 6 — Vulture**
-```
-.venv/Scripts/vulture.exe . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,htmlcov 2>&1 | tail -n 5
-```
-Compare against `txt/vulture-whitelist.txt`. STOP on new findings.
+8. **AR checks**: run each script in `scripts/ar_checks/` — STOP on violation:
+   ```
+   .venv/Scripts/python.exe scripts/ar_checks/no_globals.py sovereignai/
+   .venv/Scripts/python.exe scripts/ar_checks/constructor_arg_cap.py sovereignai/ --max-args 15
+   .venv/Scripts/python.exe scripts/ar_checks/no_context_bags.py sovereignai/
+   .venv/Scripts/python.exe scripts/ar_checks/docstring_discipline.py sovereignai/
+   .venv/Scripts/python.exe scripts/ar_checks/no_hardcoded_component_names.py web/ cli/ tui/ phone/
+   .venv/Scripts/python.exe scripts/ar_checks/ui_does_not_touch_core.py
+   .venv/Scripts/python.exe scripts/ar_checks/check_tracing.py
+   ```
 
-**Step 7 — detect-secrets**
-```
-.venv/Scripts/detect-secrets.exe scan --baseline txt/.secrets.baseline
-```
-STOP if exit code != 0. If false positive, run `detect-secrets audit txt/.secrets.baseline` per OR40 — do NOT manually edit the JSON.
+## Mechanical enforcement
 
-**Step 8 — Custom AR static analysis checks**
-Run the committed check scripts in `scripts/ar_checks/` (each a separate command — STOP on any violation). Do not re-derive these checks from memory; if a script is missing for a check, write it now, commit it with this plan's changes, and use it from then on (Source: OR48).
-```
-.venv/Scripts/python.exe scripts/ar_checks/no_globals.py sovereignai/
-.venv/Scripts/python.exe scripts/ar_checks/constructor_arg_cap.py sovereignai/ --max-args 15
-.venv/Scripts/python.exe scripts/ar_checks/no_context_bags.py sovereignai/
-.venv/Scripts/python.exe scripts/ar_checks/docstring_discipline.py sovereignai/
-.venv/Scripts/python.exe scripts/ar_checks/no_hardcoded_component_names.py web/ cli/ tui/ phone/
-.venv/Scripts/python.exe scripts/ar_checks/ui_does_not_touch_core.py
-```
-Each script's `--help` documents what it checks and which AR rule it enforces.
+9. **OR70 placeholder check**: `.venv/Scripts/python.exe scripts/ar_checks/check_placeholders.py sovereignai/ shared/ web/ cli/ tui/ phone/ adapters/ databases/ services/ skills/` — STOP on any hit. AST-based detection per OR70. Implement or defer per OR58 with target plan.
 
-**Step 9 — Update `CHANGELOG.md`** (append to END, temp-file pattern per OR13)
-```
-## prompt-{N} — {Plan title}
+10. **check_tracing.py**: `.venv/Scripts/python.exe scripts/ar_checks/check_tracing.py` — STOP if exit≠0 (OR72).
 
-**Date**: {YYYY-MM-DD}
-**Plan file**: prompts/plan-{N}-Rev{n}.md
+11. **AR7 allowlist diff**: `diff <(git show prompt-{N-1}:tests/test_ar7_no_core_imports_in_ui.py | awk '/WEB_MAIN_ALLOWED_IMPORTS/{f=1} f' | grep -oE '"[^"]+"') <(awk '/WEB_MAIN_ALLOWED_IMPORTS/{f=1} f' tests/test_ar7_no_core_imports_in_ui.py | grep -oE '"[^"]+"')` — report added/removed entries. STOP on any unapproved addition.
 
-**Files changed**:
-- {file1}
+## Documentation
 
-**Results**:
-- Tests: {count} passed, {count} failed
-- Ruff: {count} findings
-- Mypy: {count} findings
-- Bandit: {count} findings
-- Vulture: {count} findings
-- Detect-secrets: pass/fail
+12. **CHANGELOG**: append entry (≤15 lines per OR10):
+    ```
+    ## prompt-{N} — {title}
+    **Date**: {YYYY-MM-DD}
+    **Plan file**: prompts/plan-{N}-Rev{n}.md
+    **Tests**: {count} passed, {count} skipped ({chronic} chronic)
+    **Coverage**: {%}
+    {≤3 Notes bullets}
+    ```
 
-**Notes**:
-- {observation, max 3 bullets}
-```
-Hard cap: 15 lines per entry (OR14). Implementation rationale and design trade-offs do NOT go in Notes — log them in `DECISIONS.md` and write `See DECISIONS.md D{n}` here instead. If Notes needs more than 3 bullets to explain something, that's the signal it belongs in `DECISIONS.md`.
+13. **PLANS.md**: update baseline (test count, coverage, bandit count).
 
-Write to `temp/changelog-entry-{N}.md`, `cat >> CHANGELOG.md`, delete temp.
+14. **DEBT.md**: add deferred items with target plan (OR61 for skipped tests).
 
-**Step 10 — Update `PLANS.md`**
-- Update Test Baseline using the generated count (`pytest --collect-only -q | tail -n 1`) — do not hand-sum a per-suite breakdown.
-- Update Static Analysis Baseline (ruff, mypy, bandit, vulture, detect-secrets, coverage %)
-- Add completed prompt row
-- Add a one-line Baseline Reconciliation Notes entry if the count changed: `**Plan N**: Baseline → X tests, delta ±Y — see CHANGELOG prompt-N for why.` Full explanation goes in CHANGELOG only, not here.
-- Update Active Plan and shift next-5-queue:
-  1. Identify the queue slot that matches the just-completed plan (by description or plan number)
-  2. Remove that row from the queue
-  3. Shift remaining rows up to fill the gap (slot 2→1, 3→2, etc.)
-  4. Promote the new slot 1 to Active Plan (format: `**Plan N** — {description}`)
-  5. Fill the now-empty slot 5 with "TBD" if no future plan is known
-  6. If the completed plan was NOT in the queue (e.g., ad-hoc plan), do NOT shift — leave queue unchanged and set Active Plan to "None — awaiting next plan"
-- Do NOT add or edit the Open Questions table — that lives solely in `project-vision-Rev5.md` (see PLANS.md Open Questions section)
+14.1. **OR58 verification**: extract deferred item count from execution log, then `grep -c "prompt-{N}" DEBT.md` — if counts don't match, STOP.
 
-**Step 11 — Update `LANDMINES.md`** if a new failure pattern was discovered. Append-only. New landmines start at L32.
+14.5. **Close report**: write `documents/plan-{N}-report.md` with: plan title, test count, coverage %, deferred items, browser smoke test screenshot paths, AR7 allowlist diff, OR70 check result. Verify: `test -f documents/plan-{N}-report.md || STOP "Close report missing"`.
 
-**Step 12 — Update `DEBT.md`** if any items deferred this plan. Before appending, check existing entries for the same underlying item (see DEBT.md's "How to add a new deferred item" for the duplicate-check procedure):
-```
-## Deferred: {item name}
-**Deferred at**: prompt-{N}
-**Reason**: {why}
-**Trigger condition**: {when to address}
-**Target plan**: {number or TBD}
-```
+14.6. **LANDMINES.md**: append entry if any of: plan STOPped, new OR added, AR check failed for novel reason. Otherwise log "N/A — no new patterns".
 
-**Step 13 — C9 rule proposals** — if the Architect spotted a recurring pattern, put the proposal in the execution log.
+## Verification (before commit/tag)
 
-**Step 14 — Create execution log header** (do NOT commit yet):
-```
-mkdir -p logs
-cat > logs/execution-log-prompt-{N}.md << 'EOF'
-# Execution Log — prompt-{N}
+15. **Browser smoke test** (OR64 — mandatory for HTML/CSS/JS plans): start dev server, load page. For each new UI element listed in plan's "WILL edit" UI scope: verify present in DOM, verify interactive (click + observe state change), capture screenshot named `<element-id>.png` to `logs/screenshots/prompt-{N}/`. Verify each screenshot >1KB (non-blank). "Manual verification available" without doing it = STOP.
 
-**Plan**: {plan title}
-**Tag**: prompt-{N}
-**Date**: {YYYY-MM-DD}
+16. **Post-execution spec-match review** (OR73): 
+    - Size guard: `DIFF_LINES=$(git diff prompt-{N-1}..HEAD | wc -l)` — if >5000 lines, chunk per phase. After chunked review, run `spec_match.py` on FULL diff for cross-chunk reconciliation.
+    - **Layer 1 (always run)**: `.venv/Scripts/python.exe scripts/ar_checks/spec_match.py` — mechanical gate. Exit≠0 = STOP.
+    - **Layer 2 (if Claude available)**: paste to current Claude (per GR5): plan file, full git diff (or chunked), test results, screenshots. Prompt: "Did execution match plan spec? Check: dropped rules, placeholder code, scope contraction, silent functions, AR7 violations. Return JSON: {match, deviations, dropped_rules, placeholder_code, silent_functions, ar7_violations}. If any array non-empty, STOP."
+    - Both layers must pass. Layer 1 exit==0 AND Layer 2 `match=true` required. If Claude unavailable, Layer 1 is sole gate.
 
----
+## Git (after verification passes)
 
-<!-- USER: Paste the full Executor execution log below this line. -->
+17. **Stray-file scan** (OR66): `git add -A && git status -s` — verify no unintended files. If found: `git reset HEAD <file>` and `rm` or move to `/tmp/`.
 
-EOF
-```
-User pastes content after `/close` completes, then asks Executor to commit and push.
+18. **Commit**: `git add -A && git status -s && git commit -m "prompt-{N}: {title}"` (OR29: multi `-m` flags. OR46/OR51: `git add -A` only).
 
-**Step 15 — Commit code changes**
-```
-# Per OR75: stage ALL changes (catches auto-fixes, deletions, new files)
-git add -A
-# Verify staging area is clean — no unstaged changes remain
-git status -s
-# If any lines appear above, STOP — unstaged changes exist
-git commit -m "{plan title} (prompt-{N})" -m "{multi-line description}"
-```
-Never `--no-verify`. STOP on pre-commit hook failure.
+19. **Tag**: `git tag --list prompt-{N}` — STOP if not empty (premature tag per OR47). Then `git tag prompt-{N}`.
 
-**Step 16 — Tag (per OR76 — only after final commit is verified)**
-```
-# Verify the tag does not already exist (prevents premature-tag force-push)
-git tag --list prompt-{N}
-# If the above returns output, STOP — tag already exists. Report to User. Do NOT delete and recreate.
-# If empty, create the tag at the current (final) commit:
-git tag prompt-{N}
-git tag --list prompt-{N}
-```
-STOP if tag not listed. STOP if tag already existed before this step (premature tag — report to User, do not force-push).
+20. **Push**: `git push origin main --tags`
 
-**Step 17 — Archive completed plan files**
-```
-mkdir -p prompts/completed
-# Move all revisions of the plan (Rev1, Rev2, etc.) to completed/
-for file in prompts/plan-{N}-Rev*.md; do
-  if [ -f "$file" ]; then
-    mv "$file" prompts/completed/
-  fi
-done
-# Move the base plan file if it exists
-if [ -f "prompts/plan-{N}.md" ]; then
-  mv prompts/plan-{N}.md prompts/completed/
-fi
-# Move the brief if it exists
-if [ -f "prompts/plan-{N}-brief.md" ]; then
-  mv prompts/plan-{N}-brief.md prompts/completed/
-fi
-# Verify all Revs were moved (per OR71 — catches paraphrasing bugs)
-remaining=$(ls prompts/plan-{N}-Rev*.md 2>/dev/null | wc -l)
-if [ "$remaining" -gt 0 ]; then
-  echo "STOP: $remaining plan-{N}-Rev*.md files still in prompts/ — for-loop did not move all Revs"
-  ls prompts/plan-{N}-Rev*.md
-  STOP
-fi
-# Also verify git no longer tracks the old paths (per L34 — catches mv+add-not-rm bug)
-# Per L40 fix: do NOT use 'git rm' — it DELETES files. Use 'git add -A' to stage the renames.
-tracked_old=$(git ls-files 'prompts/plan-{N}-Rev*.md' | wc -l)
-if [ "$tracked_old" -gt 0 ]; then
-  echo "git still tracks $tracked_old plan-{N}-Rev*.md files in prompts/ — running 'git add -A' to stage the moves"
-  git add -A
-  tracked_old=$(git ls-files 'prompts/plan-{N}-Rev*.md' | wc -l)
-  if [ "$tracked_old" -gt 0 ]; then
-    echo "STOP: git STILL tracks $tracked_old plan-{N}-Rev*.md files in prompts/ after git add -A — manual investigation needed"
-    git ls-files 'prompts/plan-{N}-Rev*.md'
-    STOP
-  fi
-fi
-# Also verify the base plan and brief were moved (if they existed)
-```
+21. **Verify tag on origin**: `git ls-remote --tags origin | grep prompt-{N}` — STOP if missing.
 
-**Note**: The for-loop above is the canonical archiving logic. A script version lives at `scripts/ar_checks/archive_plan.sh` (created in a future plan) — when it exists, prefer `bash scripts/ar_checks/archive_plan.sh {N}` over the inline loop. The script includes the verification check automatically.
+## Finalize
 
-**Step 18 — Commit docs** (NOT the execution log — that's committed separately)
-```
-# Per OR75: stage ALL changes (catches governance docs + archived plan deletions + any auto-fixes)
-git add -A
-git status -s  # Verify staging area is clean
-git commit -m "docs: prompt-{N} governance updates"
-```
+22. **Execution log**: paste full chat log into `logs/execution-log-prompt-{N}.md`.
 
-**Step 19 — Push**
-```
-git push origin main
-git push origin prompt-{N}
-```
-STOP on failure.
-
-**Step 20 — Verify tag on origin**
-```
-git ls-remote --tags origin | grep "prompt-{N}"
-```
-STOP if missing.
-
-**Step 21 — Final summary**
-```
-=== prompt-{N} COMPLETE ===
-
-Code commit: {hash}
-Docs commit: {hash}
-Tag: prompt-{N} (verified on origin)
-
-Tests: {count} passed
-Ruff: {count} findings
-Mypy: {count} findings
-Bandit: {count} findings
-Vulture: {count} findings
-Detect-secrets: pass/fail
-Coverage: {%}
-
-New landmines: {count or none}
-New deferred items: {count or none}
-New rule proposals: {count or none}
-
-=== REMINDER ===
-logs/execution-log-prompt-{N}.md created. After this session:
-1. Paste full chat log into the file below the comment block
-2. Ask Executor to commit and push it
-```
-
-**Step 22 — Kill Git Bash sessions. THIS STEP IS MANDATORY — plan is NOT complete until it runs.**
-```
-taskkill //F //IM bash.exe 2>&1 || true
-```
-Mandatory for ALL plans including docs-only. N/A results from prior steps do NOT make this step N/A. A second `taskkill` runs at the START of the next `/open` step 1 to clean up any orphans if this step was somehow skipped.
+23. **Kill bash**: `taskkill //F //IM bash.exe 2>&1 || true`
