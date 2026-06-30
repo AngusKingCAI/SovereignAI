@@ -13,6 +13,7 @@ so they survive server restarts.
 """
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
 import os
@@ -93,10 +94,8 @@ class AuthMiddleware:
             for username in self._password_hashes
         }
         _AUTH_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        try:
+        with contextlib.suppress(OSError):
             os.chmod(_AUTH_FILE, 0o600)  # User read/write only
-        except OSError:
-            pass  # Windows may not support chmod
 
     def register_user(self, username: str, password: str) -> None:
         """Add a new user with a username and password for first-run setup.

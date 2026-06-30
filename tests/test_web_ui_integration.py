@@ -19,10 +19,15 @@ from fastapi.testclient import TestClient
 def _container_no_users() -> Generator:
     """Provide a real container with no registered users (first-run state)."""
     from sovereignai.main import build_container
+    from sovereignai.shared.auth import AuthMiddleware
     from web.main import app
 
     container = build_container()
     app.state.container = container
+    # Clear any persisted users to ensure fresh test state
+    auth = container.retrieve(AuthMiddleware)
+    auth._password_hashes.clear()
+    auth._salts.clear()
     yield container
 
 
@@ -37,10 +42,16 @@ def client_no_users(_container_no_users: Any) -> TestClient:
 def client_authenticated() -> TestClient:
     """Provide a TestClient with a registered and logged-in user."""
     from sovereignai.main import build_container
+    from sovereignai.shared.auth import AuthMiddleware
     from web.main import app
 
     container = build_container()
     app.state.container = container
+
+    # Clear any persisted users to ensure fresh test state
+    auth = container.retrieve(AuthMiddleware)
+    auth._password_hashes.clear()
+    auth._salts.clear()
 
     client = TestClient(app)
     # Register via API (first-run setup)

@@ -751,38 +751,52 @@ async def pull_model(request: Request) -> dict:
         import subprocess
         try:
             trace.emit(
-                component="models",
-                level=TraceLevel.INFO,
-                message=f"Pulling: {ollama_name}",
+                component="models", level=TraceLevel.INFO,
+                message=f"Starting pull: {ollama_name}"
             )
-            result = subprocess.run(
+            _pull_status[model_name] = {
+                "status": "pulling",
+                "message": f"Pulling {ollama_name}...",
+                "progress": 0,
+            }
+
+            # Stream output line by line so progress appears in log drawer
+            process = subprocess.Popen(
                 ["ollama", "pull", ollama_name],
-                capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
                 text=True,
-                timeout=3600,
             )
-            if result.returncode == 0:
+
+            if process.stdout:
+                for line in process.stdout:
+                    line = line.strip()
+                    if line:
+                        # Emit each line as a trace — shows download progress in log drawer
+                        trace.emit(component="models", level=TraceLevel.INFO,
+                                   message=f"Pull: {line}")
+
+            process.wait(timeout=3600)
+
+            if process.returncode == 0:
                 _pull_status[model_name] = {
                     "status": "done",
-                    "message": f"Pulled {ollama_name} successfully",
+                    "message": f"Pulled {ollama_name}",
                     "progress": 100,
                 }
                 trace.emit(
-                    component="models",
-                    level=TraceLevel.INFO,
-                    message=f"Pull success: {ollama_name}",
+                    component="models", level=TraceLevel.INFO,
+                    message=f"Pull complete: {ollama_name}"
                 )
             else:
-                err = result.stderr.strip()[:200] if result.stderr else "Unknown error"
                 _pull_status[model_name] = {
                     "status": "error",
-                    "message": f"Pull failed: {err}",
+                    "message": f"Pull failed (exit {process.returncode})",
                     "progress": 0,
                 }
                 trace.emit(
-                    component="models",
-                    level=TraceLevel.ERROR,
-                    message=f"Pull failed: {err}",
+                    component="models", level=TraceLevel.ERROR,
+                    message=f"Pull failed (exit {process.returncode}): {ollama_name}"
                 )
         except Exception as exc:
             _pull_status[model_name] = {
@@ -791,9 +805,8 @@ async def pull_model(request: Request) -> dict:
                 "progress": 0,
             }
             trace.emit(
-                component="models",
-                level=TraceLevel.ERROR,
-                message=f"Pull error: {exc}",
+                component="models", level=TraceLevel.ERROR,
+                message=f"Pull error: {exc}"
             )
 
     import threading

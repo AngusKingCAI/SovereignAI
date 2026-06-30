@@ -25,8 +25,14 @@ def client() -> TestClient:
 
 @pytest.fixture
 def container(client: TestClient) -> Any:  # type: ignore[misc]
-    """Get the container from the app state."""
-    return client.app.state.container  # type: ignore[attr-defined]
+    """Get the container from the app state and clear auth users for fresh test state."""
+    container = client.app.state.container  # type: ignore[attr-defined]
+    # Clear persisted users to ensure fresh test state
+    from sovereignai.shared.auth import AuthMiddleware
+    auth = container.retrieve(AuthMiddleware)
+    auth._password_hashes.clear()
+    auth._salts.clear()
+    return container
 
 
 @pytest.fixture
@@ -34,7 +40,6 @@ def authenticated_client(client: TestClient, container: Any) -> TestClient:
     """Create an authenticated test client."""
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Register user first (before any requests)
     auth.register_user("testuser", "password123")
 

@@ -117,3 +117,12 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Logged at**: prompt-5 (governance review)
 **Issue**: This item was logged twice under near-identical wording — once at prompt-0 (bootstrap, generic Plan 1–4 scope adjudication) and again at prompt-2 (Plan 2 scope adjudication). Both describe the same deferred capability-negotiation work; the prompt-0 entry's trigger condition and the prompt-2 entry's reason are restatements of each other.
 **Resolution**: Track resolution against the prompt-0 entry only. When Q8 negotiation work begins, add a single "Resolved at" line to the prompt-0 entry and reference it from the prompt-2 entry rather than resolving both independently.
+
+---
+
+## Deferred: Mypy type errors in config_loader.py and main.py
+
+**Deferred at**: prompt-17.3
+**Reason**: Pre-existing mypy type errors requiring significant refactoring: config_loader.py returns Any from typed functions, main.py passes wrong types to EventBus.subscribe. These are out of scope for this plan's auth test fixes.
+**Trigger condition**: When a dedicated type remediation plan is scheduled.
+**Target plan**: TBD

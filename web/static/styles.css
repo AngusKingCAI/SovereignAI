@@ -238,10 +238,12 @@ body {
     transition: height 0.2s ease;
     resize: vertical;
     overflow: hidden;
+    min-height: 0;
 }
 
 #log-drawer.open {
     height: 200px;
+    min-height: 100px;
 }
 
 #log-controls {

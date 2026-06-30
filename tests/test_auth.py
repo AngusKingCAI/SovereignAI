@@ -15,7 +15,11 @@ from sovereignai.shared.types import AuthError, SessionToken, now_utc
 def auth() -> AuthMiddleware:
     """Create an AuthMiddleware instance for testing."""
     trace = TraceEmitter()
-    return AuthMiddleware(trace=trace)
+    auth = AuthMiddleware(trace=trace)
+    # Clear any loaded users to ensure a fresh slate for tests
+    auth._password_hashes.clear()
+    auth._salts.clear()
+    return auth
 
 
 def test_register_user_stores_hash_not_plaintext(auth: AuthMiddleware) -> None:

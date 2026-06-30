@@ -7,6 +7,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from sovereignai.main import build_container
+from sovereignai.shared.auth import AuthMiddleware
 
 
 @pytest.fixture
@@ -23,15 +24,18 @@ def client() -> TestClient:
 
 @pytest.fixture
 def container(client: TestClient) -> Any:  # type: ignore[misc]
-    """Get the container from the app state."""
-    return client.app.state.container  # type: ignore[attr-defined]
+    """Get the container from the app state and clear auth users for fresh test state."""
+    container = client.app.state.container  # type: ignore[attr-defined]
+    # Clear persisted users to ensure fresh test state
+    auth = container.retrieve(AuthMiddleware)
+    auth._password_hashes.clear()
+    auth._salts.clear()
+    return container
 
 
 def test_login_success(client: TestClient, container: Any) -> None:
     """Test that valid credentials set a session cookie."""
-    from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Register a test user
     auth.register_user("testuser", "testpassword123")
 
@@ -48,9 +52,7 @@ def test_login_success(client: TestClient, container: Any) -> None:
 
 def test_login_failure(client: TestClient, container: Any) -> None:
     """Test that invalid credentials return 401."""
-    from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Register a test user
     auth.register_user("testuser", "testpassword123")
 
@@ -66,9 +68,7 @@ def test_login_failure(client: TestClient, container: Any) -> None:
 
 def test_register_first_run(client: TestClient, container: Any) -> None:
     """Test that registration succeeds when no users exist."""
-    from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Ensure no users exist
     assert len(auth._password_hashes) == 0
 
@@ -85,9 +85,7 @@ def test_register_first_run(client: TestClient, container: Any) -> None:
 
 def test_register_after_user_exists(client: TestClient, container: Any) -> None:
     """Test that registration fails when a user already exists."""
-    from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Register first user
     auth.register_user("firstuser", "password123")
 
@@ -103,9 +101,7 @@ def test_register_after_user_exists(client: TestClient, container: Any) -> None:
 
 def test_protected_endpoint_without_cookie(client: TestClient, container: Any) -> None:
     """Test that protected endpoints return 401 without session cookie."""
-    from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Register a user but don't login
     auth.register_user("testuser", "password123")
 
@@ -117,9 +113,7 @@ def test_protected_endpoint_without_cookie(client: TestClient, container: Any) -
 
 def test_protected_endpoint_with_cookie(client: TestClient, container: Any) -> None:
     """Test that protected endpoints return 200 with valid session cookie."""
-    from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Register and login
     auth.register_user("testuser", "password123")
     login_response = client.post("/api/auth/login", json={
@@ -136,9 +130,7 @@ def test_protected_endpoint_with_cookie(client: TestClient, container: Any) -> N
 
 def test_sse_auth_required(client: TestClient, container: Any) -> None:
     """Test that SSE endpoint requires authentication."""
-    from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Register a user but don't login
     auth.register_user("testuser", "password123")
 
@@ -150,9 +142,7 @@ def test_sse_auth_required(client: TestClient, container: Any) -> None:
 
 def test_logout_clears_cookie(client: TestClient, container: Any) -> None:
     """Test that logout clears the session cookie."""
-    from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Register and login
     auth.register_user("testuser", "password123")
     login_response = client.post("/api/auth/login", json={

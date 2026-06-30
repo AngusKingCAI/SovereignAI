@@ -952,3 +952,40 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Fixed pull buttons to show error feedback via status polling
 - Organized 45K HF models by family (Meta / Llama, Google / Gemma, etc.)
 - Added pagination with "Load More" button (50 models per page)
+## prompt-17.3 — Fix Auth Tests + Resizable Log + Verbose Pull Logging + Close Discipline
+
+**Date**: 2026-06-30
+**Plan file**: prompts/plan-17.3-Rev1.md
+
+**Files changed**:
+- sovereignai/shared/auth.py
+- sovereignai/workers/education/teacher_worker.py
+- tests/conftest.py
+- tests/test_auth.py
+- tests/test_capability_api.py
+- tests/test_e2e_task_submission.py
+- tests/test_first_run.py
+- tests/test_log_drawer_integration.py
+- tests/test_rest_traces.py
+- tests/test_teacher_worker.py
+- tests/test_thinking_display.py
+- tests/test_web_auth.py
+- tests/test_web_ui_integration.py
+- web/main.py
+- web/static/styles.css
+- DEBT.md
+
+**Results**:
+- Tests: 342 passed, 10 skipped
+- Ruff: 0 findings
+- Mypy: 4 pre-existing errors (documented in DEBT.md)
+- Bandit: 0 findings
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- Fixed 32 auth test failures by clearing persisted users in container fixtures
+- Fixed TeacherWorker test failures by correcting parameter name (criteria -> _criteria)
+- Added resizable log drawer with CSS resize property
+- Streamed ollama pull output line-by-line to traces for visibility
+- Added OR92 to AGENTS.md mandating full close workflow compliance

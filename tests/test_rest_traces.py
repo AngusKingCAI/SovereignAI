@@ -4,31 +4,59 @@ Tests /api/traces with level, component, task_id filters + pagination.
 """
 from __future__ import annotations
 
+from collections.abc import Generator
+from typing import Any
 from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
 
+from sovereignai.main import build_container
+from sovereignai.shared.auth import AuthMiddleware
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import TraceLevel
-from web.main import app
 
 
 @pytest.fixture
-def client() -> TestClient:
+def client() -> Generator[TestClient, None, None]:
     """Create a test client for the FastAPI app with lifespan context."""
+    from web.main import app
+    container = build_container()
+    app.state.container = container
     with TestClient(app) as test_client:
         yield test_client
 
 
 @pytest.fixture
-def trace_emitter(client: TestClient) -> TraceEmitter:
+def container(client: TestClient) -> Any:  # type: ignore[misc]
+    """Get the container from the app state and clear auth users for fresh test state."""
+    container = client.app.state.container  # type: ignore[attr-defined]
+    # Clear persisted users to ensure fresh test state
+    auth = container.retrieve(AuthMiddleware)
+    auth._password_hashes.clear()
+    auth._salts.clear()
+    return container
+
+
+@pytest.fixture
+def trace_emitter(container: Any) -> Any:  # type: ignore[misc]
     """Get the TraceEmitter from the app state."""
-    return client.app.state.container.retrieve(TraceEmitter)
+    return container.retrieve(TraceEmitter)  # type: ignore[no-any-return]
 
 
-def test_traces_with_level_filter(client: TestClient, trace_emitter: TraceEmitter) -> None:
+def test_traces_with_level_filter(
+    client: TestClient, trace_emitter: TraceEmitter, container: Any,
+) -> None:
     """Test /api/traces with level filter."""
+    # Register and login
+    auth = container.retrieve(AuthMiddleware)
+    auth.register_user("testuser_level", "testpass")
+    response = client.post(
+        "/api/auth/login", json={"username": "testuser_level", "password": "testpass"}
+    )
+    session_cookie = response.cookies.get("session_id")
+    client.cookies.set("session_id", session_cookie or "")
+
     # Emit events with different levels
     for _ in range(5):
         trace_emitter.emit(
@@ -43,17 +71,6 @@ def test_traces_with_level_filter(client: TestClient, trace_emitter: TraceEmitte
             message="Info message",
         )
 
-    # Register and login
-    client.post(
-        "/api/auth/register", json={"username": "testuser_level", "password": "testpass"}
-    )
-    response = client.post(
-        "/api/auth/login", json={"username": "testuser_level", "password": "testpass"}
-    )
-    assert response.status_code == 200
-    session_cookie = response.cookies.get("session_id")
-    client.cookies.set("session_id", session_cookie)
-
     response = client.get("/api/traces?level=error")
     assert response.status_code == 200
     traces = response.json()
@@ -61,8 +78,19 @@ def test_traces_with_level_filter(client: TestClient, trace_emitter: TraceEmitte
     assert all(t["level"] == "error" for t in traces)
 
 
-def test_traces_with_component_filter(client: TestClient, trace_emitter: TraceEmitter) -> None:
+def test_traces_with_component_filter(
+    client: TestClient, trace_emitter: TraceEmitter, container: Any,
+) -> None:
     """Test /api/traces with component filter."""
+    # Register and login
+    auth = container.retrieve(AuthMiddleware)
+    auth.register_user("testuser_comp", "testpass")
+    response = client.post(
+        "/api/auth/login", json={"username": "testuser_comp", "password": "testpass"}
+    )
+    session_cookie = response.cookies.get("session_id")
+    client.cookies.set("session_id", session_cookie or "")
+
     # Emit events for different components
     for _ in range(4):
         trace_emitter.emit(
@@ -77,17 +105,6 @@ def test_traces_with_component_filter(client: TestClient, trace_emitter: TraceEm
             message="Message from B",
         )
 
-    # Register and login
-    client.post(
-        "/api/auth/register", json={"username": "testuser_comp", "password": "testpass"}
-    )
-    response = client.post(
-        "/api/auth/login", json={"username": "testuser_comp", "password": "testpass"}
-    )
-    assert response.status_code == 200
-    session_cookie = response.cookies.get("session_id")
-    client.cookies.set("session_id", session_cookie)
-
     response = client.get("/api/traces?component=ComponentA")
     assert response.status_code == 200
     traces = response.json()
@@ -95,8 +112,19 @@ def test_traces_with_component_filter(client: TestClient, trace_emitter: TraceEm
     assert all(t["component"] == "ComponentA" for t in traces)
 
 
-def test_traces_with_task_id_filter(client: TestClient, trace_emitter: TraceEmitter) -> None:
+def test_traces_with_task_id_filter(
+    client: TestClient, trace_emitter: TraceEmitter, container: Any,
+) -> None:
     """Test /api/traces with task_id filter."""
+    # Register and login
+    auth = container.retrieve(AuthMiddleware)
+    auth.register_user("testuser_taskid", "testpass")
+    response = client.post(
+        "/api/auth/login", json={"username": "testuser_taskid", "password": "testpass"}
+    )
+    session_cookie = response.cookies.get("session_id")
+    client.cookies.set("session_id", session_cookie or "")
+
     task_id = uuid4()
     other_task_id = uuid4()
 
@@ -117,17 +145,6 @@ def test_traces_with_task_id_filter(client: TestClient, trace_emitter: TraceEmit
             correlation_id=other_task_id,
         )
 
-    # Register and login
-    client.post(
-        "/api/auth/register", json={"username": "testuser_taskid", "password": "testpass"}
-    )
-    response = client.post(
-        "/api/auth/login", json={"username": "testuser_taskid", "password": "testpass"}
-    )
-    assert response.status_code == 200
-    session_cookie = response.cookies.get("session_id")
-    client.cookies.set("session_id", session_cookie)
-
     response = client.get(f"/api/traces?task_id={task_id}")
     assert response.status_code == 200
     traces = response.json()
@@ -135,8 +152,17 @@ def test_traces_with_task_id_filter(client: TestClient, trace_emitter: TraceEmit
     assert all(str(t["correlation_id"]) == str(task_id) for t in traces)
 
 
-def test_traces_pagination(client: TestClient, trace_emitter: TraceEmitter) -> None:
+def test_traces_pagination(client: TestClient, trace_emitter: TraceEmitter, container: Any) -> None:
     """Test /api/traces with pagination (limit and offset)."""
+    # Register and login
+    auth = container.retrieve(AuthMiddleware)
+    auth.register_user("testuser_page", "testpass")
+    response = client.post(
+        "/api/auth/login", json={"username": "testuser_page", "password": "testpass"}
+    )
+    session_cookie = response.cookies.get("session_id")
+    client.cookies.set("session_id", session_cookie or "")
+
     # Emit many events
     for i in range(20):
         trace_emitter.emit(
@@ -144,17 +170,6 @@ def test_traces_pagination(client: TestClient, trace_emitter: TraceEmitter) -> N
             component="TestComponent",
             message=f"Message {i}",
         )
-
-    # Register and login
-    client.post(
-        "/api/auth/register", json={"username": "testuser_page", "password": "testpass"}
-    )
-    response = client.post(
-        "/api/auth/login", json={"username": "testuser_page", "password": "testpass"}
-    )
-    assert response.status_code == 200
-    session_cookie = response.cookies.get("session_id")
-    client.cookies.set("session_id", session_cookie)
 
     # Test limit
     response = client.get("/api/traces?limit=5")
@@ -169,8 +184,19 @@ def test_traces_pagination(client: TestClient, trace_emitter: TraceEmitter) -> N
     assert len(traces) <= 5
 
 
-def test_traces_max_limit_enforced(client: TestClient, trace_emitter: TraceEmitter) -> None:
+def test_traces_max_limit_enforced(
+    client: TestClient, trace_emitter: TraceEmitter, container: Any,
+) -> None:
     """Test that the max limit of 1000 is enforced."""
+    # Register and login
+    auth = container.retrieve(AuthMiddleware)
+    auth.register_user("testuser_max", "testpass")
+    response = client.post(
+        "/api/auth/login", json={"username": "testuser_max", "password": "testpass"}
+    )
+    session_cookie = response.cookies.get("session_id")
+    client.cookies.set("session_id", session_cookie or "")
+
     # Emit many events
     for i in range(1500):
         trace_emitter.emit(
@@ -178,17 +204,6 @@ def test_traces_max_limit_enforced(client: TestClient, trace_emitter: TraceEmitt
             component="TestComponent",
             message=f"Message {i}",
         )
-
-    # Register and login
-    client.post(
-        "/api/auth/register", json={"username": "testuser_max", "password": "testpass"}
-    )
-    response = client.post(
-        "/api/auth/login", json={"username": "testuser_max", "password": "testpass"}
-    )
-    assert response.status_code == 200
-    session_cookie = response.cookies.get("session_id")
-    client.cookies.set("session_id", session_cookie)
 
     # Request more than max limit
     response = client.get("/api/traces?limit=2000")

@@ -36,7 +36,11 @@ def trace() -> TraceEmitter:
 @pytest.fixture
 def auth(trace: TraceEmitter) -> AuthMiddleware:
     """Create an AuthMiddleware instance for testing."""
-    return AuthMiddleware(trace=trace)
+    auth = AuthMiddleware(trace=trace)
+    # Clear any loaded users to ensure a fresh slate for tests
+    auth._password_hashes.clear()
+    auth._salts.clear()
+    return auth
 
 
 @pytest.fixture

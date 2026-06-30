@@ -23,15 +23,20 @@ def client() -> TestClient:
 
 @pytest.fixture
 def container(client: TestClient) -> Any:  # type: ignore[misc]
-    """Get the container from the app state."""
-    return client.app.state.container  # type: ignore[attr-defined]
+    """Get the container from the app state and clear auth users for fresh test state."""
+    container = client.app.state.container  # type: ignore[attr-defined]
+    # Clear persisted users to ensure fresh test state
+    from sovereignai.shared.auth import AuthMiddleware
+    auth = container.retrieve(AuthMiddleware)
+    auth._password_hashes.clear()
+    auth._salts.clear()
+    return container
 
 
 def test_no_users_redirects_to_register(client: TestClient, container: Any) -> None:
     """Test that accessing root with no users redirects to register."""
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Ensure no users exist
     auth._password_hashes.clear()
 
@@ -46,7 +51,6 @@ def test_after_register_redirects_to_login(client: TestClient, container: Any) -
     """Test that accessing register after user exists redirects to login."""
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Register a user
     auth.register_user("testuser", "password123")
 
@@ -61,7 +65,6 @@ def test_static_files_not_redirected(client: TestClient, container: Any) -> None
     """Test that static files are accessible without auth on first run."""
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Ensure no users exist
     auth._password_hashes.clear()
 
@@ -76,7 +79,6 @@ def test_api_returns_401_on_first_run(client: TestClient, container: Any) -> Non
     """Test that API endpoints return 401 on first run (not redirect)."""
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Ensure no users exist
     auth._password_hashes.clear()
 
@@ -92,7 +94,6 @@ def test_auth_endpoints_allowed_on_first_run(client: TestClient, container: Any)
     """Test that auth endpoints are accessible on first run."""
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
-
     # Ensure no users exist
     auth._password_hashes.clear()
 
