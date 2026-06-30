@@ -5,7 +5,6 @@ filtered results, and the task-specific trace endpoint works.
 """
 from __future__ import annotations
 
-from collections.abc import Generator
 from typing import Any
 
 import pytest

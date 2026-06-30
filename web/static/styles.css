@@ -612,7 +612,8 @@ body {
 .model-family-section h3:hover {
     background: #333;
 }
-.model-family-section.collapsed .family-models {
+.model-family-section.collapsed .family-models,
+.model-family-section.collapsed .load-all-btn {
     display: none;
 }
 .family-models {
@@ -654,6 +655,27 @@ body {
 }
 .load-more-btn:hover {
     background: #4d4d4d;
+}
+.load-all-btn {
+    display: block;
+    margin: 8px auto;
+    padding: 4px 16px;
+    background: transparent;
+    border: 1px solid #4d4d4d;
+    color: #888;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.load-all-btn:hover {
+    background: #333;
+    color: #ccc;
+}
+.loading-text {
+    color: #666;
+    font-size: 12px;
+    padding: 8px;
+    text-align: center;
 }
 
 /* Pull dialog */

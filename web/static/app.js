@@ -664,7 +664,8 @@ function loadInstalledModels() {
         });
 }
 
-function loadHFCatalog(reset = true) {
+function loadHFCatalog(reset) {
+    if (reset === undefined) reset = true;
     if (reset) {
         hfOffset = 0;
         document.getElementById('hf-models-list').innerHTML = '';
@@ -683,11 +684,11 @@ function loadHFCatalog(reset = true) {
                 return;
             }
 
-            // Remove existing Load More
+            // Remove existing Load More button
             const existingBtn = document.getElementById('load-more-btn');
             if (existingBtn) existingBtn.remove();
 
-            // Group by family (Meta / Llama, Google / Gemma, etc.)
+            // Group by family
             const byFamily = {};
             models.forEach(m => {
                 const fam = m.family || 'Other';
@@ -695,47 +696,102 @@ function loadHFCatalog(reset = true) {
                 byFamily[fam].push(m);
             });
 
-            // Sort families by total downloads (most popular first)
+            // Sort families by total downloads
             const sortedFamilies = Object.entries(byFamily)
                 .sort((a, b) => {
-                    const aTotal = a[1].reduce((s, m) => s + m.downloads, 0);
-                    const bTotal = b[1].reduce((s, m) => s + m.downloads, 0);
+                    const aTotal = a[1].reduce((s, m) => s + (m.downloads || 0), 0);
+                    const bTotal = b[1].reduce((s, m) => s + (m.downloads || 0), 0);
                     return bTotal - aTotal;
                 });
 
             for (const [family, familyModels] of sortedFamilies) {
-                const section = document.createElement('div');
-                section.className = 'model-family-section';
-                const totalDownloads = familyModels.reduce((s, m) => s + m.downloads, 0);
-                section.innerHTML = `<h3 onclick="this.parentElement.classList.toggle('collapsed')">${family} (${familyModels.length} models, ⬇${(totalDownloads/1000).toFixed(0)}K)</h3>`;
-                const modelList = document.createElement('div');
-                modelList.className = 'family-models';
+                // Find existing family section or create new
+                let section = document.querySelector(`[data-family="${family}"]`);
+                if (!section) {
+                    section = document.createElement('div');
+                    section.className = 'model-family-section collapsed';
+                    section.setAttribute('data-family', family);
+                    const totalDl = familyModels.reduce((s, m) => s + (m.downloads || 0), 0);
+                    const dlStr = totalDl > 1000 ? `${(totalDl / 1000).toFixed(0)}K` : totalDl;
+                    section.innerHTML = `<h3 onclick="this.parentElement.classList.toggle('collapsed')">${family} (${familyModels.length} models, ⬇${dlStr}) ▶</h3>`;
+                    const modelList = document.createElement('div');
+                    modelList.className = 'family-models';
+                    section.appendChild(modelList);
+                    list.appendChild(section);
+                }
+
+                const modelList = section.querySelector('.family-models');
                 familyModels.forEach(m => {
                     const entry = document.createElement('div');
                     entry.className = 'model-entry catalog';
-                    const downloads = m.downloads > 1000 ? `${(m.downloads / 1000).toFixed(0)}K` : m.downloads;
+                    const dl = m.downloads > 1000 ? `${(m.downloads / 1000).toFixed(0)}K` : (m.downloads || 0);
                     entry.innerHTML = `
-                        <span class="model-publisher">${m.publisher}</span>
+                        <span class="model-publisher">${m.publisher || ''}</span>
                         <span class="model-name">${m.name}</span>
-                        <span class="model-downloads">⬇ ${downloads}</span>
+                        <span class="model-downloads">⬇ ${dl}</span>
                         <button class="pull-btn" onclick="showPullDialog('${m.id}')">Pull</button>
                     `;
                     modelList.appendChild(entry);
                 });
-                section.appendChild(modelList);
-                list.appendChild(section);
+
+                // Add load-all button if not already present
+                if (!section.querySelector('.load-all-btn')) {
+                    const loadAllBtn = document.createElement('button');
+                    loadAllBtn.className = 'load-all-btn';
+                    loadAllBtn.textContent = `Load all ${family} models`;
+                    loadAllBtn.onclick = function() { loadAllFromFamily(family); };
+                    section.appendChild(loadAllBtn);
+                }
             }
 
-            // Add Load More if full page returned
+            // Add Load More button if full page returned
             if (models.length === HF_PAGE_SIZE) {
                 hfOffset += HF_PAGE_SIZE;
                 const btn = document.createElement('button');
                 btn.id = 'load-more-btn';
                 btn.className = 'load-more-btn';
                 btn.textContent = 'Load More Models';
-                btn.onclick = () => loadHFCatalog(false);
+                btn.onclick = function() { loadHFCatalog(false); };
                 list.appendChild(btn);
             }
+        });
+}
+
+function loadAllFromFamily(family) {
+    // Search HuggingFace for the family name to get all models from that publisher/family
+    const searchTerms = family.split(' / ').pop().toLowerCase(); // e.g., "Meta / Llama" -> "llama"
+    const list = document.querySelector(`[data-family="${family}"] .family-models`);
+    if (!list) return;
+
+    // Show loading indicator
+    const loading = document.createElement('p');
+    loading.textContent = 'Loading all models...';
+    loading.className = 'loading-text';
+    list.appendChild(loading);
+
+    // Fetch all models matching this family name (up to 200)
+    fetch(`/api/models/catalog?search=${encodeURIComponent(searchTerms)}&limit=200`)
+        .then(r => r.json())
+        .then(models => {
+            loading.remove();
+            // Filter to only models matching this family
+            const familyModels = models.filter(m => m.family === family);
+            familyModels.forEach(m => {
+                // Check if already in list
+                const existing = list.querySelector(`[data-model-id="${m.id}"]`);
+                if (existing) return;
+                const entry = document.createElement('div');
+                entry.className = 'model-entry catalog';
+                entry.setAttribute('data-model-id', m.id);
+                const dl = m.downloads > 1000 ? `${(m.downloads / 1000).toFixed(0)}K` : (m.downloads || 0);
+                entry.innerHTML = `
+                    <span class="model-publisher">${m.publisher || ''}</span>
+                    <span class="model-name">${m.name}</span>
+                    <span class="model-downloads">⬇ ${dl}</span>
+                    <button class="pull-btn" onclick="showPullDialog('${m.id}')">Pull</button>
+                `;
+                list.appendChild(entry);
+            });
         });
 }
 

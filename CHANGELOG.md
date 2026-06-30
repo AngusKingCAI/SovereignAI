@@ -1031,3 +1031,27 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Removed registration endpoint block that prevented multiple users
 - Changed duplicate username error from 403 to 409 (Conflict)
 - Changed cookie secure flag from True to False for localhost HTTP compatibility
+## prompt-17.6 — Fix Model Pull 500 + Collapsible Family Sections + Load More + Provider Search
+
+**Date**: 2026-06-30
+**Plan file**: prompts/plan-17.6-Rev1.md
+
+**Files changed**:
+- web/main.py
+- web/static/app.js
+- web/static/styles.css
+- web/templates/index.html
+
+**Results**:
+- Tests: 342 passed, 10 skipped
+- Ruff: 2 findings (pre-existing in teacher_worker.py)
+- Mypy: 4 findings (pre-existing in config_loader.py, main.py)
+- Bandit: 718 findings (baseline)
+- Vulture: 0 findings
+- Detect-secrets: pass
+
+**Notes**:
+- Fixed KeyError in model detail endpoint (f["path"] → f["filename"])
+- Added collapsible model family sections with pagination
+- Added "Load all from family" button for provider-specific search
+- Wrapped API key password field in form tag to fix DOM warning

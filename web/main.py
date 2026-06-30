@@ -709,7 +709,7 @@ async def get_model_detail(request: Request, model_id: str) -> dict:
     files = get_model_files(trace, model_id)
     # Enrich with quant labels
     for f in files:
-        f["quant"] = extract_quant_from_filename(f["path"])
+        f["quant"] = extract_quant_from_filename(f["filename"])
     return {"model_id": model_id, "files": files}
 
 

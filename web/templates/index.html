@@ -95,11 +95,11 @@
       <div class="options-section">
         <h3>API Keys</h3>
         <div id="api-keys-list"></div>
-        <div class="api-key-form">
-          <input type="text" id="api-key-provider" placeholder="Provider (e.g., openai)">
-          <input type="password" id="api-key-value" placeholder="API Key">
-          <button onclick="saveApiKey()">Save</button>
-        </div>
+        <form class="api-key-form" onsubmit="saveApiKey(); return false;">
+          <input type="text" id="api-key-provider" placeholder="Provider (e.g., openai)" autocomplete="off">
+          <input type="password" id="api-key-value" placeholder="API Key" autocomplete="new-password">
+          <button type="submit">Save</button>
+        </form>
       </div>
       <div class="options-section">
         <h3>Ollama</h3>
