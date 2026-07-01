@@ -57,33 +57,38 @@ Run at end of every plan. Don't skip steps. STOP only on failure.
 
 14.1. **OR51 verification**: extract deferred item count from execution log, then `grep -c "prompt-{N}" DEBT.md` — if counts don't match, STOP.
 
-14.5. **Close report**: write `documents/plan-{N}-report.md` with: plan title, test count, coverage %, deferred items, browser smoke test screenshot paths, AR7 allowlist diff, OR63 check result. Verify: `test -f documents/plan-{N}-report.md || STOP "Close report missing"`.
+14.5. **Close report**: write `documents/plan-{N}-report.md` with ONLY these three fields (test/coverage/deferred data lives in CHANGELOG step 12 — do NOT duplicate):
+    - **Browser smoke test screenshot paths** (from step 15)
+    - **AR7 allowlist diff** (from step 11)
+    - **OR63 check result** (from step 9)
+    Verify: `test -f documents/plan-{N}-report.md || STOP "Close report missing"`. SSOT: no test counts, no coverage %, no deferred items — those are CHANGELOG's job.
 
 14.6. **LANDMINES.md**: append entry if any of: plan STOPped, new OR added, AR check failed for novel reason. Otherwise log "N/A — no new patterns".
 
 ## Verification (before commit/tag)
 
-15. **Browser smoke test** (OR57 — mandatory for HTML/CSS/JS plans): start dev server, load page. For each new UI element listed in plan's "WILL edit" UI scope: verify present in DOM, verify interactive (click + observe state change), capture screenshot named `<element-id>.png` to `logs/screenshots/prompt-{N}/`. Verify each screenshot >1KB (non-blank). "Manual verification available" without doing it = STOP.
+15. **Browser smoke test** (OR57 — mandatory for HTML/CSS/JS plans): start dev server, load page. For each new UI element listed in plan's "WILL edit" UI scope: verify present in DOM, verify interactive (click + observe state change), capture screenshot named `<element-id>.png` to `logs/screenshots/prompt-{N}/`. Verify each screenshot >1KB (non-blank). "Manual verification available" / "N/A — requires manual verification" without doing it = STOP. No exemptions: if the plan touches HTML/CSS/JS, screenshots are mandatory. If dev server cannot start, STOP and fix before proceeding.
 
 16. **Post-execution spec-match review** (OR65): 
     - Size guard: `DIFF_LINES=$(git diff prompt-{N-1}..HEAD | wc -l)` — if >5000 lines, chunk per phase. After chunked review, run `spec_match.py` on FULL diff for cross-chunk reconciliation.
-    - Run `.venv/Scripts/python.exe scripts/ar_checks/spec_match.py` — mechanical gate. Exit≠0 = STOP.
-    - If `spec_match.py` passes, spec-match review complete. No LLM review layer.
+    - Run `.venv/Scripts/python.exe scripts/ar_checks/spec_match.py` — mechanical gate. Exit≠0 = STOP. No rationalization ("repo state issue", "not a plan-N implementation issue", "polluted repo state") — if the gate fails, the plan STOPs. Fix the repo state or fix the plan; do not ship around the gate.
 
 ## Git (after verification passes)
 
 17. **Stray-file scan** (OR59): `git add -A && git status -s` — verify no unintended files. If found: `git reset HEAD <file>` and `rm` or move to `/tmp/`.
 
-18. **Commit**: `git add -A && git status -s && git commit -m "prompt-{N}: {title}"` (OR27: multi `-m` flags. OR41: `git add -A` only).
+18. **Move plan files to completed**: `mv prompts/plan-{N}-* prompts/completed/` — verify `ls prompts/plan-{N}* 2>/dev/null` returns empty; if not, STOP.
 
-19. **Tag**: `git tag --list prompt-{N}` — STOP if not empty (premature tag per OR42). Then `git tag prompt-{N}`.
+19. **Commit**: `git add -A && git status -s && git commit -m "prompt-{N}: {title}"` (OR27: multi `-m` flags. OR41: `git add -A` only).
 
-20. **Push**: `git push origin main --tags`
+20. **Tag**: `git tag --list prompt-{N}` — STOP if not empty (premature tag per OR42). Then `git tag prompt-{N}`.
 
-21. **Verify tag on origin**: `git ls-remote --tags origin | grep prompt-{N}` — STOP if missing.
+21. **Push**: `git push origin main --tags`
+
+22. **Verify tag on origin**: `git ls-remote --tags origin | grep prompt-{N}` — STOP if missing.
 
 ## Finalize
 
-22. **Execution log**: paste full chat log into `logs/execution-log-prompt-{N}.md`.
+23. **Execution log**: paste full chat log into `logs/execution-log-prompt-{N}.md`.
 
-23. **Kill bash**: `taskkill //F //IM bash.exe 2>&1 || true`
+24. **Kill bash**: `taskkill //F //IM bash.exe 2>&1 || true`
