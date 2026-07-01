@@ -4,6 +4,10 @@ Run at end of every plan. Don't skip steps. STOP only on failure.
 
 Prerequisite: `.venv/` exists.
 
+## Resolve current plan file
+
+0. `CURRENT_PLAN=$(ls -v prompts/plan-{N}-Rev*.md | tail -n 1)` — this is the ONE plan file for the remainder of `/close`. Every later step referencing a plan filename uses `$CURRENT_PLAN`. STOP if empty.
+
 ## Static analysis
 
 1. `.venv/Scripts/python.exe -m pytest tests/ -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%. STOP if N/A for `.py`-editing plan.
@@ -45,7 +49,7 @@ Prerequisite: `.venv/` exists.
     ```
     ## prompt-{N} — {title}
     **Date**: {YYYY-MM-DD}
-    **Plan file**: prompts/plan-{N}-Rev{n}.md
+    **Plan file**: $CURRENT_PLAN
     **Tests**: {count} passed, {count} skipped ({chronic} chronic)
     **Coverage**: {%}
     **Browser smoke test screenshots**: {paths from step 15, or "N/A"}
@@ -64,17 +68,24 @@ Prerequisite: `.venv/` exists.
 
 ## Verification (before commit/tag)
 
-15. Start dev server, load page. For each new UI element in plan's "WILL edit" scope: verify present in DOM, click + observe state change, capture screenshot `<element-id>.png` to `logs/screenshots/prompt-{N}/`. Verify each screenshot >1KB. "N/A — requires manual verification" without doing it = STOP. STOP if dev server won't start. Do not proceed to step 17 until each required screenshot file exists on disk and is >1KB — writing "N/A" or "skipped" in the CHANGELOG field does not satisfy this step.
+15. Start dev server, load page. For each new UI element in plan's "WILL edit" scope: verify present in DOM, click + observe state change, capture screenshot `<element-id>.png` to `logs/screenshots/prompt-{N}/`. Verify each screenshot >1KB. STOP if not done. STOP if dev server won't start.
 
-16. `DIFF_LINES=$(git diff prompt-{N-1}..HEAD | wc -l)` — if >5000, chunk review per phase, then run full-diff pass. `.venv/Scripts/python.exe scripts/ar_checks/spec_match.py prompts/plan-{N}-Rev{n}.md` — STOP if exit≠0. No exceptions for "repo state issue," "expected due to test fixes," or similar rationalization — fix the repo or fix the plan. A non-zero exit here blocks steps 17-22 (add, commit, tag, push) entirely; do not commit, tag, or push while spec_match is failing, even if the failure looks explainable.
+16. `DIFF_LINES=$(git diff prompt-{N-1}..HEAD | wc -l)` — if >5000, chunk review per phase. `.venv/Scripts/python.exe scripts/ar_checks/spec_match.py $CURRENT_PLAN` — STOP if exit≠0. No exceptions. Blocks steps 17-22 until it passes.
 
 ## Git
 
-17. `git add -A && git status -s` — verify no unintended files. If found: `git reset HEAD <file>` and `rm` or move to `/tmp/`.
+17. `git add -A && git status -s` — verify no unintended files.
 
-18. `mv prompts/plan-{N}-* prompts/completed/` — `ls prompts/plan-{N}* 2>/dev/null` must return empty. STOP if not.
+18. Move ALL plan-{N} revision files, not a single named revision:
+    ```
+    BEFORE_COUNT=$(ls prompts/plan-{N}-Rev*.md 2>/dev/null | wc -l)
+    mv prompts/plan-{N}-Rev*.md prompts/completed/
+    AFTER_COUNT=$(ls prompts/completed/plan-{N}-Rev*.md 2>/dev/null | wc -l)
+    ls prompts/plan-{N}* 2>/dev/null
+    ```
+    Must be empty AND `AFTER_COUNT` = `BEFORE_COUNT` — STOP if not. Never substitute a specific filename for the glob.
 
-19. `git add -A && git status -s && git commit -m "prompt-{N}: {title}" -m "{note 1}" -m "{note 2}" -m "{note 3}"` — one `-m` flag per CHANGELOG Notes bullet from step 12. Never embed `\n` in a single `-m` string.
+19. `git add -A && git status -s && git commit -m "prompt-{N}: {title}" -m "{note 1}" -m "{note 2}" -m "{note 3}"` — one `-m` per CHANGELOG Notes bullet.
 
 20. `git tag --list prompt-{N}` — STOP if not empty. Then `git tag prompt-{N}`.
 
@@ -84,20 +95,6 @@ Prerequisite: `.venv/` exists.
 
 ## Finalize
 
-23. Create `logs/execution-log-prompt-{N}.md` if missing:
-    ```
-    # Execution Log - Prompt {N}
-    **Status**:
-    **Date**:
-    **Plan**:
-
-    ## Clarifications
-
-
-    ## Notes
-
-
-    ```
-    Leave blank. Do not write content into this file.
+23. Create `logs/execution-log-prompt-{N}.md` if missing (blank template only, no content).
 
 24. `taskkill //F //IM bash.exe 2>&1 || true`
