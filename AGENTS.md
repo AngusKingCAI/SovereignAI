@@ -184,6 +184,8 @@ OR69. Models panel and Hardware panel must consume capability API only — no di
 
 OR70. Every adapter manifest declares `routing_priority` int — RoutingEngine routes ascending, lower = higher priority; default 1000 for manifests omitting the field; reserved range 0-999 for explicit priorities.
 
+OR71. Diagnostic harness tests real end-to-end AI workflow with explicit model lifecycle: load → use → unload per stage. Mock tests verify code paths; harness tests verify system functionality.
+
 ---
 
 See `LANDMINES.md` for failure patterns linked to rules.
