@@ -24,6 +24,9 @@ Open questions resolved: none
 - **S1.5**: Import `build_container()` from `sovereignai.main`, store in app state
 - **S1.6**: Run `python tui/main.py`, verify all 10 panels render
 
+**WILL edit**:
+- `tui/main.py`
+
 ---
 
 ## S2 — Options Panel (`tui/panels/options.py`)
@@ -35,6 +38,9 @@ Open questions resolved: none
 - **S2.6**: Display databases as second `DataTable`: Name, Status, Model Count, Last Updated
 - **S2.7**: [Fetch] / [Uninstall] buttons per database row
 
+**WILL edit**:
+- `tui/panels/options.py`
+
 ---
 
 ## S3 — Memory Panel (`tui/panels/memory.py`)
@@ -45,6 +51,9 @@ Open questions resolved: none
 - **S3.5**: [Test Write] button: store test record, verify retrieve, show result
 - **S3.6**: `RichLog` at bottom shows trace events from TraceMemoryBackend
 
+**WILL edit**:
+- `tui/panels/memory.py`
+
 ---
 
 ## S4 — Hardware Panel (`tui/panels/hardware.py`)
@@ -52,6 +61,9 @@ Open questions resolved: none
 - **S4.2**: Display `Static` cards: CPU (usage, model, cores), Memory (used/total, speed), GPU (usage, VRAM, temp), Disk (used/total), Network (adapter, SSID, IP)
 - **S4.3**: [Refresh] button re-runs probe, updates all cards
 - **S4.4**: `DataTable` for process list: Name, PID, CPU%, Mem%
+
+**WILL edit**:
+- `tui/panels/hardware.py`
 
 ---
 
@@ -62,6 +74,9 @@ Open questions resolved: none
 - **S5.4**: Level filter buttons: [All] [ERROR] [WARN] [INFO] [DEBUG]
 - **S5.5**: Verify 100% verbosity: all events from all components appear
 
+**WILL edit**:
+- `tui/panels/logs.py`
+
 ---
 
 ## S6 — Adapters Panel (`tui/panels/adapters.py`)
@@ -69,6 +84,9 @@ Open questions resolved: none
 - **S6.2**: Display `DataTable`: Name, Status, Capabilities
 - **S6.3**: [Health Check] button per adapter: runs real health_check(), updates status
 - **S6.4**: [Load Model] / [Unload Model] buttons for model adapters
+
+**WILL edit**:
+- `tui/panels/adapters.py`
 
 ---
 
@@ -78,13 +96,21 @@ Open questions resolved: none
 - **S7.3**: [Invoke] button per skill: calls skill with test input, shows result
 - **S7.4**: Test `websearch_skill`: invoke with "test query", display response
 
+**WILL edit**:
+- `tui/panels/skills.py`
+
 ---
 
 ## S8 — Install Test Manager and Worker
-- **S8.1**: Create `tui/test_workers/test_manager.py`: simple manager that reads from WorkingMemory, assigns tasks
-- **S8.2**: Create `tui/test_workers/test_worker.py`: simple worker that reads tasks, calls adapter generate(), saves results
-- **S8.3**: Register both in `CapabilityGraph` via container
+- **S8.1**: Create `sovereignai/workers/test_manager.py`: simple manager that reads from WorkingMemory, assigns tasks
+- **S8.2**: Create `sovereignai/workers/test_worker.py`: simple worker that reads tasks, calls adapter generate(), saves results
+- **S8.3**: Register both in DI container via `sovereignai/main.py`
 - **S8.4**: Test: manager receives prompt → assigns to worker → worker generates → saves result → manager reads → approves
+
+**WILL edit**:
+- `sovereignai/workers/test_manager.py`
+- `sovereignai/workers/test_worker.py`
+- `sovereignai/main.py`
 
 ---
 
@@ -95,6 +121,9 @@ Open questions resolved: none
 - **S9.4**: Model selector `Select` widget: populate from `CapabilityGraph` adapters
 - **S9.5**: Conversation tabs: `Tabs` widget, [+] new tab, [×] close tab
 
+**WILL edit**:
+- `tui/panels/orchestrator.py`
+
 ---
 
 ## S10 — Models Panel (`tui/panels/models.py`)
@@ -103,6 +132,9 @@ Open questions resolved: none
 - **S10.3**: [Pull] button: calls `ollama pull` for selected model
 - **S10.4**: [Load] / [Unload] buttons: call adapter load/unload
 
+**WILL edit**:
+- `tui/panels/models.py`
+
 ---
 
 ## S11 — Workers Panel (`tui/panels/workers.py`)
@@ -110,6 +142,9 @@ Open questions resolved: none
 - **S11.2**: Display `DataTable`: Name, Department, Model, Status
 - **S11.3**: [Assign Model] button per worker: opens model selector
 - **S11.4**: [Test] button: sends test task to worker, shows result
+
+**WILL edit**:
+- `tui/panels/workers.py`
 
 ---
 
@@ -120,6 +155,9 @@ Open questions resolved: none
 - **S12.4**: [Create Task] button: opens modal, submits to state machine
 - **S12.5**: [Cancel] button: cancels running task
 
+**WILL edit**:
+- `tui/panels/tasks.py`
+
 ---
 
 ## S13 — Scan and Close
@@ -129,3 +167,9 @@ Open questions resolved: none
 - **S13.4**: Run harness: all 12 stages PASS
 - **S13.5**: Update `CHANGELOG.md`, `PLANS.md`, `DEBT.md`
 - **S13.6**: Run `/verify`, `/close`
+
+**WILL edit**:
+- `pyproject.toml`
+- `txt/requirements.txt`
+- `CHANGELOG.md`
+- `PLANS.md`

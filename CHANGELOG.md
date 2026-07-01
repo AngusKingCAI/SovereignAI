@@ -1,5 +1,37 @@
 # CHANGELOG
 
+## prompt-20.4 — TUI Skeleton with Real Backend Integration
+**Date**: 2026-07-02
+**Plan file**: prompts/plan-20.4-Rev0.md
+**Tests**: 456 passed, 5 skipped (0 chronic)
+**Coverage**: 93% (no change — TUI is new UI surface, not core code)
+**Browser smoke test screenshots**: N/A — TUI is terminal-based, not web UI
+**AR7 allowlist diff**: Added tui/ and tui/test_workers/ to AR7 allowlist for sovereignai.shared imports
+**OR63 check result**: discovery clean
+- Added OR72 to AGENTS.md: "TUI is a first-class UI consuming the same capability API as the WebUI. TUI panels must display real backend state, not placeholder text."
+- Created TUI skeleton in tui/main.py with Textual App, sidebar with 10 buttons, and panel switching via CSS classes
+- Implemented 10 TUI panels with real backend integration:
+  - Options Panel (tui/panels/options.py) — displays services and databases with health status
+  - Memory Panel (tui/panels/memory.py) — displays memory backend statistics and test write functionality
+  - Hardware Panel (tui/panels/hardware.py) — displays CPU, memory, GPU, disk info and process table
+  - Logs Panel (tui/panels/logs.py) — displays system logs with level filtering
+  - Adapters Panel (tui/panels/adapters.py) — displays registered adapters via CapabilityAPI
+  - Skills Panel (tui/panels/skills.py) — displays registered skills via CapabilityAPI
+  - Orchestrator Panel (tui/panels/orchestrator.py) — chat interface for task submission via CapabilityAPI
+  - Models Panel (tui/panels/models.py) — displays available models from ModelCatalog
+  - Workers Panel (tui/panels/workers.py) — displays worker status (TestWorker placeholder)
+  - Tasks Panel (tui/panels/tasks.py) — displays task list from ITaskStateQuery
+- Created TestManager and TestWorker in sovereignai/workers/ (core components, not TUI-specific)
+- Registered TestManager and TestWorker in DI container (sovereignai/main.py)
+- Updated pyproject.toml to include tui/ as installable package
+- Added textual>=0.50.0 to requirements.txt
+- Updated AR7 test to allow sovereignai.shared imports in tui/panels/ only
+- All panels use CapabilityAPI for backend access per AR7 (no direct sovereignai.* imports except shared)
+- All panels have proper type annotations and ComposeResult return types
+- All scans passed: pytest (456 passed, 5 skipped), ruff (0 errors), mypy (0 errors)
+
+---
+
 ## prompt-20.3 — Diagnostic Harness (Real End-to-End AI Workflow)
 **Date**: 2026-07-02
 **Plan file**: prompts/plan-20.3-Rev0.md

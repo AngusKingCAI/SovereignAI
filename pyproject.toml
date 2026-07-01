@@ -18,10 +18,10 @@ dynamic = ["dependencies"]
 dependencies = {file = ["txt/requirements.txt"]}
 
 [tool.setuptools.packages.find]
-# Only sovereignai/ is an installable package.
-# UIs (web/, cli/, tui/, phone/) are separate processes — NOT installable as part of the core.
-include = ["sovereignai*"]
-exclude = ["tests*", "web*", "cli*", "tui*", "phone*", "documents*", "prompts*", "logs*", "txt*"]
+# sovereignai/, databases/, services/, adapters/, and tui/ are installable packages.
+# UIs (web/, cli/, phone/) are separate processes — NOT installable as part of the core.
+include = ["sovereignai*", "databases*", "services*", "adapters*", "tui*"]
+exclude = ["tests*", "web*", "cli*", "phone*", "documents*", "prompts*", "logs*", "txt*"]
 
 [project.optional-dependencies]
 # Dev-only tools — never installed in production.

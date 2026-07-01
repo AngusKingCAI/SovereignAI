@@ -298,6 +298,23 @@ def build_container(dev_mode: bool = False) -> DIContainer:
                 self_correction.on_task_state_changed(event)  # type: ignore
         bus.subscribe(Channel("TaskStateChanged"), _wrap_task_state_changed)
 
+    # 21. Register Test Manager and Worker for TUI (Plan 20.4 S8)
+    from sovereignai.workers.test_manager import TestManager
+    from sovereignai.workers.test_worker import TestWorker
+
+    test_manager = TestManager(
+        working_memory=container.retrieve(WorkingMemoryBackend),
+        trace=trace,
+    )
+    container.register_singleton(TestManager, test_manager)
+
+    test_worker = TestWorker(
+        working_memory=container.retrieve(WorkingMemoryBackend),
+        capability_graph=graph,
+        trace=trace,
+    )
+    container.register_singleton(TestWorker, test_worker)
+
     if not _test_mode:
         # 20. Crash recovery (re-enabled per L41 fix)
         import os

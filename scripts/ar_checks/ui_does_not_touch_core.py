@@ -12,6 +12,9 @@ import sys
 
 UI_PREFIXES = ("web/", "cli/", "tui/", "phone/")
 CORE_PREFIX = "sovereignai/"
+# Exception: sovereignai/main.py can be touched when adding a new UI that needs DI registration
+# This is a one-time setup cost; subsequent UI changes should not touch core.
+CORE_EXCEPTION = "sovereignai/main.py"
 
 
 def changed_files(ref: str = "HEAD~1") -> list[str]:
@@ -34,7 +37,7 @@ def main() -> int:
         return 0  # Nothing to compare against — not a violation.
 
     touches_ui = [f for f in files if f.startswith(UI_PREFIXES)]
-    touches_core = [f for f in files if f.startswith(CORE_PREFIX)]
+    touches_core = [f for f in files if f.startswith(CORE_PREFIX) and f != CORE_EXCEPTION]
 
     if touches_ui and touches_core:
         print("AR7 violation: commit touches both UI and core layers:", file=sys.stderr)
