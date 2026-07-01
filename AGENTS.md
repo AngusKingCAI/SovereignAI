@@ -174,6 +174,8 @@ OR64. User-authorized exceptions need target plan documentation. "Deferred to ne
 
 OR65. Post-execution spec-match review mandatory. At `/close` step 16, run `spec_match.py` — mechanical gate. Exit≠0 = STOP.
 
+OR66. Logs panel must consume /api/traces SSE only — no direct TraceEmitter import from web/.
+
 ---
 
 See `LANDMINES.md` for failure patterns linked to rules.
