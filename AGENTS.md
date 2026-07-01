@@ -176,6 +176,10 @@ OR65. Post-execution spec-match review mandatory. At `/close` step 16, run `spec
 
 OR66. Logs panel must consume /api/traces SSE only — no direct TraceEmitter import from web/.
 
+OR67. databases/ and services/ are root-level packages, never nested in sovereignai/.
+
+OR68. Every ServiceProvider and DatabaseProvider exposes health_check() returning typed status dataclass; provider __init__ must not perform I/O — lazy execution only in start()/list_models().
+
 ---
 
 See `LANDMINES.md` for failure patterns linked to rules.
