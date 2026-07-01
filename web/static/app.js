@@ -93,6 +93,9 @@ function loadPanelContent(panelName) {
         case 'hardware':
             loadHardware();
             break;
+        case 'options':
+            loadOptions();
+            break;
         case 'logs':
             loadLogsPanel();
             break;
@@ -250,6 +253,64 @@ function loadHardware() {
 
     // Setup Education department buttons
     setupEducationButtons();
+}
+
+function loadOptions() {
+    fetch('/api/databases')
+        .then(response => {
+            if (response.status === 401) {
+                window.location.href = '/login';
+                throw new Error('Unauthorized');
+            }
+            if (response.status === 500) {
+                showToast('Server error — check Log drawer for details', 'error');
+                throw new Error('Server error');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const list = document.getElementById('databases-list');
+            list.innerHTML = '';
+            data.forEach(db => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${db.name}</strong> (${db.status})<br>Models: ${db.models.length > 0 ? db.models.join(', ') : 'None'}`;
+                list.appendChild(li);
+            });
+        })
+        .catch(error => {
+            if (error.message !== 'Unauthorized' && error.message !== 'Server error') {
+                console.error('Failed to fetch databases:', error);
+                showNetworkError();
+            }
+        });
+
+    fetch('/api/services')
+        .then(response => {
+            if (response.status === 401) {
+                window.location.href = '/login';
+                throw new Error('Unauthorized');
+            }
+            if (response.status === 500) {
+                showToast('Server error — check Log drawer for details', 'error');
+                throw new Error('Server error');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const list = document.getElementById('services-list');
+            list.innerHTML = '';
+            data.forEach(svc => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${svc.name}</strong> (${svc.status})<br>PID: ${svc.pid || 'N/A'} | Port: ${svc.port || 'N/A'}`;
+                list.appendChild(li);
+            });
+        })
+        .catch(error => {
+            if (error.message !== 'Unauthorized' && error.message !== 'Server error') {
+                console.error('Failed to fetch services:', error);
+                showNetworkError();
+            }
+        });
 }
 
 function setupEducationButtons() {

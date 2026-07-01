@@ -166,6 +166,30 @@ def build_container(dev_mode: bool = False) -> DIContainer:
         librarian = Librarian(capability_graph=graph, trace=trace)
         container.register_singleton(Librarian, librarian)
 
+    # 13. DatabaseRegistry and ServiceRegistry (Plan 17)
+    from sovereignai.shared.database_registry import DatabaseRegistry
+    from sovereignai.shared.service_registry import ServiceRegistry
+
+    db_registry = DatabaseRegistry(trace=trace)
+    container.register_singleton(DatabaseRegistry, db_registry)
+
+    service_registry = ServiceRegistry(trace=trace)
+    container.register_singleton(ServiceRegistry, service_registry)
+
+    # 14. Register HFDatabaseProvider (Plan 17)
+    from pathlib import Path
+
+    from databases.hf_database.provider import HFDatabaseProvider
+
+    hf_provider = HFDatabaseProvider(trace=trace, cache_dir=Path.home() / ".sovereignai" / "models")
+    db_registry.register("huggingface", hf_provider)
+
+    # 15. Register OllamaServiceProvider (Plan 17)
+    from services.ollama_service.provider import OllamaServiceProvider
+
+    ollama_provider = OllamaServiceProvider(trace=trace, port=11434)
+    service_registry.register("ollama", ollama_provider)
+
     # 14. Version negotiator (Plan 12)
     # Per Rev3 N7: non-interactive detection; per Rev3 N11: remove from DI container
     from sovereignai.versioning.negotiator import VersionNegotiator
@@ -415,7 +439,8 @@ if __name__ == "__main__":
             message="Composition root built successfully — Plan 1 components wired",
         )
         for event in trace.get_events():
-            print(f"[{event.level.value}] {event.component}: {event.message}")
+            level_str = event.level.value if hasattr(event.level, 'value') else str(event.level)
+            print(f"[{level_str}] {event.component}: {event.message}")
     except FatalIncompatibilityError as e:
         print(f"SovereignAI cannot start:\n{e}", file=sys.stderr)
         # F7: 30s countdown is DEFAULT. --no-wait skips it. isatty() is a HINT, not a hard gate.

@@ -197,6 +197,34 @@ body {
     padding-bottom: 10px;
 }
 
+#panel-options h3 {
+    color: #ffffff;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #3d3d3d;
+    padding-bottom: 8px;
+}
+
+#databases-list,
+#services-list {
+    list-style: none;
+    padding: 0;
+}
+
+#databases-list li,
+#services-list li {
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 8px;
+}
+
+#databases-list li strong,
+#services-list li strong {
+    color: #4a9eff;
+}
+
 #education-info p {
     margin: 10px 0;
     color: #e0e0e0;

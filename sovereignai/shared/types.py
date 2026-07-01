@@ -257,3 +257,20 @@ class CapabilityAPIError(Exception):
     def __init__(self, message: str, cause: Exception | None = None) -> None:
         self.cause = cause
         super().__init__(message)
+
+
+# ============================================================================
+# Model types (used by database providers in Plan 17)
+# ============================================================================
+
+@dataclass(frozen=True)
+class ModelEntry:
+    org: str
+    family: str
+    version: str
+    quant: str
+    file_size_bytes: int
+    vram_required_mb: int
+    num_layers: int
+    category: str
+    source_db: str

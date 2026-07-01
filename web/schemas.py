@@ -39,3 +39,18 @@ class TraceEventDTO(BaseModel):
     component: str
     correlation_id: str
     message: str
+
+
+class DatabaseResponseDTO(BaseModel):
+
+    name: str
+    status: str
+    models: list[str]
+
+
+class ServiceResponseDTO(BaseModel):
+
+    name: str
+    status: str
+    pid: int | None = None
+    port: int | None = None

@@ -23,6 +23,8 @@ from sovereignai.shared.types import (
 )
 from web.schemas import (
     CapabilityResponseDTO,
+    DatabaseResponseDTO,
+    ServiceResponseDTO,
     TaskResponseDTO,
     TaskSubmitDTO,
     TraceEventDTO,
@@ -343,6 +345,61 @@ async def get_hardware(request: Request) -> dict:
         "gpu_name": info.gpu_name,
         "gpu_vram_mb": info.gpu_vram_mb,
     }
+
+
+@app.get("/api/databases", dependencies=[Depends(get_current_user)])
+async def get_databases(request: Request) -> list[DatabaseResponseDTO]:
+    from sovereignai.shared.database_registry import DatabaseRegistry
+
+    container: Any = request.app.state.container
+    db_registry: Any = container.retrieve(DatabaseRegistry)
+
+    database_names = db_registry.list_databases()
+    dtos = []
+    for db_name in database_names:
+        try:
+            provider = db_registry.get_database(db_name)
+            status = provider.health_check()
+            models = provider.list_models()
+            dtos.append(
+                DatabaseResponseDTO(
+                    name=provider.name,
+                    status="healthy" if status.available else "unhealthy",
+                    models=[f"{m.org}/{m.family}" for m in models],
+                )
+            )
+        except Exception as e:
+            dtos.append(
+                DatabaseResponseDTO(
+                    name=db_name,
+                    status=f"error: {str(e)}",
+                    models=[],
+                )
+            )
+    return dtos
+
+
+@app.get("/api/services", dependencies=[Depends(get_current_user)])
+async def get_services(request: Request) -> list[ServiceResponseDTO]:
+    from sovereignai.shared.service_registry import ServiceRegistry
+
+    container: Any = request.app.state.container
+    service_registry: Any = container.retrieve(ServiceRegistry)
+
+    service_names = service_registry.list_services()
+    dtos = []
+    for svc_name in service_names:
+        provider = service_registry.get_service(svc_name)
+        status = provider.health_check()
+        dtos.append(
+            ServiceResponseDTO(
+                name=provider.name,
+                status="running" if status.running else "stopped",
+                pid=status.pid,
+                port=status.port,
+            )
+        )
+    return dtos
 
 
 @app.get("/api/traces/history", dependencies=[Depends(get_current_user)])

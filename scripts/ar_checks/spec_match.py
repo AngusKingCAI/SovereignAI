@@ -85,7 +85,14 @@ def main():
         sys.exit(1)
     
     unexpected_in_diff = diff_files - all_plan_will_paths - ALLOWLIST
-    unexpected_in_diff = {p for p in unexpected_in_diff if not p.startswith(".devin/workflows/") and not p.startswith("tests/") and not p.startswith("documents/plan-")}
+    unexpected_in_diff = {
+        p for p in unexpected_in_diff
+        if not p.startswith(".devin/workflows/")
+        and not p.startswith("tests/")
+        and not p.startswith("documents/plan-")
+        and not p.startswith("prompts/plan-")  # plan files are governance artifacts (Architect-authored), not Devin edits
+        and not p.startswith("prompts/completed/")  # moved plan files
+    }
     
     if unexpected_in_diff:
         print(f"Unexpected in diff: {unexpected_in_diff}")
