@@ -70,7 +70,7 @@ OR12. Never mix naive/aware datetime. Use `datetime.now(timezone.utc)`.
 
 OR13. Temp files in dedicated temp dir, not repo root. Delete after consuming. Check for strays before `git add`.
 
-OR14. Read `AGENTS.md` in full once per session before first edit. Always-on mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57, OR58, OR59, OR60, OR61, OR63, OR64, OR65.
+OR14. Read `AGENTS.md` in full once per session before first edit. Always-on mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57, OR58, OR59, OR60, OR61, OR63, OR64, OR65, OR66.
 
 OR15. Every new implementation has corresponding test file with passing tests.
 
