@@ -3,7 +3,6 @@ from __future__ import annotations
 from sovereignai.memory.working_backend import WorkingMemoryBackend
 from sovereignai.shared.capability_graph import CapabilityGraph
 from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
-from typing import Any
 
 
 class TestWorker:
