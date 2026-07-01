@@ -6,7 +6,11 @@ try:
     import pynvml
     PYNVML_AVAILABLE = True
 except ImportError:
-    PYNVML_AVAILABLE = False
+    try:
+        import nvidia_ml_py3 as pynvml
+        PYNVML_AVAILABLE = True
+    except ImportError:
+        PYNVML_AVAILABLE = False
 
 
 GPU_MEMORY_TYPE_MAP: dict[str, str] = {

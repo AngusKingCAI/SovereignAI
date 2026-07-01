@@ -59,7 +59,7 @@ class HFDatabaseProvider:
             return self._cached_models
 
         api = self._get_hf_api()
-        models = api.list_models(filter="gguf", sort="downloads", direction=-1, limit=500)
+        models = api.list_models(filter="gguf", sort="downloads", limit=500)
 
         result: list[ModelEntry] = []
         for model in models:
