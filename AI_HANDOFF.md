@@ -113,3 +113,13 @@ GR1. Every plan header lists `Vision principles:` satisfied/affected.
 GR2. Every plan header lists `Open questions resolved:`.
 GR3. Every brief requires panelist sign-off: `**Panelist**: <name/model>`.
 GR4. Architect explicitly accepts/rejects every Round Table finding with reasoning.
+GR5.  No host-local paths in plans, briefs, or roundtable prompts. Bare filenames for uploads; repo-relative paths for repo files.
+GR6.  New OR/AR rules state: the rule, rejected alternative(s), and consequence — one line each.
+GR7.  Decisions carry status: Proposed / Accepted / Superseded (linked). Never delete — move superseded items to their own subsection.
+GR8.  Decisions get stable IDs (DD1, DD2...) for precise reference.
+GR9.  On Accepted, decision moves to DECISIONS.md under its DD-ID (SSOT). Brief keeps a pointer, not a duplicate.
+GR10. Rejected DD-IDs can't be re-proposed without new evidence.
+GR11. Briefs follow the Brief Format section list, ≤80 lines. Missing/reordered sections block delivery.
+GR12. Architect screens plans against LANDMINES.md before Round Table. BLOCKING landmines are fixed before delivery, not deferred to findings.
+GR13. Sign-off needs a majority of assigned panelists (name/model + verdict). Conditional/block verdicts need Architect's GR4 reasoning before delivery.
+GR14. First pass per rev: full prompt (brief + plans + dimensions). Re-checks of unchanged findings: diff summary only.
