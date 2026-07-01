@@ -38,3 +38,6 @@ Thumbs.db
 # Secrets (never commit real secrets — detect-secrets enforces this)
 .env
 .env.local
+
+# Bandit reports
+bandit/

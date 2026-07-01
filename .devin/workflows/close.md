@@ -16,7 +16,7 @@ Prerequisite: `.venv/` exists.
 
 3. `FILES=$(git diff --name-only prompt-{N-1}..HEAD | grep '\.py$'); if [ -n "$FILES" ]; then echo $FILES | xargs -r .venv/Scripts/mypy.exe --ignore-missing-imports; else echo "N/A"; fi` — STOP on errors. At scan prompts: `.venv/Scripts/mypy.exe . --ignore-missing-imports`.
 
-4. `.venv/Scripts/bandit.exe -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache` — STOP on findings.
+4. `.venv/Scripts/bandit.exe -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache --baseline bandit/baseline.json` — STOP on findings.
 
 5. `.venv/Scripts/pip-audit.exe --strict --requirement txt/requirements.txt` — STOP on CVEs.
 
