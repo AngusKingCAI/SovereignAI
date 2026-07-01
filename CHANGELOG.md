@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## prompt-20.3 — Diagnostic Harness (Real End-to-End AI Workflow)
+**Date**: 2026-07-02
+**Plan file**: prompts/plan-20.3-Rev0.md
+**Tests**: 455 passed, 6 skipped (0 chronic)
+**Coverage**: 93% (no change — diagnostic scripts are tools, not core code)
+**Browser smoke test screenshots**: N/A — no UI changes
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Created diagnostic harness in scripts/diagnostics/ with 6 stages testing real AI workflow
+- Stage 1: Start AI Service — checks Ollama and LlamaCpp adapter health
+- Stage 2: Download Model — pulls tinyllama via Ollama or checks for GGUF models
+- Stage 3: Load Model + Generate — tests actual text generation with Ollama
+- Stage 4: Test Memory Backends — validates WorkingMemoryBackend store/query
+- Stage 5: Test MessageDispatcher — verifies MessageDispatcher instantiation
+- Stage 6: Test Trace Memory — validates TraceMemoryBackend event storage
+- Created scripts/diagnostics/run.py as entry point with --auto-fix flag
+- Created scripts/diagnostics/installers.py with install_ollama(), start_ollama(), pull_model(), install_llama_cpp()
+- Harness passed all 6 stages on Executor machine (6 PASS, 0 FAIL, 0 SKIP)
+- All scans passed: pytest (455 passed, 6 skipped), ruff (0 errors), mypy (0 errors on scripts/diagnostics/)
+- Added OR71 to AGENTS.md: "Diagnostic harness tests real end-to-end AI workflow with explicit model lifecycle: load → use → unload per stage. Mock tests verify code paths; harness tests verify system functionality."
+- Note: Plan specified 12 stages testing full Orchestrator→Manager→Worker chain, but these components don't exist yet (directories empty). Adapted to 6 stages testing available infrastructure (adapters, memory backends, MessageDispatcher).
+
+---
+
 ## prompt-20.2 — Fix Post-20.1 Test & Type Failures
 **Date**: 2026-07-01
 **Plan file**: prompts/plan-20.2-Rev0.md
