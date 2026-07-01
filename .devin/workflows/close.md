@@ -33,6 +33,7 @@ Prerequisite: `.venv/` exists.
    .venv/Scripts/python.exe scripts/ar_checks/ui_does_not_touch_core.py
    .venv/Scripts/python.exe scripts/ar_checks/check_tracing.py
    .venv/Scripts/python.exe scripts/ar_checks/check_placeholders.py
+   .venv/Scripts/python.exe scripts/ar_checks/check_p4_compliance.py
    ```
 
 ## Mechanical enforcement

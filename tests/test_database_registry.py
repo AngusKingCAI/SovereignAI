@@ -45,10 +45,10 @@ def test_list_databases() -> None:
 def test_find_model() -> None:
     trace = TraceEmitter()
     registry = DatabaseRegistry(trace)
-    
+
     class TestProvider(DatabaseProvider):
         name = "test_db"
-        
+
         def list_models(self) -> list[ModelEntry]:
             return [
                 ModelEntry(
@@ -63,19 +63,19 @@ def test_find_model() -> None:
                     source_db="test_db",
                 )
             ]
-        
+
         def download_model(self, model_id: str) -> None:
             pass
-        
+
         def update_model(self, model_id: str) -> None:
             pass
-        
+
         def uninstall_model(self, model_id: str) -> None:
             pass
-        
+
         def health_check(self) -> DatabaseStatus:
             return DatabaseStatus(installed=True, version="1.0", size_bytes=1000)
-    
+
     registry.register("test_db", TestProvider())
     result = registry.find_model("org1/model1")
     assert result is not None

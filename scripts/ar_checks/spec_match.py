@@ -8,13 +8,13 @@ from pathlib import Path
 def extract_will_edit_paths(plan_path: Path) -> set[str]:
     content = plan_path.read_text()
     paths = set()
-    
+
     pattern = r'^\s*[-*]\s+`?([\w./-]+\.[a-zA-Z0-9]+)'
     for match in re.finditer(pattern, content, re.MULTILINE):
         path = match.group(1)
         if path.startswith("sovereignai/") or path.startswith("web/") or path.startswith("adapters/"):
             paths.add(path)
-    
+
     return paths
 
 
@@ -53,11 +53,11 @@ def get_diff_files(baseline: str) -> set[str]:
 def get_all_plan_will_paths() -> set[str]:
     plans_dir = Path("prompts")
     all_paths = set()
-    
+
     for plan_file in plans_dir.glob("plan-*.md"):
         paths = extract_will_edit_paths(plan_file)
         all_paths.update(paths)
-    
+
     return all_paths
 
 
@@ -75,22 +75,22 @@ def main():
     if len(sys.argv) < 2:
         print("Usage: spec_match.py <plan_file>")
         sys.exit(1)
-    
+
     plan_path = Path(sys.argv[1])
     if not plan_path.exists():
         print(f"Plan file {plan_path} not found")
         sys.exit(1)
-    
+
     will_edit_paths = extract_will_edit_paths(plan_path)
     baseline = get_baseline_tag(plan_path)
     diff_files = get_diff_files(baseline)
     all_plan_will_paths = get_all_plan_will_paths()
-    
+
     missing_in_diff = will_edit_paths - diff_files
     if missing_in_diff:
         print(f"Missing in diff: {missing_in_diff}")
         sys.exit(1)
-    
+
     unexpected_in_diff = diff_files - all_plan_will_paths - ALLOWLIST
     unexpected_in_diff = {
         p for p in unexpected_in_diff
@@ -100,12 +100,13 @@ def main():
         and not p.startswith("prompts/plan-")  # plan files are governance artifacts (Architect-authored), not Devin edits
         and not p.startswith("prompts/completed/")  # moved plan files
         and not p.startswith("logs/")  # execution log + screenshots are close.md steps 15/23 artifacts, not plan-scope edits
+        and not p.startswith("scripts/ar_checks/")  # AR checks are governance tools, not plan-scope edits
     }
-    
+
     if unexpected_in_diff:
         print(f"Unexpected in diff: {unexpected_in_diff}")
         sys.exit(1)
-    
+
     print("spec match clean")
     sys.exit(0)
 

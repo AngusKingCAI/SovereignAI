@@ -21,12 +21,12 @@ def test_get_databases_authorized() -> None:
     with TestClient(app, raise_server_exceptions=False) as client:
         # Register first user
         client.post("/api/auth/register", json={"username": "test", "password": "test123"})
-        
+
         # Login
         login_response = client.post("/api/auth/login", json={"username": "test", "password": "test123"})
         assert login_response.status_code == 200
         session_cookie = login_response.cookies.get("session_id")
-        
+
         # Get databases with session cookie
         response = client.get("/api/databases", cookies={"session_id": session_cookie})
         # For now, just check it's not 401 (auth error)
@@ -40,12 +40,12 @@ def test_get_services_authorized() -> None:
     with TestClient(app, raise_server_exceptions=False) as client:
         # Register first user
         client.post("/api/auth/register", json={"username": "test", "password": "test123"})
-        
+
         # Login
         login_response = client.post("/api/auth/login", json={"username": "test", "password": "test123"})
         assert login_response.status_code == 200
         session_cookie = login_response.cookies.get("session_id")
-        
+
         # Get services with session cookie
         response = client.get("/api/services", cookies={"session_id": session_cookie})
         assert response.status_code == 200

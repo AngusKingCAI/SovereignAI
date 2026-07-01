@@ -99,3 +99,9 @@ class ModelEntryDTO(BaseModel):
     source_db: str
     tok_s_estimated: float | None = None
 
+
+class FirstRunStatusDTO(BaseModel):
+
+    healthy_adapters: list[str]
+    instructions: str
+

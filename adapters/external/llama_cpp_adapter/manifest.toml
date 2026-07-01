@@ -1,0 +1,13 @@
+[component]
+component_id = "llama_cpp_adapter"
+name = "llama.cpp Local Models"
+version = "0.1.0"
+author = "user"
+content_hash = "sha256:placeholder-llama-cpp-adapter"
+routing_priority = 20
+
+[[provides]]
+category = "model_inference"
+name = "text_generation"
+version = "1.0.0"
+priority = 100

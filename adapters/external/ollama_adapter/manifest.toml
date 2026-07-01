@@ -4,6 +4,7 @@ name = "Ollama Local Models"
 version = "0.1.0"
 author = "user"
 content_hash = "sha256:placeholder-external-adapter"
+routing_priority = 10
 
 intent_keywords = ["chat", "talk", "ask", "explain", "help", "what", "how", "why"]
 

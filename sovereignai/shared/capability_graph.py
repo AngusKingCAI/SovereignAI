@@ -9,6 +9,7 @@ from sovereignai.shared.types import (
     CapabilityDeclaration,
     ComponentId,
     ComponentManifest,
+    ComponentMetadata,
     TraceLevel,
 )
 
@@ -27,6 +28,12 @@ class ICapabilityIndex(Protocol):
     def list_all_components(self) -> tuple[ComponentManifest, ...]:
         ...
 
+    def adapters_by_capability(self, capability: str) -> list:
+        ...
+
+    def get_adapter(self, component_id: str) -> Any:
+        ...
+
 
 class CapabilityGraph:
 
@@ -38,6 +45,8 @@ class CapabilityGraph:
                           list[tuple[ComponentId, CapabilityDeclaration]]] = {}
         # Map component_id -> manifest (for list_all_components)
         self._manifests: dict[ComponentId, ComponentManifest] = {}
+        # Map component_id -> instance (for O(1) lookup in routing)
+        self._instances: dict[ComponentId, Any] = {}
         self._lock = Lock()
         self._conformance_runner: Any = None
 
@@ -99,6 +108,8 @@ class CapabilityGraph:
                     message=f"Re-registering {manifest.component_id} - old capabilities removed",
                 )
             self._manifests[manifest.component_id] = manifest
+            if instance is not None:
+                self._instances[manifest.component_id] = instance
             for cap in manifest.provides:
                 key = (cap.category, cap.name)
                 self._index.setdefault(key, []).append(
@@ -132,6 +143,9 @@ class CapabilityGraph:
             if manifest is None:
                 return
 
+            # Remove from instances
+            self._instances.pop(component_id, None)
+
             # Remove all capability entries for this component
             for cap in manifest.provides:
                 key = (cap.category, cap.name)
@@ -142,3 +156,27 @@ class CapabilityGraph:
                     ]
                     if not self._index[key]:
                         del self._index[key]
+
+    def adapters_by_capability(self, capability: str) -> list[ComponentMetadata]:
+        from sovereignai.shared.types import ComponentMetadata
+
+        with self._lock:
+            result: list[ComponentMetadata] = []
+            for manifest in self._manifests.values():
+                for cap in manifest.provides:
+                    if cap.category.value == capability:
+                        result.append(
+                            ComponentMetadata(
+                                component_id=str(manifest.component_id),
+                                version=manifest.version,
+                                capabilities=manifest.provides,
+                                routing_priority=manifest.routing_priority,
+                            )
+                        )
+                        break
+            result.sort(key=lambda x: x.routing_priority)
+            return result
+
+    def get_adapter(self, component_id: str) -> Any:
+        with self._lock:
+            return self._instances.get(ComponentId(component_id))

@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from databases.base import DatabaseProvider, ModelEntry
+from databases.base import ModelEntry
 from sovereignai.shared.database_registry import DatabaseRegistry
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import ModelFilter, TraceLevel
-
 
 QUANT_PRIORITY = {
     "q2": 0,

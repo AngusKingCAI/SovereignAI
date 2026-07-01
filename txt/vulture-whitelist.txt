@@ -8,3 +8,5 @@
 #
 # File starts empty. First entry will be added when vulture reports its first
 # false positive in Plan 1+.
+
+mock_unlink  # pytest fixture parameter in test_hf_database.py (Plan 19)

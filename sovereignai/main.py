@@ -48,11 +48,12 @@ def build_container(dev_mode: bool = False) -> DIContainer:
     lifecycle = LifecycleManager(trace=trace)
     container.register_singleton(LifecycleManager, lifecycle)
 
-    # 5. RoutingEngine — depends on ICapabilityIndex + LifecycleManager
+    # 5. RoutingEngine — depends on ICapabilityIndex + LifecycleManager + TraceEmitter
     from sovereignai.shared.routing_engine import RoutingEngine
     router = RoutingEngine(
         capability_index=container.retrieve(ICapabilityIndex),  # type: ignore[type-abstract]
         lifecycle_manager=lifecycle,
+        trace=trace,
     )
     container.register_singleton(RoutingEngine, router)
 
@@ -169,7 +170,12 @@ def build_container(dev_mode: bool = False) -> DIContainer:
         librarian = Librarian(capability_graph=graph, trace=trace)
         container.register_singleton(Librarian, librarian)
 
-    # 13. DatabaseRegistry and ServiceRegistry (Plan 17)
+    # 13. Register default_model_path_resolver (Plan 19 S2.1)
+    # Note: Registered as a singleton since it's a pure function
+    from sovereignai.shared.model_path_resolver import default_model_path_resolver
+    container.register_singleton(default_model_path_resolver, default_model_path_resolver)  # type: ignore[arg-type]
+
+    # 14. DatabaseRegistry and ServiceRegistry (Plan 17)
     from sovereignai.shared.database_registry import DatabaseRegistry
     from sovereignai.shared.service_registry import ServiceRegistry
 
@@ -179,7 +185,7 @@ def build_container(dev_mode: bool = False) -> DIContainer:
     service_registry = ServiceRegistry(trace=trace)
     container.register_singleton(ServiceRegistry, service_registry)
 
-    # 14. Register HFDatabaseProvider (Plan 17)
+    # 15. Register HFDatabaseProvider (Plan 17)
     from pathlib import Path
 
     from databases.hf_database.provider import HFDatabaseProvider
@@ -187,13 +193,44 @@ def build_container(dev_mode: bool = False) -> DIContainer:
     hf_provider = HFDatabaseProvider(trace=trace, cache_dir=Path.home() / ".sovereignai" / "models")
     db_registry.register("huggingface", hf_provider)
 
-    # 15. Register OllamaServiceProvider (Plan 17)
+    # 16. Register OllamaServiceProvider (Plan 17)
     from services.ollama_service.provider import OllamaServiceProvider
 
     ollama_provider = OllamaServiceProvider(trace=trace, port=11434)
     service_registry.register("ollama", ollama_provider)
 
-    # 14. Version negotiator (Plan 12)
+    # 17. Register adapter instances after manifest loading (Plan 19 S3.1)
+    # Order-dependent: adapters need model_path_resolver and database_registry
+    from adapters.external.ollama_adapter.adapter import OllamaAdapter
+    from sovereignai.shared.types import ComponentId
+
+    if ComponentId("ollama_adapter") in graph._manifests:
+        ollama_adapter = OllamaAdapter(trace=trace)
+        graph.register(
+            graph._manifests[ComponentId("ollama_adapter")],
+            instance=ollama_adapter,
+        )
+
+    # 18. First-run adapter health check (Plan 19 S3.1)
+    if not _test_mode:
+        healthy = []
+        for meta in graph.adapters_by_capability("model_inference"):
+            inst = graph.get_adapter(meta.component_id)
+            if inst is not None and hasattr(inst, "health_check"):
+                health = inst.health_check()
+                # Handle both bool (OllamaAdapter) and AdapterHealth (LlamaCppAdapter) return types
+                is_healthy = health if isinstance(health, bool) else health.healthy
+                if is_healthy:
+                    healthy.append(meta.component_id)
+
+        if not healthy:
+            trace.emit(
+                component="main",
+                level=TraceLevel.WARN,
+                message="No inference adapter healthy — install Ollama or llama.cpp",
+            )
+
+    # 19. Version negotiator (Plan 12)
     # Per Rev3 N7: non-interactive detection; per Rev3 N11: remove from DI container
     from sovereignai.versioning.negotiator import VersionNegotiator
     negotiator = VersionNegotiator(

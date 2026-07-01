@@ -118,6 +118,7 @@ class ComponentManifest:
     content_hash: str  # provenance — verified on install (P14)
     core: bool = False
     _source_path: str = ""  # Rev8: source path for first-party detection
+    routing_priority: int = 1000  # OR70: lower = higher priority; default 1000
 
 
 # ============================================================================
@@ -250,6 +251,28 @@ class RelayNotSupportedError(Exception):
 
 
 # NoActiveProviderError already defined by Plan 3 S1.1 — no action needed.
+
+
+class AdapterUnavailableError(Exception):
+    pass
+
+
+class NoHealthyAdapterError(Exception):
+    pass
+
+
+@dataclass(frozen=True)
+class ComponentMetadata:
+    component_id: str
+    version: str
+    capabilities: tuple[CapabilityDeclaration, ...]
+    routing_priority: int
+
+
+@dataclass(frozen=True)
+class AdapterHealth:
+    healthy: bool
+    detail: str
 
 
 class CapabilityAPIError(Exception):

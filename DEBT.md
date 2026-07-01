@@ -4,6 +4,60 @@ Append-only. Each entry: deferred at, reason, trigger condition, target plan.
 
 ---
 
+## Deferred: First-run experience UI edits
+
+**Deferred at**: prompt-19
+**Reason**: Plan 19 S3.3 UI edits (web/templates/index.html, web/static/app.js) deferred to focus on backend API and tests. Backend /api/first-run-check endpoint is complete and tested.
+**Trigger condition**: When backend first-run check is validated in production use.
+**Target plan**: TBD (post Plan 19)
+
+---
+
+## Deferred: llama-cpp-python binary testing
+
+**Deferred at**: prompt-19
+**Reason**: llama-cpp-python 0.2.50 added to requirements.txt but not tested with real binary. Need validation before v1.0 release.
+**Trigger condition**: When preparing for v1.0 release or when llama.cpp adapter is used in production.
+**Target plan**: TBD (pre v1.0)
+
+---
+
+## Deferred: generate() timeout
+
+**Deferred at**: prompt-19
+**Reason**: Cross-platform timeout infrastructure is non-trivial. LlamaCppAdapter.generate() currently has no timeout protection.
+**Trigger condition**: When cross-platform timeout infrastructure is implemented.
+**Target plan**: TBD (post Plan 19)
+
+---
+
+## Deferred: health_check caching in RoutingEngine
+
+**Deferred at**: prompt-19
+**Reason**: TTL cache adds statefulness to RoutingEngine. Current implementation calls health_check() on every route() invocation.
+**Trigger condition**: When performance profiling shows health_check() is a bottleneck.
+**Target plan**: TBD (post Plan 19)
+
+---
+
+## Deferred: subscribe_callback bounded queue
+
+**Deferred at**: prompt-19
+**Reason**: Per-subscriber queue + drain thread adds complexity. Current implementation uses unbounded queues.
+**Trigger condition**: When memory pressure or queue overflow issues are observed.
+**Target plan**: TBD (post Plan 19)
+
+---
+
+## Deferred: AdapterCapability enum for GPU probing
+
+**Deferred at**: prompt-19
+**Reason**: GPU capability probing is adapter-specific. Future adapters must add their own probe in health_check(). A centralized AdapterCapability enum would standardize this but is deferred.
+**Trigger condition**: When multiple adapters with different GPU capabilities are implemented.
+**Target plan**: TBD (post Plan 19)
+
+---
+
 ## Deferred: Security Guard implementation
 
 **Deferred at**: prompt-0 (bootstrap)
@@ -175,4 +229,57 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Trigger condition**: When upgrading to a newer Python version that bundles a patched setuptools.
 **Target plan**: TBD (Python version upgrade plan).
 
+---
+
+## Deferred: llama-cpp-python 0.2.50 testing
+
+**Deferred at**: prompt-19
+**Reason**: llama-cpp-python 0.2.50 added as dependency but not tested with real binary. Need to verify compatibility with actual GGUF models and GPU offload before v1.0.
+**Trigger condition**: Before v1.0 release or when real model testing infrastructure is available.
+**Target plan**: TBD (pre-v1.0 testing plan).
+
+---
+
+## Deferred: generate() timeout implementation
+
+**Deferred at**: prompt-19
+**Reason**: generate() in llama_cpp_adapter has no timeout mechanism. Cross-platform timeout infrastructure is non-trivial (signal handling differs on Windows vs Unix). Defer to post-Plan-19.
+**Trigger condition**: When timeout infrastructure is implemented across adapters.
+**Target plan**: TBD (post-Plan-19).
+
+---
+
+## Deferred: health_check caching in RoutingEngine
+
+**Deferred at**: prompt-19
+**Reason**: health_check() is called on every route() invocation. TTL cache would reduce overhead but adds statefulness. Defer to post-Plan-19.
+**Trigger condition**: When performance profiling shows health_check overhead is significant.
+**Target plan**: TBD (post-Plan-19).
+
+---
+
+## Deferred: subscribe_callback bounded queue
+
+**Deferred at**: prompt-19
+**Reason**: TraceEmitter.subscribe_callback needs per-subscriber bounded queue + drain thread to prevent memory leaks. Current implementation may accumulate unprocessed callbacks. Defer to post-Plan-19.
+**Trigger condition**: When callback-based tracing shows memory growth in production.
+**Target plan**: TBD (post-Plan-19).
+
+---
+
+## Deferred: AdapterCapability enum for GPU capability probing
+
+**Deferred at**: prompt-19
+**Reason**: GPU capability probing is adapter-specific (llama-cpp has llama_supports_gpu_offload(), other adapters may have different probes). Future adapters must add their own probe in health_check(). Defer AdapterCapability enum to post-Plan-19.
+**Trigger condition**: When a third adapter with different GPU probing needs is added.
+**Target plan**: TBD (post-Plan-19).
+
+---
+
+## Deferred: generate() metadata-only path documentation
+
+**Deferred at**: prompt-19
+**Reason**: generate() has side effect of loading model into VRAM. For metadata-only queries, users should call database_registry.find_model() directly. This is a documentation note, no code change needed.
+**Trigger condition**: N/A (documentation only).
+**Target plan**: N/A (documented in adapter docstring).
 

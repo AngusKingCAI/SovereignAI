@@ -7,14 +7,14 @@ from pathlib import Path
 def main():
     search_dirs = ["sovereignai", "web", "adapters", "skills", "databases", "services"]
     patterns = [r"TODO", r"FIXME", r"XXX", r"NotImplementedError", r"pass\s+#\s*placeholder"]
-    
+
     violations = []
-    
+
     for directory in search_dirs:
         dir_path = Path(directory)
         if not dir_path.exists():
             continue
-        
+
         for py_file in dir_path.rglob("*.py"):
             try:
                 content = py_file.read_text()
@@ -23,7 +23,7 @@ def main():
                         violations.append(f"{py_file}: contains {pattern}")
             except Exception:
                 continue
-    
+
     tests_dir = Path("tests")
     if tests_dir.exists():
         test_patterns = [r"NotImplementedError", r"pass\s+#\s*placeholder"]
@@ -37,12 +37,12 @@ def main():
                         violations.append(f"{py_file}: contains {pattern}")
             except Exception:
                 continue
-    
+
     if violations:
         for v in violations:
             print(v)
         sys.exit(1)
-    
+
     print("discovery clean")
     sys.exit(0)
 

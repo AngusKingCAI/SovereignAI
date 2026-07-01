@@ -46,20 +46,20 @@ def check_function(func_node: ast.FunctionDef, allowlist: set[str], file_path: s
                     break
         if has_only_field_assign:
             return True, ""
-    
+
     has_side_effect = False
     has_emit = False
-    
+
     for node in ast.walk(func_node):
         if has_side_effects(node):
             has_side_effect = True
         if has_trace_emit(node):
             has_emit = True
-    
+
     allowlist_key = f"{file_path}:{func_node.name}"
     if has_side_effect and not has_emit and allowlist_key not in allowlist:
         return False, f"Function {func_node.name} has side effects but no trace.emit()"
-    
+
     return True, ""
 
 
@@ -68,34 +68,34 @@ def main():
     if not root.exists():
         print("sovereignai/ directory not found")
         sys.exit(1)
-    
+
     allowlist_path = Path("scripts/ar_checks/check_tracing_allowlist.txt")
     try:
         allowlist = set(allowlist_path.read_text().strip().splitlines())
     except FileNotFoundError:
         allowlist = set()
-    
+
     violations = []
-    
+
     for py_file in root.rglob("*.py"):
         try:
             content = py_file.read_text()
             tree = ast.parse(content, filename=str(py_file))
         except SyntaxError:
             continue
-        
+
         rel_path = str(py_file.relative_to(root)).replace("\\", "/")
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
                 ok, msg = check_function(node, allowlist, rel_path)
                 if not ok:
                     violations.append(f"{py_file}:{node.lineno}: {msg}")
-    
+
     if violations:
         for v in violations:
             print(v)
         sys.exit(1)
-    
+
     print("discovery clean")
     sys.exit(0)
 

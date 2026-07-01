@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from sovereignai.shared.hardware_probe import GPU_MEMORY_TYPE_MAP, MEMORY_BANDWIDTH_GBPS
 from sovereignai.shared.tok_sampler import estimate_tok_s
 from sovereignai.shared.types import GpuInfo, HardwareSnapshot, ModelEntry
 

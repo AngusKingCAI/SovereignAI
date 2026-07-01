@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## prompt-19 — llama.cpp Adapter, Routing Engine Failover, First-Run Experience
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-19-Rev9.md
+**Tests**: 407 passed, 12 skipped (0 chronic)
+**Coverage**: 90%
+**Browser smoke test screenshots**: N/A — UI edits deferred to DEBT.md
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Added llama.cpp adapter scaffold with health_check, load_model, generate methods
+- Implemented model path resolver for nested org/name model directory structure
+- Enhanced RoutingEngine with failover, health check filtering, and routing priority
+- Added ComponentMetadata, AdapterHealth, AdapterUnavailableError, NoHealthyAdapterError types
+- Implemented first-run adapter health check in main.py
+- Added /api/first-run-check endpoint returning FirstRunStatusDTO
+- Added P4 compliance verification script check_p4_compliance.py
+- Extended routing engine tests to cover failover, health checks, and priority sorting
+- Fixed test authentication for first-run check endpoint
+- Added OR70: routing_priority field in adapter manifests with default 1000
+
+---
+
 ## prompt-18 — Hardware Panel and Models Panel
 **Date**: 2026-07-01
 **Plan file**: prompts/plan-18-Rev4.md

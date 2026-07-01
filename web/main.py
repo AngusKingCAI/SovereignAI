@@ -26,6 +26,7 @@ from web.schemas import (
     CapabilityResponseDTO,
     DatabaseResponseDTO,
     DiskUsageDTO,
+    FirstRunStatusDTO,
     GpuInfoDTO,
     HardwareSnapshotDTO,
     ModelEntryDTO,
@@ -626,4 +627,32 @@ async def get_traces_stream(request: Request) -> StreamingResponse:
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
         },
+    )
+
+
+@app.get("/api/first-run-check", dependencies=[Depends(get_current_user)])
+async def get_first_run_check(request: Request) -> FirstRunStatusDTO:
+    from sovereignai.shared.capability_graph import ICapabilityIndex
+
+    container: Any = request.app.state.container
+    capability_index: Any = container.retrieve(ICapabilityIndex)  # type: ignore[type-abstract]
+
+    healthy = []
+    for meta in capability_index.adapters_by_capability("model_inference"):
+        inst = capability_index.get_adapter(meta.component_id)
+        if inst is not None and hasattr(inst, "health_check"):
+            health = inst.health_check()
+            # Handle both bool (OllamaAdapter) and AdapterHealth (LlamaCppAdapter) return types
+            is_healthy = health if isinstance(health, bool) else health.healthy
+            if is_healthy:
+                healthy.append(meta.component_id)
+
+    if not healthy:
+        instructions = "No inference adapter healthy. Install Ollama or llama.cpp to run models."
+    else:
+        instructions = f"Healthy adapters: {', '.join(healthy)}"
+
+    return FirstRunStatusDTO(
+        healthy_adapters=healthy,
+        instructions=instructions,
     )

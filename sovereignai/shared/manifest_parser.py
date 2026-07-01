@@ -78,6 +78,14 @@ def parse_manifest(path: Path) -> ComponentManifest:
     provides = tuple(_parse_caps(data.get("provides", []), path))
     requires = tuple(_parse_caps(data.get("requires", []), path))
 
+    # Parse routing_priority with default 1000 (OR70)
+    routing_priority = data.get("routing_priority", 1000)
+    if not isinstance(routing_priority, int):
+        raise ManifestParseError(
+            f"Manifest {path} has invalid routing_priority "
+            f"{routing_priority!r}: must be an integer"
+        )
+
     manifest = ComponentManifest(
         component_id=component_id,
         version=version,
@@ -87,6 +95,7 @@ def parse_manifest(path: Path) -> ComponentManifest:
         requires=requires,
         core=is_core,
         _source_path=str(path),
+        routing_priority=routing_priority,
     )
 
     return manifest

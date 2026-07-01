@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from services.base import ServiceProvider, ServiceStatus, ServiceStartError
+from services.base import ServiceProvider, ServiceStatus
 from sovereignai.shared.service_registry import ServiceRegistry
 from sovereignai.shared.trace_emitter import TraceEmitter
 
