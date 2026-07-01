@@ -157,7 +157,9 @@ body {
 #workers-list,
 #tasks-list,
 #skills-list,
-#adapters-list {
+#adapters-list,
+#hw-disks-list,
+#hw-gpus-list {
     list-style: none;
     padding: 0;
 }
@@ -165,7 +167,9 @@ body {
 #workers-list li,
 #tasks-list li,
 #skills-list li,
-#adapters-list li {
+#adapters-list li,
+#hw-disks-list li,
+#hw-gpus-list li {
     background-color: #2d2d2d;
     border: 1px solid #3d3d3d;
     border-radius: 4px;
@@ -179,6 +183,84 @@ body {
     border-radius: 4px;
     padding: 15px;
     overflow-x: auto;
+}
+
+#hardware-snapshot {
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+#hardware-snapshot h3 {
+    color: #ffffff;
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #3d3d3d;
+    padding-bottom: 8px;
+}
+
+#hardware-snapshot p {
+    margin: 5px 0;
+    color: #e0e0e0;
+}
+
+#hardware-snapshot span {
+    font-weight: bold;
+    color: #4a9eff;
+}
+
+#models-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+#models-controls input,
+#models-controls select,
+#models-controls button {
+    padding: 8px;
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    color: #e0e0e0;
+}
+
+#models-controls button {
+    cursor: pointer;
+    background-color: #4a9eff;
+    color: #ffffff;
+}
+
+#models-controls button:hover {
+    background-color: #3a8eef;
+}
+
+#models-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+}
+
+#models-table th {
+    background-color: #3d3d3d;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #4d4d4d;
+    color: #ffffff;
+}
+
+#models-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #333;
+}
+
+#models-table tbody tr:hover {
+    background-color: #3d3d3d;
 }
 
 #education-info {

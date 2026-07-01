@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
 import os
 from collections.abc import AsyncGenerator
@@ -24,6 +25,10 @@ from sovereignai.shared.types import (
 from web.schemas import (
     CapabilityResponseDTO,
     DatabaseResponseDTO,
+    DiskUsageDTO,
+    GpuInfoDTO,
+    HardwareSnapshotDTO,
+    ModelEntryDTO,
     ServiceResponseDTO,
     TaskResponseDTO,
     TaskSubmitDTO,
@@ -331,20 +336,163 @@ async def dispatch(request: Request) -> TaskResponseDTO:
 
 
 @app.get("/api/hardware", dependencies=[Depends(get_current_user)])
-async def get_hardware(request: Request) -> dict:
-    from web.hardware_probe import HardwareProbe
+async def get_hardware(request: Request) -> HardwareSnapshotDTO:
+    container: Any = request.app.state.container
+    api: Any = container.retrieve(CapabilityAPI)
 
-    probe = HardwareProbe()
-    info = await probe.probe_async()
+    snapshot = api.sample_hardware()
 
-    return {
-        "cpu_count": info.cpu_count,
-        "cpu_freq_mhz": info.cpu_freq_mhz,
-        "ram_total_mb": info.ram_total_mb,
-        "ram_available_mb": info.ram_available_mb,
-        "gpu_name": info.gpu_name,
-        "gpu_vram_mb": info.gpu_vram_mb,
-    }
+    disks_dto = [
+        DiskUsageDTO(
+            path=d.path,
+            total_gb=d.total_gb,
+            used_gb=d.used_gb,
+            free_gb=d.free_gb,
+            percent=d.percent,
+        )
+        for d in snapshot.disks
+    ]
+
+    gpus_dto = [
+        GpuInfoDTO(
+            name=g.name,
+            vram_total_mb=g.vram_total_mb,
+            vram_used_mb=g.vram_used_mb,
+            utilization_percent=g.utilization_percent,
+            memory_type=g.memory_type,
+        )
+        for g in snapshot.gpus
+    ]
+
+    return HardwareSnapshotDTO(
+        cpu_percent=snapshot.cpu_percent,
+        ram_percent=snapshot.ram_percent,
+        ram_used_gb=snapshot.ram_used_gb,
+        ram_total_gb=snapshot.ram_total_gb,
+        ram_available_gb=snapshot.ram_available_gb,
+        memory_bandwidth_gbps=snapshot.memory_bandwidth_gbps,
+        disks=disks_dto,
+        gpus=gpus_dto,
+    )
+
+
+@app.get("/api/hardware/stream", dependencies=[Depends(get_current_user)])
+async def get_hardware_stream(request: Request) -> StreamingResponse:
+    container: Any = request.app.state.container
+    api: Any = container.retrieve(CapabilityAPI)
+
+    async def hardware_event_generator() -> AsyncGenerator[str, None]:
+        import time
+
+        last_keepalive = time.time()
+
+        async for snapshot in api.stream_hardware():
+            if await request.is_disconnected():
+                break
+
+            disks_dto = [
+                DiskUsageDTO(
+                    path=d.path,
+                    total_gb=d.total_gb,
+                    used_gb=d.used_gb,
+                    free_gb=d.free_gb,
+                    percent=d.percent,
+                )
+                for d in snapshot.disks
+            ]
+
+            gpus_dto = [
+                GpuInfoDTO(
+                    name=g.name,
+                    vram_total_mb=g.vram_total_mb,
+                    vram_used_mb=g.vram_used_mb,
+                    utilization_percent=g.utilization_percent,
+                    memory_type=g.memory_type,
+                )
+                for g in snapshot.gpus
+            ]
+
+            dto = HardwareSnapshotDTO(
+                cpu_percent=snapshot.cpu_percent,
+                ram_percent=snapshot.ram_percent,
+                ram_used_gb=snapshot.ram_used_gb,
+                ram_total_gb=snapshot.ram_total_gb,
+                ram_available_gb=snapshot.ram_available_gb,
+                memory_bandwidth_gbps=snapshot.memory_bandwidth_gbps,
+                disks=disks_dto,
+                gpus=gpus_dto,
+            )
+
+            data = json.dumps(dto.model_dump(mode='json'))
+            yield f"event: hardware\ndata: {data}\n\n"
+            last_keepalive = time.time()
+
+            with contextlib.suppress(TimeoutError):
+                await asyncio.wait_for(asyncio.sleep(0.1), timeout=0.5)
+
+            current_time = time.time()
+            if current_time - last_keepalive > 15:
+                yield ": keep-alive\n\n"
+                last_keepalive = current_time
+
+    return StreamingResponse(
+        hardware_event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
+
+
+@app.get("/api/models", dependencies=[Depends(get_current_user)])
+async def get_models(
+    request: Request,
+    search: str | None = None,
+    category: str | None = None,
+    vram_fit: int | None = None,
+    quant_level: str | None = None,
+) -> list[ModelEntryDTO]:
+    from sovereignai.shared.database_registry import DatabaseRegistry
+    from sovereignai.shared.model_catalog import ModelCatalog
+    from sovereignai.shared.tok_sampler import estimate_tok_s
+    from sovereignai.shared.types import ModelFilter
+
+    container: Any = request.app.state.container
+    db_registry: Any = container.retrieve(DatabaseRegistry)
+    api: Any = container.retrieve(CapabilityAPI)
+
+    catalog = ModelCatalog(database_registry=db_registry, trace=container.retrieve(TraceEmitter))
+
+    filters = ModelFilter(
+        search=search,
+        category=category,
+        vram_fit_max_mb=vram_fit,
+        quant_level_min=quant_level,
+    )
+
+    models = catalog.list_models(filters)
+    hw_snapshot = api.sample_hardware()
+
+    dtos = []
+    for model in models:
+        tok_s = estimate_tok_s(model, hw_snapshot)
+        dtos.append(
+            ModelEntryDTO(
+                org=model.org,
+                family=model.family,
+                version=model.version,
+                quant=model.quant,
+                file_size_bytes=model.file_size_bytes,
+                vram_required_mb=model.vram_required_mb,
+                num_layers=model.num_layers,
+                category=model.category,
+                source_db=model.source_db,
+                tok_s_estimated=tok_s,
+            )
+        )
+    return dtos
 
 
 @app.get("/api/databases", dependencies=[Depends(get_current_user)])

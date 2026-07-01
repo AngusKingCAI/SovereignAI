@@ -8,6 +8,7 @@ from sovereignai.shared.auth import AuthMiddleware
 from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.capability_graph import CapabilityGraph, ICapabilityIndex
 from sovereignai.shared.event_bus import EventBus
+from sovereignai.shared.hardware_probe import HardwareProbe
 from sovereignai.shared.task_state_machine import TaskStateMachine
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
@@ -42,8 +43,12 @@ def task_state_machine(bus: EventBus, trace: TraceEmitter) -> TaskStateMachine:
     return TaskStateMachine(bus=bus, trace=trace)
 
 @pytest.fixture
-def api(auth: AuthMiddleware, capability_index: ICapabilityIndex, task_state_machine: TaskStateMachine, trace: TraceEmitter) -> CapabilityAPI:
-    return CapabilityAPI(auth=auth, capability_index=capability_index, task_state_query=task_state_machine, state_machine=task_state_machine, trace=trace)
+def hardware_probe() -> HardwareProbe:
+    return HardwareProbe()
+
+@pytest.fixture
+def api(auth: AuthMiddleware, capability_index: ICapabilityIndex, task_state_machine: TaskStateMachine, trace: TraceEmitter, hardware_probe: HardwareProbe) -> CapabilityAPI:
+    return CapabilityAPI(auth=auth, capability_index=capability_index, task_state_query=task_state_machine, state_machine=task_state_machine, trace=trace, hardware_probe=hardware_probe)
 
 def test_query_capabilities_valid_token_returns_providers(api: CapabilityAPI, auth: AuthMiddleware, capability_index: CapabilityGraph) -> None:
     auth.register_user('testuser', 'password')

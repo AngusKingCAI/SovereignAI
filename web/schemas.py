@@ -54,3 +54,48 @@ class ServiceResponseDTO(BaseModel):
     status: str
     pid: int | None = None
     port: int | None = None
+
+
+class DiskUsageDTO(BaseModel):
+
+    path: str
+    total_gb: float
+    used_gb: float
+    free_gb: float
+    percent: float
+
+
+class GpuInfoDTO(BaseModel):
+
+    name: str
+    vram_total_mb: int
+    vram_used_mb: int
+    utilization_percent: float
+    memory_type: str | None = None
+
+
+class HardwareSnapshotDTO(BaseModel):
+
+    cpu_percent: float
+    ram_percent: float
+    ram_used_gb: float
+    ram_total_gb: float
+    ram_available_gb: float
+    memory_bandwidth_gbps: float
+    disks: list[DiskUsageDTO]
+    gpus: list[GpuInfoDTO]
+
+
+class ModelEntryDTO(BaseModel):
+
+    org: str
+    family: str
+    version: str
+    quant: str
+    file_size_bytes: int
+    vram_required_mb: int
+    num_layers: int
+    category: str
+    source_db: str
+    tok_s_estimated: float | None = None
+

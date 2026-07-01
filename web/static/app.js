@@ -90,6 +90,9 @@ function loadPanelContent(panelName) {
         case 'adapters':
             loadAdapters();
             break;
+        case 'models':
+            loadModels();
+            break;
         case 'hardware':
             loadHardware();
             break;
@@ -236,13 +239,28 @@ function loadHardware() {
             return response.json();
         })
         .then(data => {
-            const info = document.getElementById('hardware-info');
-            info.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            document.getElementById('hw-cpu-percent').textContent = data.cpu_percent.toFixed(1);
+            document.getElementById('hw-ram-percent').textContent = data.ram_percent.toFixed(1);
+            document.getElementById('hw-ram-used').textContent = data.ram_used_gb.toFixed(2);
+            document.getElementById('hw-ram-total').textContent = data.ram_total_gb.toFixed(2);
+            document.getElementById('hw-ram-available').textContent = data.ram_available_gb.toFixed(2);
+            document.getElementById('hw-memory-bandwidth').textContent = data.memory_bandwidth_gbps.toFixed(0);
 
-            // Update Education section
-            document.getElementById('gpu-status').textContent = data.has_nvidia_gpu ? 'Available' : 'Not available';
-            document.getElementById('vram-info').textContent = data.vram_mb ? `${data.vram_mb} MB` : 'N/A';
-            document.getElementById('teacher-status').textContent = data.teacher_available ? 'Ready' : 'Unavailable';
+            const disksList = document.getElementById('hw-disks-list');
+            disksList.innerHTML = '';
+            data.disks.forEach(disk => {
+                const li = document.createElement('li');
+                li.textContent = `${disk.path}: ${disk.used_gb.toFixed(1)} GB / ${disk.total_gb.toFixed(1)} GB (${disk.percent.toFixed(1)}%)`;
+                disksList.appendChild(li);
+            });
+
+            const gpusList = document.getElementById('hw-gpus-list');
+            gpusList.innerHTML = '';
+            data.gpus.forEach(gpu => {
+                const li = document.createElement('li');
+                li.textContent = `${gpu.name}: ${gpu.vram_used_mb} MB / ${gpu.vram_total_mb} MB (${gpu.utilization_percent.toFixed(1)}%, ${gpu.memory_type || 'Unknown'})`;
+                gpusList.appendChild(li);
+            });
         })
         .catch(error => {
             if (error.message !== 'Unauthorized' && error.message !== 'Server error') {
@@ -253,6 +271,60 @@ function loadHardware() {
 
     // Setup Education department buttons
     setupEducationButtons();
+}
+
+function loadModels() {
+    const search = document.getElementById('models-search').value;
+    const category = document.getElementById('models-category-filter').value;
+    const vramFit = document.getElementById('models-vram-filter').value;
+    const quantLevel = document.getElementById('models-quant-filter').value;
+
+    let url = '/api/models?';
+    if (search) url += `search=${encodeURIComponent(search)}&`;
+    if (category) url += `category=${encodeURIComponent(category)}&`;
+    if (vramFit) url += `vram_fit=${encodeURIComponent(vramFit)}&`;
+    if (quantLevel) url += `quant_level=${encodeURIComponent(quantLevel)}&`;
+
+    fetch(url.slice(0, -1))
+        .then(response => {
+            if (response.status === 401) {
+                window.location.href = '/login';
+                throw new Error('Unauthorized');
+            }
+            if (response.status === 500) {
+                showToast('Server error — check Log drawer for details', 'error');
+                throw new Error('Server error');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const list = document.getElementById('models-list');
+            list.innerHTML = '';
+            data.forEach(model => {
+                const tr = document.createElement('tr');
+                const sizeGb = (model.file_size_bytes / (1024**3)).toFixed(2);
+                const tokS = model.tok_s_estimated ? model.tok_s_estimated.toFixed(1) : 'N/A';
+                tr.innerHTML = `
+                    <td>${model.org}/${model.family} (${model.version})</td>
+                    <td>${model.category}</td>
+                    <td>${model.quant}</td>
+                    <td>${sizeGb}</td>
+                    <td>${model.vram_required_mb}</td>
+                    <td>${tokS}</td>
+                    <td>${model.source_db}</td>
+                `;
+                list.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            if (error.message !== 'Unauthorized' && error.message !== 'Server error') {
+                console.error('Failed to fetch models:', error);
+                showNetworkError();
+            }
+        });
+
+    // Setup refresh button
+    document.getElementById('models-refresh').addEventListener('click', () => loadModels());
 }
 
 function loadOptions() {

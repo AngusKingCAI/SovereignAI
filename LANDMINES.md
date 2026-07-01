@@ -243,3 +243,7 @@ Append-only. Never edit or remove entries. Format:
 ---
 
 N/A — no new patterns (OR66 added per plan requirements, not a failure pattern)
+
+---
+
+N/A — no new patterns for prompt-18

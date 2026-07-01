@@ -47,7 +47,38 @@
     </section>
     <section id="panel-models" class="panel">
       <h2>Models</h2>
-      <p>Models panel — deferred to model management plan.</p>
+      <div id="models-controls">
+        <input type="text" id="models-search" placeholder="Search models...">
+        <select id="models-category-filter">
+          <option value="">All Categories</option>
+          <option value="llm">LLM</option>
+          <option value="image">Image</option>
+          <option value="audio">Audio</option>
+        </select>
+        <input type="number" id="models-vram-filter" placeholder="Max VRAM (MB)">
+        <select id="models-quant-filter">
+          <option value="">All Quantizations</option>
+          <option value="q2">Q2</option>
+          <option value="q4">Q4</option>
+          <option value="q8">Q8</option>
+          <option value="fp16">FP16</option>
+        </select>
+        <button id="models-refresh">Refresh</button>
+      </div>
+      <table id="models-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Category</th>
+            <th>Quant</th>
+            <th>Size (GB)</th>
+            <th>VRAM (MB)</th>
+            <th>Est. tok/s</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody id="models-list"></tbody>
+      </table>
     </section>
     <section id="panel-adapters" class="panel">
       <h2>Adapters</h2>
@@ -55,7 +86,20 @@
     </section>
     <section id="panel-hardware" class="panel">
       <h2>Hardware</h2>
-      <div id="hardware-info"></div>
+      <div id="hardware-snapshot">
+        <h3>CPU</h3>
+        <p>Usage: <span id="hw-cpu-percent">--</span>%</p>
+        <h3>RAM</h3>
+        <p>Usage: <span id="hw-ram-percent">--</span>%</p>
+        <p>Used: <span id="hw-ram-used">--</span> GB / <span id="hw-ram-total">--</span> GB</p>
+        <p>Available: <span id="hw-ram-available">--</span> GB</p>
+        <h3>Memory Bandwidth</h3>
+        <p><span id="hw-memory-bandwidth">--</span> GB/s</p>
+        <h3>Disks</h3>
+        <ul id="hw-disks-list"></ul>
+        <h3>GPUs</h3>
+        <ul id="hw-gpus-list"></ul>
+      </div>
       <h3>Education Department</h3>
       <div id="education-info">
         <p>GPU Status: <span id="gpu-status">Checking...</span></p>

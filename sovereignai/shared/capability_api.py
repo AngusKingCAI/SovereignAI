@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import asyncio
+from collections.abc import AsyncGenerator
 from uuid import UUID, uuid4
 
 from sovereignai.shared.auth import AuthMiddleware
 from sovereignai.shared.capability_graph import ICapabilityIndex
+from sovereignai.shared.hardware_probe import HardwareProbe
 from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
@@ -13,6 +16,7 @@ from sovereignai.shared.types import (
     CapabilityQuery,
     CapabilityResponse,
     DAGValidationError,
+    HardwareSnapshot,
     NoActiveProviderError,
     Task,
     TaskState,
@@ -34,12 +38,14 @@ class CapabilityAPI:
         task_state_query: ITaskStateQuery,
         state_machine: TaskStateMachine,
         trace: TraceEmitter,
+        hardware_probe: HardwareProbe,
     ) -> None:
         self._auth = auth
         self._index = capability_index
         self._tasks = task_state_query
         self._state_machine = state_machine
         self._trace = trace
+        self._hardware_probe = hardware_probe
 
     def query_capabilities(
         self, token: str, query: CapabilityQuery
@@ -106,3 +112,11 @@ class CapabilityAPI:
     def get_task_state(self, token: str, task_id: UUID) -> TaskState | None:
         self._auth.validate(token)
         return self._tasks.get_state(task_id)
+
+    def sample_hardware(self) -> HardwareSnapshot:
+        return self._hardware_probe.sample()
+
+    async def stream_hardware(self) -> AsyncGenerator[HardwareSnapshot, None]:
+        while True:
+            yield self._hardware_probe.sample()
+            await asyncio.sleep(1.0)

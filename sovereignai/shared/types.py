@@ -274,3 +274,41 @@ class ModelEntry:
     num_layers: int
     category: str
     source_db: str
+
+
+@dataclass(frozen=True)
+class ModelFilter:
+    search: str | None = None
+    category: str | None = None
+    vram_fit_max_mb: int | None = None
+    quant_level_min: str | None = None
+
+
+@dataclass(frozen=True)
+class DiskUsage:
+    path: str
+    total_gb: float
+    used_gb: float
+    free_gb: float
+    percent: float
+
+
+@dataclass(frozen=True)
+class GpuInfo:
+    name: str
+    vram_total_mb: int
+    vram_used_mb: int
+    utilization_percent: float
+    memory_type: str | None
+
+
+@dataclass(frozen=True)
+class HardwareSnapshot:
+    cpu_percent: float
+    ram_percent: float
+    ram_used_gb: float
+    ram_total_gb: float
+    ram_available_gb: float
+    memory_bandwidth_gbps: float
+    disks: list[DiskUsage]
+    gpus: list[GpuInfo]

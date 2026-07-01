@@ -156,3 +156,23 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Trigger condition**: When TeacherWorker implementation is updated to match test expectations.
 **Target plan**: Plan 16 or next Education department plan.
 **Status**: Still failing at prompt-17 (3 tests). Not in scope for Plan 17 (Database/Service providers).
+
+---
+
+## Deferred: GPU bandwidth lookup is substring-based placeholder
+
+**Deferred at**: prompt-18
+**Reason**: GPU memory type and bandwidth lookup in hardware_probe.py uses substring matching on GPU names (e.g., "RTX 4090" -> "GDDR6X"). This is a best-effort placeholder that may miss GPUs or misclassify them. Accurate lookup requires PCI-ID-based detection.
+**Trigger condition**: When GPU detection accuracy is needed for production deployments.
+**Target plan**: Plan-19 or later.
+
+---
+
+## Deferred: setuptools vulnerabilities (transitive dependency)
+
+**Deferred at**: prompt-18
+**Reason**: pip-audit reports 5 known vulnerabilities in setuptools 65.5.0 (transitive dependency from Python 3.11.9): CVE-2022-43012, CVE-2024-6345, and PYSEC-2025-49. These are ReDoS and path traversal vulnerabilities in package_index.py. Upgrading setuptools may break compatibility with Python 3.11.9.
+**Trigger condition**: When upgrading to a newer Python version that bundles a patched setuptools.
+**Target plan**: TBD (Python version upgrade plan).
+
+

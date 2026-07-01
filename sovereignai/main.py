@@ -71,11 +71,13 @@ def build_container(dev_mode: bool = False) -> DIContainer:
     container.register_singleton(AuthMiddleware, auth)
 
     # 8. CapabilityAPI — depends on AuthMiddleware + ICapabilityIndex
-    #    + ITaskStateQuery + TaskStateMachine
+    #    + ITaskStateQuery + TaskStateMachine + HardwareProbe
     # Rev2 per Finding 1: passes the concrete TaskStateMachine so submit_task
     # can call submit() (the ITaskStateQuery protocol is query-only).
+    # Plan 18: added HardwareProbe dependency for sample_hardware() and stream_hardware()
     from sovereignai.shared.capability_api import CapabilityAPI
     from sovereignai.shared.capability_graph import ICapabilityIndex
+    from sovereignai.shared.hardware_probe import HardwareProbe
     from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
     api = CapabilityAPI(
         auth=auth,
@@ -83,6 +85,7 @@ def build_container(dev_mode: bool = False) -> DIContainer:
         task_state_query=container.retrieve(ITaskStateQuery),  # type: ignore[type-abstract]
         state_machine=container.retrieve(TaskStateMachine),
         trace=trace,
+        hardware_probe=HardwareProbe(),
     )
     container.register_singleton(CapabilityAPI, api)
 

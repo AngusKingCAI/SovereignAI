@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## prompt-18 — Hardware Panel and Models Panel
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-18-Rev4.md
+**Tests**: 391 passed, 9 skipped (0 chronic)
+**Coverage**: 91%
+**Browser smoke test screenshots**: N/A — requires manual verification
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Added HardwareProbe.sample() method returning HardwareSnapshot dataclass
+- Added CapabilityAPI.sample_hardware() and stream_hardware() methods
+- Implemented Hardware panel UI with SSE streaming endpoint
+- Implemented Models panel UI with search, filter, and quantization options
+- Added ModelCatalog with estimate_tok_s() for performance estimation
+- Added comprehensive test coverage for hardware and models panels
+
+---
+
 ## prompt-17 — Database and Service Providers
 **Date**: 2026-07-01
 **Plan file**: prompts/plan-17-Rev9.md
