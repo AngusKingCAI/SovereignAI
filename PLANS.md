@@ -33,6 +33,7 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 17**: Baseline → 362 tests. Delta: +30 — see CHANGELOG prompt-17.
 **Plan 18**: Baseline → 391 tests. Delta: +29 — see CHANGELOG prompt-18.
 **Plan 19**: Baseline → 407 tests. Delta: +16 — see CHANGELOG prompt-19.
+**Plan 20**: Baseline → 407 tests. Delta: 0 — see CHANGELOG prompt-20.
 
 ---
 
@@ -64,7 +65,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | **Vulture** | 0 findings | Plan 1 | High-confidence (≥80) only |
 | **detect-secrets** | pass | Plan 1 | Baseline established prompt-0 |
 | **pre-commit** | pass | Plan 1 | Hooks configured at prompt-0 |
-| **Coverage** | 89% | Plan 15.1 | Dropped from 91% (Plan 14) to 89% — within 5% threshold. Test mode fixes added. Target: 90% floor. Coverage measured at every /close per OR43. |
+| **Coverage** | 83% | Plan 20 | Dropped from 90% (Plan 19) to 83% — hardware_probe.py GPU paths deferred to DEBT.md. Target: 90% floor. Coverage measured at every /close per OR43. |
 
 ---
 
@@ -99,6 +100,8 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-14 | `prompt-14` | Education Department — Teacher worker, Self-correction skill, QLoRA | 320 | 0 | 0 | 2026-06-29 |
 | prompt-15 | `prompt-15` | Scan 15 — mechanical verification scan | 320 | 0 | 0 | 2026-06-29 |
 | prompt-15.1 | `prompt-15.1` | Fix Critical Issues from Log Scan — test mode, memory backends, production guards | 320 | 0 | 0 | 2026-06-29 |
+| prompt-19 | `prompt-19` | llama.cpp Adapter, Routing Engine Failover, First-Run Experience | 407 | 0 | 0 | 2026-07-01 |
+| prompt-20 | `prompt-20` | pynvml Deprecation Fix, HfApi Direction Parameter Removal | 407 | 0 | 0 | 2026-07-01 |
 
 ---
 

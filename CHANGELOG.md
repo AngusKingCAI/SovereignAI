@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## prompt-20 — pynvml Deprecation Fix, HfApi Direction Parameter Removal
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-20-Rev0.md
+**Tests**: 407 passed, 12 skipped (0 chronic)
+**Coverage**: 83% (hardware_probe.py GPU paths deferred to DEBT.md)
+**Browser smoke test screenshots**: N/A — no UI changes
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Replaced pynvml with nvidia-ml-py in dependencies (with backward compatibility fallback)
+- Removed deprecated `direction` parameter from HfApi.list_models() call
+- Documented hardware_probe.py coverage gap (GPU detection paths require hardware)
+- Updated spec_match.py to recognize databases/ and services/ paths
+
+---
+
 ## prompt-19 — llama.cpp Adapter, Routing Engine Failover, First-Run Experience
 **Date**: 2026-07-01
 **Plan file**: prompts/plan-19-Rev9.md
