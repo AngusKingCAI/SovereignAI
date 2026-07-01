@@ -1,17 +1,9 @@
-Depends on: prompt-19
+Depends on: 19
 Vision principles: P2, P4, P6, P9, P13
 
 WILL edit:
 - `sovereignai/shared/hardware_probe.py`
 - `databases/hf_database/provider.py`
-- `txt/requirements.txt`
-- `prompts/plan-20-Rev0.md`
-- `PLANS.md`
-- `CHANGELOG.md`
-- `.gitignore` (pre-existing drift from intermediate commits)
-- `bandit/baseline.json` (pre-existing drift from intermediate commits)
-- `bandit/report.json` (pre-existing drift from intermediate commits)
-- `documents/ollama-scraper-architecture.md` (pre-existing drift from intermediate commits)
 
 WILL NOT edit:
 - All other files

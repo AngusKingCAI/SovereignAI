@@ -283,3 +283,12 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Trigger condition**: N/A (documentation only).
 **Target plan**: N/A (documented in adapter docstring).
 
+---
+
+## Deferred: hardware_probe.py GPU path coverage gap
+
+**Deferred at**: prompt-20
+**Reason**: hardware_probe.py has 55% coverage (83% overall sovereignai coverage). GPU detection paths (nvidia-smi subprocess calls, pynvml/nvidia-ml-py library calls) are hard to test without actual NVIDIA hardware. These paths require GPU hardware or complex mocking that may not reflect real behavior.
+**Trigger condition**: When GPU hardware testing infrastructure is available or when mocking strategy is validated against real GPU behavior.
+**Target plan**: TBD (hardware testing infrastructure plan).
+
