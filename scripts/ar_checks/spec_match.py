@@ -23,10 +23,17 @@ def get_baseline_tag(plan_path: Path) -> str:
     match = re.search(r'Depends on:\s*(.+)', content)
     if match:
         depends = match.group(1).strip()
+        # Plans write either "prompt-N[.M...]" or "Plan N[.M...]" — accept both.
         tag_match = re.search(r'prompt-[\d.]+', depends)
         if tag_match:
             return tag_match.group(0)
-    return "prompt-15.1"
+        plan_match = re.search(r'Plan\s+([\d.]+)', depends, re.IGNORECASE)
+        if plan_match:
+            return f"prompt-{plan_match.group(1)}"
+        print(f"Could not parse baseline from 'Depends on: {depends}' in {plan_path}")
+        sys.exit(1)
+    print(f"No 'Depends on:' line found in {plan_path}")
+    sys.exit(1)
 
 
 def get_diff_files(baseline: str) -> set[str]:

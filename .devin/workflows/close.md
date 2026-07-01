@@ -64,9 +64,9 @@ Prerequisite: `.venv/` exists.
 
 ## Verification (before commit/tag)
 
-15. Start dev server, load page. For each new UI element in plan's "WILL edit" scope: verify present in DOM, click + observe state change, capture screenshot `<element-id>.png` to `logs/screenshots/prompt-{N}/`. Verify each screenshot >1KB. "N/A — requires manual verification" without doing it = STOP. STOP if dev server won't start.
+15. Start dev server, load page. For each new UI element in plan's "WILL edit" scope: verify present in DOM, click + observe state change, capture screenshot `<element-id>.png` to `logs/screenshots/prompt-{N}/`. Verify each screenshot >1KB. "N/A — requires manual verification" without doing it = STOP. STOP if dev server won't start. Do not proceed to step 17 until each required screenshot file exists on disk and is >1KB — writing "N/A" or "skipped" in the CHANGELOG field does not satisfy this step.
 
-16. `DIFF_LINES=$(git diff prompt-{N-1}..HEAD | wc -l)` — if >5000, chunk review per phase, then run full-diff pass. `.venv/Scripts/python.exe scripts/ar_checks/spec_match.py` — STOP if exit≠0. No exceptions for "repo state issue" or similar — fix the repo or fix the plan.
+16. `DIFF_LINES=$(git diff prompt-{N-1}..HEAD | wc -l)` — if >5000, chunk review per phase, then run full-diff pass. `.venv/Scripts/python.exe scripts/ar_checks/spec_match.py prompts/plan-{N}-Rev{n}.md` — STOP if exit≠0. No exceptions for "repo state issue," "expected due to test fixes," or similar rationalization — fix the repo or fix the plan. A non-zero exit here blocks steps 17-22 (add, commit, tag, push) entirely; do not commit, tag, or push while spec_match is failing, even if the failure looks explainable.
 
 ## Git
 
