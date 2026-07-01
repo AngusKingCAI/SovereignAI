@@ -92,6 +92,7 @@ def main():
         and not p.startswith("documents/plan-")
         and not p.startswith("prompts/plan-")  # plan files are governance artifacts (Architect-authored), not Devin edits
         and not p.startswith("prompts/completed/")  # moved plan files
+        and not p.startswith("logs/")  # execution log + screenshots are close.md steps 15/23 artifacts, not plan-scope edits
     }
     
     if unexpected_in_diff:
