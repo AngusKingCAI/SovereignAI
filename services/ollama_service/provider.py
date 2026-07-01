@@ -9,6 +9,7 @@ import httpx
 
 from services.base import ServiceNotFoundError, ServiceStartError, ServiceStatus
 from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import TraceLevel
 
 if TYPE_CHECKING:
     pass
@@ -26,7 +27,7 @@ class OllamaServiceProvider:
         if shutil.which("ollama") is None:
             self._trace.emit(
                 component="OllamaServiceProvider",
-                level="ERROR",
+                level=TraceLevel.ERROR,
                 message="ollama not on PATH",
             )
             raise ServiceNotFoundError("ollama not on PATH")
@@ -45,7 +46,7 @@ class OllamaServiceProvider:
                 if response.status_code == 200:
                     self._trace.emit(
                         component="OllamaServiceProvider",
-                        level="INFO",
+                        level=TraceLevel.INFO,
                         message=f"Ollama started on port {self._port}",
                     )
                     return
@@ -60,7 +61,7 @@ class OllamaServiceProvider:
 
         self._trace.emit(
             component="OllamaServiceProvider",
-            level="ERROR",
+            level=TraceLevel.ERROR,
             message=f"startup timeout: port {self._port}",
         )
         raise ServiceStartError(f"Ollama startup timeout on port {self._port}")

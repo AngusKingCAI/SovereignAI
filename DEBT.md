@@ -146,3 +146,13 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Trigger condition**: When a focused docstring cleanup plan is scheduled.
 **Target plan**: TBD (docs-only cleanup plan).
 **Resolved at**: prompt-cleanup (AR21 retired in workflow rev 12. Docstrings now prohibited per AR17. Reversed by design — see DECISIONS.md D6.)
+
+---
+
+## Deferred: TeacherWorker.curate_dataset() criteria parameter
+
+**Deferred at**: prompt-15.1
+**Reason**: Tests in test_teacher_worker.py pass a `criteria` parameter to `curate_dataset()` but the actual implementation signature doesn't accept it. This causes 3 test failures (test_curate_dataset_consent_false, test_curate_dataset_pii_filter, test_curate_dataset_retention_filter). The parameter was likely added to tests but not to the implementation during Plan 14.
+**Trigger condition**: When TeacherWorker implementation is updated to match test expectations.
+**Target plan**: Plan 16 or next Education department plan.
+**Status**: Still failing at prompt-17 (3 tests). Not in scope for Plan 17 (Database/Service providers).

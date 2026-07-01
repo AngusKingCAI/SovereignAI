@@ -16,7 +16,7 @@ from databases.base import (
 )
 from sovereignai.shared.quant_priority import QUANT_PRIORITY, select_best_quant
 from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import ModelEntry
+from sovereignai.shared.types import ModelEntry, TraceLevel
 
 if TYPE_CHECKING:
     from huggingface_hub import HfApi
@@ -106,12 +106,12 @@ class HFDatabaseProvider:
 
         gguf_files = [
             f.rfilename for f in repo_info.siblings if f.rfilename.endswith(".gguf")
-        ]
+        ] if repo_info.siblings else []
 
         if not gguf_files:
             self._trace.emit(
                 component="HFDatabaseProvider",
-                level="ERROR",
+                level=TraceLevel.ERROR,
                 message=f"No GGUF files found in repo {model_id}",
             )
             raise NoCompatibleQuantError(model_id)
@@ -127,7 +127,7 @@ class HFDatabaseProvider:
         if selected_quant is None:
             self._trace.emit(
                 component="HFDatabaseProvider",
-                level="ERROR",
+                level=TraceLevel.ERROR,
                 message=f"No compatible quantization in repo {model_id}",
             )
             raise NoCompatibleQuantError(model_id)
@@ -148,16 +148,16 @@ class HFDatabaseProvider:
         try:
             self._trace.emit(
                 component="HFDatabaseProvider",
-                level="INFO",
+                level=TraceLevel.INFO,
                 message=f"Downloading {model_id} with quant {selected_quant}",
             )
 
             hf_hub_download(
                 repo_id=model_id,
                 filename=selected_file,
-                local_dir=str(local_dir),
-                local_dir_use_symlinks=False,
-            )
+                local_dir=local_dir,
+                revision="main",
+            )  # nosec B615
 
             model_info = ModelInfo(
                 model_id=model_id,
@@ -172,8 +172,9 @@ class HFDatabaseProvider:
                 dir=str(local_dir), suffix=".tmp", text=True
             )
             try:
-                with os.fdopen(temp_fd, "w") as f:
-                    json.dump(model_info.__dict__, f)
+                os.close(temp_fd)
+                with open(temp_path, "w") as f:  # type: ignore
+                    json.dump(model_info.__dict__, f)  # type: ignore
                 os.replace(temp_path, metadata_path)
             except Exception:
                 import contextlib
@@ -183,14 +184,14 @@ class HFDatabaseProvider:
 
             self._trace.emit(
                 component="HFDatabaseProvider",
-                level="INFO",
+                level=TraceLevel.INFO,
                 message=f"Download complete for {model_id}",
             )
         except Exception as e:
             shutil.rmtree(local_dir, ignore_errors=True)
             self._trace.emit(
                 component="HFDatabaseProvider",
-                level="ERROR",
+                level=TraceLevel.ERROR,
                 message=f"Download failed for {model_id}: {str(e)}",
             )
             raise
@@ -220,7 +221,11 @@ class HFDatabaseProvider:
         import os
 
         if os.environ.get("SOVEREIGNAI_TEST_MODE") == "1":
-            return DatabaseStatus(available=True, version="test-mode")
+            return DatabaseStatus(
+                installed=True,
+                version="test-mode",
+                size_bytes=0,
+            )
 
         hf_cache = Path.home() / ".cache" / "huggingface"
         installed = hf_cache.exists()

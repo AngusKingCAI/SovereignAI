@@ -1,4 +1,18 @@
-# CHANGELOG — SovereignAI
+# CHANGELOG
+
+## prompt-17 — Database and Service Providers
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-17-Rev9.md
+**Tests**: 362 passed, 9 skipped, 4 deselected (0 chronic)
+**Coverage**: 90%
+- Implemented root-level packages databases/ and services/ per OR67
+- Added DatabaseRegistry and ServiceRegistry with health_check() per OR68
+- Implemented HFDatabaseProvider with huggingface_hub integration
+- Implemented OllamaServiceProvider with subprocess and httpx
+- Added quant priority selection function
+- Wired providers into main.py DI container
+- Added Options panel UI with database/service status display
+- Added test coverage for all new components — SovereignAI
 
 Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 

@@ -56,9 +56,7 @@ def test_list_models_cached(mock_hf_api: MagicMock) -> None:
 def test_download_model(
     mock_hf_api: MagicMock,
     mock_download: MagicMock,
-    mock_unlink: MagicMock,
     mock_json_dump: MagicMock,
-    mock_fdopen: MagicMock,
     mock_replace: MagicMock,
     mock_mkstemp: MagicMock,
 ) -> None:
@@ -75,7 +73,7 @@ def test_download_model(
     mock_repo_info.siblings = [mock_file]
     mock_api.model_info.return_value = mock_repo_info
 
-    mock_mkstemp.return_value = (123, "/tmp/temp.json")
+    mock_mkstemp.return_value = (123, "/tmp/temp.json")  # nosec B108
 
     provider.download_model("org/model")
 
@@ -115,9 +113,7 @@ def test_no_compatible_quant_error(mock_hf_api: MagicMock) -> None:
 def test_download_uses_path_home(
     mock_hf_api: MagicMock,
     mock_download: MagicMock,
-    mock_unlink: MagicMock,
     mock_json_dump: MagicMock,
-    mock_fdopen: MagicMock,
     mock_replace: MagicMock,
     mock_mkstemp: MagicMock,
 ) -> None:
@@ -134,7 +130,7 @@ def test_download_uses_path_home(
     mock_repo_info.siblings = [mock_file]
     mock_api.model_info.return_value = mock_repo_info
 
-    mock_mkstemp.return_value = (123, "/tmp/temp.json")
+    mock_mkstemp.return_value = (123, "/tmp/temp.json")  # nosec B108
 
     provider.download_model("org/model")
 
@@ -154,9 +150,7 @@ def test_download_uses_path_home(
 def test_quant_fallback_chain(
     mock_hf_api: MagicMock,
     mock_download: MagicMock,
-    mock_unlink: MagicMock,
     mock_json_dump: MagicMock,
-    mock_fdopen: MagicMock,
     mock_replace: MagicMock,
     mock_mkstemp: MagicMock,
 ) -> None:
@@ -175,7 +169,7 @@ def test_quant_fallback_chain(
     mock_repo_info.siblings = [mock_file1, mock_file2]
     mock_api.model_info.return_value = mock_repo_info
 
-    mock_mkstemp.return_value = (123, "/tmp/temp.json")
+    mock_mkstemp.return_value = (123, "/tmp/temp.json")  # nosec B108
 
     provider.download_model("org/model")
 
@@ -193,9 +187,7 @@ def test_quant_fallback_chain(
 def test_model_info_persistence(
     mock_hf_api: MagicMock,
     mock_download: MagicMock,
-    mock_unlink: MagicMock,
     mock_json_dump: MagicMock,
-    mock_fdopen: MagicMock,
     mock_replace: MagicMock,
     mock_mkstemp: MagicMock,
 ) -> None:
@@ -212,7 +204,7 @@ def test_model_info_persistence(
     mock_repo_info.siblings = [mock_file]
     mock_api.model_info.return_value = mock_repo_info
 
-    mock_mkstemp.return_value = (123, "/tmp/temp.json")
+    mock_mkstemp.return_value = (123, "/tmp/temp.json")  # nosec B108
 
     provider.download_model("org/model")
 
@@ -236,9 +228,7 @@ def test_model_info_persistence(
 def test_partial_file_cleanup_on_failure(
     mock_hf_api: MagicMock,
     mock_download: MagicMock,
-    mock_unlink: MagicMock,
     mock_json_dump: MagicMock,
-    mock_fdopen: MagicMock,
     mock_replace: MagicMock,
     mock_mkstemp: MagicMock,
     mock_rmtree: MagicMock,
@@ -256,7 +246,7 @@ def test_partial_file_cleanup_on_failure(
     mock_repo_info.siblings = [mock_file]
     mock_api.model_info.return_value = mock_repo_info
 
-    mock_mkstemp.return_value = (123, "/tmp/temp.json")
+    mock_mkstemp.return_value = (123, "/tmp/temp.json")  # nosec B108
     mock_download.side_effect = Exception("Download failed")
 
     try:
