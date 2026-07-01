@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-07-01 (prompt-19)
+**Last updated**: 2026-07-01 (prompt-20.1)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -34,12 +34,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 18**: Baseline → 391 tests. Delta: +29 — see CHANGELOG prompt-18.
 **Plan 19**: Baseline → 407 tests. Delta: +16 — see CHANGELOG prompt-19.
 **Plan 20**: Baseline → 407 tests. Delta: 0 — see CHANGELOG prompt-20.
+**Plan 20.1**: Baseline → 455 tests. Delta: +48 — see CHANGELOG prompt-20.1.
 
 ---
 
 ## Test Baseline
 
-**Current**: 407 tests (Plan 19 `/close`)
+**Current**: 455 tests (Plan 20.1 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -65,7 +66,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | **Vulture** | 0 findings | Plan 1 | High-confidence (≥80) only |
 | **detect-secrets** | pass | Plan 1 | Baseline established prompt-0 |
 | **pre-commit** | pass | Plan 1 | Hooks configured at prompt-0 |
-| **Coverage** | 83% | Plan 20 | Dropped from 90% (Plan 19) to 83% — hardware_probe.py GPU paths deferred to DEBT.md. Target: 90% floor. Coverage measured at every /close per OR43. |
+| **Coverage** | 90% | Plan 20.1 | Increased from 83% (Plan 20) to 90% — added comprehensive tests for procedural_backend, self_correction skill, librarian, conformance runner. Target: 90% floor. Coverage measured at every /close per OR43. |
 
 ---
 
@@ -102,12 +103,13 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-15.1 | `prompt-15.1` | Fix Critical Issues from Log Scan — test mode, memory backends, production guards | 320 | 0 | 0 | 2026-06-29 |
 | prompt-19 | `prompt-19` | llama.cpp Adapter, Routing Engine Failover, First-Run Experience | 407 | 0 | 0 | 2026-07-01 |
 | prompt-20 | `prompt-20` | pynvml Deprecation Fix, HfApi Direction Parameter Removal | 407 | 0 | 0 | 2026-07-01 |
+| prompt-20.1 | `prompt-20.1` | Coverage Improvement, TeacherWorker Removal, Scan Infrastructure Fix | 455 | 0 | 0 | 2026-07-01 |
 
 ---
 
 ## Active Plan
 
-**Plan 20** — Fix Llama.cpp Adapter Test Failures + First-Run Auth + pynvml + Options HF + Scan 20
+**Plan 21** — UI overhaul — 10 panels (deferred per user request)
 
 ---
 
@@ -115,11 +117,11 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 20 | Fix Llama.cpp Adapter Test Failures + First-Run Auth + pynvml + Options HF + Scan 20 | Plan 19 | 🔄 Active |
-| 2 | Plan 21 | UI overhaul — 10 panels (deferred per user request) | Plan 20 | ⏳ Pending |
-| 3 | Plan 22 | Future plan | Plan 21 | ⏳ Pending |
-| 4 | Plan 23 | Future plan | Plan 22 | ⏳ Pending |
-| 5 | Plan 24 | Future plan | Plan 23 | ⏳ Pending |
+| 1 | Plan 21 | UI overhaul — 10 panels (deferred per user request) | Plan 20 | 🔄 Active |
+| 2 | Plan 22 | Future plan | Plan 21 | ⏳ Pending |
+| 3 | Plan 23 | Future plan | Plan 22 | ⏳ Pending |
+| 4 | Plan 24 | Future plan | Plan 23 | ⏳ Pending |
+| 5 | Plan 25 | Future plan | Plan 24 | ⏳ Pending |
 
 ---
 

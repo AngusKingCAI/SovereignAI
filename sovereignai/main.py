@@ -276,20 +276,6 @@ def build_container(dev_mode: bool = False) -> DIContainer:
         hardware_probe = HardwareProbe()
         container.register_singleton(HardwareProbe, hardware_probe)
 
-        # 17. Teacher worker — depends on CapabilityAPI + TraceEmitter + HardwareProbe (Plan 14)
-        # NOTE: Teacher worker is registered as a factory (not singleton) per AR18
-        # The actual instantiation happens on-demand via the LifecycleManager
-        from sovereignai.workers.education.teacher_worker import TeacherWorker
-        # Register as a factory function
-        def teacher_worker_factory() -> TeacherWorker:
-            """Create a new Teacher worker instance on demand with injected dependencies."""
-            return TeacherWorker(
-                capability_api=container.retrieve(CapabilityAPI),
-                trace=trace,
-                hardware_probe=container.retrieve(HardwareProbe),
-            )
-        container.register_factory(TeacherWorker, teacher_worker_factory)
-
     if not _test_mode:
         # 18. Self-correction skill — depends on Librarian + TraceEmitter (Plan 14)
         # NOTE: Self-correction skill subscribes to TaskStateChanged events

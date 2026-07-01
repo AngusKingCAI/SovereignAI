@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## prompt-20.1 — Coverage Improvement, TeacherWorker Removal, Scan Infrastructure Fix
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-20.1-Rev0.md
+**Tests**: 455 passed, 6 skipped (0 chronic)
+**Coverage**: 90% (increased from 83% — added comprehensive tests for procedural_backend, self_correction skill, librarian, conformance runner)
+**Browser smoke test screenshots**: N/A — no UI changes
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Removed TeacherWorker implementation and all related tests (test_teacher_worker.py, test_education_department.py, test_model_registry.py, test_qlora_integration.py, test_gpu_lock.py)
+- Removed sovereignai/workers/education/ directory
+- Added comprehensive test coverage for procedural_backend (file-based mode, query limit, delete not-found, prune no-removal)
+- Added tests for self_correction skill (update_procedural_memory exception, recommend_retraining, analyze_task with routing failure)
+- Added tests for librarian (_merge_results for working/episodic/trace, _route memory storage, _route invalid capability, store, query, delete)
+- Added tests for conformance runner (cache eviction, first-party fail-closed, third-party fail-open, test exception, LRU eviction in check)
+- Added test for conformance base concrete implementation
+- Fixed mypy errors in conformance/base.py (added Any import and type annotation)
+- Fixed mypy errors in llama_cpp_adapter/adapter.py (renamed variables to avoid shadowing, added type ignore for Any return)
+- Fixed vulture unused variable warnings in test_hf_database.py (prefixed unused mocks with underscore)
+- Added DEBUG trace emit to llama_cpp_adapter.generate() for metadata-only path documentation
+- Verified scan scripts use correct scripts/ar_checks/ path (check_placeholders.py, check_tracing.py, spec_match.py)
+
+---
+
 ## prompt-20 — pynvml Deprecation Fix, HfApi Direction Parameter Removal
 **Date**: 2026-07-01
 **Plan file**: prompts/plan-20-Rev0.md

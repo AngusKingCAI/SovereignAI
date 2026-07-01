@@ -46,6 +46,34 @@ def test_list_models_cached(mock_hf_api: MagicMock) -> None:
     os.environ["SOVEREIGNAI_TEST_MODE"] = "1"
 
 
+@patch("huggingface_hub.HfApi")
+def test_list_models_no_direction_param(mock_hf_api: MagicMock) -> None:
+    import os
+    os.environ["SOVEREIGNAI_TEST_MODE"] = "0"
+
+    trace = TraceEmitter()
+    cache_dir = Path.home() / ".cache"
+    provider = HFDatabaseProvider(trace, cache_dir)
+
+    mock_api = MagicMock()
+    mock_hf_api.return_value = mock_api
+
+    mock_model = MagicMock()
+    mock_model.modelId = "org/model"
+    mock_api.list_models.return_value = [mock_model]
+    mock_api.model_info.return_value = MagicMock(cardData={"num_layers": 32})
+
+    provider.list_models()
+
+    call_args = mock_api.list_models.call_args
+    assert "direction" not in call_args.kwargs
+    assert call_args.kwargs["filter"] == "gguf"
+    assert call_args.kwargs["sort"] == "downloads"
+    assert call_args.kwargs["limit"] == 500
+
+    os.environ["SOVEREIGNAI_TEST_MODE"] = "1"
+
+
 @patch("huggingface_hub.hf_hub_download")
 @patch("huggingface_hub.HfApi")
 @patch("databases.hf_database.provider.os.unlink")
@@ -56,11 +84,11 @@ def test_list_models_cached(mock_hf_api: MagicMock) -> None:
 @patch("databases.hf_database.provider.tempfile.mkstemp")
 def test_download_model(
     mock_mkstemp: MagicMock,
-    mock_replace: MagicMock,
-    mock_close: MagicMock,
+    _mock_replace: MagicMock,
+    _mock_close: MagicMock,
     mock_open: MagicMock,
     mock_json_dump: MagicMock,
-    mock_unlink: MagicMock,
+    _mock_unlink: MagicMock,
     mock_hf_api: MagicMock,
     mock_download: MagicMock,
 ) -> None:
@@ -79,7 +107,7 @@ def test_download_model(
 
     mock_mkstemp.return_value = (123, "/tmp/temp.json")  # nosec B108
     mock_open.return_value.__enter__.return_value = MagicMock()
-    mock_close.return_value = None
+    _mock_close.return_value = None
 
     provider.download_model("org/model")
 

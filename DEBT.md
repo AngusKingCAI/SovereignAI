@@ -181,6 +181,7 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Trigger condition**: When TeacherWorker implementation is updated to match test expectations.
 **Target plan**: Plan 16 or next Education department plan.
 **Status**: Still failing at prompt-16 (3 tests). Not in scope for Logs panel implementation.
+**Resolved at**: prompt-20.1 (TeacherWorker implementation and all tests removed per user request).
 
 ---
 
@@ -219,6 +220,7 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Reason**: GPU memory type and bandwidth lookup in hardware_probe.py uses substring matching on GPU names (e.g., "RTX 4090" -> "GDDR6X"). This is a best-effort placeholder that may miss GPUs or misclassify them. Accurate lookup requires PCI-ID-based detection.
 **Trigger condition**: When GPU detection accuracy is needed for production deployments.
 **Target plan**: Plan-19 or later.
+**Resolved at**: prompt-20.1 (added exact PCI-ID mapping for RTX 3060 Laptop and common GPUs to hardware_probe.py).
 
 ---
 
@@ -282,6 +284,16 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Reason**: generate() has side effect of loading model into VRAM. For metadata-only queries, users should call database_registry.find_model() directly. This is a documentation note, no code change needed.
 **Trigger condition**: N/A (documentation only).
 **Target plan**: N/A (documented in adapter docstring).
+**Resolved at**: prompt-20.1 (added DEBUG trace emit to llama_cpp_adapter.generate() for metadata-only path documentation).
+
+---
+
+## Deferred: diskcache CVE-2025-69872 (transitive dependency)
+
+**Deferred at**: prompt-20.1
+**Reason**: pip-audit reports CVE-2025-69872 in diskcache 5.6.3 (transitive dependency from huggingface_hub). This is a path traversal vulnerability. Upgrading diskcache may break compatibility with huggingface_hub.
+**Trigger condition**: When huggingface_hub updates to a version that uses a patched diskcache or when upgrading to a newer huggingface_hub version.
+**Target plan**: TBD (dependency upgrade plan).
 
 ---
 

@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass
@@ -11,5 +12,5 @@ class ConformanceResult:
 class BaseConformanceTest(ABC):
 
     @abstractmethod
-    def test_component_has_required_interface(self, instance) -> None:
+    def test_component_has_required_interface(self, instance: Any) -> None:
         pass

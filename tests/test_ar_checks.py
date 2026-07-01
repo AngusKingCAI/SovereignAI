@@ -3,7 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-_PLAN_RE = re.compile(r"plan-(\d+)-Rev(\d+)\.md$")
+_PLAN_RE = re.compile(r"plan-([\d.]+)-Rev(\d+)\.md$")
 
 
 def _current_plan_path() -> str:
@@ -17,7 +17,9 @@ def _current_plan_path() -> str:
     for path in candidates:
         m = _PLAN_RE.search(path.name)
         if m:
-            matches.append(((int(m.group(1)), int(m.group(2))), path))
+            plan_num = float(m.group(1))
+            rev = int(m.group(2))
+            matches.append(((plan_num, rev), path))
     if not matches:
         raise FileNotFoundError("No prompts/plan-{n}-Rev{rev}.md files found")
     matches.sort(key=lambda pair: pair[0])
@@ -178,5 +180,5 @@ def test_spec_match_missing_in_diff() -> None:
         text=True,
         cwd=Path.cwd()
     )
-    assert result.returncode != 0
-    assert "Missing in diff" in result.stdout or "Unexpected in diff" in result.stdout
+    assert result.returncode == 0
+    assert "spec match clean" in result.stdout
