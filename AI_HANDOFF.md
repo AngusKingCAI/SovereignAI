@@ -33,7 +33,8 @@ This ensures the Architect always reviews current state, not a stale clone.
 4. **Review C9 proposals + scan for patterns.** Propose new rules or reject. Include in next plan's S0.
 5. **Make plan files + context brief + Round Table prompt.** N plan files + 1 brief (per Brief Format) + 1 prompt (per Round Table Prompt, full or diff-summary per GR14).
 6. **Pause for Round Table.** Runs until clean pass. Apply findings at discretion.
-7. **Deliver.** Tell User to copy to `C:/SovereignAI/prompts/plan-{N}.md`.
+7. **Score panelists (GR16).** Posted inline in chat.
+8. **Deliver.** Tell User to copy to `C:/SovereignAI/prompts/plan-{N}.md`.
 
 ---
 

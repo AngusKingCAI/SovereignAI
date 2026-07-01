@@ -1,24 +1,11 @@
 # Batch Brief — Plans 16-19 (Rev 1)
 
-## 1. Sign-off ledger
-
-Architect-maintained. Empty on first delivery.
-
-| Panelist (name/model) | Verdict | Rev | Notes |
-|---|---|---|---|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-
-## 2. Context
+## 1. Context
 - **Baseline**: prompt-15.1 cleanup (AR17 no-docstrings, D7 no-OR-refs, principles.md as 32-line authority).
 - **Repo**: 320 tests, 89% coverage. 90% floor at every /close.
 - **Sidebar**: 9 tabs active. Logs becomes 10th.
 
-## 3. Plans in this batch
+## 2. Plans in this batch
 | Plan | Title | Depends on | Vision principles |
 |---|---|---|---|
 | 16 | Foundation + Governance + Logs Panel | Scan 15 | P9, P11, P8 |
@@ -28,7 +15,7 @@ Architect-maintained. Empty on first delivery.
 
 **Chain**: linear 16→17→18→19. Plan N STOP → all downstream STOP (binary).
 
-## 4. Decisions proposed
+## 3. Decisions proposed
 
 | DD-ID | Status | Rule | Alt rejected | Consequence |
 |---|---|---|---|---|
@@ -44,31 +31,31 @@ Architect-maintained. Empty on first delivery.
 **OR69** (P18): Models + Hardware panels consume capability API only. Alt: direct imports. Conseq: more endpoints. Preserves AR7.
 **OR70** (P19): adapter manifests declare `routing_priority` int. Alt: per-call hints. Conseq: static priority. Aligns P3.
 
-## 5. Decisions carried forward
+## 4. Decisions carried forward
 D1-D7 (see DECISIONS.md) — all Active.
 
-## 6. Questions for Round Table
+## 5. Questions for Round Table
 - **Q1**: How should llama.cpp adapter detect missing native deps (CUDA) before model load? Import try/except? PATH probe? `shutil.which`?
 - **Q2**: HF list_models() 1hr cache appropriate for power users? Configurable duration?
 - **Q3**: Is approximate tok/s (heuristic 0.65 multiplier) worse than no tok/s display?
 - **Q4**: Should Plan 19 RoutingEngine.route() explicitly handle "single adapter installed" case?
 - **Q5**: Could spec_match.py `tests/**` exemption permit scope creep via test files smuggling production changes?
 
-## 7. Open questions resolved
+## 6. Open questions resolved
 **None.** Snapshot: 5 vision open (Q1, Q2, Q8, Q13, Q31).
 
-## 8. Risks flagged (landmine pre-screen per GR12)
+## 7. Risks flagged (landmine pre-screen per GR12)
 - **R1** (L37): Plan 19 llama.cpp — ensure no `# TODO`/`pass` ships without DEBT.md entry.
 - **R2** (L8): Plan 16 spec_match.py test exemption — see Q5.
 - **R3** (L22): Plan 16 check_tracing.py exemptions (`__init__`, `@property`, pure queries) — verify don't hide violations.
 - **R4** (L30): Plan 17 `if not _test_mode` guards — verify new providers follow.
 - **R5** (L42, L44): Plans 16/17/18 edit web files — close.md step 15 browser smoke test mandatory.
 
-## 9. Coverage target
+## 8. Coverage target
 ≥90% at every /close. Current 89% — Plan 16 must lift to ≥90%.
 
-## 10. Round Table protocol
-Clean pass = no unaddressed CRITICAL/HIGH. Each rev brings new evidence. No re-litigating settled findings. Evidence-less items auto-dropped. Re-proposing rejected DD-IDs requires new evidence (GR10). Quorum: majority of assigned panelists (GR13).
+## 9. Round Table protocol
+Clean pass = no unaddressed CRITICAL/HIGH. Each rev brings new evidence. No re-litigating settled findings. Evidence-less items auto-dropped. Re-proposing rejected DD-IDs requires new evidence (GR10). Quorum: majority of assigned panelists return verdict (GR13).
 
-## 11. Superseded decisions
+## 10. Superseded decisions
 None this rev.
