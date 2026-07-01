@@ -180,6 +180,8 @@ OR67. databases/ and services/ are root-level packages, never nested in sovereig
 
 OR68. Every ServiceProvider and DatabaseProvider exposes health_check() returning typed status dataclass; provider __init__ must not perform I/O — lazy execution only in start()/list_models().
 
+OR69. Models panel and Hardware panel must consume capability API only — no direct DatabaseRegistry/ServiceRegistry/HardwareProbe imports from web/.
+
 ---
 
 See `LANDMINES.md` for failure patterns linked to rules.
