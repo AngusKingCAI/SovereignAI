@@ -239,3 +239,7 @@ Append-only. Never edit or remove entries. Format:
 **Trigger**: 6 of 12 rules from plan spec not added to AGENTS.md.
 **Impact**: Rules that would catch failures absent.
 **Graduated to**: OR65.
+
+---
+
+N/A — no new patterns (OR66 added per plan requirements, not a failure pattern)

@@ -880,3 +880,25 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Guarded production-only components (HardwareProbe, TeacherWorker, SelfCorrectionSkill, crash recovery, trace subscribers) with if not _test_mode
 - Fixed self-correction skill dead filter (removed non-existent component field check)
 - Added db_path/file_path parameters to memory backends for test mode support
+
+---
+
+## prompt-16 — Logs Panel Implementation
+
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-16-Rev3.md
+**Tests**: 329 passed, 3 failed (pre-existing teacher_worker criteria param), 9 skipped
+**Coverage**: 90%
+
+**Notes**:
+- Added OR66 rule: Logs panel must consume /api/traces SSE only, no direct TraceEmitter import
+- Created AR check scripts: check_tracing.py (OR61), check_placeholders.py (OR63), spec_match.py (OR65)
+- Implemented correlation ID propagation via ContextVar in shared/types.py
+- Enhanced TraceEmitter with recent_events buffer and subscribe_callback for SSE streaming
+- Modified CapabilityAPI.submit_task() to bind/inherit correlation IDs
+- Added Logs panel UI in web/templates/index.html with level/component filters and search
+- Implemented loadLogsPanel() and SSE subscription in web/static/app.js
+- Added logs panel styles in web/static/styles.css
+- Created /api/traces/history and /api/traces/stream endpoints in web/main.py
+- Added tests/test_logs_panel.py with 5 passing tests
+- Updated close.md workflow to include new AR checks in step 8

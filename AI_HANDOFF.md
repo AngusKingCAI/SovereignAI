@@ -164,3 +164,4 @@ GR14. First pass per rev: full prompt (brief + plans + dimensions). Re-checks of
 GR15. Open questions for Round Table (distinct from GR2's "resolved" list) get a
 Q-ID. Answers become DD-IDs or stay logged open next rev
 GR16. On clean pass, Architect posts a panelist scorecard inline: 1-100 quality score weighted toward accepted findings (GR4) over volume and recommendation (keep as-is | narrow scope | consolidate | cut).
+GR17. Before drafting a plan with UI changes, Architect checks existing specs/prior plans/context docs for precedent and states what was checked and why it didn't resolve the question. Only unresolved UI-shape questions go to the User — ≤6 per plan, 2-4 options each. Overflow beyond 6 is logged as Proposed DD-IDs for Round Table ratification instead of being dropped. "You decide" → Architect decides and logs it as a Proposed DD-ID the same way.
