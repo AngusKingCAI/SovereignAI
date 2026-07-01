@@ -5,7 +5,6 @@ import json
 import os
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from datetime import datetime
 from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
@@ -21,7 +20,6 @@ from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
     CapabilityCategory,
     TaskState,
-    TaskStateChanged,
 )
 from web.schemas import (
     CapabilityResponseDTO,
@@ -347,6 +345,25 @@ async def get_hardware(request: Request) -> dict:
     }
 
 
+@app.get("/api/traces/history", dependencies=[Depends(get_current_user)])
+async def get_traces_history(request: Request) -> list[TraceEventDTO]:
+    container: Any = request.app.state.container
+    trace: Any = container.retrieve(TraceEmitter)
+
+    events = trace.recent_events()
+    dtos = [
+        TraceEventDTO(
+            timestamp=event.timestamp.isoformat(),
+            level=event.level.value,
+            component=event.component,
+            correlation_id=str(event.correlation_id),
+            message=event.message,
+        )
+        for event in events
+    ]
+    return dtos
+
+
 @app.get("/api/traces/stream")
 async def get_traces_stream(request: Request) -> StreamingResponse:
     container: Any = request.app.state.container
@@ -354,98 +371,48 @@ async def get_traces_stream(request: Request) -> StreamingResponse:
     auth: Any = container.retrieve(AuthMiddleware)
     token = get_session_token(request)
 
-    # Validate token
     try:
         auth.validate(token)
     except Exception as exc:
         raise HTTPException(status_code=401, detail="Invalid session token") from exc
 
     async def event_generator() -> AsyncGenerator[str, None]:
-        from datetime import UTC
-        last_timestamp = datetime.min.replace(tzinfo=UTC)
-        sequence = 0
-        queue_max = 1000
-        queue: list[str] = []
-        last_queue_check = datetime.now()
+        import time
 
-        # Subscribe to task state changes
-        task_state_queue: asyncio.Queue[TaskStateChanged] = asyncio.Queue()
+        events_queue: asyncio.Queue = asyncio.Queue()
+        last_keepalive = time.time()
 
-        def on_task_state(event: TaskStateChanged) -> None:
-            task_state_queue.put_nowait(event)
+        def on_trace_event(event: Any) -> None:
+            events_queue.put_nowait(event)
 
-        # Subscribe to the event bus (simplified - in a real implementation,
-        # we'd need to properly manage the subscription lifecycle)
-        # For now, we'll poll the trace emitter only
+        unsubscribe = trace.subscribe_callback(on_trace_event)
 
         try:
             while True:
-                # Poll for trace events every 100ms
-                await asyncio.sleep(0.1)
+                if await request.is_disconnected():
+                    break
 
-                # Check queue timeout (60 seconds)
-                if (datetime.now() - last_queue_check).total_seconds() > 60:
-                    if queue:
-                        # Client not consuming - close connection
-                        break
-                    last_queue_check = datetime.now()
-
-                # Get new trace events
-                events = trace.get_events()
-                new_events = [e for e in events if e.timestamp > last_timestamp]
-
-                if new_events:
-                    last_timestamp = max(e.timestamp for e in new_events)
-
-                    for event in new_events:
-                        # Check backpressure
-                        if len(queue) >= queue_max:
-                            # Send gap marker
-                            gap_data = json.dumps({"dropped": len(queue)})
-                            yield f"event: gap\ndata: {gap_data}\n\n"
-                            queue.clear()
-
-                        dto = TraceEventDTO(
-                            sequence=sequence,
-                            timestamp=event.timestamp.isoformat(),
-                            level=event.level.value,
-                            component=event.component,
-                            message=event.message,
-                            trace_id=str(event.correlation_id),
-                            task_id=None,
-                        )
-                        data = json.dumps(dto.model_dump())
-                        yield f"id: {sequence}\nevent: message\ndata: {data}\n\n"
-                        sequence += 1
-                        queue.append(data)
-                        last_queue_check = datetime.now()
-
-                # Check for task state changes
                 try:
-                    while True:
-                        task_event = task_state_queue.get_nowait()
-                        task_data = json.dumps(
-                            {
-                                "task_id": str(task_event.task_id),
-                                "old_state": task_event.old_state.value,
-                                "new_state": task_event.new_state.value,
-                            }
-                        )
-                        yield f"id: {sequence}\nevent: task_state\ndata: {task_data}\n\n"
-                        sequence += 1
-                        queue.append(task_data)
-                        last_queue_check = datetime.now()
-                except asyncio.QueueEmpty:
-                    pass
-
-                # Yield keepalive if no new events
-                if not new_events and task_state_queue.empty():
-                    yield ": keepalive\n\n"
-
+                    event = await asyncio.wait_for(events_queue.get(), timeout=1.0)
+                    dto = TraceEventDTO(
+                        timestamp=event.timestamp.isoformat(),
+                        level=event.level.value,
+                        component=event.component,
+                        correlation_id=str(event.correlation_id),
+                        message=event.message,
+                    )
+                    data = json.dumps(dto.model_dump(mode='json'))
+                    yield f"event: trace\ndata: {data}\n\n"
+                    last_keepalive = time.time()
+                except TimeoutError:
+                    current_time = time.time()
+                    if current_time - last_keepalive > 15:
+                        yield ": keep-alive\n\n"
+                        last_keepalive = current_time
         except asyncio.CancelledError:
-            # Client disconnected
             pass
-
+        finally:
+            unsubscribe()
     return StreamingResponse(
         event_generator(),
         media_type="text/event-stream",

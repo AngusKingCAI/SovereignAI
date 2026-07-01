@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+from collections import deque
 from collections.abc import Callable
 from threading import Lock
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sovereignai.shared.types import TraceEvent, TraceLevel, new_correlation_id, now_utc
+from sovereignai.shared.types import (
+    TraceEvent,
+    TraceLevel,
+    current_correlation_id,
+    new_correlation_id,
+    now_utc,
+)
 
 if TYPE_CHECKING:
     pass
@@ -27,6 +34,7 @@ class TraceEmitter:
         self._lock = Lock()
         self._max_events = max_events
         self._callbacks: list[Callable[[TraceEvent], None]] = []
+        self._recent_events: deque[TraceEvent] = deque(maxlen=500)
 
     def emit(
         self,
@@ -35,23 +43,35 @@ class TraceEmitter:
         message: str,
         correlation_id: UUID | None = None,
     ) -> None:
-        # Import here to avoid circular import at module load
+        if correlation_id is None:
+            correlation_id = current_correlation_id() or new_correlation_id()
         event = TraceEvent(
             component=component,
             level=level,
             message=message,
             timestamp=now_utc(),
-            correlation_id=correlation_id or new_correlation_id(),
+            correlation_id=correlation_id,
         )
         with self._lock:
             self._events.append(event)
             if len(self._events) > self._max_events:
                 self._events.pop(0)
-            # Notify all registered callbacks for durable persistence
-            import contextlib
+            self._recent_events.append(event)
             for callback in self._callbacks:
-                with contextlib.suppress(Exception):
+                try:
                     callback(event)
+                except Exception:
+                    try:
+                        internal_event = TraceEvent(
+                            component="TraceEmitter",
+                            level=TraceLevel.ERROR,
+                            message=f"Callback {callback.__name__} failed",
+                            timestamp=now_utc(),
+                            correlation_id=correlation_id,
+                        )
+                        self._events.append(internal_event)
+                    except Exception:
+                        pass
 
     def get_events(
         self, level: TraceLevel | None = None, component: str | None = None
@@ -68,6 +88,17 @@ class TraceEmitter:
             events = [e for e in events if e.component == component]
         return events
 
-    def subscribe_callback(self, callback: Callable[[TraceEvent], None]) -> None:
+    def recent_events(self) -> list[TraceEvent]:
+        with self._lock:
+            return list(self._recent_events)
+
+    def subscribe_callback(self, callback: Callable[[TraceEvent], None]) -> Callable[[], None]:
         with self._lock:
             self._callbacks.append(callback)
+
+        def unsubscribe() -> None:
+            with self._lock:
+                if callback in self._callbacks:
+                    self._callbacks.remove(callback)
+
+        return unsubscribe

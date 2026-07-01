@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextvars import ContextVar, Token
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
@@ -61,6 +62,23 @@ def now_utc() -> datetime:
 
 def new_correlation_id() -> UUID:
     return uuid4()
+
+
+_current_correlation_id: ContextVar[UUID | None] = ContextVar(
+    "_current_correlation_id", default=None
+)
+
+
+def bind_correlation_id(cid: UUID) -> Token:
+    return _current_correlation_id.set(cid)
+
+
+def current_correlation_id() -> UUID | None:
+    return _current_correlation_id.get()
+
+
+def reset_correlation_id(token: Token) -> None:
+    _current_correlation_id.reset(token)
 
 
 def _is_valid_uuid(value: str) -> bool:

@@ -5,7 +5,7 @@
 **Audience:** GLM (implementing agent) + Round Table review
 **Status:** Draft v1 — ready for Round Table review
 **Date:** 2026-06-29
-**Depends on:** `SovereignAI_Architecture_Decisions.md`, `project-vision-Rev5.md`
+**Depends on:** `SovereignAI_Architecture_Decisions.md`, `principles.md`
 **Note on direction:** This document defines the `education_domain_brief_v1` schema (§5.3) and `coding_brief_v1` schema (§7.2) that downstream departments consume. Research does not require those departments' specs to exist or be read first — it only needs to know what they consume, which this document states directly. Education's spec, conversely, has a genuine runtime dependency on this one (it blocks on Research's deliverable before training can start). The relationship is one-directional, not circular, despite Education's header listing this document and this document mentioning Education.
 
 ---

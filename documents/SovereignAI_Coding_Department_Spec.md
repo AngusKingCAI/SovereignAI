@@ -5,7 +5,7 @@
 **Audience:** GLM (implementing agent) + Round Table review
 **Status:** Draft v1 — ready for Round Table review
 **Date:** 2026-06-29
-**Depends on:** `SovereignAI_Architecture_Decisions.md`, `project-vision-Rev5.md`, `SovereignAI_Research_Department_Spec.md`
+**Depends on:** `SovereignAI_Architecture_Decisions.md`, `principles.md`, `SovereignAI_Research_Department_Spec.md`
 
 ---
 
@@ -53,7 +53,7 @@ Each output is called a **Coding Deliverable**. The deliverable type is declared
 | **Code Review** | A written review of a code change — correctness, style, security, edge cases, suggested improvements. No code written; analysis only |
 | **Greenfield Project** | A new codebase created from scratch — directory structure, configuration, boilerplate, initial implementation |
 | **Dependency Upgrade** | Updating one or more dependencies, resolving breaking changes, running tests to confirm compatibility |
-| **Documentation** | Inline docstrings, README files, API documentation, architecture decision records — generated from reading the codebase |
+| **Documentation** | README files, API documentation, architecture decision records — generated from reading the codebase. Per AR17 (no docstrings in Python source — code must be self-documenting via clear naming) |
 | **Script** | A standalone script (automation, data processing, deployment, migration) that doesn't belong to a larger project |
 
 All deliverables are written to disk via the file system skill, tracked in the Coding Task registry, and presented to the Owner for review before any git operations are performed.
@@ -204,7 +204,7 @@ class FileContext:
 
 - Naming style (snake_case, camelCase, PascalCase)
 - Import ordering and grouping
-- Docstring format (Google, NumPy, reStructuredText, JSDoc)
+- Naming conventions (clear function/class/variable names per AR17 — no docstrings in Python source)
 - Error handling patterns (exceptions vs return codes vs Result types)
 - Testing patterns (fixtures, mocks, assertion style)
 - Line length and formatting (inferred from existing code if no config file exists)
@@ -322,7 +322,7 @@ Review Workers read all changes produced in Stage 3 as a senior developer would 
 |-----------|-----------|
 | **Correctness** | Does this actually solve the stated problem? Are there edge cases not handled? Off-by-one errors? Null/undefined paths? |
 | **Security** | Does this introduce SQL injection, XSS, path traversal, hardcoded secrets, insecure deserialization, or other common vulnerabilities? |
-| **Style consistency** | Does the new code match the project's existing conventions (naming, formatting, docstrings, import order)? |
+| **Style consistency** | Does the new code match the project's existing conventions (naming, formatting, import order)? Per AR17, no docstrings in Python source — clear naming is the documentation standard |
 | **Test quality** | Do the new tests actually test the right things? Are they testing implementation details rather than behaviour? Would they catch a regression? |
 | **Scope discipline** | Did Writer Workers change anything outside the scope of the plan? |
 | **Unnecessary complexity** | Is there a simpler way to achieve the same result that would be easier to maintain? |
@@ -476,7 +476,7 @@ No executable code is produced. Additional behaviour:
 
 - Reader Workers read every file in scope thoroughly.
 - Writer Workers produce documentation that accurately reflects the code — not generic boilerplate.
-- For docstrings: produced inline in the source files. For READMEs and architecture docs: produced as separate files.
+- For READMEs and architecture docs: produced as separate files. Per AR17, no inline docstrings in Python source — function/class/variable names must be self-documenting.
 - Review Workers check documentation against the actual code — mismatches between docs and implementation are blocking findings.
 
 ---
@@ -602,7 +602,7 @@ The Coding Manager queries the Models panel catalog at task intake to determine 
   /components/coding/
     CodingPanel.tsx             # main Coding sub-view inside Workers panel
     CodingTaskList.tsx          # list of all tasks with status indicators
-    CodingTaskDetail.tsx        # stage progress, live log drawer, current worker activity
+    CodingTaskDetail.tsx        # stage progress, live Logs panel subscription, current worker activity
     ChangePlanViewer.tsx        # read-only view of the Change Plan before implementation
     DiffViewer.tsx              # syntax-highlighted diff of all changes at Stage 6
     ReviewReportViewer.tsx      # structured Review Report with findings
@@ -639,7 +639,7 @@ The Coding Manager queries the Models panel catalog at task intake to determine 
 1. **task_store.py + project_registry.py** — scaffolding and data model. Register a test project before any workers are written.
 2. **reader.py + convention_inferrer.py** — Stage 1 workers. Validate that the Codebase Context produced is accurate and useful for a real project before building anything that depends on it.
 3. **execution_policy.py + Security Guard hooks** — establish the safety boundary before any file writes are possible. The policy engine must exist before Writer Workers are introduced.
-4. **writer.py (simple case)** — Stage 3, single-file modifications only. Validate with a trivial task ("add a docstring to this function") before tackling multi-file changes.
+4. **writer.py (simple case)** — Stage 3, single-file modifications only. Validate with a trivial task ("rename a function for clarity per AR17") before tackling multi-file changes.
 5. **planner.py** — Stage 2. Once Writer Workers are validated, add the planning layer on top.
 6. **test_runner.py + linter.py** — Stage 4A/4C. Wire to Python skills first; validate that test output is correctly parsed and reported.
 7. **reviewer.py** — Stage 5. Validate that the Review Report structure is useful and that blocking findings correctly trigger re-implementation.

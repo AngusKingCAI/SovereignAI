@@ -317,6 +317,79 @@ body {
     color: #666666;
 }
 
+/* Logs panel styles */
+#logs-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+#logs-controls select,
+#logs-controls input,
+#logs-controls button {
+    padding: 8px;
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    color: #e0e0e0;
+}
+
+#logs-controls button {
+    cursor: pointer;
+}
+
+#logs-controls button:hover {
+    background-color: #3d3d3d;
+}
+
+#logs-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+}
+
+#logs-table th {
+    background-color: #3d3d3d;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #4d4d4d;
+    color: #ffffff;
+}
+
+#logs-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #333;
+}
+
+#logs-table tbody tr:hover {
+    background-color: #3d3d3d;
+}
+
+.log-level-error {
+    color: #ff6b6b;
+    font-weight: bold;
+}
+
+.log-level-warn {
+    color: #CC8400;
+    font-weight: bold;
+}
+
+.log-level-info {
+    color: #ffffff;
+}
+
+.log-level-debug {
+    color: #888888;
+}
+
+.log-level-trace {
+    color: #666666;
+}
+
 @media (max-width: 768px) {
     #sidebar {
         width: 100%;

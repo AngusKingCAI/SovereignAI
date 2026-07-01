@@ -5,7 +5,7 @@
 **Audience:** GLM (implementing agent) + Round Table review  
 **Status:** Draft v2 — amended to integrate Research Department upstream dependency  
 **Date:** 2026-06-29  
-**Depends on:** `SovereignAI_Architecture_Decisions.md`, `project-vision-Rev5.md`, `models-panel-spec.md`, `SovereignAI_Research_Department_Spec.md`
+**Depends on:** `SovereignAI_Architecture_Decisions.md`, `principles.md`, `models-panel-spec.md`, `SovereignAI_Research_Department_Spec.md`
 **Note on direction:** this is a genuine runtime dependency, not a documentation cross-reference — the Education Manager cannot start Stage 1 without a completed Research Brief (§7.1 of the Research spec; Stage 0 below). This is the asymmetric half of the Research↔Education relationship; see the Research spec's header note for why Research's own reference to Education does not run the other way.
 
 ---
@@ -345,7 +345,7 @@ trainer = SFTTrainer(
 trainer.train()
 ```
 
-**Training monitoring:** The Training Worker emits real-time events to the SovereignAI event bus: training loss, validation loss, learning rate, GPU utilization, VRAM usage. These are surfaced in the Hardware panel (live GPU stats) and in a Training sub-view within the Workers panel (loss curves). The log drawer at the bottom of every panel shows verbatim training logs.
+**Training monitoring:** The Training Worker emits real-time events to the SovereignAI event bus: training loss, validation loss, learning rate, GPU utilization, VRAM usage. These are surfaced in the Hardware panel (live GPU stats via `capability_api.sample_hardware()` per OR69) and in a Training sub-view within the Workers panel (loss curves). The Logs panel (10th sidebar tab, consuming `/api/traces` SSE per OR66) shows verbatim training logs.
 
 **Early stopping:** If validation loss increases for more than 3 consecutive checkpoints, the training is paused and the Owner is interrupted with a `choice` interrupt: "Validation loss has risen. Options: (A) Stop and use last best checkpoint, (B) Continue for N more epochs, (C) Abort."
 
@@ -736,7 +736,7 @@ C:/SovereignAI/
   /components/education/
     EducationPanel.tsx        # main Education sub-view inside Workers panel
     TrainingJobList.tsx       # list of all jobs with status indicators
-    TrainingJobDetail.tsx     # live loss curves, hardware stats, log drawer
+    TrainingJobDetail.tsx     # live loss curves, hardware stats, Logs panel subscription
     DatasetInspector.tsx      # view sample rows from training/validation sets
     EvaluationReport.tsx      # benchmark results, forgetting analysis, quality gate decision
     CreateJobWizard.tsx       # step-by-step job creation: domain → base model → hardware check → confirm

@@ -19,8 +19,8 @@
       <li data-panel="adapters">Adapters</li>
       <li data-panel="hardware">Hardware</li>
       <li data-panel="options">Options</li>
+      <li data-panel="logs">Logs</li>
     </ul>
-    <button id="log-toggle">Logs</button>
   </nav>
 
   <main id="main-content">
@@ -68,6 +68,36 @@
     <section id="panel-options" class="panel">
       <h2>Options</h2>
       <p>Options panel — deferred to settings plan.</p>
+    </section>
+    <section id="panel-logs" class="panel">
+      <h2>Logs</h2>
+      <div id="logs-controls">
+        <select id="logs-level-filter">
+          <option value="all">All Levels</option>
+          <option value="ERROR">ERROR</option>
+          <option value="WARN">WARN</option>
+          <option value="INFO">INFO</option>
+          <option value="DEBUG">DEBUG</option>
+          <option value="TRACE">TRACE</option>
+        </select>
+        <select id="logs-component-filter">
+          <option value="all">All Components</option>
+        </select>
+        <input type="text" id="logs-search" placeholder="Search...">
+        <button id="logs-pause">Pause</button>
+      </div>
+      <table id="logs-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Level</th>
+            <th>Component</th>
+            <th>Correlation ID</th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody id="logs-table-body"></tbody>
+      </table>
     </section>
   </main>
 

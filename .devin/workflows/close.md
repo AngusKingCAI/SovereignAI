@@ -28,6 +28,7 @@ Run at end of every plan. Don't skip steps. STOP only on failure.
    .venv/Scripts/python.exe scripts/ar_checks/no_hardcoded_component_names.py web/ cli/ tui/ phone/
    .venv/Scripts/python.exe scripts/ar_checks/ui_does_not_touch_core.py
    .venv/Scripts/python.exe scripts/ar_checks/check_tracing.py
+   .venv/Scripts/python.exe scripts/ar_checks/check_placeholders.py
    ```
 
 ## Mechanical enforcement

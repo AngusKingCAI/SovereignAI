@@ -2,7 +2,12 @@
 
 **Audience:** GLM (implementing agent)
 **Author:** Angus / Claude (design pass)
-**Status:** Draft for implementation
+**Status:** Draft — partially superseded by Plan 17 (v1 MVP)
+**Date:** 2026-07-01 (revised post-prompt-15.1)
+
+---
+
+> **Status note (post-Plan 17):** v1 implements the `DatabaseProvider` protocol directly (see Plan 17 §S1-S2) — each provider (HF, Ollama service) exposes `list_models() -> list[ModelEntry]` with a 1-hour in-memory cache. The 4-table SQLite catalog and per-provider sync jobs defined in §3-§5 below are **deferred** to a post-Plan-19 plan (DEBT.md entry). This document remains the canonical design for when sync-based durability is needed (offline browse, fast queries across thousands of models, surviving provider API outages). The `DatabaseProvider` protocol in Plan 17 is the contract under which any future sync-based implementation must plug in.
 
 ---
 
@@ -27,19 +32,25 @@ Clicking down each level should feel instant — this is browsing a **local cach
 
 This doc is purely about catalog browsing — it does not cover actually pulling/running models, which presumably already exists for Ollama (`ollama pull` integration).
 
+> **v1 note:** Plan 17's `HFDatabaseProvider` uses an in-memory cache rather than the SQLite catalog below. The browse experience is the same; durability is deferred.
+
 ---
 
 ## 2. Why a local database, not live scraping per click
 
 - `ollama.com/library` (and HuggingFace, etc.) is **not a stable JSON API** — it's an HTML page meant for browsers, and there's no first-party endpoint that returns the full catalog with tags/sizes/VRAM in one shot. Scraping it live on every UI click would be slow, fragile, and would break the moment the page markup changes.
 - Each provider has a *different* shape of "catalog": Ollama has model→tags, HuggingFace has repos→files→quant variants, llama.cpp doesn't really have its own catalog at all (it just runs GGUF files, usually sourced from HuggingFace).
-- We want offline/airgapped capability (SovereignAI implies local-first / sovereign infra) — that means the catalog must be cached locally and refreshed on demand, not fetched live.
+- We want offline/airgapped capability (P4 — local-first) — that means the catalog must be cached locally and refreshed on demand, not fetched live.
 
 **Conclusion:** ingest each provider's catalog into a normalized local database on a schedule/manual trigger ("Update databases" in Options), and have the UI read only from that local database. This is effectively a **mini search-engine index** for model metadata, refreshed periodically.
+
+> **v1 note:** Plan 17 ships provider-direct queries with TTL cache (P5 — wire as you go). The SQLite catalog below is the durable target; provider-direct is the MVP.
 
 ---
 
 ## 3. Data model (normalized across providers)
+
+> **Deferred to post-Plan-19.** v1 uses `DatabaseProvider.list_models() -> list[ModelEntry]` (Plan 17 §S1.7) with no SQL persistence. The schema below is the target for when sync-based durability lands.
 
 Use one schema so the UI doesn't need provider-specific rendering logic. Recommend SQLite (file-based, zero-ops, trivially backed-up/inspected, fine for tens of thousands of rows) unless SovereignAI already has a Postgres instance — in which case just add tables there instead of standing up a second datastore.
 
@@ -100,9 +111,13 @@ This schema lets the UI do exactly 4 cheap queries to render the whole drill-dow
 3. `SELECT * FROM models WHERE family_id=?` → third level
 4. `SELECT * FROM model_versions WHERE model_id=?` → leaf detail list
 
+> **v1 mapping:** `ModelEntry` dataclass (Plan 17 §S1.7) is the in-memory equivalent of one `model_versions` row joined with its parent `models` and `families`. The 4-table normalization is deferred.
+
 ---
 
 ## 4. Ingestion (the "sync" job, triggered from Options)
+
+> **Deferred to post-Plan-19.** v1 uses `DatabaseProvider.list_models()` calling the upstream API directly with a 1-hour in-memory TTL cache (Plan 17 §S2.3).
 
 One ingestion module per provider, each implementing a common interface:
 
@@ -116,7 +131,7 @@ sync_provider(provider_id) -> SyncResult { families, models, versions, errors }
   2. For each model, fetch `https://ollama.com/library/<model>/tags` to get the tag list with sizes (Ollama shows size per tag, e.g. "70b — 40GB").
   3. Derive `family` from the model name prefix/publisher metadata Ollama shows on the model page (e.g. "by Meta", "by Google").
   4. VRAM is **not given directly** by Ollama — estimate it (see formula below) from parameter count + quantization, rather than trying to scrape a number that doesn't exist.
-- Treat this as **HTML scraping with a documented, versioned parser**, not an API integration — flag clearly in code comments that this can break if Ollama changes their site, and have the sync job fail soft (keep last-good cache, log error, surface `sync_status=error` in UI) rather than wiping the table on failure.
+- Treat this as **HTML scraping with a documented, versioned parser**, not an API integration — flag clearly in code comments (per AR17: clear naming, no docstrings) that this can break if Ollama changes their site, and have the sync job fail soft (keep last-good cache, log error, surface `sync_status=error` in UI) rather than wiping the table on failure.
 - Respect robots.txt / reasonable rate limiting (e.g. 1 request per 200–500ms, with caching headers honored) since this is hitting their live site.
 
 ### HuggingFace ingestion
@@ -124,14 +139,20 @@ sync_provider(provider_id) -> SyncResult { families, models, versions, errors }
 - "Family" here = the model's `author`/org on the Hub (e.g. `meta-llama`, `Qwen`, `google`).
 - "Version" = each quantized GGUF file in the repo's file list (size is directly available from the API — no estimation needed here, which is a nice contrast to Ollama).
 
+> **v1:** Plan 17 §S2.3 implements `HFDatabaseProvider.list_models()` against this API directly. Quant selection at download time uses `select_best_quant()` from `sovereignai/shared/quant_priority.py` (Plan 17 §S1.8).
+
 ### llama.cpp
 - llama.cpp itself has no catalog — it's a runtime, not a model source. Two sane options:
   - (a) Don't give llama.cpp its own catalog at all; instead, treat "llama.cpp" as a *runtime target* and let the HuggingFace catalog's GGUF entries be runnable via either Ollama or llama.cpp depending on which runtime is selected elsewhere in the app.
   - (b) If a dedicated tab is wanted anyway, populate it from the same HuggingFace GGUF ingestion, just filtered/labeled as "llama.cpp compatible."
 - Recommend (a) — avoids a duplicate, confusing data source for the same files.
 
+> **v1:** Plan 19 ships llama.cpp as an adapter, not a catalog provider. HF is the only database in v1; Ollama service (Plan 17 §S3) is a service, not a database.
+
 ### Other providers (vLLM, LM Studio, etc.)
 - Same pattern: either a real API (preferred) or a documented scraper, normalized into the same 4 tables. Each provider module should declare in its config whether it's "catalog-only" (browsable but not yet runnable from SovereignAI) vs "integrated" (can actually pull/run) — this maps to the `providers.integrated` flag, and the UI should visually distinguish catalog-only tabs (e.g. a small "browse only" badge) so it's clear why a Download button might be disabled there.
+
+> **v1 alignment:** "integrated" maps to `DatabaseProvider.health_check().installed` (Plan 17 §S1.2 `DatabaseStatus`).
 
 ### VRAM/RAM estimation formula (for providers that don't report it directly)
 Standard rule of thumb used across the local-LLM community:
@@ -142,13 +163,17 @@ vram_gb ≈ (parameter_count_billions × bytes_per_param) × 1.2   [1.2x overhea
 
 Where `bytes_per_param` by quant level: FP16 ≈ 2, Q8 ≈ 1, Q4_K_M ≈ 0.5–0.6, Q3 ≈ 0.4. This is an *estimate* — label it as such in the UI ("~14GB VRAM (estimated)") rather than presenting it as a guaranteed number.
 
+> **v1 note:** Plan 18 §S3.2 VRAM badge logic uses `max(gpus[].vram_total_mb) * 0.9` for the VRAM-fit check and `ram_available_gb * 1024 * 0.9` for the CPU-offload check (0.9 is an OS-reservation heuristic). The formula here is the upstream catalog estimate; Plan 18's is the runtime fit check. Both are estimates.
+
 ---
 
 ## 5. Sync triggers & scheduling
 
+> **Deferred to post-Plan-19.** v1 uses 1-hour TTL in-memory cache per `DatabaseProvider` (Plan 17 §S2.3).
+
 - **Manual:** "Update Databases" button in **Options**, per-provider or "Update All." Shows progress (families found / models found / versions found) and a final summary + timestamp.
-- **Automatic (optional, off by default):** a background job (e.g. daily) that re-syncs providers whose `last_synced_at` is older than N days, only if the user has opted in — this avoids unexpected network calls on a tool meant for sovereign/local-first use.
-- **Incremental vs full refresh:** simplest correct approach is full refresh per provider (delete-and-replace that provider's rows in a transaction) rather than diffing — catalogs are small enough (hundreds to low-thousands of rows) that this is fast and avoids stale-row bugs. Wrap in a transaction so a failed sync never leaves a half-updated table.
+- **Automatic (optional, off by default):** a background job (e.g. daily) that re-syncs providers whose `last_synced_at` is older than N days, only if the user has opted in — this avoids unexpected network calls on a tool meant for sovereign/local-first use (P4).
+- **Incremental vs full refresh:** simplest correct approach is full refresh per provider (delete-and-replace that provider's rows in a transaction) rather than diffing — catalogs are small enough (hundreds to low-thousands of rows) that this is fast and avoids stale-row bugs. Wrap in a transaction so a failed sync never leaves a half-updated table (OR50 — atomic writes).
 
 ---
 
@@ -160,45 +185,60 @@ Where `bytes_per_param` by quant level: FP16 ≈ 2, Q8 ≈ 1, Q4_K_M ≈ 0.5–0
 - **Empty/never-synced state:** if a provider's tables are empty, show "No catalog data yet — go to Options → Update Databases" rather than a blank panel.
 - **Stale indicator:** show `last_synced_at` (e.g. "Synced 3 days ago") somewhere in the panel header so it's clear this is cached data, not live.
 
+> **v1 UI (Plan 18 §S3):** Models panel renders a flat sortable table (Org, Family, Version, Quant, Size, VRAM, Tok/s [estimated], Source) with filter bar. Drill-down tree UI deferred with the sync jobs. Empty-DB state preserved. Tok/s estimated column is new (not in original spec).
+
 ---
 
 ## 7. Suggested file/module layout
 
 ```
-/backend
-  /catalog
-    schema.sql                 # the 4 tables above
-    base.py                    # SyncResult, BaseProviderSync interface
-    providers/
-      ollama_sync.py
-      huggingface_sync.py
-      llamacpp_sync.py        # thin wrapper, likely delegates to huggingface_sync
-    vram_estimate.py           # the formula in §4, isolated + unit-testable
-    api.py                     # REST endpoints: GET /catalog/providers, /catalog/families?provider=, /catalog/models?family=, /catalog/versions?model=, POST /catalog/sync
-/frontend
-  /components/models-panel/
-    ProviderTabs.tsx
-    FamilyList.tsx
-    ModelList.tsx
-    VersionList.tsx
-    SyncStatusBadge.tsx
-  /options/
-    UpdateDatabasesSection.tsx
+/databases                       # OR67 — root-level package (Plan 17 §S1.1)
+  /hf_database                   # Plan 17 §S2 — v1 provider
+    provider.py
+  base.py                        # Plan 17 §S1.2 — DatabaseProvider protocol
+  # Future (post-Plan-19):
+  /ollama_database               # sync-based catalog (this spec)
+    sync.py
+  catalog_schema.sql             # the 4 tables (this spec §3)
+
+/services                        # OR67 — root-level package (Plan 17 §S1.3)
+  /ollama_service                # Plan 17 §S3 — v1 service provider
+    provider.py
+  base.py                        # Plan 17 §S1.4 — ServiceProvider protocol
+
+/sovereignai/shared
+  database_registry.py           # Plan 17 §S1.5
+  service_registry.py            # Plan 17 §S1.6
+  model_catalog.py               # Plan 18 §S1.1 — aggregates DatabaseProviders
+  tok_sampler.py                 # Plan 18 §S1.2 — tok/s estimate
+  quant_priority.py              # Plan 17 §S1.8 — single source of quant order
+  model_path_resolver.py         # Plan 19 §S2.1
+
+/web
+  /main.py                       # GET /api/models, /api/hardware, /api/hardware/stream (Plan 18 §S4)
+  /schemas.py                    # ModelEntryDTO, HardwareSnapshotDTO (Plan 18 §S4)
+  /static/{app.js,styles.css}    # Models panel + Hardware panel UI (Plan 18 §S4)
 ```
 
-REST endpoints are read-only/cheap (straight SQL reads) except `POST /catalog/sync`, which kicks off the ingestion job (run it async/background, return a job id, let the frontend poll or receive an SSE/WebSocket progress event — SovereignAI already has SSE infra per its architecture, reuse it here for sync progress).
+REST endpoints are read-only/cheap (straight SQL reads once sync lands; in v1 they call `ModelCatalog.list_models()` which delegates to registered `DatabaseProvider`s) except `POST /catalog/sync`, which kicks off the ingestion job (run it async/background, return a job id, let the frontend poll or receive an SSE event — SovereignAI already has SSE infra per its architecture, reuse it here for sync progress).
+
+> **v1 endpoints (Plan 18 §S4):** `GET /api/models` (with filters), `GET /api/hardware`, `GET /api/hardware/stream` SSE. No `POST /catalog/sync` in v1.
 
 ---
 
 ## 8. Implementation order (suggested)
 
-1. Schema + migrations (the 4 tables).
-2. Ollama sync module + manual "Update" button — this is the provider that's already partially integrated, so it validates the whole pipeline first.
-3. UI drill-down (Provider → Family → Model → Version) wired to the read endpoints, using Ollama's data to verify the tree renders correctly.
-4. HuggingFace sync module (easier than Ollama since it has a real API) — validates the schema generalizes to a second provider.
-5. Mark llama.cpp as an alias/view over the HuggingFace GGUF data rather than its own scraper (§4).
-6. Add remaining provider stubs as catalog-only, `integrated=false`.
-7. Add background auto-sync as an opt-in setting once manual sync is proven stable.
+> **v1 (Plans 16-19) ships steps 1-4 equivalent via `DatabaseProvider` protocol. Steps 5-7 below are post-Plan-19.**
+
+1. ~~Schema + migrations (the 4 tables).~~ → Deferred. v1: `DatabaseProvider` protocol + `ModelEntry` dataclass (Plan 17).
+2. ~~Ollama sync module + manual "Update" button.~~ → Deferred. v1: `OllamaServiceProvider` (runtime only, no catalog) (Plan 17 §S3).
+3. ~~UI drill-down (Provider → Family → Model → Version) wired to the read endpoints.~~ → Deferred. v1: flat sortable table with filters (Plan 18 §S3).
+4. ~~HuggingFace sync module.~~ → v1: `HFDatabaseProvider.list_models()` with 1hr cache (Plan 17 §S2).
+5. ~~Mark llama.cpp as an alias/view over the HuggingFace GGUF data.~~ → v1: llama.cpp as adapter (Plan 19), no catalog.
+6. **Post-Plan-19:** SQLite catalog schema + sync jobs (this spec §3-§5).
+7. **Post-Plan-19:** UI drill-down tree (this spec §6).
+8. **Post-Plan-19:** Remaining provider stubs as catalog-only, `integrated=false`.
+9. **Post-Plan-19:** Background auto-sync as opt-in setting.
 
 ---
 
@@ -207,3 +247,5 @@ REST endpoints are read-only/cheap (straight SQL reads) except `POST /catalog/sy
 - Confirm whether SQLite is acceptable or whether SovereignAI already standardizes on a different DB (Postgres?) for everything else, to avoid a second persistence technology.
 - Confirm whether "Download/Pull" actions should live inside this same panel (i.e. clicking a version triggers an actual `ollama pull`) or whether catalog browsing is purely informational and pulling happens elsewhere in the existing Ollama integration.
 - Decide the actual UI pattern for the 3-level drill-down (breadcrumb vs split columns vs accordion) to match the rest of the app rather than inventing a new pattern.
+
+> **Post-Plan-19 additional question:** Does the v1 `DatabaseProvider` protocol need extension to support sync-status reporting (`syncing`/`error`/`last_synced_at`) when the SQLite catalog lands, or does that stay an Options-panel-only concern?

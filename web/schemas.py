@@ -34,10 +34,8 @@ class TaskResponseDTO(BaseModel):
 
 class TraceEventDTO(BaseModel):
 
-    sequence: int          # Per Finding 16: monotonic sequence for SSE replay
     timestamp: str
     level: str
     component: str
+    correlation_id: str
     message: str
-    trace_id: str
-    task_id: str | None = None  # Per Finding 19: correlate traces with tasks

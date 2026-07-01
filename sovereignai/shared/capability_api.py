@@ -17,7 +17,11 @@ from sovereignai.shared.types import (
     Task,
     TaskState,
     TraceLevel,
+    bind_correlation_id,
+    current_correlation_id,
+    new_correlation_id,
     now_utc,
+    reset_correlation_id,
 )
 
 
@@ -57,46 +61,47 @@ class CapabilityAPI:
         capability_name: str,
         payload: str,
     ) -> UUID:
-        self._auth.validate(token)
-        # Per Finding 3: validate capability exists before accepting
-        providers = self._index.find_providers(category, capability_name)
-        if not providers:
-            raise NoActiveProviderError(
-                f"No provider registered for {category}/{capability_name}"
-            )
-        # Defensive copy: extract provider_id and declaration before creating Task (S2.25 L14)
-        provider_id, declaration = providers[0]
-        task_id = uuid4()
-        task = Task(
-            task_id=task_id,
-            capability=CapabilityDeclaration(
-                category=category,
-                name=capability_name,
-                version=declaration.version,  # use the highest-priority provider's version
-            ),
-            payload=payload,
-            submitted_at=now_utc(),
-        )
-        # Per Finding 1: submit to the state machine so the task is tracked
-        # Per Rev3 Finding 9: wrap in try/except to convert lower-level
-        # errors to CapabilityAPIError.
-        # Per Rev4 Finding 4: catch ONLY specific exceptions (not bare
-        # `except Exception`). Unexpected exceptions (TypeError,
-        # AttributeError, etc.) propagate uncaught — they indicate bugs
-        # that should fail fast, not be masked.
+        existing = current_correlation_id()
+        token_obj = None
+        if existing is None:
+            cid = new_correlation_id()
+            token_obj = bind_correlation_id(cid)
+
         try:
-            self._state_machine.submit(task)
-        except DAGValidationError as exc:
-            raise CapabilityAPIError(
-                f"Failed to submit task {task_id} to state machine: {exc}",
-                cause=exc,
-            ) from exc
-        self._trace.emit(
-            component="CapabilityAPI",
-            level=TraceLevel.INFO,
-            message=f"Task {task_id} submitted for {category}/{capability_name!r}",
-        )
-        return task_id
+            self._auth.validate(token)
+            providers = self._index.find_providers(category, capability_name)
+            if not providers:
+                raise NoActiveProviderError(
+                    f"No provider registered for {category}/{capability_name}"
+                )
+            provider_id, declaration = providers[0]
+            task_id = uuid4()
+            task = Task(
+                task_id=task_id,
+                capability=CapabilityDeclaration(
+                    category=category,
+                    name=capability_name,
+                    version=declaration.version,
+                ),
+                payload=payload,
+                submitted_at=now_utc(),
+            )
+            try:
+                self._state_machine.submit(task)
+            except DAGValidationError as exc:
+                raise CapabilityAPIError(
+                    f"Failed to submit task {task_id} to state machine: {exc}",
+                    cause=exc,
+                ) from exc
+            self._trace.emit(
+                component="CapabilityAPI",
+                level=TraceLevel.INFO,
+                message=f"Task {task_id} submitted for {category}/{capability_name!r}",
+            )
+            return task_id
+        finally:
+            if existing is None and token_obj is not None:
+                reset_correlation_id(token_obj)
 
     def get_task_state(self, token: str, task_id: UUID) -> TaskState | None:
         self._auth.validate(token)

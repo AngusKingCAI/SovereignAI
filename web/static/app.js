@@ -93,6 +93,9 @@ function loadPanelContent(panelName) {
         case 'hardware':
             loadHardware();
             break;
+        case 'logs':
+            loadLogsPanel();
+            break;
     }
 }
 
@@ -264,6 +267,116 @@ function setupEducationButtons() {
             showToast('Fine-tuning requires GPU and QLoRA dependencies — see API documentation', 'info');
         });
     }
+}
+
+let logsEvents = [];
+let logsPaused = false;
+let logsEventSource = null;
+
+function loadLogsPanel() {
+    fetch('/api/traces/history')
+        .then(response => {
+            if (response.status === 401) {
+                window.location.href = '/login';
+                throw new Error('Unauthorized');
+            }
+            return response.json();
+        })
+        .then(data => {
+            logsEvents = data;
+            renderLogsTable();
+            setupLogsSSE();
+            setupLogsControls();
+        })
+        .catch(error => {
+            if (error.message !== 'Unauthorized') {
+                console.error('Failed to load logs history:', error);
+            }
+        });
+}
+
+function setupLogsSSE() {
+    if (logsEventSource) {
+        logsEventSource.close();
+    }
+
+    logsEventSource = new EventSource('/api/traces/stream');
+
+    logsEventSource.addEventListener('trace', (event) => {
+        if (logsPaused) return;
+        const data = JSON.parse(event.data);
+        logsEvents.push(data);
+        if (logsEvents.length > 1000) {
+            logsEvents.shift();
+        }
+        renderLogsTable();
+    });
+
+    logsEventSource.addEventListener('error', () => {
+        console.error('Logs SSE error');
+        logsEventSource.close();
+        logsEventSource = null;
+    });
+}
+
+function setupLogsControls() {
+    const levelFilter = document.getElementById('logs-level-filter');
+    const componentFilter = document.getElementById('logs-component-filter');
+    const searchInput = document.getElementById('logs-search');
+    const pauseButton = document.getElementById('logs-pause');
+
+    if (levelFilter) {
+        levelFilter.addEventListener('change', renderLogsTable);
+    }
+
+    if (componentFilter) {
+        componentFilter.addEventListener('change', renderLogsTable);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', renderLogsTable);
+    }
+
+    if (pauseButton) {
+        pauseButton.addEventListener('click', toggleLogsPause);
+    }
+}
+
+function toggleLogsPause() {
+    logsPaused = !logsPaused;
+    const pauseButton = document.getElementById('logs-pause');
+    if (pauseButton) {
+        pauseButton.textContent = logsPaused ? 'Resume' : 'Pause';
+    }
+}
+
+function renderLogsTable() {
+    const tbody = document.getElementById('logs-table-body');
+    if (!tbody) return;
+
+    const levelFilter = document.getElementById('logs-level-filter')?.value || 'all';
+    const componentFilter = document.getElementById('logs-component-filter')?.value || 'all';
+    const searchTerm = document.getElementById('logs-search')?.value.toLowerCase() || '';
+
+    const filtered = logsEvents.filter(event => {
+        if (levelFilter !== 'all' && event.level !== levelFilter) return false;
+        if (componentFilter !== 'all' && event.component !== componentFilter) return false;
+        if (searchTerm && !event.message.toLowerCase().includes(searchTerm)) return false;
+        return true;
+    });
+
+    tbody.innerHTML = '';
+    filtered.forEach(event => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${new Date(event.timestamp).toLocaleString()}</td>
+            <td class="log-level-${event.level.toLowerCase()}">${event.level}</td>
+            <td>${event.component}</td>
+            <td>${event.correlation_id}</td>
+            <td>${event.message}</td>
+        `;
+        tbody.appendChild(row);
+    });
 }
 
 async function setupSSE() {
