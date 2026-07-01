@@ -107,24 +107,18 @@ Open questions resolved: <which Q1-Q34, or "none">
 
 ---
 
-## Brief Format
+## One brief per batch. ≤80 lines. Sections in order:
 
-One brief per batch. ≤80 lines. Sections in order:
-
-1. **Sign-off ledger** — Architect-maintained. One row per panelist response
-   received: name/model + verdict + rev. Empty/pending on first delivery.
-2. **Context** — baseline, repo state, workflow file sizes.
-3. **Plans in this batch** — table: plan #, title, depends on, vision principles.
-4. **Decisions proposed** — DD-ID + rule/rejected alternative/consequence (GR6, GR8).
-5. **Decisions carried forward** — DD-IDs only, pointer to DECISIONS.md (GR9).
-6. **Questions for Round Table** — Q-ID, distinct from resolved list (GR15).
-7. **Open questions resolved** — per GR2; "none" if none.
-8. **Risks flagged** — includes landmine pre-screen (GR12).
-9. **Coverage target**
-10. **Round Table protocol reminder**
-11. **Superseded decisions** — DD-ID + pointer to replacement (GR7).
-
-Filename only (no host path) referenced inside the brief.
+1. **Context** — baseline, repo state, workflow file sizes.
+2. **Plans in this batch** — table: plan #, title, depends on, vision principles.
+3. **Decisions proposed** — DD-ID + rule/rejected alternative/consequence (GR6, GR8).
+4. **Decisions carried forward** — DD-IDs only, pointer to DECISIONS.md (GR9).
+5. **Questions for Round Table** — Q-ID, distinct from resolved list (GR15).
+6. **Open questions resolved** — per GR2; "none" if none.
+7. **Risks flagged** — includes landmine pre-screen (GR12).
+8. **Coverage target**
+9. **Round Table protocol reminder**
+10. **Superseded decisions** — DD-ID + pointer to replacement (GR7).
 
 ---
 
@@ -154,7 +148,7 @@ No host paths inside the prompt (GR5).
 
 GR1. Every plan header lists `Vision principles:` satisfied/affected.
 GR2. Every plan header lists `Open questions resolved:`.
-GR3. Every brief requires panelist sign-off: `**Panelist**: <name/model>`.
+GR3. Every panelist response must be attributed: `**Panelist**: <name/model>`.
 GR4. Architect explicitly accepts/rejects every Round Table finding with reasoning.
 GR5. No host-local paths in plans, briefs, or roundtable prompts. Bare filenames for uploads; repo-relative paths for repo files.
 GR6. New OR/AR rules state: the rule, rejected alternative(s), and consequence — one line each.
@@ -164,7 +158,7 @@ GR9. On Accepted, decision moves to DECISIONS.md under its DD-ID (SSOT). Brief k
 GR10. Rejected DD-IDs can't be re-proposed without new evidence.
 GR11. Briefs follow the Brief Format section list, ≤80 lines. Missing/reordered sections block delivery.
 GR12. Architect screens plans against LANDMINES.md before Round Table. BLOCKING landmines are fixed before delivery, not deferred to findings.
-GR13. Sign-off needs a majority of assigned panelists (name/model + verdict). Conditional/block verdicts need Architect's GR4 reasoning before delivery.
+GR13. Majority of assigned panelists must return a verdict (name/model + pass/conditional/block) before delivery. Conditional/block verdicts need Architect's GR4 reasoning before delivery.
 GR14. First pass per rev: full prompt (brief + plans + dimensions). Re-checks of unchanged findings: diff summary only.
 GR15. Open questions for Round Table (distinct from GR2's "resolved" list) get a
 Q-ID. Answers become DD-IDs or stay logged open next rev
