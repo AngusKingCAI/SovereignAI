@@ -104,7 +104,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 ## Active Plan
 
-**None** — awaiting next plan
+**Plan 20** — Fix Llama.cpp Adapter Test Failures + First-Run Auth + pynvml + Options HF + Scan 20
 
 ---
 
@@ -112,11 +112,11 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 16 | Logging & observability — fix Log Drawer, add Orchestrator "thinking", verify trace persistence | Scan 15 | ⏳ Pending |
-| 2 | Plan 17 | Memory panel API + UI wiring | Plan 16 | ⏳ Pending |
-| 3 | Plan 18 | Tasks panel — active/scheduled/completed tabs + task detail + manual task creation | Plan 17 | ⏳ Pending |
-| 4 | Plan 19 | Tools panel — list + run tools with input schema forms | Plan 18 | ⏳ Pending |
-| 5 | Scan 20 | Fourth whole-repo scan | Plan 19 | ⏳ Pending |
+| 1 | Plan 20 | Fix Llama.cpp Adapter Test Failures + First-Run Auth + pynvml + Options HF + Scan 20 | Plan 19 | 🔄 Active |
+| 2 | Plan 21 | UI overhaul — 10 panels (deferred per user request) | Plan 20 | ⏳ Pending |
+| 3 | Plan 22 | Future plan | Plan 21 | ⏳ Pending |
+| 4 | Plan 23 | Future plan | Plan 22 | ⏳ Pending |
+| 5 | Plan 24 | Future plan | Plan 23 | ⏳ Pending |
 
 ---
 
