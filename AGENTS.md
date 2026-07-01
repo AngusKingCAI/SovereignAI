@@ -186,6 +186,8 @@ OR70. Every adapter manifest declares `routing_priority` int — RoutingEngine r
 
 OR71. Diagnostic harness tests real end-to-end AI workflow with explicit model lifecycle: load → use → unload per stage. Mock tests verify code paths; harness tests verify system functionality.
 
+OR72. TUI is a first-class UI consuming the same capability API as the WebUI. TUI panels must display real backend state, not placeholder text.
+
 ---
 
 See `LANDMINES.md` for failure patterns linked to rules.
