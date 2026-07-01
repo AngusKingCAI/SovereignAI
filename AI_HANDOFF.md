@@ -164,4 +164,5 @@ GR14. First pass per rev: full prompt (brief + plans + dimensions). Re-checks of
 GR15. Open questions for Round Table (distinct from GR2's "resolved" list) get a
 Q-ID. Answers become DD-IDs or stay logged open next rev
 GR16. On clean pass, Architect posts a panelist scorecard inline: 1-100 quality score weighted toward accepted findings (GR4) over volume, total time (GR17), quality-per-time ratio, and recommendation (keep as-is | narrow scope | consolidate | cut).
-GR17. Round Table reviews state start and end time, with total duration, alongside the sign-off line.
+GR17. Round Table reviews state start/end time and duration in seconds. Self-reported timing isn't a direct quality signal — Architect flags durations implausible for the review's depth as a mark against GR16 reliability.
+
