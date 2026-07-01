@@ -182,6 +182,8 @@ OR68. Every ServiceProvider and DatabaseProvider exposes health_check() returnin
 
 OR69. Models panel and Hardware panel must consume capability API only — no direct DatabaseRegistry/ServiceRegistry/HardwareProbe imports from web/.
 
+OR70. Every adapter manifest declares `routing_priority` int — RoutingEngine routes ascending, lower = higher priority; default 1000 for manifests omitting the field; reserved range 0-999 for explicit priorities.
+
 ---
 
 See `LANDMINES.md` for failure patterns linked to rules.
