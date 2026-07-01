@@ -14,6 +14,9 @@ Open questions resolved: none
 - **S0.2**: Read `AGENTS.md` in full
 - **S0.3**: Add OR72 to AGENTS.md: "TUI is a first-class UI consuming the same capability API as the WebUI. TUI panels must display real backend state, not placeholder text." Commit.
 
+**WILL edit**:
+- `AGENTS.md`
+
 ---
 
 ## S1 — Create TUI Skeleton (`tui/main.py`)
@@ -26,6 +29,7 @@ Open questions resolved: none
 
 **WILL edit**:
 - `tui/main.py`
+- `tui/panels/__init__.py`
 
 ---
 
@@ -169,7 +173,26 @@ Open questions resolved: none
 - **S13.6**: Run `/verify`, `/close`
 
 **WILL edit**:
+- `AGENTS.md`
+- `tui/main.py`
+- `tui/panels/__init__.py`
+- `tui/panels/options.py`
+- `tui/panels/memory.py`
+- `tui/panels/hardware.py`
+- `tui/panels/logs.py`
+- `tui/panels/adapters.py`
+- `tui/panels/skills.py`
+- `sovereignai/workers/test_manager.py`
+- `sovereignai/workers/test_worker.py`
+- `sovereignai/main.py`
+- `tui/panels/orchestrator.py`
+- `tui/panels/models.py`
+- `tui/panels/workers.py`
+- `tui/panels/tasks.py`
 - `pyproject.toml`
 - `txt/requirements.txt`
 - `CHANGELOG.md`
 - `PLANS.md`
+- `tests/test_ar7_no_core_imports_in_ui.py`
+- `scripts/ar_checks/ui_does_not_touch_core.py`
+- `prompts/plan-20.4-Rev0.md`
