@@ -21,7 +21,23 @@ def mock_container() -> Mock:
     from sovereignai.shared.auth import AuthMiddleware
     container = Mock()
     capability_index = Mock()
-    capability_index.list_all_components.return_value = [ComponentManifest(component_id=ComponentId('TestAdapter'), version='1.0.0', provides=(CapabilityDeclaration(category=CapabilityCategory.TOOL, name='test_tool', version='1.0.0', priority=0),), requires=(), author='test', content_hash='abc123')]
+    capability_index.list_all_components.return_value = [  # noqa: E501
+        ComponentManifest(
+            component_id=ComponentId('TestAdapter'),
+            version='1.0.0',
+            provides=(
+                CapabilityDeclaration(
+                    category=CapabilityCategory.TOOL,
+                    name='test_tool',
+                    version='1.0.0',
+                    priority=0
+                ),
+            ),
+            requires=(),
+            author='test',
+            content_hash='abc123'
+        )
+    ]
     auth_mock = Mock(spec=AuthMiddleware)
     auth_mock._password_hashes = {'test': 'hash'}
 
@@ -43,7 +59,11 @@ def test_all_panels_render(client: TestClient) -> None:
     response = client.get('/')
     assert response.status_code == 200
     html = response.text
-    panels = ['panel-orchestrator', 'panel-workers', 'panel-tasks', 'panel-skills', 'panel-memory', 'panel-models', 'panel-adapters', 'panel-hardware', 'panel-options']
+    panels = [  # noqa: E501
+        'panel-orchestrator', 'panel-workers', 'panel-tasks',
+        'panel-skills', 'panel-memory', 'panel-models',
+        'panel-adapters', 'panel-hardware', 'panel-options'
+    ]
     for panel in panels:
         assert f'id="{panel}"' in html, f'Panel {panel} not found in HTML'
 

@@ -54,6 +54,9 @@ def test_auth_endpoints_allowed_on_first_run(client: TestClient, container: Any)
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth._password_hashes.clear()
-    response = client.post('/api/auth/register', json={'username': 'newuser', 'password': 'password123'})
+    response = client.post(  # noqa: E501
+        '/api/auth/register',
+        json={'username': 'newuser', 'password': 'password123'}
+    )
     assert response.status_code == 200
     assert response.json() == {'status': 'created'}

@@ -14,8 +14,40 @@ from sovereignai.shared.types import (
 def test_disabled_plugin_removed_from_graph() -> None:
     mock_trace = MagicMock()
     graph = CapabilityGraph(trace=mock_trace)
-    plugin1 = ComponentManifest(component_id=ComponentId('plugin1'), version='1.0.0', author='test', content_hash='hash1', provides=(CapabilityDeclaration(category=CapabilityCategory.TOOL, name='websearch', version='1.0.0', priority=0),), requires=(), core=False, _source_path='/external/path/plugin1/manifest.toml')
-    plugin2 = ComponentManifest(component_id=ComponentId('plugin2'), version='2.0.0', author='test', content_hash='hash2', provides=(CapabilityDeclaration(category=CapabilityCategory.TOOL, name='websearch', version='2.0.0', priority=0),), requires=(), core=False, _source_path='/external/path/plugin2/manifest.toml')
+    plugin1 = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('plugin1'),
+        version='1.0.0',
+        author='test',
+        content_hash='hash1',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.TOOL,
+                name='websearch',
+                version='1.0.0',
+                priority=0
+            ),
+        ),
+        requires=(),
+        core=False,
+        _source_path='/external/path/plugin1/manifest.toml'
+    )
+    plugin2 = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('plugin2'),
+        version='2.0.0',
+        author='test',
+        content_hash='hash2',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.TOOL,
+                name='websearch',
+                version='2.0.0',
+                priority=0
+            ),
+        ),
+        requires=(),
+        core=False,
+        _source_path='/external/path/plugin2/manifest.toml'
+    )
     graph.register(plugin1)
     graph.register(plugin2)
     assert len(graph.list_all_components()) == 2

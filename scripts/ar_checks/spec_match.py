@@ -97,10 +97,13 @@ def main():
         if not p.startswith(".devin/workflows/")
         and not p.startswith("tests/")
         and not p.startswith("documents/plan-")
-        and not p.startswith("prompts/plan-")  # plan files are governance artifacts (Architect-authored), not Devin edits
+        and not p.startswith("prompts/plan-")  # noqa: E501
+        # plan files are governance artifacts (Architect-authored), not Devin edits
         and not p.startswith("prompts/completed/")  # moved plan files
-        and not p.startswith("logs/")  # execution log + screenshots are close.md steps 15/23 artifacts, not plan-scope edits
-        and not p.startswith("scripts/ar_checks/")  # AR checks are governance tools, not plan-scope edits
+        and not p.startswith("logs/")  # noqa: E501
+        # execution log + screenshots are close.md steps 15/23 artifacts, not plan-scope edits
+        and not p.startswith("scripts/ar_checks/")  # noqa: E501
+        # AR checks are governance tools, not plan-scope edits
     }
 
     if unexpected_in_diff:

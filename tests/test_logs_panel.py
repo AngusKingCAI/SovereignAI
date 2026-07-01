@@ -18,7 +18,9 @@ def test_get_traces_history_returns_200_with_list():
     mock_auth._password_hashes = ["test"]
 
     app.state.container = Mock()
-    app.state.container.retrieve.side_effect = lambda x: mock_trace if x == TraceEmitter else mock_auth
+    app.state.container.retrieve.side_effect = (  # noqa: E501
+        lambda x: mock_trace if x == TraceEmitter else mock_auth
+    )
 
     response = client.get("/api/traces/history", headers={"cookie": "session_id=test"})
 
@@ -37,7 +39,9 @@ def test_sse_subscription_receives_live_events():
     mock_auth.validate.return_value = Mock(username="test")
 
     app.state.container = Mock()
-    app.state.container.retrieve.side_effect = lambda x: mock_trace if x == TraceEmitter else mock_auth
+    app.state.container.retrieve.side_effect = (  # noqa: E501
+        lambda x: mock_trace if x == TraceEmitter else mock_auth
+    )
 
     received_events = []
 

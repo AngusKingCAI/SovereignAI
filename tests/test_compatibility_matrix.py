@@ -22,8 +22,24 @@ def cleanup_matrix_files() -> None:
 def test_record_and_flush() -> None:
     mock_trace = MagicMock()
     matrix = CompatibilityMatrix(trace=mock_trace)
-    matrix.record(component_a='comp1', version_a='1.0.0', content_hash_a='hash1', component_b='comp2', version_b='1.0.0', content_hash_b='hash2', status='compatible')
-    matrix.record(component_a='comp1', version_a='1.0.0', content_hash_a='hash1', component_b='comp3', version_b='2.0.0', content_hash_b='hash3', status='incompatible')
+    matrix.record(  # noqa: E501
+        component_a='comp1',
+        version_a='1.0.0',
+        content_hash_a='hash1',
+        component_b='comp2',
+        version_b='1.0.0',
+        content_hash_b='hash2',
+        status='compatible'
+    )
+    matrix.record(  # noqa: E501
+        component_a='comp1',
+        version_a='1.0.0',
+        content_hash_a='hash1',
+        component_b='comp3',
+        version_b='2.0.0',
+        content_hash_b='hash3',
+        status='incompatible'
+    )
     matrix.flush()
     assert matrix.STORAGE_PATH.exists()
     with matrix.STORAGE_PATH.open('r') as f:
@@ -37,37 +53,101 @@ def test_record_and_flush() -> None:
 def test_is_tested_with_matching_hashes() -> None:
     mock_trace = MagicMock()
     matrix = CompatibilityMatrix(trace=mock_trace)
-    matrix.record(component_a='comp1', version_a='1.0.0', content_hash_a='hash1', component_b='comp2', version_b='1.0.0', content_hash_b='hash2', status='compatible')
+    matrix.record(  # noqa: E501
+        component_a='comp1',
+        version_a='1.0.0',
+        content_hash_a='hash1',
+        component_b='comp2',
+        version_b='1.0.0',
+        content_hash_b='hash2',
+        status='compatible'
+    )
     matrix.flush()
-    result = matrix.is_tested(component_a='comp1', version_a='1.0.0', content_hash_a='hash1', component_b='comp2', version_b='1.0.0', content_hash_b='hash2')
+    result = matrix.is_tested(  # noqa: E501
+        component_a='comp1',
+        version_a='1.0.0',
+        content_hash_a='hash1',
+        component_b='comp2',
+        version_b='1.0.0',
+        content_hash_b='hash2'
+    )
     assert result is True
 
 def test_is_tested_with_mismatched_hashes() -> None:
     mock_trace = MagicMock()
     matrix = CompatibilityMatrix(trace=mock_trace)
-    matrix.record(component_a='comp1', version_a='1.0.0', content_hash_a='hash1', component_b='comp2', version_b='1.0.0', content_hash_b='hash2', status='compatible')
+    matrix.record(  # noqa: E501
+        component_a='comp1',
+        version_a='1.0.0',
+        content_hash_a='hash1',
+        component_b='comp2',
+        version_b='1.0.0',
+        content_hash_b='hash2',
+        status='compatible'
+    )
     matrix.flush()
-    result = matrix.is_tested(component_a='comp1', version_a='1.0.0', content_hash_a='hash1_new', component_b='comp2', version_b='1.0.0', content_hash_b='hash2')
+    result = matrix.is_tested(  # noqa: E501
+        component_a='comp1',
+        version_a='1.0.0',
+        content_hash_a='hash1_new',
+        component_b='comp2',
+        version_b='1.0.0',
+        content_hash_b='hash2'
+    )
     assert result is False
 
 def test_get_status_unknown() -> None:
     mock_trace = MagicMock()
     matrix = CompatibilityMatrix(trace=mock_trace)
-    result = matrix.get_status(component_a='comp1', version_a='1.0.0', content_hash_a='hash1', component_b='comp2', version_b='1.0.0', content_hash_b='hash2')
+    result = matrix.get_status(  # noqa: E501
+        component_a='comp1',
+        version_a='1.0.0',
+        content_hash_a='hash1',
+        component_b='comp2',
+        version_b='1.0.0',
+        content_hash_b='hash2'
+    )
     assert result == 'unknown'
 
 def test_get_status_with_content_hash_invalidation() -> None:
     mock_trace = MagicMock()
     matrix = CompatibilityMatrix(trace=mock_trace)
-    matrix.record(component_a='comp1', version_a='1.0.0', content_hash_a='hash1', component_b='comp2', version_b='1.0.0', content_hash_b='hash2', status='compatible')
+    matrix.record(  # noqa: E501
+        component_a='comp1',
+        version_a='1.0.0',
+        content_hash_a='hash1',
+        component_b='comp2',
+        version_b='1.0.0',
+        content_hash_b='hash2',
+        status='compatible'
+    )
     matrix.flush()
-    result = matrix.get_status(component_a='comp1', version_a='1.0.0', content_hash_a='hash1_new', component_b='comp2', version_b='1.0.0', content_hash_b='hash2')
+    result = matrix.get_status(  # noqa: E501
+        component_a='comp1',
+        version_a='1.0.0',
+        content_hash_a='hash1_new',
+        component_b='comp2',
+        version_b='1.0.0',
+        content_hash_b='hash2'
+    )
     assert result == 'unknown'
 
 def test_corruption_recovery_from_backup() -> None:
     mock_trace = MagicMock()
     matrix = CompatibilityMatrix(trace=mock_trace)
-    backup_data = {'schema_version': 1, 'entries': [{'component_a': 'comp1', 'version_a': '1.0.0', 'content_hash_a': 'hash1', 'component_b': 'comp2', 'version_b': '1.0.0', 'content_hash_b': 'hash2', 'tested_at': '2026-06-29T12:00:00Z', 'status': 'compatible'}]}
+    backup_data = {  # noqa: E501
+        'schema_version': 1,
+        'entries': [{
+            'component_a': 'comp1',
+            'version_a': '1.0.0',
+            'content_hash_a': 'hash1',
+            'component_b': 'comp2',
+            'version_b': '1.0.0',
+            'content_hash_b': 'hash2',
+            'tested_at': '2026-06-29T12:00:00Z',
+            'status': 'compatible'
+        }]
+    }
     with matrix.BACKUP_PATH.open('w') as f:
         json.dump(backup_data, f)
     with matrix.STORAGE_PATH.open('w') as f:
@@ -96,7 +176,15 @@ def test_pruning_to_max_entries() -> None:
     mock_trace = MagicMock()
     matrix = CompatibilityMatrix(trace=mock_trace)
     for i in range(matrix.MAX_ENTRIES + 100):
-        matrix.record(component_a=f'comp{i}', version_a='1.0.0', content_hash_a=f'hash{i}', component_b='comp{i+1}', version_b='1.0.0', content_hash_b=f'hash{i + 1}', status='compatible')
+        matrix.record(  # noqa: E501
+            component_a=f'comp{i}',
+            version_a='1.0.0',
+            content_hash_a=f'hash{i}',
+            component_b=f'comp{i+1}',
+            version_b='1.0.0',
+            content_hash_b=f'hash{i + 1}',
+            status='compatible'
+        )
     matrix.flush()
     with matrix.STORAGE_PATH.open('r') as f:
         data = json.load(f)

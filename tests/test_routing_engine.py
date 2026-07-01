@@ -32,8 +32,16 @@ def capability_index(trace: TraceEmitter) -> ICapabilityIndex:
 
 
 @pytest.fixture
-def router(capability_index: ICapabilityIndex, lifecycle: LifecycleManager, trace: TraceEmitter) -> RoutingEngine:
-    return RoutingEngine(capability_index=capability_index, lifecycle_manager=lifecycle, trace=trace)
+def router(  # noqa: E501
+    capability_index: ICapabilityIndex,
+    lifecycle: LifecycleManager,
+    trace: TraceEmitter
+) -> RoutingEngine:
+    return RoutingEngine(  # noqa: E501
+        capability_index=capability_index,
+        lifecycle_manager=lifecycle,
+        trace=trace
+    )
 
 
 @pytest.fixture

@@ -16,9 +16,12 @@ def has_side_effects(node: ast.AST) -> bool:
                 return True
     elif isinstance(node, ast.Assign):
         for target in node.targets:
-            if isinstance(target, ast.Attribute) and isinstance(target.value, ast.Name):
-                if target.value.id == "self":
-                    return True
+            if (  # noqa: SIM102
+                isinstance(target, ast.Attribute)
+                and isinstance(target.value, ast.Name)
+                and target.value.id == "self"
+            ):
+                return True
     elif isinstance(node, ast.AugAssign):
         return True
     return False
@@ -27,13 +30,16 @@ def has_side_effects(node: ast.AST) -> bool:
 def has_trace_emit(node: ast.AST) -> bool:
     if isinstance(node, ast.Call):
         func = node.func
-        if isinstance(func, ast.Attribute):
-            if func.attr == "emit":
-                return True
+        if isinstance(func, ast.Attribute) and func.attr == "emit":  # noqa: SIM102
+            return True
     return False
 
 
-def check_function(func_node: ast.FunctionDef, allowlist: set[str], file_path: str) -> tuple[bool, str]:
+def check_function(  # noqa: E501
+    func_node: ast.FunctionDef,
+    allowlist: set[str],
+    file_path: str
+) -> tuple[bool, str]:
     if func_node.name == "__init__":
         has_only_field_assign = True
         for stmt in func_node.body:
@@ -41,7 +47,11 @@ def check_function(func_node: ast.FunctionDef, allowlist: set[str], file_path: s
                 has_only_field_assign = False
                 break
             for target in stmt.targets:
-                if not (isinstance(target, ast.Attribute) and isinstance(target.value, ast.Name) and target.value.id == "self"):
+                if not (  # noqa: E501
+                    isinstance(target, ast.Attribute)
+                    and isinstance(target.value, ast.Name)
+                    and target.value.id == "self"
+                ):
                     has_only_field_assign = False
                     break
         if has_only_field_assign:

@@ -40,13 +40,14 @@ class ModelCatalog:
                 if search_lower not in model_id:
                     continue
 
-            if filters.category is not None:
-                if model.category != filters.category:
-                    continue
+            if filters.category is not None and model.category != filters.category:  # noqa: SIM102
+                continue
 
-            if filters.vram_fit_max_mb is not None:
-                if model.vram_required_mb > filters.vram_fit_max_mb:
-                    continue
+            if (  # noqa: SIM102
+                filters.vram_fit_max_mb is not None
+                and model.vram_required_mb > filters.vram_fit_max_mb
+            ):
+                continue
 
             if filters.quant_level_min is not None:
                 min_priority = QUANT_PRIORITY.get(filters.quant_level_min, 999)

@@ -25,9 +25,37 @@ def trace() -> TraceEmitter:
 @pytest.fixture
 def capability_graph(trace: TraceEmitter) -> CapabilityGraph:
     graph = CapabilityGraph(trace=trace)
-    websearch_manifest = ComponentManifest(component_id=ComponentId('websearch_skill'), version='0.1.0', author='user', content_hash='sha256:test', provides=(CapabilityDeclaration(category=CapabilityCategory.TOOL, name='web_search', version='1.0.0', priority=100),), requires=())
+    websearch_manifest = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('websearch_skill'),
+        version='0.1.0',
+        author='user',
+        content_hash='sha256:test',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.TOOL,
+                name='web_search',
+                version='1.0.0',
+                priority=100
+            ),
+        ),
+        requires=()
+    )
     graph.register(websearch_manifest)
-    ollama_manifest = ComponentManifest(component_id=ComponentId('ollama_adapter'), version='0.1.0', author='user', content_hash='sha256:test', provides=(CapabilityDeclaration(category=CapabilityCategory.MODEL_INFERENCE, name='chat_completion', version='1.0.0', priority=100),), requires=())
+    ollama_manifest = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('ollama_adapter'),
+        version='0.1.0',
+        author='user',
+        content_hash='sha256:test',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name='chat_completion',
+                version='1.0.0',
+                priority=100
+            ),
+        ),
+        requires=()
+    )
     graph.register(ollama_manifest)
     return graph
 
@@ -45,41 +73,95 @@ def task_state_machine() -> ITaskStateQuery:
     return machine
 
 @pytest.fixture
-def dispatcher(capability_api: CapabilityAPI, capability_graph: CapabilityGraph, task_state_machine: ITaskStateQuery, trace: TraceEmitter) -> MessageDispatcher:
-    return MessageDispatcher(capability_api=capability_api, capability_graph=capability_graph, task_state_machine=task_state_machine, trace=trace)
+def dispatcher(  # noqa: E501
+    capability_api: CapabilityAPI,
+    capability_graph: CapabilityGraph,
+    task_state_machine: ITaskStateQuery,
+    trace: TraceEmitter
+) -> MessageDispatcher:
+    return MessageDispatcher(  # noqa: E501
+        capability_api=capability_api,
+        capability_graph=capability_graph,
+        task_state_machine=task_state_machine,
+        trace=trace
+    )
 
 @pytest.mark.asyncio
-async def test_dispatch_to_websearch_skill(dispatcher: MessageDispatcher, capability_api: CapabilityAPI, task_state_machine: ITaskStateQuery) -> None:
+async def test_dispatch_to_websearch_skill(  # noqa: E501
+    dispatcher: MessageDispatcher,
+    capability_api: CapabilityAPI,
+    task_state_machine: ITaskStateQuery
+) -> None:
     with patch('sovereignai.orchestrator.dispatcher.Path') as mock_path:
         mock_path.return_value.exists.return_value = True
-        mock_path.return_value.open.return_value.__enter__.return_value.read.return_value = b'\n[component]\ncomponent_id = "websearch_skill"\nintent_keywords = ["search", "find"]\n'
+        mock_path.return_value.open.return_value.__enter__.return_value.read.return_value = (  # noqa: E501
+            b'\n[component]\ncomponent_id = "websearch_skill"\n'
+            b'intent_keywords = ["search", "find"]\n'
+        )
         task_id = uuid4()
         capability_api.submit_task = Mock(return_value=task_id)
-        task = Task(task_id=task_id, capability=CapabilityDeclaration(category=CapabilityCategory.TOOL, name='web_search', version='1.0.0'), payload='search for python', submitted_at=Mock())
+        task = Task(  # noqa: E501
+            task_id=task_id,
+            capability=CapabilityDeclaration(
+                category=CapabilityCategory.TOOL,
+                name='web_search',
+                version='1.0.0'
+            ),
+            payload='search for python',
+            submitted_at=Mock()
+        )
         task_state_machine.list_tasks = Mock(return_value=[task])
         result = await dispatcher.dispatch('search for python', token='test-token')
         assert result.task_id == task_id
         capability_api.submit_task.assert_called_once()
 
 @pytest.mark.asyncio
-async def test_dispatch_to_ollama_adapter(dispatcher: MessageDispatcher, capability_api: CapabilityAPI, task_state_machine: ITaskStateQuery) -> None:
+async def test_dispatch_to_ollama_adapter(  # noqa: E501
+    dispatcher: MessageDispatcher,
+    capability_api: CapabilityAPI,
+    task_state_machine: ITaskStateQuery
+) -> None:
     with patch('sovereignai.orchestrator.dispatcher.Path') as mock_path:
         mock_path.return_value.exists.return_value = True
-        mock_path.return_value.open.return_value.__enter__.return_value.read.return_value = b'\n[component]\ncomponent_id = "ollama_adapter"\nintent_keywords = ["chat", "talk"]\n'
+        mock_path.return_value.open.return_value.__enter__.return_value.read.return_value = (  # noqa: E501
+            b'\n[component]\ncomponent_id = "ollama_adapter"\nintent_keywords = ["chat", "talk"]\n'
+        )
         task_id = uuid4()
         capability_api.submit_task = Mock(return_value=task_id)
-        task = Task(task_id=task_id, capability=CapabilityDeclaration(category=CapabilityCategory.MODEL_INFERENCE, name='chat_completion', version='1.0.0'), payload='chat with me', submitted_at=Mock())
+        task = Task(  # noqa: E501
+            task_id=task_id,
+            capability=CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name='chat_completion',
+                version='1.0.0'
+            ),
+            payload='chat with me',
+            submitted_at=Mock()
+        )
         task_state_machine.list_tasks = Mock(return_value=[task])
         result = await dispatcher.dispatch('chat with me', token='test-token')
         assert result.task_id == task_id
 
 @pytest.mark.asyncio
-async def test_dispatch_no_match_fallback_to_ollama(dispatcher: MessageDispatcher, capability_api: CapabilityAPI, task_state_machine: ITaskStateQuery) -> None:
+async def test_dispatch_no_match_fallback_to_ollama(  # noqa: E501
+    dispatcher: MessageDispatcher,
+    capability_api: CapabilityAPI,
+    task_state_machine: ITaskStateQuery
+) -> None:
     with patch('sovereignai.orchestrator.dispatcher.Path') as mock_path:
         mock_path.return_value.exists.return_value = True
         task_id = uuid4()
         capability_api.submit_task = Mock(return_value=task_id)
-        task = Task(task_id=task_id, capability=CapabilityDeclaration(category=CapabilityCategory.MODEL_INFERENCE, name='chat_completion', version='1.0.0'), payload='random message', submitted_at=Mock())
+        task = Task(  # noqa: E501
+            task_id=task_id,
+            capability=CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name='chat_completion',
+                version='1.0.0'
+            ),
+            payload='random message',
+            submitted_at=Mock()
+        )
         task_state_machine.list_tasks = Mock(return_value=[task])
         result = await dispatcher.dispatch('random message', token='test-token')
         assert result.task_id == task_id
@@ -87,13 +169,28 @@ async def test_dispatch_no_match_fallback_to_ollama(dispatcher: MessageDispatche
         assert call_args[1]['capability_name'] == 'chat_completion'
 
 @pytest.mark.asyncio
-async def test_dispatch_trace_emission(dispatcher: MessageDispatcher, trace: TraceEmitter, task_state_machine: ITaskStateQuery) -> None:
+async def test_dispatch_trace_emission(  # noqa: E501
+    dispatcher: MessageDispatcher,
+    trace: TraceEmitter,
+    task_state_machine: ITaskStateQuery
+) -> None:
     with patch('sovereignai.orchestrator.dispatcher.Path') as mock_path:
         mock_path.return_value.exists.return_value = True
-        mock_path.return_value.open.return_value.__enter__.return_value.read.return_value = b'\n[component]\ncomponent_id = "websearch_skill"\nintent_keywords = ["search"]\n'
+        mock_path.return_value.open.return_value.__enter__.return_value.read.return_value = (  # noqa: E501
+            b'\n[component]\ncomponent_id = "websearch_skill"\nintent_keywords = ["search"]\n'
+        )
         task_id = uuid4()
         dispatcher._api.submit_task = Mock(return_value=task_id)
-        task = Task(task_id=task_id, capability=CapabilityDeclaration(category=CapabilityCategory.TOOL, name='web_search', version='1.0.0'), payload='search test', submitted_at=Mock())
+        task = Task(  # noqa: E501
+            task_id=task_id,
+            capability=CapabilityDeclaration(
+                category=CapabilityCategory.TOOL,
+                name='web_search',
+                version='1.0.0'
+            ),
+            payload='search test',
+            submitted_at=Mock()
+        )
         task_state_machine.list_tasks = Mock(return_value=[task])
         await dispatcher.dispatch('search test', token='test-token')
         events = trace.get_events()
@@ -101,13 +198,27 @@ async def test_dispatch_trace_emission(dispatcher: MessageDispatcher, trace: Tra
         assert any('Received message' in event.message for event in events)
 
 @pytest.mark.asyncio
-async def test_dispatch_async_return_no_blocking(dispatcher: MessageDispatcher, task_state_machine: ITaskStateQuery) -> None:
+async def test_dispatch_async_return_no_blocking(  # noqa: E501
+    dispatcher: MessageDispatcher,
+    task_state_machine: ITaskStateQuery
+) -> None:
     with patch('sovereignai.orchestrator.dispatcher.Path') as mock_path:
         mock_path.return_value.exists.return_value = True
-        mock_path.return_value.open.return_value.__enter__.return_value.read.return_value = b'\n[component]\ncomponent_id = "websearch_skill"\nintent_keywords = ["search"]\n'
+        mock_path.return_value.open.return_value.__enter__.return_value.read.return_value = (  # noqa: E501
+            b'\n[component]\ncomponent_id = "websearch_skill"\nintent_keywords = ["search"]\n'
+        )
         task_id = uuid4()
         dispatcher._api.submit_task = Mock(return_value=task_id)
-        task = Task(task_id=task_id, capability=CapabilityDeclaration(category=CapabilityCategory.TOOL, name='web_search', version='1.0.0'), payload='search test', submitted_at=Mock())
+        task = Task(  # noqa: E501
+            task_id=task_id,
+            capability=CapabilityDeclaration(
+                category=CapabilityCategory.TOOL,
+                name='web_search',
+                version='1.0.0'
+            ),
+            payload='search test',
+            submitted_at=Mock()
+        )
         task_state_machine.list_tasks = Mock(return_value=[task])
         import asyncio
         start = asyncio.get_event_loop().time()

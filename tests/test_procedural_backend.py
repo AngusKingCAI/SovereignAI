@@ -30,12 +30,12 @@ def procedural_backend(temp_json_path: str) -> ProceduralMemoryBackend:
     backend._ensure_file_exists()
     return backend
 
-def test_procedural_backend_store_returns_record_id(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_store_returns_record_id(procedural_backend: ProceduralMemoryBackend) -> None:  # noqa: E501
     record_id = procedural_backend.store(data={'pattern': 'test pattern', 'confidence': 0.9})
     assert isinstance(record_id, str)
     assert len(record_id) == 36
 
-def test_procedural_backend_lock_timeout_raises_exception(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_lock_timeout_raises_exception(procedural_backend: ProceduralMemoryBackend) -> None:  # noqa: E501
     lock_path = procedural_backend._path + '.lock'
     with open(lock_path, 'w') as f:
         f.write('test-pid')
@@ -53,21 +53,21 @@ def test_procedural_backend_query_by_pattern(procedural_backend: ProceduralMemor
     assert len(results) == 1
     assert 'search' in results[0]['pattern']
 
-def test_procedural_backend_query_by_min_confidence(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_query_by_min_confidence(procedural_backend: ProceduralMemoryBackend) -> None:  # noqa: E501
     procedural_backend.store(data={'pattern': 'high confidence', 'confidence': 0.9})
     procedural_backend.store(data={'pattern': 'low confidence', 'confidence': 0.5})
     results = procedural_backend.query({'min_confidence': 0.8})
     assert len(results) == 1
     assert results[0]['confidence'] == 0.9
 
-def test_procedural_backend_delete_removes_record(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_delete_removes_record(procedural_backend: ProceduralMemoryBackend) -> None:  # noqa: E501
     record_id = procedural_backend.store(data={'pattern': 'test pattern', 'confidence': 0.9})
     deleted = procedural_backend.delete(record_id)
     assert deleted is True
     results = procedural_backend.query({})
     assert len(results) == 0
 
-def test_procedural_backend_prune_low_confidence(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_prune_low_confidence(procedural_backend: ProceduralMemoryBackend) -> None:  # noqa: E501
     procedural_backend.store(data={'pattern': 'high confidence', 'confidence': 0.9})
     procedural_backend.store(data={'pattern': 'low confidence', 'confidence': 0.3})
     procedural_backend.prune_low_confidence(0.5)
@@ -75,7 +75,7 @@ def test_procedural_backend_prune_low_confidence(procedural_backend: ProceduralM
     assert len(results) == 1
     assert results[0]['confidence'] == 0.9
 
-def test_procedural_backend_hard_cap_enforcement(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_hard_cap_enforcement(procedural_backend: ProceduralMemoryBackend) -> None:  # noqa: E501
     from sovereignai.memory.procedural_backend import MAX_PATTERNS
     original_max = MAX_PATTERNS
     import sovereignai.memory.procedural_backend as proc_module

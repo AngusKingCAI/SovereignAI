@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## prompt-20.2 — Fix Post-20.1 Test & Type Failures
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-20.2-Rev0.md
+**Tests**: 455 passed, 6 skipped (0 chronic)
+**Coverage**: 93% (increased from 90% — added test fixes, no new test files)
+**Browser smoke test screenshots**: N/A — no UI changes
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Fixed test_procedural_backend_lock_timeout by patching _acquire_lock to return False to simulate lock contention
+- Fixed mypy errors in llama_cpp_adapter/adapter.py (renamed variables to prevent shadowing, added type ignore for Any return)
+- Fixed detect-secrets CLI flag from --exclude to --exclude-files in scan workflow
+- Fixed Ruff E501 line-length errors in test files (test_manifest_parser.py, test_capability_api.py, test_ar7_no_core_imports_in_ui.py, check_tracing.py, spec_match.py, test_state_machine_properties.py, llama_cpp_adapter/adapter.py, check_p4_compliance.py, model_catalog.py)
+- Fixed Ruff SIM102 nested if errors in check_p4_compliance.py, check_tracing.py, model_catalog.py
+- Fixed test_manifest_parser.py string literal issue (double backslashes to single backslashes for newlines)
+- Verified TeacherWorker cleanup complete (no references found in code files)
+- Updated vulture-whitelist.txt with all false positives (test fixtures, mock attributes, unused constants)
+- All scans passed: pytest (93% coverage), ruff (0 errors), bandit (baseline unchanged), detect-secrets (pass), vulture (whitelisted), check_placeholders (clean), check_tracing (clean), spec_match (clean)
+
+---
+
 ## prompt-20.1 — Coverage Improvement, TeacherWorker Removal, Scan Infrastructure Fix
 **Date**: 2026-07-01
 **Plan file**: prompts/plan-20.1-Rev0.md

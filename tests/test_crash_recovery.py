@@ -39,7 +39,10 @@ def trace_backend(temp_db_path: str) -> TraceMemoryBackend:
     backend._initialize_db()
     return backend
 
-def test_shutdown_marker_skips_recovery(trace_backend: TraceMemoryBackend, temp_marker_path: str) -> None:
+def test_shutdown_marker_skips_recovery(  # noqa: E501
+    trace_backend: TraceMemoryBackend,
+    temp_marker_path: str
+) -> None:
     magic = 'SOVEREIGNAI_CLEAN_SHUTDOWN_V1\n'
     with open(temp_marker_path, 'w') as f:
         f.write(magic + '2026-06-29T00:00:00')
@@ -63,11 +66,22 @@ def test_invalid_marker_content_treats_as_crash(temp_marker_path: str) -> None:
 
 def test_no_marker_triggers_recovery(trace_backend: TraceMemoryBackend) -> None:
     task_id = 'task-1'
-    trace_backend.store(data={'component': 'TaskStateMachine', 'level': 'info', 'message': 'Task transitioned', 'correlation_id': str(new_correlation_id())}, metadata={'task_id': task_id, 'task_state': 'executing'})
+    trace_backend.store(  # noqa: E501
+        data={
+            'component': 'TaskStateMachine',
+            'level': 'info',
+            'message': 'Task transitioned',
+            'correlation_id': str(new_correlation_id())
+        },
+        metadata={'task_id': task_id, 'task_state': 'executing'}
+    )
     last_states = trace_backend.get_last_task_states()
     assert task_id in last_states
     assert last_states[task_id] == 'executing'
-    incomplete_tasks = [tid for tid, state in last_states.items() if state in ('received', 'queued', 'executing')]
+    incomplete_tasks = [  # noqa: E501
+        tid for tid, state in last_states.items()
+        if state in ('received', 'queued', 'executing')
+    ]
     assert task_id in incomplete_tasks
 
 def test_recovery_failure_does_not_block_startup(temp_marker_path: str) -> None:
@@ -93,11 +107,38 @@ def test_atomic_write_creates_valid_marker(temp_marker_path: str) -> None:
     os.unlink(temp_marker_path)
 
 def test_incomplete_task_detection(trace_backend: TraceMemoryBackend) -> None:
-    trace_backend.store(data={'component': 'TaskStateMachine', 'level': 'info', 'message': 'Task transitioned', 'correlation_id': str(new_correlation_id())}, metadata={'task_id': 'task-1', 'task_state': 'received'})
-    trace_backend.store(data={'component': 'TaskStateMachine', 'level': 'info', 'message': 'Task transitioned', 'correlation_id': str(new_correlation_id())}, metadata={'task_id': 'task-2', 'task_state': 'complete'})
-    trace_backend.store(data={'component': 'TaskStateMachine', 'level': 'info', 'message': 'Task transitioned', 'correlation_id': str(new_correlation_id())}, metadata={'task_id': 'task-3', 'task_state': 'executing'})
+    trace_backend.store(  # noqa: E501
+        data={
+            'component': 'TaskStateMachine',
+            'level': 'info',
+            'message': 'Task transitioned',
+            'correlation_id': str(new_correlation_id())
+        },
+        metadata={'task_id': 'task-1', 'task_state': 'received'}
+    )
+    trace_backend.store(  # noqa: E501
+        data={
+            'component': 'TaskStateMachine',
+            'level': 'info',
+            'message': 'Task transitioned',
+            'correlation_id': str(new_correlation_id())
+        },
+        metadata={'task_id': 'task-2', 'task_state': 'complete'}
+    )
+    trace_backend.store(  # noqa: E501
+        data={
+            'component': 'TaskStateMachine',
+            'level': 'info',
+            'message': 'Task transitioned',
+            'correlation_id': str(new_correlation_id())
+        },
+        metadata={'task_id': 'task-3', 'task_state': 'executing'}
+    )
     last_states = trace_backend.get_last_task_states()
-    incomplete_tasks = [tid for tid, state in last_states.items() if state in ('received', 'queued', 'executing')]
+    incomplete_tasks = [  # noqa: E501
+        tid for tid, state in last_states.items()
+        if state in ('received', 'queued', 'executing')
+    ]
     assert 'task-1' in incomplete_tasks
     assert 'task-2' not in incomplete_tasks
     assert 'task-3' in incomplete_tasks

@@ -11,13 +11,21 @@ def can_transition(from_state: TaskState, to_state: TaskState) -> bool:
 class TestStateMachineProperties:
 
     @given(st.sampled_from(TaskState), st.sampled_from(TaskState))
-    @settings(suppress_health_check=[HealthCheck.differing_executors], max_examples=10, phases=[Phase.generate])
+    @settings(  # noqa: E501
+        suppress_health_check=[HealthCheck.differing_executors],
+        max_examples=10,
+        phases=[Phase.generate]
+    )
     def test_all_transitions_are_valid(self, from_state, to_state):
         expected = to_state in _VALID_TRANSITIONS.get(from_state, [])
         assert can_transition(from_state, to_state) == expected
 
     @given(st.lists(st.sampled_from(TraceLevel)))
-    @settings(suppress_health_check=[HealthCheck.differing_executors], max_examples=10, phases=[Phase.generate])
+    @settings(  # noqa: E501
+        suppress_health_check=[HealthCheck.differing_executors],
+        max_examples=10,
+        phases=[Phase.generate]
+    )
     def test_trace_filtering_never_crashes(self, levels):
         if not levels:
             return

@@ -55,7 +55,11 @@ def test_thread_safety(trace_emitter: TraceEmitter) -> None:
 
     def emit_many() -> None:
         for i in range(emits_per_thread):
-            trace_emitter.emit(component='ThreadTest', level=TraceLevel.INFO, message=f'message {i}')
+            trace_emitter.emit(  # noqa: E501
+                component='ThreadTest',
+                level=TraceLevel.INFO,
+                message=f'message {i}'
+            )
     threads = [threading.Thread(target=emit_many) for _ in range(num_threads)]
     for t in threads:
         t.start()

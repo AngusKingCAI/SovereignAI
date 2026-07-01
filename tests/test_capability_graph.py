@@ -13,7 +13,21 @@ from sovereignai.shared.types import (
 def test_register_single_component_findable() -> None:
     trace = TraceEmitter()
     graph = CapabilityGraph(trace=trace)
-    manifest = ComponentManifest(component_id=ComponentId('TestAdapter'), version='1.0.0', author='test-author', content_hash='sha256:abc123', provides=(CapabilityDeclaration(category=CapabilityCategory.MODEL_INFERENCE, name='text_generation', version='1.0.0', priority=10),), requires=())
+    manifest = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('TestAdapter'),
+        version='1.0.0',
+        author='test-author',
+        content_hash='sha256:abc123',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name='text_generation',
+                version='1.0.0',
+                priority=10
+            ),
+        ),
+        requires=()
+    )
     graph.register(manifest)
     providers = graph.find_providers(CapabilityCategory.MODEL_INFERENCE, 'text_generation')
     assert len(providers) == 1
@@ -23,8 +37,36 @@ def test_register_single_component_findable() -> None:
 def test_register_multiple_providers_sorted_by_priority() -> None:
     trace = TraceEmitter()
     graph = CapabilityGraph(trace=trace)
-    manifest1 = ComponentManifest(component_id=ComponentId('LowPriorityAdapter'), version='1.0.0', author='test-author', content_hash='sha256:abc123', provides=(CapabilityDeclaration(category=CapabilityCategory.MODEL_INFERENCE, name='text_generation', version='1.0.0', priority=5),), requires=())
-    manifest2 = ComponentManifest(component_id=ComponentId('HighPriorityAdapter'), version='1.0.0', author='test-author', content_hash='sha256:def456', provides=(CapabilityDeclaration(category=CapabilityCategory.MODEL_INFERENCE, name='text_generation', version='1.0.0', priority=10),), requires=())
+    manifest1 = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('LowPriorityAdapter'),
+        version='1.0.0',
+        author='test-author',
+        content_hash='sha256:abc123',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name='text_generation',
+                version='1.0.0',
+                priority=5
+            ),
+        ),
+        requires=()
+    )
+    manifest2 = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('HighPriorityAdapter'),
+        version='1.0.0',
+        author='test-author',
+        content_hash='sha256:def456',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name='text_generation',
+                version='1.0.0',
+                priority=10
+            ),
+        ),
+        requires=()
+    )
     graph.register(manifest1)
     graph.register(manifest2)
     providers = graph.find_providers(CapabilityCategory.MODEL_INFERENCE, 'text_generation')
@@ -43,16 +85,61 @@ def test_find_providers_empty_when_no_match() -> None:
 def test_list_all_components_returns_all_manifests() -> None:
     trace = TraceEmitter()
     graph = CapabilityGraph(trace=trace)
-    manifest1 = ComponentManifest(component_id=ComponentId('Adapter1'), version='1.0.0', author='test-author', content_hash='sha256:abc123', provides=(CapabilityDeclaration(category=CapabilityCategory.MODEL_INFERENCE, name='text_generation', version='1.0.0'),), requires=())
-    manifest2 = ComponentManifest(component_id=ComponentId('Adapter2'), version='1.0.0', author='test-author', content_hash='sha256:def456', provides=(CapabilityDeclaration(category=CapabilityCategory.TOOL, name='calculator', version='1.0.0'),), requires=())
-    manifest3 = ComponentManifest(component_id=ComponentId('Adapter3'), version='1.0.0', author='test-author', content_hash='sha256:ghi789', provides=(CapabilityDeclaration(category=CapabilityCategory.MEMORY, name='relational', version='1.0.0'),), requires=())
+    manifest1 = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('Adapter1'),
+        version='1.0.0',
+        author='test-author',
+        content_hash='sha256:abc123',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name='text_generation',
+                version='1.0.0'
+            ),
+        ),
+        requires=()
+    )
+    manifest2 = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('Adapter2'),
+        version='1.0.0',
+        author='test-author',
+        content_hash='sha256:def456',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.TOOL,
+                name='calculator',
+                version='1.0.0'
+            ),
+        ),
+        requires=()
+    )
+    manifest3 = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('Adapter3'),
+        version='1.0.0',
+        author='test-author',
+        content_hash='sha256:ghi789',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.MEMORY,
+                name='relational',
+                version='1.0.0'
+            ),
+        ),
+        requires=()
+    )
     graph.register(manifest1)
     graph.register(manifest2)
     graph.register(manifest3)
     all_manifests = graph.list_all_components()
     assert len(all_manifests) == 3
-    component_ids = {m.component_id for m in all_manifests}
-    assert component_ids == {ComponentId('Adapter1'), ComponentId('Adapter2'), ComponentId('Adapter3')}
+    component_ids = {  # noqa: E501
+        m.component_id for m in all_manifests
+    }
+    assert component_ids == {
+        ComponentId('Adapter1'),
+        ComponentId('Adapter2'),
+        ComponentId('Adapter3')
+    }
 
 def test_list_all_components_empty_when_nothing_registered() -> None:
     trace = TraceEmitter()
@@ -68,8 +155,36 @@ def test_protocol_compliance() -> None:
 def test_register_equal_priority_stable_sort() -> None:
     trace = TraceEmitter()
     graph = CapabilityGraph(trace=trace)
-    manifest1 = ComponentManifest(component_id=ComponentId('FirstAdapter'), version='1.0.0', author='test-author', content_hash='sha256:abc123', provides=(CapabilityDeclaration(category=CapabilityCategory.MODEL_INFERENCE, name='text_generation', version='1.0.0', priority=5),), requires=())
-    manifest2 = ComponentManifest(component_id=ComponentId('SecondAdapter'), version='1.0.0', author='test-author', content_hash='sha256:def456', provides=(CapabilityDeclaration(category=CapabilityCategory.MODEL_INFERENCE, name='text_generation', version='1.0.0', priority=5),), requires=())
+    manifest1 = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('FirstAdapter'),
+        version='1.0.0',
+        author='test-author',
+        content_hash='sha256:abc123',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name='text_generation',
+                version='1.0.0',
+                priority=5
+            ),
+        ),
+        requires=()
+    )
+    manifest2 = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('SecondAdapter'),
+        version='1.0.0',
+        author='test-author',
+        content_hash='sha256:def456',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name='text_generation',
+                version='1.0.0',
+                priority=5
+            ),
+        ),
+        requires=()
+    )
     graph.register(manifest1)
     graph.register(manifest2)
     providers = graph.find_providers(CapabilityCategory.MODEL_INFERENCE, 'text_generation')
@@ -80,11 +195,39 @@ def test_register_equal_priority_stable_sort() -> None:
 def test_register_cleanup_old_capabilities_on_reregistration() -> None:
     trace = TraceEmitter()
     graph = CapabilityGraph(trace=trace)
-    manifest_v1 = ComponentManifest(component_id=ComponentId('TestAdapter'), version='1.0.0', author='test-author', content_hash='sha256:abc123', provides=(CapabilityDeclaration(category=CapabilityCategory.MODEL_INFERENCE, name='text_generation', version='1.0.0', priority=10),), requires=())
+    manifest_v1 = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('TestAdapter'),
+        version='1.0.0',
+        author='test-author',
+        content_hash='sha256:abc123',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.MODEL_INFERENCE,
+                name='text_generation',
+                version='1.0.0',
+                priority=10
+            ),
+        ),
+        requires=()
+    )
     graph.register(manifest_v1)
     providers = graph.find_providers(CapabilityCategory.MODEL_INFERENCE, 'text_generation')
     assert len(providers) == 1
-    manifest_v2 = ComponentManifest(component_id=ComponentId('TestAdapter'), version='2.0.0', author='test-author', content_hash='sha256:def456', provides=(CapabilityDeclaration(category=CapabilityCategory.TOOL, name='calculator', version='2.0.0', priority=10),), requires=())
+    manifest_v2 = ComponentManifest(  # noqa: E501
+        component_id=ComponentId('TestAdapter'),
+        version='2.0.0',
+        author='test-author',
+        content_hash='sha256:def456',
+        provides=(
+            CapabilityDeclaration(
+                category=CapabilityCategory.TOOL,
+                name='calculator',
+                version='2.0.0',
+                priority=10
+            ),
+        ),
+        requires=()
+    )
     graph.register(manifest_v2)
     providers_old = graph.find_providers(CapabilityCategory.MODEL_INFERENCE, 'text_generation')
     assert len(providers_old) == 0

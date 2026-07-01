@@ -45,7 +45,13 @@ def test_probe_cpu_freq_without_psutil(web_probe: WebHardwareProbe) -> None:
         assert info.cpu_freq_mhz is None
 
 def test_probe_ram_windows(web_probe: WebHardwareProbe) -> None:
-    with patch('web.hardware_probe.platform.system', return_value='Windows'), patch('web.hardware_probe.ctypes.windll.kernel32') as mock_kernel32, patch('web.hardware_probe.ctypes.sizeof', return_value=0), patch('web.hardware_probe.ctypes.byref'):
+    with patch(  # noqa: E501
+        'web.hardware_probe.platform.system',
+        return_value='Windows'
+    ), patch('web.hardware_probe.ctypes.windll.kernel32') as mock_kernel32, patch(  # noqa: E501
+        'web.hardware_probe.ctypes.sizeof',
+        return_value=0
+    ), patch('web.hardware_probe.ctypes.byref'):
         mock_stat = Mock()
         mock_stat.dwLength = 0
         mock_stat.ullTotalPhys = 16 * 1024 * 1024 * 1024
@@ -55,8 +61,13 @@ def test_probe_ram_windows(web_probe: WebHardwareProbe) -> None:
         assert info.ram_total_mb is not None or info.ram_total_mb is None
 
 def test_probe_ram_linux(web_probe: WebHardwareProbe) -> None:
-    with patch('web.hardware_probe.platform.system', return_value='Linux'), patch('builtins.open', create=True) as mock_open:
-        mock_open.return_value.__enter__.return_value.read.return_value = '\nMemTotal: 16384000 kB\nMemAvailable: 8192000 kB\n'
+    with patch(  # noqa: E501
+        'web.hardware_probe.platform.system',
+        return_value='Linux'
+    ), patch('builtins.open', create=True) as mock_open:
+        mock_open.return_value.__enter__.return_value.read.return_value = (  # noqa: E501
+            '\nMemTotal: 16384000 kB\nMemAvailable: 8192000 kB\n'
+        )
         info = web_probe.probe()
         assert info.ram_total_mb == 16000
         assert info.ram_available_mb == 8000
@@ -68,14 +79,22 @@ def test_probe_ram_none_on_error(web_probe: WebHardwareProbe) -> None:
         assert info.ram_available_mb is None
 
 def test_probe_gpu_windows(web_probe: WebHardwareProbe) -> None:
-    with patch('web.hardware_probe.platform.system', return_value='Windows'), patch('web.hardware_probe.subprocess.run') as mock_run:
-        mock_run.return_value.stdout = '\nNode,Name,AdapterRAM\n, NVIDIA GeForce RTX 3080,10737418240\n'
+    with patch(  # noqa: E501
+        'web.hardware_probe.platform.system',
+        return_value='Windows'
+    ), patch('web.hardware_probe.subprocess.run') as mock_run:
+        mock_run.return_value.stdout = (  # noqa: E501
+            '\nNode,Name,AdapterRAM\n, NVIDIA GeForce RTX 3080,10737418240\n'
+        )
         info = web_probe.probe()
         assert info.gpu_name is not None
         assert 'NVIDIA' in info.gpu_name or info.gpu_name is None
 
 def test_probe_gpu_linux(web_probe: WebHardwareProbe) -> None:
-    with patch('web.hardware_probe.platform.system', return_value='Linux'), patch('web.hardware_probe.subprocess.run') as mock_run:
+    with patch(  # noqa: E501
+        'web.hardware_probe.platform.system',
+        return_value='Linux'
+    ), patch('web.hardware_probe.subprocess.run') as mock_run:
         mock_run.return_value.stdout = '\nDevice: NVIDIA Corporation\n'
         info = web_probe.probe()
         assert info.gpu_name is not None or info.gpu_name is None
@@ -87,7 +106,16 @@ def test_probe_gpu_none_on_error(web_probe: WebHardwareProbe) -> None:
         assert info.gpu_vram_mb is None
 
 def test_probe_graceful_degradation(web_probe: WebHardwareProbe) -> None:
-    with patch('web.hardware_probe.os.cpu_count', side_effect=Exception('Error')), patch('web.hardware_probe.platform.system', return_value='Unknown'), patch('web.hardware_probe.psutil.cpu_freq', side_effect=Exception('Error')):
+    with patch(  # noqa: E501
+        'web.hardware_probe.os.cpu_count',
+        side_effect=Exception('Error')
+    ), patch(  # noqa: E501
+        'web.hardware_probe.platform.system',
+        return_value='Unknown'
+    ), patch(  # noqa: E501
+        'web.hardware_probe.psutil.cpu_freq',
+        side_effect=Exception('Error')
+    ):
         info = web_probe.probe()
         assert info.cpu_count is None
         assert info.cpu_freq_mhz is None
@@ -139,7 +167,10 @@ def test_probe_gpu_nvidia_bytes_name(web_probe: WebHardwareProbe) -> None:
 
 
 def test_probe_gpu_nvidia_error_fallback(web_probe: WebHardwareProbe) -> None:
-    with patch('web.hardware_probe.nvidia_ml', None), patch('web.hardware_probe.platform.system', return_value='Windows'), patch('web.hardware_probe.subprocess.run') as mock_run:
+    with patch('web.hardware_probe.nvidia_ml', None), patch(  # noqa: E501
+        'web.hardware_probe.platform.system',
+        return_value='Windows'
+    ), patch('web.hardware_probe.subprocess.run') as mock_run:
         mock_result = Mock()
         mock_result.stdout = '\nNode,Name,AdapterRAM\n, NVIDIA GeForce RTX 3080,10737418240\n'
         mock_run.return_value = mock_result
@@ -215,7 +246,10 @@ def test_hardware_probe_uses_nvidia_ml_py_not_pynvml(web_probe: WebHardwareProbe
 
 
 def test_shared_hardware_probe_has_nvidia_gpu_windows(shared_probe: HardwareProbe) -> None:
-    with patch('sovereignai.shared.hardware_probe.platform.system', return_value='Windows'), patch('subprocess.run') as mock_run:
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.platform.system',
+        return_value='Windows'
+    ), patch('subprocess.run') as mock_run:
         mock_result = Mock()
         mock_result.returncode = 0
         mock_result.stdout = 'NVIDIA GeForce RTX 3080\n'
@@ -223,25 +257,37 @@ def test_shared_hardware_probe_has_nvidia_gpu_windows(shared_probe: HardwareProb
         assert shared_probe.has_nvidia_gpu() is True
 
 
-def test_shared_hardware_probe_has_nvidia_gpu_windows_no_nvidia(shared_probe: HardwareProbe) -> None:
-    with patch('sovereignai.shared.hardware_probe.platform.system', return_value='Windows'), patch('subprocess.run') as mock_run:
+def test_shared_hardware_probe_has_nvidia_gpu_windows_no_nvidia(shared_probe: HardwareProbe) -> None:  # noqa: E501
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.platform.system',
+        return_value='Windows'
+    ), patch('subprocess.run') as mock_run:
         mock_run.side_effect = FileNotFoundError('nvidia-smi not found')
         assert shared_probe.has_nvidia_gpu() is False
 
 
 def test_shared_hardware_probe_has_nvidia_gpu_linux(shared_probe: HardwareProbe) -> None:
-    with patch('sovereignai.shared.hardware_probe.platform.system', return_value='Linux'), patch('shutil.which') as mock_which:
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.platform.system',
+        return_value='Linux'
+    ), patch('shutil.which') as mock_which:
         mock_which.return_value = '/usr/bin/nvidia-smi'
         assert shared_probe.has_nvidia_gpu() is True
 
 
 def test_shared_hardware_probe_has_nvidia_gpu_linux_exception(shared_probe: HardwareProbe) -> None:
-    with patch('sovereignai.shared.hardware_probe.platform.system', return_value='Linux'), patch('shutil.which', side_effect=Exception('Error')):
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.platform.system',
+        return_value='Linux'
+    ), patch('shutil.which', side_effect=Exception('Error')):
         assert shared_probe.has_nvidia_gpu() is False
 
 
 def test_shared_hardware_probe_get_vram_mb_windows(shared_probe: HardwareProbe) -> None:
-    with patch('sovereignai.shared.hardware_probe.platform.system', return_value='Windows'), patch('subprocess.run') as mock_run:
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.platform.system',
+        return_value='Windows'
+    ), patch('subprocess.run') as mock_run:
         mock_result = Mock()
         mock_result.returncode = 0
         mock_result.stdout = '10240\n'
@@ -250,7 +296,10 @@ def test_shared_hardware_probe_get_vram_mb_windows(shared_probe: HardwareProbe) 
 
 
 def test_shared_hardware_probe_get_vram_mb_windows_error(shared_probe: HardwareProbe) -> None:
-    with patch('sovereignai.shared.hardware_probe.platform.system', return_value='Windows'), patch('subprocess.run') as mock_run:
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.platform.system',
+        return_value='Windows'
+    ), patch('subprocess.run') as mock_run:
         mock_run.side_effect = FileNotFoundError('nvidia-smi not found')
         assert shared_probe.get_vram_mb() == 0
 
@@ -281,7 +330,10 @@ def test_shared_hardware_probe_has_cuda_via_torch_import_error(shared_probe: Har
 
 
 def test_shared_sample_with_pynvml_gpu(shared_probe: HardwareProbe) -> None:
-    with patch('sovereignai.shared.hardware_probe.PYNVML_AVAILABLE', True), patch('sovereignai.shared.hardware_probe.pynvml') as mock_pynvml:
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.PYNVML_AVAILABLE',
+        True
+    ), patch('sovereignai.shared.hardware_probe.pynvml') as mock_pynvml:
         mock_pynvml.nvmlInit.return_value = None
         mock_pynvml.nvmlDeviceGetCount.return_value = 1
         mock_handle = Mock()
@@ -305,7 +357,10 @@ def test_shared_sample_with_pynvml_gpu(shared_probe: HardwareProbe) -> None:
 
 
 def test_shared_sample_pynvml_exception(shared_probe: HardwareProbe) -> None:
-    with patch('sovereignai.shared.hardware_probe.PYNVML_AVAILABLE', True), patch('sovereignai.shared.hardware_probe.pynvml') as mock_pynvml:
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.PYNVML_AVAILABLE',
+        True
+    ), patch('sovereignai.shared.hardware_probe.pynvml') as mock_pynvml:
         mock_pynvml.nvmlInit.side_effect = Exception('NVML error')
 
         snapshot = shared_probe.sample()
@@ -313,7 +368,10 @@ def test_shared_sample_pynvml_exception(shared_probe: HardwareProbe) -> None:
 
 
 def test_shared_sample_gpu_memory_type_mapping(shared_probe: HardwareProbe) -> None:
-    with patch('sovereignai.shared.hardware_probe.PYNVML_AVAILABLE', True), patch('sovereignai.shared.hardware_probe.pynvml') as mock_pynvml:
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.PYNVML_AVAILABLE',
+        True
+    ), patch('sovereignai.shared.hardware_probe.pynvml') as mock_pynvml:
         mock_pynvml.nvmlInit.return_value = None
         mock_pynvml.nvmlDeviceGetCount.return_value = 1
         mock_handle = Mock()
@@ -362,24 +420,27 @@ def test_quant_priority_list() -> None:
 
 
 def test_default_model_path_resolver_simple() -> None:
-    from sovereignai.shared.model_path_resolver import default_model_path_resolver
     from pathlib import Path
+
+    from sovereignai.shared.model_path_resolver import default_model_path_resolver
     result = default_model_path_resolver('test-model')
     expected = Path.home() / '.sovereignai' / 'models' / 'test-model'
     assert result == expected
 
 
 def test_default_model_path_resolver_with_org() -> None:
-    from sovereignai.shared.model_path_resolver import default_model_path_resolver
     from pathlib import Path
+
+    from sovereignai.shared.model_path_resolver import default_model_path_resolver
     result = default_model_path_resolver('org/model')
     expected = Path.home() / '.sovereignai' / 'models' / 'org' / 'model'
     assert result == expected
 
 
 def test_default_model_path_resolver_nested() -> None:
-    from sovereignai.shared.model_path_resolver import default_model_path_resolver
     from pathlib import Path
+
+    from sovereignai.shared.model_path_resolver import default_model_path_resolver
     result = default_model_path_resolver('org/family/version')
     expected = Path.home() / '.sovereignai' / 'models' / 'org' / 'family' / 'version'
     assert result == expected
@@ -393,13 +454,14 @@ def test_conformance_result_dataclass() -> None:
 
 
 def test_base_conformance_test_abstract() -> None:
-    from sovereignai.conformance.base import BaseConformanceTest
     from abc import ABC
+
+    from sovereignai.conformance.base import BaseConformanceTest
     assert issubclass(BaseConformanceTest, ABC)
 
 
 def test_conformance_register_decorator() -> None:
-    from sovereignai.conformance.registry import register, get_conformance_tests_for_class
+    from sovereignai.conformance.registry import get_conformance_tests_for_class, register
 
     @register('test_capability')
     class TestConformance:
@@ -410,7 +472,7 @@ def test_conformance_register_decorator() -> None:
 
 
 def test_conformance_register_multiple() -> None:
-    from sovereignai.conformance.registry import register, get_conformance_tests_for_class
+    from sovereignai.conformance.registry import get_conformance_tests_for_class, register
 
     @register('test_capability')
     class TestConformance1:
@@ -433,7 +495,10 @@ def test_conformance_get_empty_for_unknown_class() -> None:
 
 def test_conformance_entry_points_exception_handling() -> None:
     from sovereignai.conformance.registry import get_conformance_tests_for_class
-    with patch('sovereignai.conformance.registry.importlib.metadata.entry_points', side_effect=Exception('Import error')):
+    with patch(  # noqa: E501
+        'sovereignai.conformance.registry.importlib.metadata.entry_points',
+        side_effect=Exception('Import error')
+    ):
         tests = get_conformance_tests_for_class('test_capability')
         assert isinstance(tests, list)
 
@@ -445,15 +510,18 @@ def test_conformance_entry_points_load_exception() -> None:
     mock_ep.load.side_effect = Exception('Load error')
     mock_eps = Mock()
     mock_eps.select.return_value = [mock_ep]
-    with patch('sovereignai.conformance.registry.importlib.metadata.entry_points', return_value=mock_eps):
+    with patch(  # noqa: E501
+        'sovereignai.conformance.registry.importlib.metadata.entry_points',
+        return_value=mock_eps
+    ):
         tests = get_conformance_tests_for_class('test_capability')
         assert isinstance(tests, list)
 
 
 def test_lifecycle_manager_set_status() -> None:
     from sovereignai.shared.lifecycle_manager import LifecycleManager
-    from sovereignai.shared.types import ComponentId, ComponentStatus
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.shared.types import ComponentId, ComponentStatus
     trace = TraceEmitter()
     manager = LifecycleManager(trace=trace)
     manager.register(ComponentId('test_component'))
@@ -463,8 +531,8 @@ def test_lifecycle_manager_set_status() -> None:
 
 def test_lifecycle_manager_reset() -> None:
     from sovereignai.shared.lifecycle_manager import LifecycleManager
-    from sovereignai.shared.types import ComponentId, ComponentStatus
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.shared.types import ComponentId, ComponentStatus
     trace = TraceEmitter()
     manager = LifecycleManager(trace=trace)
     manager.register(ComponentId('test_component'))
@@ -475,8 +543,8 @@ def test_lifecycle_manager_reset() -> None:
 
 def test_lifecycle_manager_record_error_cleanup_old_entries() -> None:
     from sovereignai.shared.lifecycle_manager import LifecycleManager
-    from sovereignai.shared.types import ComponentId
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.shared.types import ComponentId
     trace = TraceEmitter()
     manager = LifecycleManager(trace=trace)
     manager.register(ComponentId('test_component'))
@@ -487,8 +555,8 @@ def test_lifecycle_manager_record_error_cleanup_old_entries() -> None:
 
 def test_lifecycle_manager_record_error_already_circuit_broken() -> None:
     from sovereignai.shared.lifecycle_manager import LifecycleManager
-    from sovereignai.shared.types import ComponentId
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.shared.types import ComponentId
     trace = TraceEmitter()
     manager = LifecycleManager(trace=trace)
     manager.register(ComponentId('test_component'))
@@ -568,10 +636,11 @@ def test_procedural_backend_prune_no_patterns_removed() -> None:
 
 
 def test_procedural_backend_file_based_mode() -> None:
+    import os
+    import tempfile
+
     from sovereignai.memory.procedural_backend import ProceduralMemoryBackend
     from sovereignai.shared.trace_emitter import TraceEmitter
-    import tempfile
-    import os
     trace = TraceEmitter()
     with tempfile.TemporaryDirectory() as tmpdir:
         file_path = os.path.join(tmpdir, 'procedural.json')
@@ -584,9 +653,9 @@ def test_procedural_backend_file_based_mode() -> None:
 
 
 def test_self_correction_update_procedural_memory_exception() -> None:
-    from sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
     from sovereignai.librarian.librarian import Librarian
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
     trace = TraceEmitter()
     librarian = Mock(spec=Librarian)
     librarian.store.side_effect = Exception('Memory error')
@@ -596,9 +665,9 @@ def test_self_correction_update_procedural_memory_exception() -> None:
 
 
 def test_self_correction_recommend_retraining() -> None:
-    from sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
     from sovereignai.librarian.librarian import Librarian
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
     trace = TraceEmitter()
     librarian = Mock(spec=Librarian)
     skill = SelfCorrectionSkill(librarian=librarian, trace=trace)
@@ -607,9 +676,9 @@ def test_self_correction_recommend_retraining() -> None:
 
 
 def test_self_correction_analyze_task() -> None:
-    from sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
     from sovereignai.librarian.librarian import Librarian
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
     trace = TraceEmitter()
     librarian = Mock(spec=Librarian)
     librarian.query.return_value = []
@@ -619,9 +688,9 @@ def test_self_correction_analyze_task() -> None:
 
 
 def test_self_correction_analyze_task_with_routing_failure() -> None:
-    from sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
     from sovereignai.librarian.librarian import Librarian
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
     trace = TraceEmitter()
     librarian = Mock(spec=Librarian)
     librarian.query.return_value = []
@@ -651,7 +720,11 @@ def test_librarian_merge_results_default_dedup() -> None:
     trace = TraceEmitter()
     graph = Mock(spec=ICapabilityIndex)
     librarian = Librarian(capability_graph=graph, trace=trace)
-    results = [{'id': '1', 'data': 'test1'}, {'id': '1', 'data': 'test2'}, {'id': '2', 'data': 'test3'}]
+    results = [  # noqa: E501
+        {'id': '1', 'data': 'test1'},
+        {'id': '1', 'data': 'test2'},
+        {'id': '2', 'data': 'test3'}
+    ]
     merged = librarian._merge_results('episodic', results)
     assert len(merged) == 2
     assert merged[0]['id'] == '1'
@@ -759,7 +832,13 @@ def test_conformance_runner_first_party_fail_closed() -> None:
     from sovereignai.shared.trace_emitter import TraceEmitter
     trace = TraceEmitter()
     runner = ConformanceRunner(trace=trace)
-    result = runner.check('test_component', 'hash123', 'unique_capability_no_tests', Mock(), is_first_party=True)
+    result = runner.check(  # noqa: E501
+        'test_component',
+        'hash123',
+        'unique_capability_no_tests',
+        Mock(),
+        is_first_party=True
+    )
     assert result is False
 
 
@@ -768,13 +847,19 @@ def test_conformance_runner_third_party_fail_open() -> None:
     from sovereignai.shared.trace_emitter import TraceEmitter
     trace = TraceEmitter()
     runner = ConformanceRunner(trace=trace)
-    result = runner.check('test_component', 'hash123', 'unique_capability_no_tests_2', Mock(), is_first_party=False)
+    result = runner.check(  # noqa: E501
+        'test_component',
+        'hash123',
+        'unique_capability_no_tests_2',
+        Mock(),
+        is_first_party=False
+    )
     assert result is True
 
 
 def test_conformance_runner_test_exception() -> None:
-    from sovereignai.conformance.runner import ConformanceRunner
     from sovereignai.conformance.registry import register
+    from sovereignai.conformance.runner import ConformanceRunner
     from sovereignai.shared.trace_emitter import TraceEmitter
     trace = TraceEmitter()
     runner = ConformanceRunner(trace=trace)
@@ -784,7 +869,13 @@ def test_conformance_runner_test_exception() -> None:
         def test_fails(self, instance):
             raise Exception('Test error')
 
-    result = runner.check('test_component', 'hash123', 'test_capability', Mock(), is_first_party=False)
+    result = runner.check(  # noqa: E501
+        'test_component',
+        'hash123',
+        'test_capability',
+        Mock(),
+        is_first_party=False
+    )
     assert result is False
 
 
@@ -794,12 +885,18 @@ def test_conformance_runner_cache_lru_eviction_in_check() -> None:
     trace = TraceEmitter()
     runner = ConformanceRunner(trace=trace)
     for i in range(1025):
-        runner.check(f'comp{i}', f'hash{i}', 'unique_capability_no_tests_3', Mock(), is_first_party=False)
+        runner.check(  # noqa: E501
+            f'comp{i}',
+            f'hash{i}',
+            'unique_capability_no_tests_3',
+            Mock(),
+            is_first_party=False
+        )
     assert len(runner._cache) <= 1024
 
 
 def test_conformance_base_concrete_implementation() -> None:
-    from sovereignai.conformance.base import BaseConformanceTest, ConformanceResult
+    from sovereignai.conformance.base import BaseConformanceTest
     class ConcreteTest(BaseConformanceTest):
         def test_component_has_required_interface(self, instance) -> None:
             assert instance is not None

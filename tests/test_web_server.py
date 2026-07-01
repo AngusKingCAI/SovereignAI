@@ -22,7 +22,23 @@ from web.main import app
 def mock_container() -> Mock:
     container = Mock()
     capability_index = Mock()
-    capability_index.list_all_components.return_value = [ComponentManifest(component_id=ComponentId('TestAdapter'), version='1.0.0', provides=(CapabilityDeclaration(category=CapabilityCategory.TOOL, name='test_tool', version='1.0.0', priority=0),), requires=(), author='test', content_hash='abc123')]
+    capability_index.list_all_components.return_value = [  # noqa: E501
+        ComponentManifest(
+            component_id=ComponentId('TestAdapter'),
+            version='1.0.0',
+            provides=(
+                CapabilityDeclaration(
+                    category=CapabilityCategory.TOOL,
+                    name='test_tool',
+                    version='1.0.0',
+                    priority=0
+                ),
+            ),
+            requires=(),
+            author='test',
+            content_hash='abc123'
+        )
+    ]
     from sovereignai.shared.auth import AuthMiddleware
     auth_mock = Mock(spec=AuthMiddleware)
     auth_mock._password_hashes = {'test': 'hash'}
@@ -78,7 +94,15 @@ def test_post_task_returns_task_id(client: TestClient, mock_container: Mock) -> 
             return mock_auth
         return Mock()
     mock_container.retrieve.side_effect = retrieve_side_effect
-    response = client.post('/api/tasks', json={'category': 'tool', 'capability_name': 'test_tool', 'payload': '{"test": "data"}'}, cookies={'session_id': 'test_token'})
+    response = client.post(  # noqa: E501
+        '/api/tasks',
+        json={
+            'category': 'tool',
+            'capability_name': 'test_tool',
+            'payload': '{"test": "data"}'
+        },
+        cookies={'session_id': 'test_token'}
+    )
     assert response.status_code == 200
     data = response.json()
     assert 'task_id' in data

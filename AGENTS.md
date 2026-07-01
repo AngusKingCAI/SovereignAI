@@ -92,7 +92,7 @@ OR23. Minimize command output. `tail -n N` (default 5) unless full needed. Never
 
 OR24. Runtime deps in `txt/requirements.txt` only. Dev/test tools in `pyproject.toml` only.
 
-OR25. `detect-secrets scan` must exclude vendored/build dirs. Audit via `detect-secrets audit`, never manual JSON edit.
+OR25. `detect-secrets scan` must exclude vendored/build dirs using `--exclude-files` flag (not `--exclude` which is ambiguous). Audit via `detect-secrets audit`, never manual JSON edit.
 
 OR26. Edit tool for empty files, not `echo "" >`.
 

@@ -19,7 +19,13 @@ def skill(trace: TraceEmitter) -> WebSearchSkill:
 
 @pytest.mark.asyncio
 async def test_search_success(skill: WebSearchSkill) -> None:
-    mock_html = '\n    <html>\n    <body>\n        <div class="result">\n            <a class="result__title" href="https://example.com">Example Title</a>\n            <div class="result__snippet">Example snippet text</div>\n        </div>\n    </body>\n    </html>\n    '
+    mock_html = (  # noqa: E501
+        '\n    <html>\n    <body>\n        <div class="result">\n'
+        '            <a class="result__title" href="https://example.com">'
+        'Example Title</a>\n'
+        '            <div class="result__snippet">Example snippet text</div>\n'
+        '        </div>\n    </body>\n    </html>\n    '
+    )
     with patch('skills.user.websearch_skill.skill.httpx.AsyncClient') as mock_client:
         mock_response = Mock()
         mock_response.text = mock_html
@@ -45,7 +51,9 @@ async def test_search_empty_results(skill: WebSearchSkill) -> None:
 @pytest.mark.asyncio
 async def test_search_network_error(skill: WebSearchSkill) -> None:
     with patch('skills.user.websearch_skill.skill.httpx.AsyncClient') as mock_client:
-        mock_client.return_value.__aenter__.return_value.get = AsyncMock(side_effect=httpx.HTTPError('Network error'))
+        mock_client.return_value.__aenter__.return_value.get = (  # noqa: E501
+            AsyncMock(side_effect=httpx.HTTPError('Network error'))
+        )
         results = await skill.search('test query')
         assert len(results) == 0
 

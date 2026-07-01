@@ -65,7 +65,7 @@ def test_submit_task_binds_fresh_when_none():
         hardware_probe=HardwareProbe(),
     )
 
-    task_id = api.submit_task("token", CapabilityCategory.MODEL_INFERENCE, "test", "payload")
+    api.submit_task("token", CapabilityCategory.MODEL_INFERENCE, "test", "payload")
     events = trace.get_events()
 
     assert len(events) == 1
@@ -103,7 +103,7 @@ def test_submit_task_inherits_when_present():
         hardware_probe=HardwareProbe(),
     )
 
-    task_id = api.submit_task("token", CapabilityCategory.MODEL_INFERENCE, "test", "payload")
+    api.submit_task("token", CapabilityCategory.MODEL_INFERENCE, "test", "payload")
     events = trace.get_events()
 
     reset_correlation_id(token)

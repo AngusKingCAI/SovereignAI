@@ -43,12 +43,23 @@ def check_p4_compliance() -> int:
                     break
 
             if not has_exception:
-                print(f"ERROR: Only {len(model_inference_adapters)} model.inference adapter(s) found, but no P4-EXCEPTION in DEBT.md")
+                print(  # noqa: E501
+                    f"ERROR: Only {len(model_inference_adapters)} "
+                    "model.inference adapter(s) found, "
+                    "but no P4-EXCEPTION in DEBT.md"
+                )
                 exit_code = 1
             else:
-                print(f"OK: {len(model_inference_adapters)} adapter(s) with P4-EXCEPTION in DEBT.md")
+                print(  # noqa: E501
+                    f"OK: {len(model_inference_adapters)} "
+                    "adapter(s) with P4-EXCEPTION in DEBT.md"
+                )
         else:
-            print(f"ERROR: Only {len(model_inference_adapters)} model.inference adapter(s) found, but DEBT.md does not exist")
+            print(  # noqa: E501
+                f"ERROR: Only {len(model_inference_adapters)} "
+                "model.inference adapter(s) found, "
+                "but DEBT.md does not exist"
+            )
             exit_code = 1
     else:
         print(f"OK: {len(model_inference_adapters)} model.inference adapter(s) found")
@@ -98,8 +109,12 @@ def check_p4_compliance() -> int:
 
             def visit_If(self, node):
                 # Check if this is an `if not _test_mode` block
-                if isinstance(node.test, ast.UnaryOp) and isinstance(node.test.op, ast.Not):
-                    if isinstance(node.test.operand, ast.Name) and node.test.operand.id == "_test_mode":
+                if (  # noqa: E501
+                    isinstance(node.test, ast.UnaryOp)
+                    and isinstance(node.test.op, ast.Not)
+                    and isinstance(node.test.operand, ast.Name)
+                    and node.test.operand.id == "_test_mode"
+                ):
                         old_in_test_mode = self.in_test_mode_block
                         self.in_test_mode_block = True
                         self.generic_visit(node)
@@ -120,10 +135,12 @@ def check_p4_compliance() -> int:
         unprotected_raises = []
 
         for raise_node in visitor.raises:
-            if isinstance(raise_node.exc, ast.Call):
-                if isinstance(raise_node.exc.func, ast.Name):
-                    if raise_node.exc.func.id in forbidden_exceptions:
-                        unprotected_raises.append(raise_node.exc.func.id)
+            if (  # noqa: SIM102
+                isinstance(raise_node.exc, ast.Call)
+                and isinstance(raise_node.exc.func, ast.Name)
+                and raise_node.exc.func.id in forbidden_exceptions
+            ):
+                unprotected_raises.append(raise_node.exc.func.id)
 
         if unprotected_raises:
             print(f"ERROR: Unprotected raises of {', '.join(set(unprotected_raises))} in main.py")

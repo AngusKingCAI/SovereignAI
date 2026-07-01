@@ -23,7 +23,10 @@ def test_get_databases_authorized() -> None:
         client.post("/api/auth/register", json={"username": "test", "password": "test123"})
 
         # Login
-        login_response = client.post("/api/auth/login", json={"username": "test", "password": "test123"})
+        login_response = client.post(  # noqa: E501
+            "/api/auth/login",
+            json={"username": "test", "password": "test123"}
+        )
         assert login_response.status_code == 200
         session_cookie = login_response.cookies.get("session_id")
 
@@ -42,7 +45,10 @@ def test_get_services_authorized() -> None:
         client.post("/api/auth/register", json={"username": "test", "password": "test123"})
 
         # Login
-        login_response = client.post("/api/auth/login", json={"username": "test", "password": "test123"})
+        login_response = client.post(  # noqa: E501
+            "/api/auth/login",
+            json={"username": "test", "password": "test123"}
+        )
         assert login_response.status_code == 200
         session_cookie = login_response.cookies.get("session_id")
 

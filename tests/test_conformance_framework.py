@@ -18,7 +18,13 @@ class TestConformanceFramework:
         runner = ConformanceRunner(trace)
         mock_instance = Mock()
         mock_instance.test_method = Mock()
-        passed = runner.check(component_id='test.component', content_hash='abc123', capability_class='test_capability', instance=mock_instance, is_first_party=True)
+        passed = runner.check(  # noqa: E501
+            component_id='test.component',
+            content_hash='abc123',
+            capability_class='test_capability',
+            instance=mock_instance,
+            is_first_party=True
+        )
         assert passed is True
 
     def test_non_conforming_fails(self):
@@ -26,21 +32,39 @@ class TestConformanceFramework:
         runner = ConformanceRunner(trace)
         mock_instance = Mock()
         del mock_instance.test_method
-        passed = runner.check(component_id='test.component', content_hash='abc123', capability_class='test_capability', instance=mock_instance, is_first_party=True)
+        passed = runner.check(  # noqa: E501
+            component_id='test.component',
+            content_hash='abc123',
+            capability_class='test_capability',
+            instance=mock_instance,
+            is_first_party=True
+        )
         assert passed is False
 
     def test_fail_open_when_no_tests_for_capability_class(self):
         trace = Mock()
         runner = ConformanceRunner(trace)
         mock_instance = Mock()
-        passed = runner.check(component_id='test.component', content_hash='abc123', capability_class='nonexistent_capability', instance=mock_instance, is_first_party=False)
+        passed = runner.check(  # noqa: E501
+            component_id='test.component',
+            content_hash='abc123',
+            capability_class='nonexistent_capability',
+            instance=mock_instance,
+            is_first_party=False
+        )
         assert passed is True
 
     def test_fail_closed_when_no_tests_for_first_party(self):
         trace = Mock()
         runner = ConformanceRunner(trace)
         mock_instance = Mock()
-        passed = runner.check(component_id='test.component', content_hash='abc123', capability_class='nonexistent_capability', instance=mock_instance, is_first_party=True)
+        passed = runner.check(  # noqa: E501
+            component_id='test.component',
+            content_hash='abc123',
+            capability_class='nonexistent_capability',
+            instance=mock_instance,
+            is_first_party=True
+        )
         assert passed is False
 
     def test_caching_works(self):
@@ -48,9 +72,21 @@ class TestConformanceFramework:
         runner = ConformanceRunner(trace)
         mock_instance = Mock()
         mock_instance.test_method = Mock()
-        passed1 = runner.check(component_id='test.component', content_hash='abc123', capability_class='test_capability', instance=mock_instance, is_first_party=True)
+        passed1 = runner.check(  # noqa: E501
+            component_id='test.component',
+            content_hash='abc123',
+            capability_class='test_capability',
+            instance=mock_instance,
+            is_first_party=True
+        )
         assert passed1 is True
-        passed2 = runner.check(component_id='test.component', content_hash='abc123', capability_class='test_capability', instance=mock_instance, is_first_party=True)
+        passed2 = runner.check(  # noqa: E501
+            component_id='test.component',
+            content_hash='abc123',
+            capability_class='test_capability',
+            instance=mock_instance,
+            is_first_party=True
+        )
         assert passed2 is True
 
     def test_entry_point_discovery(self):

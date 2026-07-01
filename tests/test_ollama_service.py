@@ -22,7 +22,7 @@ def test_start_ollama_not_found(mock_which: MagicMock) -> None:
 
     try:
         provider.start()
-        assert False, "Should have raised ServiceNotFoundError"
+        raise AssertionError("Should have raised ServiceNotFoundError")
     except ServiceNotFoundError:
         pass
 
@@ -66,7 +66,7 @@ def test_start_timeout(mock_which: MagicMock, mock_popen: MagicMock, mock_get: M
 
     try:
         provider.start()
-        assert False, "Should have raised ServiceStartError"
+        raise AssertionError("Should have raised ServiceStartError")
     except ServiceStartError as e:
         assert "timeout" in str(e)
 
@@ -76,7 +76,11 @@ def test_start_timeout(mock_which: MagicMock, mock_popen: MagicMock, mock_get: M
 @patch("services.ollama_service.provider.httpx.get")
 @patch("services.ollama_service.provider.subprocess.Popen")
 @patch("services.ollama_service.provider.shutil.which")
-def test_health_check_running(mock_which: MagicMock, mock_popen: MagicMock, mock_get: MagicMock) -> None:
+def test_health_check_running(  # noqa: E501
+    mock_which: MagicMock,
+    mock_popen: MagicMock,
+    mock_get: MagicMock
+) -> None:
     trace = TraceEmitter()
     provider = OllamaServiceProvider(trace, port=8080)
 
@@ -100,7 +104,11 @@ def test_health_check_running(mock_which: MagicMock, mock_popen: MagicMock, mock
 @patch("services.ollama_service.provider.httpx.get")
 @patch("services.ollama_service.provider.subprocess.Popen")
 @patch("services.ollama_service.provider.shutil.which")
-def test_health_check_not_running(mock_which: MagicMock, mock_popen: MagicMock, mock_get: MagicMock) -> None:
+def test_health_check_not_running(  # noqa: E501
+    mock_which: MagicMock,
+    mock_popen: MagicMock,
+    mock_get: MagicMock
+) -> None:
     trace = TraceEmitter()
     provider = OllamaServiceProvider(trace, port=8080)
 

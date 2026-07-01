@@ -26,7 +26,10 @@ def authenticated_client(client: TestClient, container: Any) -> TestClient:
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth.register_user('testuser', 'password123')
-    login_response = client.post('/api/auth/login', json={'username': 'testuser', 'password': 'password123'})
+    login_response = client.post(  # noqa: E501
+        '/api/auth/login',
+        json={'username': 'testuser', 'password': 'password123'}
+    )
     session_cookie = login_response.cookies.get('session_id')
     if session_cookie:
         client.cookies.set('session_id', session_cookie)
@@ -44,7 +47,10 @@ def test_search_task_end_to_end(authenticated_client: TestClient, container: Any
             return capability_api_mock
         return original_retrieve(interface)
     with patch.object(container, 'retrieve', side_effect=selective_retrieve):
-        response = authenticated_client.post('/api/dispatch', json={'message': 'search for Python tutorials'})
+        response = authenticated_client.post(  # noqa: E501
+            '/api/dispatch',
+            json={'message': 'search for Python tutorials'}
+        )
         assert response.status_code == 200
         result = response.json()
         assert result['task_id'] == str(task_id)

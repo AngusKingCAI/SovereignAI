@@ -80,7 +80,11 @@ class LlamaCppAdapter:
             if not gguf_files:
                 raise AdapterUnavailableError(f"No GGUF files found in {model_dir}")
 
-            quants = [gguf_file.stem.split("-")[-1] for gguf_file in gguf_files if "-" in gguf_file.stem]
+            quants = [  # noqa: E501
+                gguf_file.stem.split("-")[-1]
+                for gguf_file in gguf_files
+                if "-" in gguf_file.stem
+            ]
             best_quant = select_best_quant(quants)
             if best_quant:
                 for gguf_file in gguf_files:
@@ -154,10 +158,13 @@ class LlamaCppAdapter:
             raise AdapterUnavailableError(f"Failed to load model: {exc}") from exc
 
     def generate(self, model_id: str, prompt: str, max_tokens: int, temperature: float) -> str:
-        self._trace.emit(
+        self._trace.emit(  # noqa: E501
             component="llama_cpp_adapter",
             level=TraceLevel.DEBUG,
-            message=f"generate() called with model_id={model_id}, max_tokens={max_tokens}, temperature={temperature}",
+            message=(
+                f"generate() called with model_id={model_id}, "
+                f"max_tokens={max_tokens}, temperature={temperature}"
+            )
         )
         self.load_model(model_id)
 

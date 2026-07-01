@@ -31,7 +31,10 @@ def test_subscribe_and_publish_delivers_event(event_bus: EventBus, sample_event:
     assert len(received_events) == 1
     assert received_events[0] is sample_event
 
-def test_multiple_subscribers_receive_in_registration_order(event_bus: EventBus, sample_event: Event) -> None:
+def test_multiple_subscribers_receive_in_registration_order(  # noqa: E501
+    event_bus: EventBus,
+    sample_event: Event
+) -> None:
     received_order: list[str] = []
 
     def subscriber_a(event: Event) -> None:
@@ -48,7 +51,11 @@ def test_multiple_subscribers_receive_in_registration_order(event_bus: EventBus,
     event_bus.publish(sample_event)
     assert received_order == ['a', 'b', 'c']
 
-def test_subscriber_exception_does_not_silently_swallow(event_bus: EventBus, sample_event: Event, trace_emitter: TraceEmitter) -> None:
+def test_subscriber_exception_does_not_silently_swallow(  # noqa: E501
+    event_bus: EventBus,
+    sample_event: Event,
+    trace_emitter: TraceEmitter
+) -> None:
     received_by_second: list[Event] = []
 
     def failing_subscriber(event: Event) -> None:
@@ -85,7 +92,11 @@ def test_publish_to_empty_channel_is_noop(event_bus: EventBus, sample_event: Eve
     event_bus.publish(sample_event)
     assert True
 
-def test_trace_emitter_called_on_subscriber_failure(event_bus: EventBus, sample_event: Event, trace_emitter: TraceEmitter) -> None:
+def test_trace_emitter_called_on_subscriber_failure(  # noqa: E501
+    event_bus: EventBus,
+    sample_event: Event,
+    trace_emitter: TraceEmitter
+) -> None:
 
     def failing_subscriber(event: Event) -> None:
         raise RuntimeError('Subscriber failed')
@@ -107,7 +118,11 @@ def test_concurrent_publish_and_subscribe(event_bus: EventBus) -> None:
 
     def publish_many() -> None:
         for _i in range(10):
-            event = Event(channel=Channel('test-channel'), correlation_id=uuid4(), timestamp=now_utc())
+            event = Event(  # noqa: E501
+                channel=Channel('test-channel'),
+                correlation_id=uuid4(),
+                timestamp=now_utc()
+            )
             event_bus.publish(event)
     threads = [threading.Thread(target=publish_many) for _ in range(5)]
     for t in threads:

@@ -294,6 +294,7 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Reason**: pip-audit reports CVE-2025-69872 in diskcache 5.6.3 (transitive dependency from huggingface_hub). This is a path traversal vulnerability. Upgrading diskcache may break compatibility with huggingface_hub.
 **Trigger condition**: When huggingface_hub updates to a version that uses a patched diskcache or when upgrading to a newer huggingface_hub version.
 **Target plan**: TBD (dependency upgrade plan).
+**Status**: Still present at prompt-20.2 (no dependency changes in this plan).
 
 ---
 

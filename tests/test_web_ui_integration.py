@@ -28,9 +28,15 @@ def client_authenticated() -> TestClient:
     container = build_container()
     app.state.container = container
     client = TestClient(app)
-    response = client.post('/api/auth/register', json={'username': 'testuser', 'password': 'testpass123'})
+    response = client.post(  # noqa: E501
+        '/api/auth/register',
+        json={'username': 'testuser', 'password': 'testpass123'}
+    )
     assert response.status_code == 200, f'Register failed: {response.text}'
-    response = client.post('/api/auth/login', json={'username': 'testuser', 'password': 'testpass123'})
+    response = client.post(  # noqa: E501
+        '/api/auth/login',
+        json={'username': 'testuser', 'password': 'testpass123'}
+    )
     assert response.status_code == 200, f'Login failed: {response.text}'
     assert 'session_id' in response.cookies, 'No session cookie set'
     client.cookies.set('session_id', response.cookies['session_id'])
@@ -40,7 +46,10 @@ class TestManifestLoading:
 
     def test_real_manifests_parse(self) -> None:
         from sovereignai.shared.manifest_parser import parse_manifest
-        manifest_paths = [Path('skills/user/websearch_skill/manifest.toml'), Path('adapters/external/ollama_adapter/manifest.toml')]
+        manifest_paths = [  # noqa: E501
+            Path('skills/user/websearch_skill/manifest.toml'),
+            Path('adapters/external/ollama_adapter/manifest.toml')
+        ]
         for mp in manifest_paths:
             manifest = parse_manifest(mp)
             assert manifest.component_id is not None, f'{mp} has no component_id'
@@ -60,7 +69,13 @@ class TestManifestLoading:
     def test_flat_format_still_works(self) -> None:
         from sovereignai.shared.manifest_parser import parse_manifest
         manifest_file = Path('test_flat_manifest.toml')
-        manifest_file.write_text('component_id = "TestAdapter"\nversion = "1.0.0"\nauthor = "test"\ncontent_hash = "sha256:abc"\n\n[[provides]]\ncategory = "model_inference"\nname = "text_generation"\nversion = "1.0.0"\npriority = 10\n')
+        manifest_content = (  # noqa: E501
+            'component_id = "TestAdapter"\nversion = "1.0.0"\n'
+            'author = "test"\ncontent_hash = "sha256:abc"\n\n'
+            '[[provides]]\ncategory = "model_inference"\n'
+            'name = "text_generation"\nversion = "1.0.0"\npriority = 10\n'
+        )
+        manifest_file.write_text(manifest_content)
         try:
             manifest = parse_manifest(manifest_file)
             assert manifest.component_id == 'TestAdapter'
@@ -72,7 +87,9 @@ class TestDispatchRoute:
 
     def test_dispatch_returns_task_id(self, client_authenticated: TestClient) -> None:
         response = client_authenticated.post('/api/dispatch', json={'message': 'test message'})
-        assert response.status_code == 200, f'Expected 200, got {response.status_code}: {response.text}'
+        assert response.status_code == 200, (  # noqa: E501
+            f'Expected 200, got {response.status_code}: {response.text}'
+        )
         data = response.json()
         assert 'task_id' in data, f'Response missing task_id: {data}'
         assert 'state' in data, f'Response missing state: {data}'
@@ -112,11 +129,19 @@ class TestTasksRouteAfterDispatch:
         assert dispatch_resp.status_code == 200
         task_id = dispatch_resp.json()['task_id']
         response = client_authenticated.get('/api/tasks')
-        assert response.status_code == 200, f'Expected 200, got {response.status_code}: {response.text}'
+        assert response.status_code == 200, (  # noqa: E501
+            f'Expected 200, got {response.status_code}: {response.text}'
+        )
         tasks = response.json()
-        assert len(tasks) >= 1, f'Expected >=1 task, got {len(tasks)}'
-        assert tasks[0]['task_id'] == task_id, f"Task ID mismatch: {tasks[0]['task_id']} != {task_id}"
-        assert tasks[0]['state'] in ('received', 'queued', 'executing', 'complete', 'failed', 'unknown')
+        assert len(tasks) >= 1, (  # noqa: E501
+            f'Expected >=1 task, got {len(tasks)}'
+        )
+        assert tasks[0]['task_id'] == task_id, (  # noqa: E501
+            f"Task ID mismatch: {tasks[0]['task_id']} != {task_id}"
+        )
+        assert tasks[0]['state'] in (  # noqa: E501
+            'received', 'queued', 'executing', 'complete', 'failed', 'unknown'
+        )
         assert tasks[0]['result'] is None
         assert tasks[0]['error'] is None
 

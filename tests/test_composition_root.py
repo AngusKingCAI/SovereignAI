@@ -56,7 +56,13 @@ def test_main_smoke_test() -> None:
     import os as _os
     env = {**_os.environ, 'SOVEREIGNAI_TEST_MODE': '1'}
     project_root = Path(__file__).resolve().parents[1]
-    result = subprocess.run([sys.executable, '-m', 'sovereignai.main'], cwd=str(project_root), capture_output=True, text=True, env=env)
+    result = subprocess.run(  # noqa: E501
+        [sys.executable, '-m', 'sovereignai.main'],
+        cwd=str(project_root),
+        capture_output=True,
+        text=True,
+        env=env
+    )
     assert result.returncode == 0
     assert 'Composition root built successfully' in result.stdout
 
@@ -162,6 +168,17 @@ def test_q26_all_components_instantiated_in_main() -> None:
                     instantiations.add(node.func.id)
                 elif isinstance(node.func, ast.Attribute):
                     instantiations.add(node.func.attr)
-    expected_components = {'DIContainer', 'TraceEmitter', 'EventBus', 'CapabilityGraph', 'LifecycleManager', 'RoutingEngine', 'TaskStateMachine', 'AuthMiddleware', 'CapabilityAPI', 'RelayPlaceholder'}
+    expected_components = {  # noqa: E501
+        'DIContainer',
+        'TraceEmitter',
+        'EventBus',
+        'CapabilityGraph',
+        'LifecycleManager',
+        'RoutingEngine',
+        'TaskStateMachine',
+        'AuthMiddleware',
+        'CapabilityAPI',
+        'RelayPlaceholder'
+    }
     for component in expected_components:
         assert component in instantiations, f'{component} not instantiated in build_container()'
