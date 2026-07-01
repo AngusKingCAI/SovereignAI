@@ -7,7 +7,6 @@ Run at start of every plan. Don't skip steps.
 1. `taskkill //F //IM bash.exe 2>&1 || true`
 2. `git fetch origin && git ls-remote --tags origin | grep "prompt-{N-1}"` — STOP if missing (skip Plan 1).
 3. `git status -s | tail -n 10 && git branch --show-current` — STOP if dirty or wrong branch.
-3.5. `git pull origin main` — only runs if step 3 confirmed a clean tree on `main`. STOP on merge conflict; resolve before continuing. This is the step that actually brings remote commits into the local working tree — step 2's fetch only updates ref/tag knowledge, it does not merge anything.
 4. `if [ ! -d ".venv" ]; then py -3.11 -m venv .venv && .venv/Scripts/pip.exe install -e .[dev]; fi` then `.venv/Scripts/python.exe --version` — STOP if broken.
 
 ## Read context
