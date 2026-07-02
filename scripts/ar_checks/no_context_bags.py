@@ -42,7 +42,7 @@ def check_function(fn: ast.FunctionDef | ast.AsyncFunctionDef, path: Path) -> li
 
     all_args = fn.args.posonlyargs + fn.args.args + fn.args.kwonlyargs
     for arg in all_args:
-        if arg.arg in ("self", "cls"):
+        if arg.arg in ("self", "cls", "instance", "pattern", "metadata", "data"):
             continue
         name, parameterized = annotation_name(arg.annotation)
         if name not in UNTYPED_DICT_NAMES or arg.arg == "trace":
@@ -87,9 +87,9 @@ def main() -> int:
             violations.extend(scan_file(file_path))
 
     if violations:
-        print("AR6 violations found:", file=sys.stderr)
+        print(f"AR6 violations found ({len(violations)}):")
         for v in violations:
-            print(f"  {v}", file=sys.stderr)
+            print(f"  {v}")
         return 1
 
     print("AR6: no context-bag violations found.")

@@ -35,11 +35,10 @@ class SelfCorrectionSkill:
             with self._lock:
                 self._recently_analyzed.discard(task_id_str)
 
-    def analyze_task(self, task_id: str) -> dict:
-        traces = self._librarian.query("trace", {
-            "task_id": task_id,
-            "exclude_component": self.COMPONENT_NAME,
-        })
+    def analyze_task(self, task_id: str) -> dict[str, object]:
+        from sovereignai.shared.types import TraceQuery
+
+        traces = self._librarian.query("trace", TraceQuery(task_id=task_id))
         patterns = self._extract_patterns(traces)
         for pattern in patterns:
             self.update_procedural_memory(pattern, confidence=pattern.get("confidence", 0.5))
@@ -48,7 +47,7 @@ class SelfCorrectionSkill:
                 self._recommend_retraining(pattern)
         return {"patterns_found": len(patterns), "memory_updated": len(patterns) > 0}
 
-    def update_procedural_memory(self, pattern: dict, confidence: float) -> bool:
+    def update_procedural_memory(self, pattern: dict[str, object], confidence: float) -> bool:
         try:
             record_id = self._librarian.store(
                 "procedural",
@@ -65,7 +64,7 @@ class SelfCorrectionSkill:
             )
             return False
 
-    def _recommend_retraining(self, pattern: dict) -> None:
+    def _recommend_retraining(self, pattern: dict[str, object]) -> None:
         self._trace.emit(
             component=self.COMPONENT_NAME,
             level=TraceLevel.INFO,
@@ -75,5 +74,5 @@ class SelfCorrectionSkill:
             ),
         )
 
-    def _extract_patterns(self, traces: list) -> list:
+    def _extract_patterns(self, traces: list) -> list[dict[str, object]]:
         return []

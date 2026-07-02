@@ -105,6 +105,10 @@ class TraceMemoryBackend:
             conditions.append("component = ?")
             params.append(query.span_type)
 
+        if query.task_id:
+            conditions.append("task_id = ?")
+            params.append(query.task_id)
+
         where_clause = " AND ".join(conditions) if conditions else "1=1"
 
         sql = f"""

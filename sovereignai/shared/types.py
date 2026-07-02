@@ -4,7 +4,7 @@ from contextvars import ContextVar, Token
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import List, NewType, Optional, Tuple
+from typing import NewType
 from uuid import UUID, uuid4
 
 # ============================================================================
@@ -377,14 +377,14 @@ class TaskStateSummary:
 @dataclass(frozen=True)
 class EpisodicQuery:
     session_id: str
-    time_range: Optional[Tuple[datetime, datetime]] = None
-    tags: Optional[List[str]] = None
+    time_range: tuple[datetime, datetime] | None = None
+    tags: list[str] | None = None
 
 
 @dataclass(frozen=True)
 class ProceduralQuery:
-    skill_name: Optional[str] = None
-    capability_type: Optional[str] = None
+    skill_name: str | None = None
+    capability_type: str | None = None
 
 
 @dataclass(frozen=True)
@@ -395,5 +395,6 @@ class WorkingQuery:
 
 @dataclass(frozen=True)
 class TraceQuery:
-    correlation_id: Optional[str] = None
-    span_type: Optional[str] = None
+    correlation_id: str | None = None
+    span_type: str | None = None
+    task_id: str | None = None

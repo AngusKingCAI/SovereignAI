@@ -4,6 +4,15 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
+## Deferred: Snyk MCP authentication
+
+**Deferred at**: prompt-20.9.3
+**Reason**: Snyk MCP server requires authentication (snyk_auth) before running code scans. This is a configuration issue not introduced by this plan.
+**Trigger condition**: When Snyk MCP authentication is configured.
+**Target plan**: TBD (Snyk configuration plan)
+
+---
+
 ## Resolved: web/hardware_probe.py nvidia_ml_py3 dependency
 
 **Deferred at**: prompt-20.7.3

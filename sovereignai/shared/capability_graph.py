@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from threading import Lock
-from typing import Any, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
@@ -31,7 +31,7 @@ class ICapabilityIndex(Protocol):
     def adapters_by_capability(self, capability: str) -> list:
         ...
 
-    def get_adapter(self, component_id: str) -> Any:
+    def get_adapter(self, component_id: str) -> object:
         ...
 
 
@@ -46,11 +46,11 @@ class CapabilityGraph:
         # Map component_id -> manifest (for list_all_components)
         self._manifests: dict[ComponentId, ComponentManifest] = {}
         # Map component_id -> instance (for O(1) lookup in routing)
-        self._instances: dict[ComponentId, Any] = {}
+        self._instances: dict[ComponentId, object] = {}
         self._lock = Lock()
-        self._conformance_runner: Any = None
+        self._conformance_runner: object = None
 
-    def register(self, manifest: ComponentManifest, instance: Any = None) -> None:
+    def register(self, manifest: ComponentManifest, instance: object | None = None) -> None:
         # N18: --dev flag required (not just env var)
         # F8: dev_mode is a constructor arg (self._dev_mode), NOT os.environ
         if self._dev_mode:

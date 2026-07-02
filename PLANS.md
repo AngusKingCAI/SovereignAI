@@ -46,12 +46,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 20.9**: Baseline → 480 tests. Delta: +16 — see CHANGELOG prompt-20.9 (workflow optimization scripts + tests).
 **Plan 20.9.1**: Baseline → 480 tests. Delta: 0 — see CHANGELOG prompt-20.9.1 (TUI AR7 compliance refactoring, scoped tests only).
 **Plan 20.9.2**: Baseline → TBD tests. Delta: TBD — see CHANGELOG prompt-20.9.2.
+**Plan 20.9.3**: Baseline → 464 tests. Delta: -16 — see CHANGELOG prompt-20.9.3 (typed memory queries, AR6 fixes).
 
 ---
 
 ## Test Baseline
 
-**Current**: 464 tests (Plan 20.7.3 `/close`)
+**Current**: 464 tests (Plan 20.9.3 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -124,6 +125,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-20.7.1 | `prompt-20.7.1` | AGENTS.md Conciseness Pass + New Rules — GR18, OR75/OR77/OR79/OR80/OR81, L60-L66 | 466 | 0 | 0 | 2026-07-02 |
 | prompt-20.7.2 | `prompt-20.7.2` | AR-Check Scripts + Skills Integration — check_dependencies.py, check_plan_immutability.py, check_rule_conciseness.py, /open and /close skill updates | 466 | 0 | 0 | 2026-07-02 |
 | prompt-20.7.3 | `prompt-20.7.3` | 20.6 Rollback + sailogs/ Implementation + Test Mocks — FileTraceSubscriber, sailogs/, test_file_trace_subscriber.py, 30s timeout, HFDatabaseProvider mocks, S8 rollbacks, pynvml removal | 464 | 0 | 0 | 2026-07-02 |
+| prompt-20.9.3 | `prompt-20.9.3` | Typed Memory Queries — Add typed query dataclasses to memory backends per AR6 | 464 | 0 | 0 | 2026-07-03 |
 
 ---
 

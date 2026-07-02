@@ -81,7 +81,7 @@ class Librarian:
             self._trace.emit(
                 component="Librarian",
                 level=TraceLevel.DEBUG,
-                message=f"Queried backend {component_id} for memory_type '{memory_type}' with typed query",
+                message=f"Queried backend {component_id} for memory_type '{memory_type}' with typed query",  # noqa: E501
             )
 
         # Apply merge semantics per memory type

@@ -96,7 +96,6 @@ class EpisodicMemoryBackend:
         if query.tags:
             # Tags stored in metadata JSON - query requires parsing
             # For now, return all records and filter in Python
-            # TODO: Add proper tag indexing if performance issues arise
             pass
 
         where_clause = " AND ".join(conditions) if conditions else "1=1"

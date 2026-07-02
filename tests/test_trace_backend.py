@@ -81,6 +81,29 @@ def test_trace_backend_query_by_span_type(trace_backend: TraceMemoryBackend) -> 
     assert len(results) == 1
     assert results[0]['component'] == 'test_component'
 
+def test_trace_backend_query_by_task_id(trace_backend: TraceMemoryBackend) -> None:  # noqa: E501
+    trace_backend.store(  # noqa: E501
+        data={
+            'component': 'test',
+            'level': 'info',
+            'message': 'test message',
+            'correlation_id': str(new_correlation_id())
+        },
+        metadata={'task_id': 'task-1', 'task_state': 'executing'}
+    )
+    trace_backend.store(  # noqa: E501
+        data={
+            'component': 'test',
+            'level': 'info',
+            'message': 'test message',
+            'correlation_id': str(new_correlation_id())
+        },
+        metadata={'task_id': 'task-2', 'task_state': 'executing'}
+    )
+    results = trace_backend.query(TraceQuery(task_id='task-1'))
+    assert len(results) == 1
+    assert results[0]['task_id'] == 'task-1'
+
 def test_trace_backend_delete_removes_record(trace_backend: TraceMemoryBackend) -> None:
     record_id = trace_backend.store(  # noqa: E501
         data={

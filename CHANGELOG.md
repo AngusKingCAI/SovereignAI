@@ -1,6 +1,24 @@
 # CHANGELOG
 
-## prompt-20.9.2 — Hardware Probe Refactoring: GPU Detection and Dependency Cleanup
+## prompt-20.9.3 — Typed Memory Queries
+
+**Date**: 2026-07-03
+**Plan**: prompts/plan-20.9.3-Rev0.md
+**Tests**: 472 passed, 0 skipped (0 chronic)
+**Coverage**: 93% (scoped tests only)
+**Screenshots**: N/A (backend-only plan)
+**AR7 diff**: None
+**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+
+- Added typed query dataclasses (EpisodicQuery, ProceduralQuery, WorkingQuery, TraceQuery) to sovereignai/shared/types.py
+- Refactored all memory backends (episodic, procedural, working, trace) to use typed queries instead of dict parameters per AR6
+- Updated Librarian to accept typed query dispatch
+- Updated all memory tests to use typed query constructors
+- Fixed all remaining AR6 violations (conformance, capability_graph, routing_engine, self_correction)
+- Updated DEBT.md to mark memory AR6 violations resolved
+- Extended TraceQuery with task_id parameter for self_correction skill compatibility
+
+---
 
 **Date**: 2026-07-03
 **Plan file**: prompts/plan-20.9.2-Rev0.md

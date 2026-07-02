@@ -47,12 +47,16 @@ def test_procedural_backend_lock_timeout_raises_exception(procedural_backend: Pr
     with contextlib.suppress(Exception):
         os.unlink(lock_path)
 
-def test_procedural_backend_query_by_skill_name(procedural_backend: ProceduralMemoryBackend) -> None:
+def test_procedural_backend_query_by_skill_name(  # noqa: E501
+    procedural_backend: ProceduralMemoryBackend,
+) -> None:
     procedural_backend.store(data={'pattern': 'websearch skill pattern', 'confidence': 0.9})
     procedural_backend.store(data={'pattern': 'calculator skill pattern', 'confidence': 0.8})
     results = procedural_backend.query(ProceduralQuery(skill_name='websearch'))
     assert len(results) == 1
     assert 'websearch' in results[0]['pattern']
+
+
 
 def test_procedural_backend_query_by_capability_type(procedural_backend: ProceduralMemoryBackend) -> None:  # noqa: E501
     procedural_backend.store(data={'pattern': 'model_inference capability', 'confidence': 0.9})

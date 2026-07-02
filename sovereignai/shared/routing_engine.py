@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from sovereignai.shared.capability_graph import ICapabilityIndex
 from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
@@ -25,7 +25,7 @@ class RoutingEngine:
         self._lifecycle = lifecycle_manager
         self._trace = trace
 
-    def route(self, capability: str, method_name: str, *args: Any, **kwargs: Any) -> Any:
+    def route(self, capability: str, method_name: str, *args: object) -> object:
         adapters = self._index.adapters_by_capability(capability)
 
         for metadata in adapters:
@@ -53,7 +53,7 @@ class RoutingEngine:
 
             try:
                 method = getattr(instance, method_name)
-                return method(*args, **kwargs)
+                return method(*args)
             except AdapterUnavailableError:
                 self._trace.emit(
                     component="RoutingEngine",

@@ -1,13 +1,13 @@
 import collections
-from typing import Any
 
 from sovereignai.conformance.registry import get_conformance_tests_for_class
+from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import TraceLevel
 
 
 class ConformanceRunner:
 
-    def __init__(self, trace: Any) -> None:
+    def __init__(self, trace: TraceEmitter) -> None:
         self._trace = trace
         self._cache: collections.OrderedDict[tuple[str, str], bool] = collections.OrderedDict()
 
@@ -22,7 +22,7 @@ class ConformanceRunner:
         component_id: str,
         content_hash: str,
         capability_class: str,
-        instance: Any,
+        instance: object,
         is_first_party: bool = False,
     ) -> bool:
         cache_key = (component_id, content_hash)

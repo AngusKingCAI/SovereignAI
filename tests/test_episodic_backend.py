@@ -3,12 +3,13 @@ from __future__ import annotations
 import os
 import tempfile
 from collections.abc import Generator
+from datetime import timedelta
 
 import pytest
 
 from sovereignai.memory.episodic_backend import EpisodicMemoryBackend
 from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import EpisodicQuery
+from sovereignai.shared.types import EpisodicQuery, now_utc
 
 
 @pytest.fixture
@@ -56,9 +57,6 @@ def test_episodic_backend_query_by_task_id(episodic_backend: EpisodicMemoryBacke
     assert results[0]['task_id'] == 'task-1'
 
 def test_episodic_backend_query_by_time_range(episodic_backend: EpisodicMemoryBackend) -> None:  # noqa: E501
-    from datetime import timedelta
-    from sovereignai.shared.types import now_utc
-
     now = now_utc()
     past = now - timedelta(hours=1)
     future = now + timedelta(hours=1)
