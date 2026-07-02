@@ -1,6 +1,17 @@
-# /close Workflow
+---
+name: close
+description: Run at end of every plan. Don't skip steps. STOP only on failure.
+argument-hint: "[plan-number]"
+allowed-tools:
+  - read
+  - grep
+  - glob
+  - exec
+  - edit
+  - write
+---
 
-Run at end of every plan. Don't skip steps. STOP only on failure.
+Run the /close workflow for the current plan. Follow all steps in order. Don't skip steps. STOP only on failure.
 
 Prerequisite: `.venv/` exists.
 
@@ -47,17 +58,17 @@ Prerequisite: `.venv/` exists.
 ## Documentation
 
 12. Append to CHANGELOG.md:
-    ```
-    ## prompt-{N} — {title}
-    **Date**: {YYYY-MM-DD}
-    **Plan file**: $CURRENT_PLAN
-    **Tests**: {count} passed, {count} skipped ({chronic} chronic)
-    **Coverage**: {%}
-    **Browser smoke test screenshots**: {paths from step 15, or "N/A"}
-    **AR7 allowlist diff**: {entries from step 11, or "None"}
-    **OR63 check result**: {result from step 9}
-    {≤3 bullets, one line each, summarizing S1-Sn phase work — no restatement of the fields above}
-    ```
+   ```
+   ## prompt-{N} — {title}
+   **Date**: {YYYY-MM-DD}
+   **Plan file**: $CURRENT_PLAN
+   **Tests**: {count} passed, {count} skipped ({chronic} chronic)
+   **Coverage**: {%}
+   **Browser smoke test screenshots**: {paths from step 15, or "N/A"}
+   **AR7 allowlist diff**: {entries from step 11, or "None"}
+   **OR63 check result**: {result from step 9}
+   {≤3 bullets, one line each, summarizing S1-Sn phase work — no restatement of the fields above}
+   ```
 
 13. Update `PLANS.md` baseline: test count, coverage, bandit count.
 
@@ -80,14 +91,14 @@ Prerequisite: `.venv/` exists.
 17.5. Run `python scripts/ar_checks/check_changelog.py <plan_number>`. Exit≠0 = STOP per OR73.
 
 18. Move ALL plan-{N} revision files, not a single named revision:
-    ```
-    BEFORE_COUNT=$(ls prompts/plan-{N}-Rev*.md 2>/dev/null | wc -l)
-    mv prompts/plan-{N}-Rev*.md prompts/completed/
-    AFTER_COUNT=$(ls prompts/completed/plan-{N}-Rev*.md 2>/dev/null | wc -l)
-    ls prompts/plan-{N}* 2>/dev/null
-    ```
-    Must be empty AND `AFTER_COUNT` = `BEFORE_COUNT` — STOP if not. Never substitute a specific filename for the glob.
-    Note: If git mv fails with "bad source", use plain mv then git add -A. Per L23, mv + git add -A is safe (git add -A catches the rename).
+   ```
+   BEFORE_COUNT=$(ls prompts/plan-{N}-Rev*.md 2>/dev/null | wc -l)
+   mv prompts/plan-{N}-Rev*.md prompts/completed/
+   AFTER_COUNT=$(ls prompts/completed/plan-{N}-Rev*.md 2>/dev/null | wc -l)
+   ls prompts/plan-{N}* 2>/dev/null
+   ```
+   Must be empty AND `AFTER_COUNT` = `BEFORE_COUNT` — STOP if not. Never substitute a specific filename for the glob.
+   Note: If git mv fails with "bad source", use plain mv then git add -A. Per L23, mv + git add -A is safe (git add -A catches the rename).
 
 19. `git add -A && git status -s && git commit -m "prompt-{N}: {title}" -m "{note 1}" -m "{note 2}" -m "{note 3}"` — one `-m` per CHANGELOG Notes bullet.
 

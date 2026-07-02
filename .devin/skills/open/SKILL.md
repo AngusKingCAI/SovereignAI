@@ -1,6 +1,17 @@
-# /open Workflow
+---
+name: open
+description: Run at start of every plan. Don't skip steps.
+argument-hint: "[plan-number]"
+allowed-tools:
+  - read
+  - grep
+  - glob
+  - exec
+  - edit
+  - write
+---
 
-Run at start of every plan. Don't skip steps.
+Run the /open workflow for the current plan. Follow all steps in order. Don't skip steps.
 
 ## Pre-flight
 

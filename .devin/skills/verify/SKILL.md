@@ -1,6 +1,17 @@
-# /verify Workflow
+---
+name: verify
+description: Run after every file edit during plan execution.
+argument-hint: "[file-path]"
+allowed-tools:
+  - read
+  - grep
+  - glob
+  - exec
+  - edit
+  - write
+---
 
-Run after every file edit during plan execution.
+Run the /verify workflow after every file edit during plan execution.
 
 ## Steps
 

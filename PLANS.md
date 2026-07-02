@@ -148,10 +148,10 @@ Tracked solely in `principles.md` (SSOT) — do not duplicate the full table her
 | `LANDMINES.md` | Known failure patterns (L1–L9, L11, L12, L17 inherited; L24+ SovereignAI) |
 | `DECISIONS.md` | Architectural decisions record |
 | `DEBT.md` | Deferred items register |
-| `.devin/workflows/open.md` | Opening workflow |
-| `.devin/workflows/verify.md` | Per-edit verification |
-| `.devin/workflows/close.md` | Closing workflow |
-| `.devin/workflows/scan.md` | Scan workflow |
+| `.devin/skills/open/SKILL.md` | Opening workflow skill |
+| `.devin/skills/verify/SKILL.md` | Per-edit verification skill |
+| `.devin/skills/close/SKILL.md` | Closing workflow skill |
+| `.devin/skills/scan/SKILL.md` | Scan workflow skill |
 
 **Numbering policy** (per OR46): Rule and landmine numbers are frozen — never renumbered. Gaps from retired slots are documented in AGENTS.md's "Retired slots" block. New rules continue from OR66; new landmines from L47.
 

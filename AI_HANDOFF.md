@@ -100,7 +100,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 | `AGENTS.md` | Rules (AR + OR) | Executor |
 | `DECISIONS.md` | Architectural decisions | Executor |
 | `DEBT.md` | Deferred items | Executor |
-| `.devin/workflows/*.md` | Workflow steps | Architect |
+| `.devin/skills/*/SKILL.md` | Workflow skills | Architect |
 
 **SSOT**: Each fact in one document only.
 

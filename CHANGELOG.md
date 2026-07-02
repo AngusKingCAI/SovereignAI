@@ -1143,3 +1143,23 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Fixed ruff errors in check_changelog.py and check_test_mode_hooks.py
 - OR51 exception: S3.9 edited prompt-20.4 entry (456→455 test count correction) — one-time exception, documented per Plan 20.6 G11
 
+---
+
+## prompt-20.6-cascade — Workflow to Skills Migration
+**Date**: 2026-07-02
+**Plan file**: N/A (local configuration change)
+**Tests**: N/A (no code changes)
+**Coverage**: N/A (no code changes)
+**Browser smoke test screenshots**: N/A
+**AR7 allowlist diff**: None
+**OR63 check result**: N/A
+- Converted .devin/workflows/*.md to .devin/skills/*/SKILL.md (Devin skills format)
+- Created skills: close, open, scan, verify with proper YAML frontmatter
+- Updated PLANS.md workflow table to reference .devin/skills/*/SKILL.md
+- Updated AI_HANDOFF.md document reference table
+- Updated LANDMINES.md L17 trigger to reference skills directory
+- Updated scripts/ar_checks/spec_match.py allowlist to exclude .devin/skills/
+- Updated documents/AGENTS-OR73-patch.md to reference close skill
+- Removed .devin/workflows/ directory (deprecated)
+- Historical records (CHANGELOG.md, prompts/completed/*.md, logs/*.md) preserved unchanged per OR73
+

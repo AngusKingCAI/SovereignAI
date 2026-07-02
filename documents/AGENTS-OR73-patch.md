@@ -78,7 +78,7 @@ Checks:
 """
 ```
 
-Add invocation to `.devin/workflows/close.md` as step 17.5 (between step 17 and step 18):
+Add invocation to `.devin/skills/close/SKILL.md` as step 17.5 (between step 17 and step 18):
 ```
 17.5. Run `python scripts/ar_checks/check_changelog.py <plan_number>`. Exit≠0 = STOP per OR73.
 ```

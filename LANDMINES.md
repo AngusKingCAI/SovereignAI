@@ -91,7 +91,7 @@ Append-only. Never edit or remove entries. Format:
 **Graduated to**: OR40.
 
 ## L17 — sed used on workflow files after Edit-tool failures
-**Trigger**: `sed` on `.devin/workflows/*.md` when Edit tool failed.
+**Trigger**: `sed` on `.devin/skills/*/SKILL.md` when Edit tool failed.
 **Impact**: Workflow files corrupted.
 **Graduated to**: OR6.
 

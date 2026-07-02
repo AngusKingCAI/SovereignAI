@@ -95,7 +95,7 @@ def main():
     unexpected_in_diff = diff_files - all_plan_will_paths - ALLOWLIST
     unexpected_in_diff = {
         p for p in unexpected_in_diff
-        if not p.startswith(".devin/workflows/")
+        if not p.startswith(".devin/skills/")
         and not p.startswith("tests/")
         and not p.startswith("documents/plan-")
         and not p.startswith("prompts/plan-")  # noqa: E501
