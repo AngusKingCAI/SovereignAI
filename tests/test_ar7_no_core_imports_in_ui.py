@@ -36,7 +36,7 @@ WEB_MAIN_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.task_state_machine',
     'sovereignai.shared.task_state_machine.ITaskStateQuery'
 }
-TUI_MAIN_ALLOWED_IMPORTS = {  # noqa: E501
+TUI_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.container',
     'sovereignai.shared.container.DIContainer',
     'sovereignai.shared.capability_api',
@@ -54,32 +54,11 @@ TUI_MAIN_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.task_state_machine',
     'sovereignai.shared.task_state_machine.ITaskStateQuery',
     'sovereignai.main',
-    'sovereignai.main.build_container'
-}
-TUI_PANELS_ALLOWED_IMPORTS = {  # noqa: E501
-    'sovereignai.shared.capability_api',
-    'sovereignai.shared.capability_api.CapabilityAPI',
-    'sovereignai.shared.auth',
-    'sovereignai.shared.auth.AuthMiddleware',
-    'sovereignai.shared.trace_emitter',
-    'sovereignai.shared.trace_emitter.TraceEmitter',
-    'sovereignai.shared.types',
-    'sovereignai.shared.types.CapabilityCategory',
-    'sovereignai.shared.types.TaskState',
-    'sovereignai.shared.types.TraceLevel',
-    'sovereignai.shared.task_state_machine',
-    'sovereignai.shared.task_state_machine.ITaskStateQuery',
+    'sovereignai.main.build_container',
     'sovereignai.shared.lifecycle_manager',
-    'sovereignai.shared.lifecycle_manager.LifecycleManager',
-    'sovereignai.memory.episodic_backend',
-    'sovereignai.memory.episodic_backend.EpisodicMemoryBackend',
-    'sovereignai.memory.procedural_backend',
-    'sovereignai.memory.procedural_backend.ProceduralMemoryBackend',
-    'sovereignai.memory.working_backend',
-    'sovereignai.memory.working_backend.WorkingMemoryBackend',
-    'sovereignai.memory.trace_backend',
-    'sovereignai.memory.trace_backend.TraceMemoryBackend'
+    'sovereignai.shared.lifecycle_manager.LifecycleManager'
 }
+
 UI_PACKAGE_DENYLIST = {  # noqa: E501
     'sovereignai.shared',
     'sovereignai.orchestrator',
@@ -140,7 +119,7 @@ def test_ui_directories_do_not_import_core_internals(ui_dir: str) -> None:
         }
         is_web_main = py_file.name == 'main.py' and py_file.parent.name == 'web'
         is_tui_main = py_file.name == 'main.py' and py_file.parent.name == 'tui'
-        is_tui_panel = py_file.parent.name == 'panels' and py_file.parent.parent.name == 'tui'
+        is_tui_file = py_file.parent.name == 'tui' or (py_file.parent.name == 'panels' and py_file.parent.parent.name == 'tui')
 
         if is_web_main:
             forbidden_concrete -= WEB_MAIN_ALLOWED_IMPORTS
@@ -149,18 +128,12 @@ def test_ui_directories_do_not_import_core_internals(ui_dir: str) -> None:
                 imp for imp in forbidden_package
                 if imp.startswith('sovereignai.shared')
             }
-        if is_tui_main:
-            forbidden_concrete -= TUI_MAIN_ALLOWED_IMPORTS
+        if is_tui_main or is_tui_file:
+            forbidden_concrete -= TUI_ALLOWED_IMPORTS
             forbidden_package -= {'sovereignai.main'}
             forbidden_package -= {  # noqa: E501
                 imp for imp in forbidden_package
                 if imp.startswith('sovereignai.shared')
-            }
-        if is_tui_panel:
-            forbidden_concrete -= TUI_PANELS_ALLOWED_IMPORTS
-            forbidden_package -= {  # noqa: E501
-                imp for imp in forbidden_package
-                if imp.startswith('sovereignai.shared') or imp.startswith('sovereignai.memory')
             }
         assert not forbidden_concrete, (  # noqa: E501
             f'{py_file} imports forbidden concrete core modules: '
