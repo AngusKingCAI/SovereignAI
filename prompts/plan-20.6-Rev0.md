@@ -68,7 +68,6 @@ Key findings: P20.4 ImportError (`from textual.containers import ContentSwitcher
 ## WILL edit
 - `AGENTS.md` — add OR74 (S0.3), OR75 (S0.13); remove duplicate "See LANDMINES.md" line (S0.5)
 - `LANDMINES.md` — add L54-L58 (S0.3, S0.12, S0.13, S0.14, S0.15)
-- `AI_HANDOFF.md` — add Architect Workflow step 5 + S0.4 to Plan Template (S0.4) (deferred to 20.7)
 - `DEBT.md` — fix spec_match target 20.6→20.7 (S0.7); fix pynvml target "TBD"→20.6 (S0.7); add B9 (target 20.8), HF rate-limit (target 20.9) at S5.6
 - `tui/main.py` — rewrite: ContentSwitcher, correct selectors, async on_mount, keyboard bindings (S1)
 - `tui/sovereign.tcss` — NEW, CSS for layout + dark theme (S1)
@@ -91,8 +90,6 @@ Key findings: P20.4 ImportError (`from textual.containers import ContentSwitcher
 - `tests/test_hardware_probe.py` — refactor 3 pynvml tests (S5.3)
 - `pyproject.toml` — add `pytest-asyncio` to dev deps if missing (S4)
 - `txt/requirements.txt` — verify `textual>=0.50.0`, `psutil` (S1)
-- `logs/execution-log-prompt-18.md` — fix stale header line 4 (S0.11) (deferred to 20.7)
-- `logs/execution-log-prompt-20.5.md` — updated during S0.6 commit (deferred to 20.7)
 - `CHANGELOG.md` — append prompt-20.6 entry per OR73 (S6.3); append P20.4.1 untagged-status note (S0.8); append P20.5 OR51 exception note (S0.9); reorder entries chronologically (S0.16)
 - `PLANS.md` — update baseline (S6.4)
 - `prompts/plan-20.6-Rev0.md` — move to `completed/` (S6.6)
