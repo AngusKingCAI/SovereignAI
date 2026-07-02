@@ -1,6 +1,15 @@
-# DEBT.md � SovereignAI Deferred Items Register
+# DEBT.md � SovereignAI Deferred Items Register
 
 Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger condition, target plan.
+
+---
+
+## Deferred: First-run experience UI edits
+
+**Deferred at**: prompt-20.9.1
+**Reason**: Plan S4 (first-run experience UI) was deferred per OR17 (deliverables ship in full or defer). The plan specified 5-step wizard with HTML/JS/web endpoints, but this was not implemented due to time constraints and scope considerations. The existing auth system already has /api/auth/register, so the first-run UI would be a frontend wrapper around existing functionality.
+**Trigger condition**: When first-run experience UI implementation is prioritized.
+**Target plan**: TBD (UI experience plan)
 
 ---
 
@@ -23,6 +32,7 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 **Reason**: Plan S8.2b specified refactoring tui/panels/adapters.py to consume Capability API only per DD-20.6.1, but execution found the AR7 violation was in tui/panels/workers.py instead. adapters.py was not edited during execution. The plan's WILL-edit list includes adapters.py but the actual diff does not, causing spec_match.py to fail. This is a documentation discrepancy between plan and execution.
 **Trigger condition**: When TUI panel AR7 refactoring is revisited.
 **Target plan**: TBD (TUI refactoring plan)
+**Status**: Resolved at prompt-20.9.1 — adapters.py already using CapabilityAPI, was not the actual violation source.
 
 ---
 ---
@@ -36,6 +46,7 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 **Reason**: tui/panels/memory.py imports concrete memory backends (EpisodicMemoryBackend, ProceduralMemoryBackend, WorkingMemoryBackend, TraceMemoryBackend) directly from sovereignai.memory.*, violating AR7. Per DD-20.6.1, TUI panels may import from sovereignai.shared.* but not from sovereignai.memory.*. Refactoring would require a Capability API layer for memory operations that doesn't exist yet. Added back to TUI_PANELS_ALLOWED_IMPORTS as temporary exception per OR64.
 **Trigger condition**: When Capability API is extended with memory query operations or a separate memory panel API is designed.
 **Target plan**: TBD (TUI refactoring plan)
+**Status**: Resolved at prompt-20.9.1 — CapabilityAPI extended with query_memory_backends() method, memory.py refactored to use CapabilityAPI only.
 
 ---
 
@@ -63,6 +74,7 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 **Reason**: S2.2 reverted the tui/panels allowlist exception for sovereignai.shared imports. TUI panels (adapters.py, hardware.py, models.py, memory.py, options.py, services.py) import sovereignai.shared.capability_api and sovereignai.shared.types to use the Capability API. Per AR7, UIs must not import sovereignai.* packages directly. Fixing requires either: (a) adding TUI allowlist back (weakens AR7), or (b) refactoring TUI to avoid sovereignai.shared imports (non-trivial - needs Architect decision on TUI architecture).
 **Trigger condition**: Architect next session.
 **Target plan**: Architect next session
+**Status**: Resolved at prompt-20.9.1 — All TUI panels (memory, models, tasks, hardware, options, logs, workers) refactored to use CapabilityAPI with unified TUI_ALLOWED_IMPORTS allowlist. AR7 test now passes with zero exceptions.
 
 ---
 
