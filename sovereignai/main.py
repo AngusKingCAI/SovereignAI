@@ -79,7 +79,7 @@ def build_container(dev_mode: bool = False) -> DIContainer:
     # Rev2 per Finding 1: passes the concrete TaskStateMachine so submit_task
     # can call submit() (the ITaskStateQuery protocol is query-only).
     # Plan 18: added HardwareProbe dependency for sample_hardware() and stream_hardware()
-    # Plan 20.9.1: database_registry, service_registry, memory_backends, lifecycle_manager added after registration
+    # Plan 20.9.1: registries, memory backends, lifecycle added after registration
     from sovereignai.shared.capability_api import CapabilityAPI
     from sovereignai.shared.capability_graph import ICapabilityIndex
     from sovereignai.shared.hardware_probe import HardwareProbe

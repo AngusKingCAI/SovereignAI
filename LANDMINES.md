@@ -2,11 +2,15 @@
 
 Prepend-only (newest entries at top). Never edit or remove entries. Format:
 `
-## L{n} — <title>
+## L{n} ï¿½ <title>
 **Trigger**: <plan, step, command/file>
 **Impact**: <what broke>
 **Graduated to**: <OR{n} or workflow fix}
 `
+
+---
+
+N/A â€” no new patterns (plan completed without STOP, no new ORs added, AR checks passed)
 
 ---
 

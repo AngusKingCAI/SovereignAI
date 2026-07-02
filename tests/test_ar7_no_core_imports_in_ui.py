@@ -119,7 +119,10 @@ def test_ui_directories_do_not_import_core_internals(ui_dir: str) -> None:
         }
         is_web_main = py_file.name == 'main.py' and py_file.parent.name == 'web'
         is_tui_main = py_file.name == 'main.py' and py_file.parent.name == 'tui'
-        is_tui_file = py_file.parent.name == 'tui' or (py_file.parent.name == 'panels' and py_file.parent.parent.name == 'tui')
+        is_tui_file = (
+            py_file.parent.name == 'tui'
+            or (py_file.parent.name == 'panels' and py_file.parent.parent.name == 'tui')
+        )
 
         if is_web_main:
             forbidden_concrete -= WEB_MAIN_ALLOWED_IMPORTS

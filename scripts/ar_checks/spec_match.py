@@ -110,6 +110,7 @@ def main() -> None:
     unexpected_in_diff = {
         p for p in unexpected_in_diff
         if not p.startswith(".devin/skills/")
+        and not p.startswith(".devin/workflows/")  # workflow files are governance artifacts
         and not p.startswith("tests/")
         and not p.startswith("documents/plan-")
         and not p.startswith("prompts/plan-")  # noqa: E501
@@ -117,6 +118,7 @@ def main() -> None:
         and not p.startswith("prompts/completed/")  # moved plan files
         and not p.startswith("logs/")  # execution logs are artifacts, not code
         and not p.startswith("scripts/ar_checks/")  # AR check scripts are governance artifacts
+        and not p.startswith("txt/")  # txt/ governance files (secrets baseline, etc.)
     }
 
     if unexpected_in_diff:

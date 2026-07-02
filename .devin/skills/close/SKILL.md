@@ -21,7 +21,11 @@ Prerequisite: `.venv/` exists.
 
 ## Static analysis
 
-1. `.venv/Scripts/python.exe -m pytest tests/ -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%. STOP if N/A for `.py`-editing plan.
+1. Determine test scope:
+   - `CHANGED_PY=$(git diff --name-only prompt-{N-1}..HEAD | grep '\.py$')`
+   - If no `.py` files changed: echo "N/A — no Python files modified"
+   - Else:
+     a. Run scoped tests first: `pytest tests/ -k "$(echo $CHANGED_PY | sed 's|/|.|g; s|\.py||g; s| | or |g')" -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%. STOP if N/A for `.py`-editing plan.
 
 2. `.venv/Scripts/ruff.exe check .` — STOP on errors.
 

@@ -4,12 +4,30 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
+## Deferred: diskcache CVE-2025-69872 (transitive dependency)
+
+**Deferred at**: prompt-20.9.1
+**Reason**: pip-audit reports CVE-2025-69872 in diskcache 5.6.3 (transitive dependency from huggingface_hub). This is a path traversal vulnerability. Upgrading diskcache may break compatibility with huggingface_hub. This is a pre-existing issue not introduced by this plan.
+**Trigger condition**: When huggingface_hub updates to a version that uses a patched diskcache or when upgrading to a newer huggingface_hub version.
+**Target plan**: TBD (dependency upgrade plan)
+
+---
+
+## Deferred: AR6 violations - 15 pre-existing context bag violations
+
+**Deferred at**: prompt-20.9.1
+**Reason**: no_context_bags.py check fails with 15 AR6 violations (memory backends, librarian, conformance, routing_engine, self_correction). These are pre-existing issues not introduced by this plan. AR6 forbids context objects, untyped dicts, or **kwargs across component boundaries. Fixing requires major memory system refactoring with typed dataclasses.
+**Trigger condition**: When AR6 violations retirement decision is made per DEBT entry "AR6 violations retirement decision".
+**Target plan**: TBD (memory system refactoring plan)
+
+---
+
 ## Deferred: First-run experience UI edits
 
 **Deferred at**: prompt-20.9.1
 **Reason**: Plan S4 (first-run experience UI) was deferred per OR17 (deliverables ship in full or defer). The plan specified 5-step wizard with HTML/JS/web endpoints, but this was not implemented due to time constraints and scope considerations. The existing auth system already has /api/auth/register, so the first-run UI would be a frontend wrapper around existing functionality.
 **Trigger condition**: When first-run experience UI implementation is prioritized.
-**Target plan**: TBD (UI experience plan)
+**Target plan**: prompt-20.9.2 (UI experience plan)
 
 ---
 

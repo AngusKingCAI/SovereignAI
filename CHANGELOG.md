@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## prompt-20.9.1 — TUI AR7 Compliance: Capability API Extension and Panel Refactoring
+
+**Date**: 2026-07-02
+**Plan file**: prompts/plan-20.9.1-Rev0.md
+**Tests**: 13 passed, 4 skipped (0 chronic)
+**Coverage**: 90% (scoped tests only per updated close skill)
+**Screenshots**: N/A (TUI-only plan)
+**AR7 allowlist diff**: Removed TUI_PANELS_ALLOWED_IMPORTS exception
+**OR63 check result**: N/A (no new dependencies)
+
+- Extended CapabilityAPI with 6 new query methods (query_memory_backends, query_hardware_status, query_model_catalog, query_task_states, query_service_registry, query_logs)
+- Added MemoryBackendInfo and TaskStateSummary dataclasses to sovereignai/shared/types.py
+- Refactored all 6 TUI panels (memory, models, tasks, hardware, options, logs) to use CapabilityAPI exclusively per AR7
+- Refactored tui/panels/workers.py to use CapabilityAPI (discovered during execution)
+- Removed TUI_PANELS_ALLOWED_IMPORTS exception from test_ar7_no_core_imports_in_ui.py
+- Updated sovereignai/main.py to wire DatabaseRegistry, ServiceRegistry, and memory backends into CapabilityAPI
+- Fixed ServiceStatus circular import using TYPE_CHECKING guard
+- Updated DEBT.md to mark resolved TUI AR7 compliance items
+- Deferred first-run experience UI per OR17 (documented in DEBT.md)
+
+---
+
 ## prompt-20.9 — Workflow Optimization: Token Reduction and Quality Improvements
 
 **Date**: 2026-07-02
