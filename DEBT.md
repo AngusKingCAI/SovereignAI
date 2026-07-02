@@ -312,7 +312,7 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Deferred at**: prompt-20.5
 **Reason**: After S1.2 reverted the spec_match.py self-exemption, spec_match will fail across plans 16-20.4 diffs. This indicates real scope drift accumulated over 7 plans. Fixing this requires a dedicated plan to either clean up the drift or redesign spec_match to handle accumulated changes.
 **Trigger condition**: When spec_match redesign + scope drift cleanup plan is scheduled.
-**Target plan**: 20.6
+**Target plan**: 20.7
 
 ---
 
@@ -402,5 +402,5 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Deferred at**: prompt-20.5
 **Reason**: S3.5 removed pynvml fallback (dual-import strategy). Tests test_shared_sample_with_pynvml_gpu, test_shared_sample_pynvml_exception, test_shared_sample_gpu_memory_type_mapping mock the old pynvml import path. Need to refactor to mock nvidia_ml_py3 correctly or delete if testing dual-import behavior is no longer relevant.
 **Trigger condition**: When pynvml test strategy is decided.
-**Target plan**: TBD
+**Target plan**: 20.6
 
