@@ -31,6 +31,8 @@ Prerequisite: `.venv/` exists.
 
 5. `.venv/Scripts/pip-audit.exe --strict --requirement txt/requirements.txt` — STOP on CVEs.
 
+5.5. Invoke Snyk MCP scan on txt/requirements.txt + changed Python files. Document any new findings in DEBT.md with explicit target plan (not TBD — per OR64). Exit≠0 on CRITICAL/HIGH Snyk findings = STOP per OR81/L66.
+
 6. `.venv/Scripts/vulture.exe . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,htmlcov` — STOP on new findings vs `txt/vulture-whitelist.txt`.
 
 7. `.venv/Scripts/detect-secrets.exe scan --baseline txt/.secrets.baseline` — STOP if exit≠0. False positive: `detect-secrets audit txt/.secrets.baseline`.
@@ -89,6 +91,14 @@ Prerequisite: `.venv/` exists.
 17. `git add -A && git status -s` — verify no unintended files.
 
 17.5. Run `python scripts/ar_checks/check_changelog.py <plan_number>`. Exit≠0 = STOP per OR73.
+
+17.6. Run python scripts/ar_checks/check_dependencies.py. Exit≠0 = STOP per OR77.
+
+17.7. Run python scripts/ar_checks/check_plan_immutability.py $(cat .open_hash). Exit≠0 = STOP per OR78. Plan files must not be edited during execution.
+
+17.8. Run python scripts/ar_checks/check_rule_conciseness.py. Exit≠0 = STOP per OR80.
+
+17.9. rm .open_hash.
 
 18. Move ALL plan-{N} revision files, not a single named revision:
    ```
