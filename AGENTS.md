@@ -70,7 +70,7 @@ OR12. [Mandatory] Never mix naive/aware datetime. Use `datetime.now(timezone.utc
 
 OR13. [Mandatory] Temp files in dedicated temp dir, not repo root. Delete after consuming. Check for strays before `git add`.
 
-OR14. [Mandatory] Read `AGENTS.md` in full once per session before first edit. All rules are mandatory by default. Always-on mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57, OR58, OR59, OR60, OR61, OR63, OR64, OR65, OR66.
+OR14. [Mandatory] Read AGENTS.md in full once per session before first edit. All rules mandatory. Mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57-OR66.
 
 OR15. [Mandatory] Every new implementation has corresponding test file with passing tests.
 
@@ -92,7 +92,7 @@ OR23. [Mandatory] Minimize command output. `tail -n N` (default 5) unless full n
 
 OR24. [Mandatory] Runtime deps in `txt/requirements.txt` only. Dev/test tools in `pyproject.toml` only.
 
-OR25. [Mandatory] `detect-secrets scan` must exclude vendored/build dirs using `--exclude-files` flag (not `--exclude` which is ambiguous). Audit via `detect-secrets audit`, never manual JSON edit.
+OR25. [Mandatory] detect-secrets scan uses `--exclude-files` (not `--exclude`). Audit via `detect-secrets audit`, never manual JSON edit.
 
 OR26. [Mandatory] Edit tool for empty files, not `echo "" >`.
 
@@ -122,7 +122,7 @@ OR38. [Mandatory] Run workflow commands verbatim. Re-read workflow files fresh e
 
 OR39. [Mandatory] Never edit AR check scripts or tests to make failure pass.
 
-OR40. [Mandatory] `/close` is mandatory and atomic. All steps or STOP. Steps conditional on plan type may be marked "N/A — <reason>" in execution log. Steps never silently skipped.
+OR40. [Mandatory] /close mandatory and atomic. All steps or STOP. Conditional steps marked "N/A — <reason>" in log. Never silently skipped.
 
 OR41. [Mandatory] `git add -A` is the ONLY staging command for ALL commits. No explicit file lists. Verify with `git status -s` after.
 
@@ -144,13 +144,13 @@ OR49. [Mandatory] Crash recovery: check `~/.sovereignai/.shutdown_marker`. Skip 
 
 OR50. [Mandatory] Durable backends use atomic writes. SQLite = WAL + transactions. JSON = temp + `os.replace()`. Locks never force-acquired.
 
-OR51. [Mandatory] Plan deliverables ship in full or explicitly defer per item. Deferred items listed by number in execution log + close report + DEBT.md with target plan. Silently dropping sub-items = STOP.
+OR51. [Mandatory] Deliverables ship in full or defer per item. Deferred items in exec log + close report + DEBT.md with target plan. Silent drop = STOP.
 
 OR52. [Mandatory] "Already done" claims require executed verification — a logged command + exit code. Reading code is NOT verification.
 
-OR53. [Mandatory] Test, mypy, and static-analysis failures have no "pre-existing" exemption. Fix, document in DEBT.md with target plan, or get User authorization per item. "Coverage: N/A" = STOP.
+OR53. [Mandatory] Test/mypy/static-analysis failures: no "pre-existing" exemption. Fix, DEBT with target plan, or User authorization. "Coverage: N/A" = STOP.
 
-OR54. [Mandatory] Skipped tests carry `# TODO(prompt-N): reason`. "Consecutive" = three successive plans where the test file was in scope. Tests skipped ≥3 consecutive prompts must be fixed, deleted, or escalated.
+OR54. [Mandatory] Skipped tests carry `# TODO(prompt-N): reason`. ≥3 consecutive skipped prompts = fix, delete, or escalate.
 
 OR55. [Mandatory] CHANGELOG must not claim unshipped scope.
 
@@ -178,17 +178,17 @@ OR66. [Mandatory] Logs panel must consume /api/traces SSE only — no direct Tra
 
 OR67. [Mandatory] databases/ and services/ are root-level packages, never nested in sovereignai/.
 
-OR68. [Mandatory] Every ServiceProvider and DatabaseProvider exposes health_check() returning typed status dataclass; provider __init__ must not perform I/O — lazy execution only in start()/list_models().
+OR68. [Mandatory] ServiceProvider/DatabaseProvider: health_check() returns typed dataclass; __init__ no I/O — lazy in start()/list_models().
 
 OR69. [Mandatory] Models panel and Hardware panel must consume capability API only — no direct DatabaseRegistry/ServiceRegistry/HardwareProbe imports from web/.
 
-OR70. [Mandatory] Every adapter manifest declares `routing_priority` int — RoutingEngine routes ascending, lower = higher priority; default 1000 for manifests omitting the field; reserved range 0-999 for explicit priorities.
+OR70. [Mandatory] Adapter manifests declare `routing_priority` int. Routes ascending (lower = higher priority). Default 1000. Reserved 0-999.
 
-OR71. [Mandatory] Diagnostic harness tests real end-to-end AI workflow with explicit model lifecycle: load → use → unload per stage. Mock tests verify code paths; harness tests verify system functionality.
+OR71. [Mandatory] Diagnostic harness tests real end-to-end AI workflow: load → use → unload per stage. Mocks verify code paths; harness verifies system.
 
 OR72. [Mandatory] TUI is a first-class UI consuming the same capability API as the WebUI. TUI panels must display real backend state, not placeholder text.
 
-OR73. [Mandatory] CHANGELOG append discipline. At `/close` step 12, append a new `## prompt-N — <title>` section to CHANGELOG.md at the end of the file (oldest at top; never prepend to top, never edit existing entries). Entry structure: `## prompt-N — <title>` header, then metadata lines (`**Date**:`, `**Plan file**:`, `**Tests**:`, `**Coverage**:`), then a bullet list of shipped scope (≥1 bullet). The verbatim entry text must be echoed in the execution log — the `+N` line-count marker alone is NOT sufficient. `scripts/ar_checks/check_changelog.py` enforces mechanically at `/close` step 17.5: exit≠0 = STOP. Editing an existing CHANGELOG entry after its plan is tagged = STOP per OR51.
+OR73. [Mandatory] CHANGELOG append at /close step 12: new `## prompt-N — <title>` section at END (oldest at top). Header + metadata (Date/Plan file/Tests/Coverage) + ≥1 scope bullet. Verbatim entry echoed in exec log (not just `+N`). check_changelog.py enforces at step 17.5: exit≠0 = STOP. Edit tagged entry = STOP per OR51.
 
 OR74. [Mandatory] TUI panel switching must use ContentSwitcher (from textual.widgets) or TabbedContent — never manual add_class/removeClass('hidden'). Import path: textual.widgets.ContentSwitcher (NOT textual.containers).
 
