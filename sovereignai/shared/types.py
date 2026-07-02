@@ -100,6 +100,13 @@ class CapabilityCategory(StrEnum):
     COMMUNICATION = "communication"          # gateways: voice, IM
 
 
+class AdapterCapability(StrEnum):
+    GPU_COMPUTE = "gpu_compute"
+    GPU_MEMORY = "gpu_memory"
+    CPU_INFERENCE = "cpu_inference"
+    QUANTIZATION = "quantization"
+
+
 @dataclass(frozen=True)
 class CapabilityDeclaration:
     category: CapabilityCategory
