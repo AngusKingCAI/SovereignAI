@@ -330,66 +330,18 @@ def test_shared_hardware_probe_has_cuda_via_torch_import_error(shared_probe: Har
 
 
 def test_shared_sample_with_pynvml_gpu(shared_probe: HardwareProbe) -> None:
-    with patch(  # noqa: E501
-        'sovereignai.shared.hardware_probe.PYNVML_AVAILABLE',
-        True
-    ), patch('nvidia_ml_py3') as mock_pynvml:
-        mock_pynvml.nvmlInit.return_value = None
-        mock_pynvml.nvmlDeviceGetCount.return_value = 1
-        mock_handle = Mock()
-        mock_pynvml.nvmlDeviceGetHandleByIndex.return_value = mock_handle
-        mock_pynvml.nvmlDeviceGetName.return_value = 'NVIDIA GeForce RTX 3080'
-        mock_mem_info = Mock()
-        mock_mem_info.total = 10 * 1024 * 1024 * 1024
-        mock_mem_info.used = 5 * 1024 * 1024 * 1024
-        mock_pynvml.nvmlDeviceGetMemoryInfo.return_value = mock_mem_info
-        mock_utilization = Mock()
-        mock_utilization.gpu = 50
-        mock_pynvml.nvmlDeviceGetUtilizationRates.return_value = mock_utilization
-        mock_pynvml.nvmlShutdown.return_value = None
-
-        snapshot = shared_probe.sample()
-        assert len(snapshot.gpus) == 1
-        assert snapshot.gpus[0].name == 'NVIDIA GeForce RTX 3080'
-        assert snapshot.gpus[0].vram_total_mb == 10240
-        assert snapshot.gpus[0].vram_used_mb == 5120
-        assert snapshot.gpus[0].utilization_percent == 50.0
+    # P20.5 S3.5 dropped pynvml from hardware_probe.py; this code path no longer exists
+    pytest.skip("pynvml support removed in P20.5 S3.5")
 
 
 def test_shared_sample_pynvml_exception(shared_probe: HardwareProbe) -> None:
-    with patch(  # noqa: E501
-        'sovereignai.shared.hardware_probe.PYNVML_AVAILABLE',
-        True
-    ), patch('nvidia_ml_py3') as mock_pynvml:
-        mock_pynvml.nvmlInit.side_effect = Exception('NVML error')
-
-        snapshot = shared_probe.sample()
-        assert len(snapshot.gpus) == 0
+    # P20.5 S3.5 dropped pynvml from hardware_probe.py; this code path no longer exists
+    pytest.skip("pynvml support removed in P20.5 S3.5")
 
 
 def test_shared_sample_gpu_memory_type_mapping(shared_probe: HardwareProbe) -> None:
-    with patch(  # noqa: E501
-        'sovereignai.shared.hardware_probe.PYNVML_AVAILABLE',
-        True
-    ), patch('nvidia_ml_py3') as mock_pynvml:
-        mock_pynvml.nvmlInit.return_value = None
-        mock_pynvml.nvmlDeviceGetCount.return_value = 1
-        mock_handle = Mock()
-        mock_pynvml.nvmlDeviceGetHandleByIndex.return_value = mock_handle
-        mock_pynvml.nvmlDeviceGetName.return_value = 'NVIDIA GeForce RTX 4090'
-        mock_mem_info = Mock()
-        mock_mem_info.total = 24 * 1024 * 1024 * 1024
-        mock_mem_info.used = 12 * 1024 * 1024 * 1024
-        mock_pynvml.nvmlDeviceGetMemoryInfo.return_value = mock_mem_info
-        mock_utilization = Mock()
-        mock_utilization.gpu = 75
-        mock_pynvml.nvmlDeviceGetUtilizationRates.return_value = mock_utilization
-        mock_pynvml.nvmlShutdown.return_value = None
-
-        snapshot = shared_probe.sample()
-        assert len(snapshot.gpus) == 1
-        assert snapshot.gpus[0].memory_type == 'GDDR6X'
-        assert snapshot.memory_bandwidth_gbps == 1008.0
+    # P20.5 S3.5 dropped pynvml from hardware_probe.py; this code path no longer exists
+    pytest.skip("pynvml support removed in P20.5 S3.5")
 
 
 def test_select_best_quant_first_priority() -> None:

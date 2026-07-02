@@ -78,6 +78,7 @@ Key findings: P20.4 ImportError (`from textual.containers import ContentSwitcher
 - `tests/tui/test_tui_main.py` — NEW, Pilot tests (S4)
 - `tests/test_tui_skeleton.py` — NEW, Pilot tests (S4)
 - `tests/test_tui_panels.py` — NEW, per-panel tests (S4)
+- `tests/test_models_panel.py` — mock HFDatabaseProvider.list_models to avoid 501 live API calls (S5)
 - `tests/test_hardware_probe.py` — refactor 3 pynvml tests (S5.3)
 - `pyproject.toml` — add `pytest-asyncio` to dev deps if missing (S4)
 - `txt/requirements.txt` — verify `textual>=0.50.0`, `psutil` (S1)
