@@ -1,123 +1,183 @@
 #!/usr/bin/env python3
 import ast
-import os
 import sys
-import re
+import tomli
 from pathlib import Path
-from typing import Set, Dict, List, Tuple
+
 
 STDLIB_MODULES = {
-    "os", "sys", "json", "pathlib", "threading", "datetime", "typing",
-    "dataclasses", "collections", "uuid", "re", "math", "time", "random",
-    "functools", "itertools", "contextlib", "asyncio", "concurrent",
+    "os", "sys", "json", "pathlib", "threading", "datetime", "typing", "dataclasses",
+    "collections", "uuid", "re", "math", "time", "random", "functools", "itertools",
+    "contextlib", "asyncio", "concurrent", "unittest", "pytest", "hypothesis",
+    "argparse", "queue", "__future__", "abc", "importlib", "sqlite3", "tomllib",
+    "secrets", "hashlib", "subprocess", "shutil", "platform", "enum", "contextvars",
+    "tempfile", "ctypes", "traceback", "gc", "ast", "io", "logging", "warnings",
+    "inspect", "textwrap", "copy", "decimal", "fractions", "string", "types",
+    "sysctl",
 }
 
-PRODUCTION_DIRS = ["sovereignai", "databases", "services", "web", "tui", "adapters"]
-DEV_TEST_DIRS = ["tests"]
+LOCAL_PACKAGES = {
+    "sovereignai",
+    "databases",
+    "services",
+    "web",
+    "tui",
+    "adapters",
+    "tests",
+    "scripts",
+    "skills",
+}
 
 
-def extract_imports_from_file(filepath: Path) -> Set[str]:
+def parse_requirements(requirements_path: Path) -> set[str]:
+    deps = set()
+    if not requirements_path.exists():
+        return deps
+    
+    with open(requirements_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#"):
+                pkg_name = line.split(">=")[0].split("==")[0].split("<")[0].strip()
+                if pkg_name:
+                    deps.add(pkg_name)
+    
+    return deps
+
+
+PACKAGE_ALIASES = {
+    "nvidia_ml_py3": "nvidia-ml-py",
+    "llama_cpp": "llama-cpp-python",
+    "httpx": "httpx2",
+}
+
+TRANSITIVE_DEPENDENCIES = {
+    "starlette": "fastapi",
+    "pydantic": "fastapi",
+    "anyio": "fastapi",
+    "typing_extensions": "fastapi",
+    "annotated_doc": "fastapi",
+    "typing_inspection": "fastapi",
+    "httpcore": "httpx",
+    "h11": "httpx",
+    "idna": "httpx",
+    "truststore": "httpx",
+    "diskcache": "llama-cpp-python",
+}
+
+OPTIONAL_IMPORTS = {
+    "torch",
+}
+
+
+def parse_pyproject_dev_deps(pyproject_path: Path) -> set[str]:
+    deps = set()
+    if not pyproject_path.exists():
+        return deps
+    
+    with open(pyproject_path, "rb") as f:
+        data = tomli.load(f)
+    
+    dev_deps = data.get("project", {}).get("optional-dependencies", {}).get("dev", [])
+    for dep in dev_deps:
+        pkg_name = dep.split(">=")[0].split("==")[0].split("<")[0].strip()
+        if pkg_name:
+            deps.add(pkg_name)
+    
+    return deps
+
+
+def extract_imports(file_path: Path) -> set[str]:
     imports = set()
+    
     try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            tree = ast.parse(f.read(), filename=str(filepath))
+        with open(file_path, "r", encoding="utf-8") as f:
+            source = f.read()
+        
+        tree = ast.parse(source, filename=str(file_path))
+        
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
                     imports.add(alias.name.split(".")[0])
             elif isinstance(node, ast.ImportFrom):
-                if node.module:
+                if node.module and not node.level:
                     imports.add(node.module.split(".")[0])
-    except (SyntaxError, UnicodeDecodeError):
+    except Exception:
         pass
+    
     return imports
 
 
-def parse_requirements_txt(filepath: Path) -> Set[str]:
-    packages = set()
-    if not filepath.exists():
-        return packages
-    with open(filepath, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#"):
-                match = re.match(r"^[a-zA-Z0-9_-]+", line)
-                if match:
-                    packages.add(match.group(0).lower())
-    return packages
-
-
-def parse_pyproject_toml_dev(filepath: Path) -> Set[str]:
-    packages = set()
-    if not filepath.exists():
-        return packages
-    try:
-        import tomli
-    except ImportError:
-        try:
-            import tomllib as tomli
-        except ImportError:
-            print("Error: Neither tomli nor tomllib available. Install tomli.", file=sys.stderr)
-            return packages
-    
-    with open(filepath, "rb") as f:
-        data = tomli.load(f)
-    
-    dev_deps = data.get("project", {}).get("optional-dependencies", {}).get("dev", [])
-    for dep in dev_deps:
-        match = re.match(r"^[a-zA-Z0-9_-]+", dep)
-        if match:
-            packages.add(match.group(0).lower())
-    return packages
+def check_local_package_exists(package: str, repo_root: Path) -> bool:
+    package_path = repo_root / package
+    return package_path.exists() and package_path.is_dir()
 
 
 def main():
-    script_dir = Path(__file__).parent.parent.parent
-    repo_root = script_dir
-    
+    repo_root = Path(__file__).parent.parent.parent
     requirements_txt = repo_root / "txt" / "requirements.txt"
     pyproject_toml = repo_root / "pyproject.toml"
     
-    runtime_packages = parse_requirements_txt(requirements_txt)
-    dev_packages = parse_pyproject_toml_dev(pyproject_toml)
+    requirements_deps = parse_requirements(requirements_txt)
+    dev_deps = parse_pyproject_dev_deps(pyproject_toml)
     
-    all_imports: Dict[str, Set[str]] = {}
-    missing_deps: List[Tuple[str, str, str]] = []
+    production_dirs = [
+        repo_root / "sovereignai",
+        repo_root / "databases",
+        repo_root / "services",
+        repo_root / "web",
+        repo_root / "tui",
+        repo_root / "adapters",
+    ]
     
-    for dir_name in PRODUCTION_DIRS + DEV_TEST_DIRS:
-        dir_path = repo_root / dir_name
-        if not dir_path.exists():
+    test_dirs = [repo_root / "tests"]
+    
+    all_imports = {}
+    missing_deps = []
+    
+    for directory in production_dirs + test_dirs:
+        if not directory.exists():
             continue
         
-        for py_file in dir_path.rglob("*.py"):
-            imports = extract_imports_from_file(py_file)
-            for imp in imports:
-                if imp in STDLIB_MODULES:
-                    continue
-                if imp not in all_imports:
-                    all_imports[imp] = set()
-                all_imports[imp].add(str(py_file.relative_to(repo_root)))
+        for py_file in directory.rglob("*.py"):
+            imports = extract_imports(py_file)
+            all_imports[str(py_file.relative_to(repo_root))] = imports
     
-    for imp, files in all_imports.items():
-        imp_lower = imp.lower()
+    for file_path, imports in all_imports.items():
+        is_test_file = file_path.startswith("tests")
         
-        is_production = any(any(f.startswith(d + "/") for d in PRODUCTION_DIRS) for f in files)
-        is_dev_test = any(any(f.startswith(d + "/") for d in DEV_TEST_DIRS) for f in files)
-        
-        if is_production and imp_lower not in runtime_packages:
-            for f in files:
-                if f.startswith(tuple(d + "/" for d in PRODUCTION_DIRS)):
-                    missing_deps.append((f, imp, "txt/requirements.txt"))
-        
-        if is_dev_test and imp_lower not in dev_packages and imp_lower not in runtime_packages:
-            for f in files:
-                if f.startswith(tuple(d + "/" for d in DEV_TEST_DIRS)):
-                    missing_deps.append((f, imp, "pyproject.toml [project.optional-dependencies] dev"))
+        for imp in imports:
+            if imp in STDLIB_MODULES:
+                continue
+            
+            if imp in OPTIONAL_IMPORTS:
+                continue
+            
+            if imp in LOCAL_PACKAGES:
+                if not check_local_package_exists(imp, repo_root):
+                    missing_deps.append(f"{file_path}: local package '{imp}' not found in repo")
+                continue
+            
+            normalized_imp = PACKAGE_ALIASES.get(imp, imp)
+            
+            if normalized_imp in TRANSITIVE_DEPENDENCIES:
+                parent = TRANSITIVE_DEPENDENCIES[normalized_imp]
+                if parent not in requirements_deps:
+                    missing_deps.append(f"{file_path}: '{imp}' (transitive of '{parent}') not in txt/requirements.txt")
+                continue
+            
+            if is_test_file:
+                if normalized_imp not in dev_deps and normalized_imp not in requirements_deps:
+                    missing_deps.append(f"{file_path}: '{imp}' not in pyproject.toml [project.optional-dependencies] dev or txt/requirements.txt")
+            else:
+                if normalized_imp not in requirements_deps:
+                    missing_deps.append(f"{file_path}: '{imp}' not in txt/requirements.txt")
     
     if missing_deps:
         print("Missing dependencies:", file=sys.stderr)
-        for filepath, imp, target in missing_deps:
-            print(f"  {filepath}: imports '{imp}' but not in {target}", file=sys.stderr)
+        for dep in missing_deps:
+            print(f"  {dep}", file=sys.stderr)
         sys.exit(1)
     
     sys.exit(0)
