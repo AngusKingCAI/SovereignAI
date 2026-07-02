@@ -11,6 +11,7 @@ from sovereignai.memory.procedural_backend import (
     ProceduralMemoryLockTimeoutError,
 )
 from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import ProceduralQuery
 
 
 @pytest.fixture
@@ -46,32 +47,32 @@ def test_procedural_backend_lock_timeout_raises_exception(procedural_backend: Pr
     with contextlib.suppress(Exception):
         os.unlink(lock_path)
 
-def test_procedural_backend_query_by_pattern(procedural_backend: ProceduralMemoryBackend) -> None:
-    procedural_backend.store(data={'pattern': 'search pattern', 'confidence': 0.9})
-    procedural_backend.store(data={'pattern': 'other pattern', 'confidence': 0.8})
-    results = procedural_backend.query({'pattern': 'search'})
+def test_procedural_backend_query_by_skill_name(procedural_backend: ProceduralMemoryBackend) -> None:
+    procedural_backend.store(data={'pattern': 'websearch skill pattern', 'confidence': 0.9})
+    procedural_backend.store(data={'pattern': 'calculator skill pattern', 'confidence': 0.8})
+    results = procedural_backend.query(ProceduralQuery(skill_name='websearch'))
     assert len(results) == 1
-    assert 'search' in results[0]['pattern']
+    assert 'websearch' in results[0]['pattern']
 
-def test_procedural_backend_query_by_min_confidence(procedural_backend: ProceduralMemoryBackend) -> None:  # noqa: E501
-    procedural_backend.store(data={'pattern': 'high confidence', 'confidence': 0.9})
-    procedural_backend.store(data={'pattern': 'low confidence', 'confidence': 0.5})
-    results = procedural_backend.query({'min_confidence': 0.8})
+def test_procedural_backend_query_by_capability_type(procedural_backend: ProceduralMemoryBackend) -> None:  # noqa: E501
+    procedural_backend.store(data={'pattern': 'model_inference capability', 'confidence': 0.9})
+    procedural_backend.store(data={'pattern': 'tool capability', 'confidence': 0.8})
+    results = procedural_backend.query(ProceduralQuery(capability_type='model_inference'))
     assert len(results) == 1
-    assert results[0]['confidence'] == 0.9
+    assert 'model_inference' in results[0]['pattern']
 
 def test_procedural_backend_delete_removes_record(procedural_backend: ProceduralMemoryBackend) -> None:  # noqa: E501
     record_id = procedural_backend.store(data={'pattern': 'test pattern', 'confidence': 0.9})
     deleted = procedural_backend.delete(record_id)
     assert deleted is True
-    results = procedural_backend.query({})
+    results = procedural_backend.query(ProceduralQuery())
     assert len(results) == 0
 
 def test_procedural_backend_prune_low_confidence(procedural_backend: ProceduralMemoryBackend) -> None:  # noqa: E501
     procedural_backend.store(data={'pattern': 'high confidence', 'confidence': 0.9})
     procedural_backend.store(data={'pattern': 'low confidence', 'confidence': 0.3})
     procedural_backend.prune_low_confidence(0.5)
-    results = procedural_backend.query({})
+    results = procedural_backend.query(ProceduralQuery())
     assert len(results) == 1
     assert results[0]['confidence'] == 0.9
 
@@ -85,7 +86,7 @@ def test_procedural_backend_hard_cap_enforcement(procedural_backend: ProceduralM
         procedural_backend.store(data={'pattern': 'middle', 'confidence': 0.9, 'last_used': 2.0})
         procedural_backend.store(data={'pattern': 'newest', 'confidence': 0.9, 'last_used': 3.0})
         procedural_backend.store(data={'pattern': 'trigger', 'confidence': 0.9, 'last_used': 4.0})
-        results = procedural_backend.query({})
+        results = procedural_backend.query(ProceduralQuery())
         assert len(results) == 3
         pattern_names = {r['pattern'] for r in results}
         assert 'oldest' not in pattern_names

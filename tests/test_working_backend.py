@@ -4,7 +4,7 @@ import pytest
 
 from sovereignai.memory.working_backend import WorkingMemoryBackend
 from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import TaskState
+from sovereignai.shared.types import TaskState, WorkingQuery
 
 
 @pytest.fixture
@@ -19,19 +19,19 @@ def test_working_backend_store_returns_record_id(working_backend: WorkingMemoryB
     assert isinstance(record_id, str)
     assert len(record_id) == 36
 
-def test_working_backend_query_by_task_id(working_backend: WorkingMemoryBackend) -> None:
+def test_working_backend_query_by_context_id(working_backend: WorkingMemoryBackend) -> None:
     working_backend.store(data={'task_id': 'task-1', 'key': 'key1', 'value': 'value1'})
     working_backend.store(data={'task_id': 'task-2', 'key': 'key2', 'value': 'value2'})
-    results = working_backend.query({'task_id': 'task-1'})
+    results = working_backend.query(WorkingQuery(context_id='task-1'))
     assert len(results) == 1
     assert results[0]['task_id'] == 'task-1'
 
-def test_working_backend_query_by_key(working_backend: WorkingMemoryBackend) -> None:
+def test_working_backend_query_max_items(working_backend: WorkingMemoryBackend) -> None:
     working_backend.store(data={'task_id': 'task-1', 'key': 'key1', 'value': 'value1'})
     working_backend.store(data={'task_id': 'task-1', 'key': 'key2', 'value': 'value2'})
-    results = working_backend.query({'task_id': 'task-1', 'key': 'key1'})
-    assert len(results) == 1
-    assert results[0]['key'] == 'key1'
+    working_backend.store(data={'task_id': 'task-1', 'key': 'key3', 'value': 'value3'})
+    results = working_backend.query(WorkingQuery(context_id='task-1', max_items=2))
+    assert len(results) == 2
 
 def test_working_backend_delete_removes_record(working_backend: WorkingMemoryBackend) -> None:
     record_id = working_backend.store(  # noqa: E501
@@ -39,7 +39,7 @@ def test_working_backend_delete_removes_record(working_backend: WorkingMemoryBac
     )
     deleted = working_backend.delete(record_id)
     assert deleted is True
-    results = working_backend.query({'task_id': 'task-1'})
+    results = working_backend.query(WorkingQuery(context_id='task-1'))
     assert len(results) == 0
 
 def test_working_backend_cleanup_removes_all_task_records(working_backend: WorkingMemoryBackend) -> None:  # noqa: E501
@@ -47,9 +47,9 @@ def test_working_backend_cleanup_removes_all_task_records(working_backend: Worki
     working_backend.store(data={'task_id': 'task-1', 'key': 'key2', 'value': 'value2'})
     working_backend.store(data={'task_id': 'task-2', 'key': 'key3', 'value': 'value3'})
     working_backend.cleanup('task-1')
-    results = working_backend.query({'task_id': 'task-1'})
+    results = working_backend.query(WorkingQuery(context_id='task-1'))
     assert len(results) == 0
-    results = working_backend.query({'task_id': 'task-2'})
+    results = working_backend.query(WorkingQuery(context_id='task-2'))
     assert len(results) == 1
 
 def test_working_backend_cleanup_nonexistent_task_no_error(working_backend: WorkingMemoryBackend) -> None:  # noqa: E501

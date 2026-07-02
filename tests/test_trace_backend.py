@@ -8,7 +8,7 @@ import pytest
 
 from sovereignai.memory.trace_backend import TraceMemoryBackend
 from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import new_correlation_id
+from sovereignai.shared.types import TraceQuery, new_correlation_id
 
 
 @pytest.fixture
@@ -54,29 +54,6 @@ def test_trace_backend_store_without_metadata(trace_backend: TraceMemoryBackend)
     )
     assert isinstance(record_id, str)
 
-def test_trace_backend_query_by_task_id(trace_backend: TraceMemoryBackend) -> None:
-    trace_backend.store(  # noqa: E501
-        data={
-            'component': 'test',
-            'level': 'info',
-            'message': 'test message',
-            'correlation_id': str(new_correlation_id())
-        },
-        metadata={'task_id': 'task-1', 'task_state': 'executing'}
-    )
-    trace_backend.store(  # noqa: E501
-        data={
-            'component': 'test',
-            'level': 'info',
-            'message': 'test message',
-            'correlation_id': str(new_correlation_id())
-        },
-        metadata={'task_id': 'task-2', 'task_state': 'executing'}
-    )
-    results = trace_backend.query({'task_id': 'task-1'})
-    assert len(results) == 1
-    assert results[0]['task_id'] == 'task-1'
-
 def test_trace_backend_query_by_correlation_id(trace_backend: TraceMemoryBackend) -> None:  # noqa: E501
     corr_id = str(new_correlation_id())
     trace_backend.store(  # noqa: E501
@@ -87,9 +64,22 @@ def test_trace_backend_query_by_correlation_id(trace_backend: TraceMemoryBackend
             'correlation_id': corr_id
         }
     )
-    results = trace_backend.query({'correlation_id': corr_id})
+    results = trace_backend.query(TraceQuery(correlation_id=corr_id))
     assert len(results) == 1
     assert results[0]['correlation_id'] == corr_id
+
+def test_trace_backend_query_by_span_type(trace_backend: TraceMemoryBackend) -> None:  # noqa: E501
+    trace_backend.store(  # noqa: E501
+        data={
+            'component': 'test_component',
+            'level': 'info',
+            'message': 'test message',
+            'correlation_id': str(new_correlation_id())
+        }
+    )
+    results = trace_backend.query(TraceQuery(span_type='test_component'))
+    assert len(results) == 1
+    assert results[0]['component'] == 'test_component'
 
 def test_trace_backend_delete_removes_record(trace_backend: TraceMemoryBackend) -> None:
     record_id = trace_backend.store(  # noqa: E501
@@ -102,7 +92,7 @@ def test_trace_backend_delete_removes_record(trace_backend: TraceMemoryBackend) 
     )
     deleted = trace_backend.delete(record_id)
     assert deleted is True
-    results = trace_backend.query({})
+    results = trace_backend.query(TraceQuery())
     assert len(results) == 0
 
 def test_trace_backend_get_last_task_states(trace_backend: TraceMemoryBackend) -> None:  # noqa: E501

@@ -8,6 +8,7 @@ import pytest
 
 from sovereignai.memory.episodic_backend import EpisodicMemoryBackend
 from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import EpisodicQuery
 
 
 @pytest.fixture
@@ -50,43 +51,37 @@ def test_episodic_backend_query_by_task_id(episodic_backend: EpisodicMemoryBacke
         'data': '{}',
         'task_id': 'task-2'
     })
-    results = episodic_backend.query({'task_id': 'task-1'})
+    results = episodic_backend.query(EpisodicQuery(session_id='task-1'))
     assert len(results) == 1
     assert results[0]['task_id'] == 'task-1'
 
-def test_episodic_backend_query_by_task_ids_batch(episodic_backend: EpisodicMemoryBackend) -> None:  # noqa: E501
+def test_episodic_backend_query_by_time_range(episodic_backend: EpisodicMemoryBackend) -> None:  # noqa: E501
+    from datetime import timedelta
+    from sovereignai.shared.types import now_utc
+
+    now = now_utc()
+    past = now - timedelta(hours=1)
+    future = now + timedelta(hours=1)
+
     episodic_backend.store(data={  # noqa: E501
         'component': 'test',
         'event_type': 'test_event',
         'data': '{}',
         'task_id': 'task-1'
     })
-    episodic_backend.store(data={  # noqa: E501
-        'component': 'test',
-        'event_type': 'test_event',
-        'data': '{}',
-        'task_id': 'task-2'
-    })
-    episodic_backend.store(data={  # noqa: E501
-        'component': 'test',
-        'event_type': 'test_event',
-        'data': '{}',
-        'task_id': 'task-3'
-    })
-    results = episodic_backend.query({'task_ids': ['task-1', 'task-2']})
-    assert len(results) == 2
-    task_ids = {r['task_id'] for r in results}
-    assert task_ids == {'task-1', 'task-2'}
+    results = episodic_backend.query(EpisodicQuery(session_id='task-1', time_range=(past, future)))
+    assert len(results) == 1
 
 def test_episodic_backend_delete_removes_record(episodic_backend: EpisodicMemoryBackend) -> None:  # noqa: E501
     record_id = episodic_backend.store(data={  # noqa: E501
         'component': 'test',
         'event_type': 'test_event',
-        'data': '{}'
+        'data': '{}',
+        'task_id': 'task-1'
     })
     deleted = episodic_backend.delete(record_id)
     assert deleted is True
-    results = episodic_backend.query({})
+    results = episodic_backend.query(EpisodicQuery(session_id='task-1'))
     assert len(results) == 0
 
 def test_episodic_backend_delete_nonexistent_returns_false(episodic_backend: EpisodicMemoryBackend) -> None:  # noqa: E501
