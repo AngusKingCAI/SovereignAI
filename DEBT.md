@@ -467,8 +467,9 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 ## Deferred: web/hardware_probe.py nvidia_ml_py3 dependency
 
 **Deferred at**: prompt-20.7.3
-**Reason**: check_dependencies.py reports web/hardware_probe.py imports nvidia_ml_py3 which is not in txt/requirements.txt. This is a pre-existing issue not introduced by this plan. The web layer uses nvidia-ml-py while sovereignai/shared/hardware_probe.py was cleaned of pynvml in S8.3. Requires investigation of whether web layer should also be cleaned or if the dependency should be restored.
-**Trigger condition**: When web layer hardware probe is audited for dependencies.
+**Reason**: check_dependencies.py reports web/hardware_probe.py imports nvidia_ml_py3 which is not in txt/requirements.txt. This is a pre-existing issue not introduced by this plan. The web layer uses nvidia-ml-py while sovereignai/shared/hardware_probe.py was cleaned of pynvml in S8.3. Dependency restored to txt/requirements.txt since web layer still requires it for NVIDIA GPU detection.
+**Trigger condition**: When web layer hardware probe is refactored to use shared layer only.
 **Target plan**: TBD (web layer cleanup plan)
+**Status**: Resolved at prompt-20.7.3 /close step 17 — nvidia-ml-py>=12.535.133 restored to txt/requirements.txt for web layer compatibility.
 
 ---

@@ -1205,8 +1205,8 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Mocked HFDatabaseProvider.list_models in tests/test_options_panel.py and tests/test_models_panel.py to avoid stalling
 - Reverted spec_match.py self-immunization exclusions added in P20.6 per OR39
 - TUI_PANELS_ALLOWED_IMPORTS remains expanded per DD-20.6.1 (documented in DEBT.md)
-- Clean removal of pynvml code from hardware_probe.py and skip stubs from test_hardware_probe.py
-- Removed nvidia-ml-py>=12.535.133 from txt/requirements.txt
+- Clean removal of pynvml code from sovereignai/shared/hardware_probe.py and skip stubs from test_hardware_probe.py
+- nvidia-ml-py>=12.535.133 retained in txt/requirements.txt for web layer compatibility
 - Corrected false prompt-20.6 CHANGELOG claims (Mocked HFDatabaseProvider.list_models not shipped)
 - Added S8 corrections to logs/execution-log-prompt-20.6.md
 

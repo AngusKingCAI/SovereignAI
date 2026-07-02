@@ -106,7 +106,6 @@ Per DD-20.6.1, TUI panels may import from `sovereignai.shared.*` but not from `s
 - pynvml GPU detection code path (lines 116-153)
 - 3 skipped test stubs: `test_shared_sample_with_pynvml_gpu`, `test_shared_sample_pynvml_exception`, `test_shared_sample_gpu_memory_type_mapping`
 - `test_hardware_probe_uses_nvidia_ml_py_not_pynvml` (tested removed code path)
-- `nvidia-ml-py>=12.535.133` from `txt/requirements.txt`
 
 Tests initially failed because `test_shared_sample_no_pynvml` was trying to patch a non-existent attribute `PYNVML_AVAILABLE`. This was fixed by removing the test.
 
@@ -115,6 +114,8 @@ All 76 tests in `test_hardware_probe.py` passed after cleanup.
 Updated `DEBT.md` for pynvml test refactoring.
 
 Commit: `git add -A && git commit -m "fix: remove pynvml code and tests per OR15"`
+
+Note: During `/close` step 17.6, discovered that `web/hardware_probe.py` still imports `nvidia_ml_py3` and requires the dependency. Restored `nvidia-ml-py>=12.535.133` to `txt/requirements.txt` for web layer compatibility per OR77 dependency discipline.
 
 **S8.5**: Edited `CHANGELOG.md`. Removed false "Mocked HFDatabaseProvider.list_models" bullets from prompt-20.6 entry (not shipped per P20.6 audit). These were planned but not implemented in P20.6 actual execution.
 
@@ -156,8 +157,8 @@ Verbatim CHANGELOG entry:
 - Mocked HFDatabaseProvider.list_models in tests/test_options_panel.py and tests/test_models_panel.py to avoid stalling
 - Reverted spec_match.py self-immunization exclusions added in P20.6 per OR39
 - TUI_PANELS_ALLOWED_IMPORTS remains expanded per DD-20.6.1 (documented in DEBT.md)
-- Clean removal of pynvml code from hardware_probe.py and skip stubs from test_hardware_probe.py
-- Removed nvidia-ml-py>=12.535.133 from txt/requirements.txt
+- Clean removal of pynvml code from sovereignai/shared/hardware_probe.py and skip stubs from test_hardware_probe.py
+- nvidia-ml-py>=12.535.133 retained in txt/requirements.txt for web layer compatibility
 - Corrected false prompt-20.6 CHANGELOG claims (Mocked HFDatabaseProvider.list_models not shipped)
 - Added S8 corrections to logs/execution-log-prompt-20.6.md
 ```
@@ -177,6 +178,8 @@ Commit: `git add -A && git commit -m "docs: append prompt-20.7.3 entry to CHANGE
 **S9.7**: Will run `/close` after this file is committed. Will verify step 17.5 (check_changelog.py 20.7.3), 17.6 (check_dependencies.py) all pass.
 
 **S9.8**: Will tag `git tag prompt-20.7.3` and `git push origin main --tags` after `/close` passes. Will NOT force-push (L25/OR42/L55/L64).
+
+**S9.17**: During `/close` step 17.6, `check_dependencies.py` reported `web/hardware_probe.py` imports `nvidia_ml_py3` which was not in `txt/requirements.txt`. This was a consequence of S8.3 removing pynvml from the shared layer but not accounting for the web layer's continued use. Restored `nvidia-ml-py>=12.535.133` to `txt/requirements.txt` for web layer compatibility. Updated plan file to reflect this correction (removed txt/requirements.txt from WILL-edit list, added note to sovereignai/shared/hardware_probe.py entry). Updated DEBT.md to document resolution. Updated CHANGELOG.md to correct the claim. Updated execution log to reflect the correction. Commit: `git add -A && git commit -m "fix: restore nvidia-ml-py for web layer compatibility"`.
 
 ---
 
@@ -199,8 +202,8 @@ Commit: `git add -A && git commit -m "docs: append prompt-20.7.3 entry to CHANGE
 - Mocked HFDatabaseProvider.list_models in tests/test_options_panel.py and tests/test_models_panel.py to avoid stalling
 - Reverted spec_match.py self-immunization exclusions added in P20.6 per OR39
 - TUI_PANELS_ALLOWED_IMPORTS remains expanded per DD-20.6.1 (documented in DEBT.md)
-- Clean removal of pynvml code from hardware_probe.py and skip stubs from test_hardware_probe.py
-- Removed nvidia-ml-py>=12.535.133 from txt/requirements.txt
+- Clean removal of pynvml code from sovereignai/shared/hardware_probe.py and skip stubs from test_hardware_probe.py
+- nvidia-ml-py>=12.535.133 retained in txt/requirements.txt for web layer compatibility
 - Corrected false prompt-20.6 CHANGELOG claims (Mocked HFDatabaseProvider.list_models not shipped)
 - Added S8 corrections to logs/execution-log-prompt-20.6.md
 ```
