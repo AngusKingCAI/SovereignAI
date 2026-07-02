@@ -335,3 +335,29 @@ class HardwareSnapshot:
     memory_bandwidth_gbps: float
     disks: list[DiskUsage]
     gpus: list[GpuInfo]
+
+
+# ============================================================================
+# Memory backend types (used by CapabilityAPI for TUI memory panel)
+# ============================================================================
+
+@dataclass(frozen=True)
+class MemoryBackendInfo:
+    name: str
+    type: str
+    status: str
+    capacity_mb: int
+    used_mb: int
+
+
+# ============================================================================
+# Task state summary types (used by CapabilityAPI for TUI tasks panel)
+# ============================================================================
+
+@dataclass(frozen=True)
+class TaskStateSummary:
+    task_id: UUID
+    state: TaskState
+    worker_id: str | None
+    submitted_at: datetime
+    completed_at: datetime | None
