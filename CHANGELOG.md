@@ -1189,3 +1189,25 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Created check_dependencies.py, check_plan_immutability.py, check_rule_conciseness.py per OR77/OR78/OR80
 - Updated /open and /close skills with dependency check, rule conciseness check, plan immutability check, Snyk scan
 - Migrated .devin/workflows references to .devin/skills per P20.6-cascade
+## prompt-20.7.3 — 20.6 Rollback + sailogs/ Implementation + Test Mocks
+
+**Date**: 2026-07-02
+**Plan file**: prompts/plan-20.7.3-Rev0.md
+**Tests**: 464 passed, 4 skipped
+**Coverage**: N/A (no new production code coverage change)
+- Added OR76 (sailogs/ full-verbosity logging) and L59 (sailogs/ not gitignored) to AGENTS.md
+- Added L64 (quota interrupt without re-read) to LANDMINES.md
+- Created FileTraceSubscriber class in sovereignai/shared/file_trace_subscriber.py
+- Wired FileTraceSubscriber into build_container() in sovereignai/main.py
+- Created sailogs/ directory with .gitignore for per-run JSONL trace logs
+- Created tests/test_file_trace_subscriber.py with 7 tests
+- Added 30s test timeout (--timeout=30 --timeout-method=thread) to pyproject.toml per OR79
+- Mocked HFDatabaseProvider.list_models in tests/test_options_panel.py and tests/test_models_panel.py to avoid stalling
+- Reverted spec_match.py self-immunization exclusions added in P20.6 per OR39
+- TUI_PANELS_ALLOWED_IMPORTS remains expanded per DD-20.6.1 (documented in DEBT.md)
+- Clean removal of pynvml code from hardware_probe.py and skip stubs from test_hardware_probe.py
+- Removed nvidia-ml-py>=12.535.133 from txt/requirements.txt
+- Corrected false prompt-20.6 CHANGELOG claims (Mocked HFDatabaseProvider.list_models not shipped)
+- Added S8 corrections to logs/execution-log-prompt-20.6.md
+
+---
