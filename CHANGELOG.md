@@ -1180,3 +1180,14 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Fixed ruff errors (import ordering, line length, unused variables, mypy annotations)
 - Fixed check_changelog.py to handle trailing blank lines correctly
 - Added deferred items to DEBT.md: diskcache CVE-2025-69872, Vulture unused variables, AR6 context bag violations
+
+---
+
+## prompt-20.7.2 — AR-Check Scripts + Skills Integration
+**Date**: 2026-07-02
+**Plan file**: prompts/plan-20.7.2-Rev0.md
+**Tests**: 457 passed, 9 skipped
+**Coverage**: N/A (no new production code)
+- Created check_dependencies.py, check_plan_immutability.py, check_rule_conciseness.py per OR77/OR78/OR80
+- Updated /open and /close skills with dependency check, rule conciseness check, plan immutability check, Snyk scan
+- Migrated .devin/workflows references to .devin/skills per P20.6-cascade
