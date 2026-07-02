@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import AsyncGenerator
+from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from sovereignai.shared.auth import AuthMiddleware
@@ -23,7 +24,6 @@ from sovereignai.shared.types import (
     MemoryBackendInfo,
     ModelEntry,
     NoActiveProviderError,
-    ServiceStatus,
     Task,
     TaskState,
     TaskStateSummary,
@@ -35,6 +35,9 @@ from sovereignai.shared.types import (
     now_utc,
     reset_correlation_id,
 )
+
+if TYPE_CHECKING:
+    from services.base import ServiceStatus
 
 
 class CapabilityAPI:
