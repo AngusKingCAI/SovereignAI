@@ -32,8 +32,8 @@ class SovereignTUI(App):
                 for name in PANEL_NAMES:
                     yield Button(name.title(), id=f"btn-{name}")
             with ContentSwitcher(id="main-content"):
-                for name, Cls in PANEL_REGISTRY:
-                    yield Cls(self.container, id=f"panel-{name}")
+                for name, module_path, class_name in PANEL_REGISTRY:
+                    yield Static(f"Loading {name.title()}...", id=f"panel-{name}")
         yield Footer()
 
     def on_mount(self) -> None:
@@ -49,8 +49,26 @@ class SovereignTUI(App):
         if button_id is None:
             return
         panel_name = button_id.replace("btn-", "")
+        self._load_panel(panel_name)
         switcher = self.query_one("#main-content", ContentSwitcher)
         switcher.current = f"panel-{panel_name}"
+
+    def _load_panel(self, panel_name: str) -> None:
+        from tui.panels import PANEL_REGISTRY
+
+        panel_id = f"panel-{panel_name}"
+        placeholder = self.query_one(f"#{panel_id}", Static)
+
+        if not isinstance(placeholder, Static):
+            return
+
+        for name, module_path, class_name in PANEL_REGISTRY:
+            if name == panel_name:
+                module = __import__(module_path, fromlist=[class_name])
+                panel_class = getattr(module, class_name)
+                panel = panel_class(self.container, id=panel_id)
+                placeholder.replace(panel)
+                break
 
     def action_cycle_panel(self) -> None:
         from tui.panels import PANEL_NAMES
@@ -63,7 +81,9 @@ class SovereignTUI(App):
         try:
             current_index = PANEL_NAMES.index(current_name)
             next_index = (current_index + 1) % len(PANEL_NAMES)
-            switcher.current = f"panel-{PANEL_NAMES[next_index]}"
+            next_name = PANEL_NAMES[next_index]
+            self._load_panel(next_name)
+            switcher.current = f"panel-{next_name}"
         except ValueError:
             pass
 

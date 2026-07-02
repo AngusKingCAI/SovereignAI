@@ -1,16 +1,5 @@
 from __future__ import annotations
 
-from tui.panels.adapters import AdaptersPanel
-from tui.panels.hardware import HardwarePanel
-from tui.panels.logs import LogsPanel
-from tui.panels.memory import MemoryPanel
-from tui.panels.models import ModelsPanel
-from tui.panels.options import OptionsPanel
-from tui.panels.orchestrator import OrchestratorPanel
-from tui.panels.skills import SkillsPanel
-from tui.panels.tasks import TasksPanel
-from tui.panels.workers import WorkersPanel
-
 PANEL_NAMES = [
     "orchestrator",
     "workers",
@@ -25,14 +14,14 @@ PANEL_NAMES = [
 ]
 
 PANEL_REGISTRY = [
-    ("orchestrator", OrchestratorPanel),
-    ("workers", WorkersPanel),
-    ("tasks", TasksPanel),
-    ("skills", SkillsPanel),
-    ("memory", MemoryPanel),
-    ("models", ModelsPanel),
-    ("adapters", AdaptersPanel),
-    ("hardware", HardwarePanel),
-    ("options", OptionsPanel),
-    ("logs", LogsPanel),
+    ("orchestrator", "tui.panels.orchestrator", "OrchestratorPanel"),
+    ("workers", "tui.panels.workers", "WorkersPanel"),
+    ("tasks", "tui.panels.tasks", "TasksPanel"),
+    ("skills", "tui.panels.skills", "SkillsPanel"),
+    ("memory", "tui.panels.memory", "MemoryPanel"),
+    ("models", "tui.panels.models", "ModelsPanel"),
+    ("adapters", "tui.panels.adapters", "AdaptersPanel"),
+    ("hardware", "tui.panels.hardware", "HardwarePanel"),
+    ("options", "tui.panels.options", "OptionsPanel"),
+    ("logs", "tui.panels.logs", "LogsPanel"),
 ]
