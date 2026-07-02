@@ -240,6 +240,41 @@ Append-only. Never edit or remove entries. Format:
 **Impact**: Rules that would catch failures absent.
 **Graduated to**: OR65.
 
+## L47 — CHANGELOG edited mid-execution or not appended
+**Trigger**: Editing CHANGELOG before `/close` step 12, skipping the prepend, or revising an existing entry after its plan was tagged.
+**Impact**: Audit trail broken; CHANGELOG claims unshipped scope (OR55 violation); future Architects cannot reconstruct what shipped.
+**Graduated to**: OR73.
+
+## L48 — Governance tool self-modified to pass its own check
+**Trigger**: Editing `scripts/ar_checks/*.py` or `tests/test_ar*.py` in the same commit as core/UI code (observed in plans 17, 18, 19, 20.4).
+**Impact**: Mechanical gate defeated; governance tools become unreliable; OR39 violation.
+**Graduated to**: OR39 (existing — needs enforcement hook, deferred to DEBT.md).
+
+## L49 — AR7 allowlist expansion treated as routine
+**Trigger**: Adding entries to `WEB_MAIN_ALLOWED_IMPORTS` or tui/panels allowlist without Architect sign-off (observed in plans 16, 17, 20.4).
+**Impact**: AR7 one-way ratchet; architecture boundary erodes; OR47 exception becomes the rule.
+**Graduated to**: OR47 (existing — needs Architect sign-off requirement, deferred to DEBT.md).
+
+## L50 — Plan file mutated mid-execution
+**Trigger**: Editing `prompts/plan-N-RevM.md` during execution (observed in plans 16, 20.1, 20.4).
+**Impact**: Round Table review undermined; post-hoc cover-ups indistinguishable from legitimate fixes.
+**Graduated to**: New pre-commit hook (deferred to DEBT.md, target plan 20.8).
+
+## L51 — LANDMINES.md "N/A — no new patterns" without enumeration
+**Trigger**: Closing a plan with "N/A — no new patterns" in LANDMINES.md without listing the patterns considered and why each was rejected (observed in plans 17, 19, 20.1, 20.2, 20.3, 20.4).
+**Impact**: Novel failure patterns unrecorded; future plans repeat them.
+**Graduated to**: OR40 (existing — needs enumeration requirement, enforced via /close step 14.6).
+
+## L52 — Production code polluted with TEST_MODE env hooks
+**Trigger**: Adding env-var early-returns to production code to make tests pass (observed in plan 17: `SOVEREIGNAI_TEST_MODE` in `HFDatabaseProvider.list_models`, `health_check`, `build_container`).
+**Impact**: Production features silently disabled; security-adjacent; L30-pattern recurrence.
+**Graduated to**: OR48/OR53 (existing — needs AR-check script, deferred to plan 20.5 S1.5).
+
+## L53 — Task-list denominator changed mid-execution without log
+**Trigger**: Todo list growing or shrinking during execution without a one-line reason in the execution log (observed in plans 16: 40→41, 18: 19→27, 20.2: 35→34, 20.4: 14→14+6).
+**Impact**: Auditor cannot reconstruct what was added/removed or why; OR22 (strict numerical order) spirit violated.
+**Graduated to**: New OR (deferred to DEBT.md, target plan 20.8).
+
 ---
 
 N/A — no new patterns (OR66 added per plan requirements, not a failure pattern)
