@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## prompt-20.9.5 — AR6 Context Bag Cleanup + AR-Check Caching
+
+**Date**: 2026-07-03
+**Plan**: prompts/plan-20.9.5-Rev0.md
+**Tests**: 471 passed, 0 skipped (0 chronic)
+**Coverage**: 89% (scoped tests only)
+**Screenshots**: N/A (backend-only plan)
+**AR7 diff**: None
+**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+
+- S1 skipped per user clarification - AR11 already governs docstrings (no docstrings allowed)
+- S2: Searched all sovereignai/ modules for **kwargs usage - no **kwargs found (AR6 violations already resolved in prompt-20.9.3)
+- S3: Fixed vulture unused variable warnings in test files (test_database_registry.py, test_procedural_backend.py) by prefixing with underscore
+- S4: Added scripts/ar_checks/run_all.py - consolidated runner for all AR-check scripts with SHA256-based output caching
+- S4: Updated .gitignore to exclude scripts/ar_checks/.cache/
+- S4: Added tests/test_run_all.py with 2 tests for file hashing consistency
+- S4: Updated spec_match.py allowlist to include run_all.py and test_run_all.py
+- S5: Added test_hardware_stream_sse_multiple_events to test_hardware_panel.py for SSE thread safety test coverage
+- S5: Updated DEBT.md to mark 6 DEBT items resolved (SSE thread safety, vulture unused variables, AR-check caching, AR6 context bags, spec_match failures, mypy errors)
+- All 472 tests passing
+
+---
+
 ## prompt-20.9.4 — Performance Improvements
 
 **Date**: 2026-07-03
