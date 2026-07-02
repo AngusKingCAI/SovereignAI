@@ -6,14 +6,14 @@ from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, DataTable, Static
 
-from sovereignai.shared.hardware_probe import HardwareProbe
+from sovereignai.shared.capability_api import CapabilityAPI
 
 
 class HardwarePanel(Vertical):
     def __init__(self, container: Any, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._container = container
-        self._probe = HardwareProbe()
+        self._api = None
 
     def compose(self) -> ComposeResult:
         yield Static("Hardware Information", id="hardware-title")
@@ -31,13 +31,28 @@ class HardwarePanel(Vertical):
         self.call_after_refresh(self._refresh_hardware)
 
     def _refresh_hardware(self) -> None:
+        if self._api is None:
+            try:
+                self._api = self._container.retrieve(CapabilityAPI)
+            except Exception as e:
+                import traceback
+                print(f"HardwarePanel load error: {e}")
+                traceback.print_exc()
+                return
+
         from textual import work
 
         @work(thread=True)
         def fetch_hardware():
-            return self._probe.sample()
+            from sovereignai.shared.auth import AuthError
+            try:
+                return self._api.query_hardware_status("dummy_token")
+            except AuthError:
+                return None
 
         snapshot = fetch_hardware()
+        if snapshot is None:
+            return
 
         cpu_card = self.query_one("#cpu-card", Static)
         cpu_model = self._get_cpu_model()

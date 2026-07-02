@@ -7,17 +7,19 @@ from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, DataTable, Static
 
-from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskState
+from sovereignai.shared.capability_api import CapabilityAPI
+from sovereignai.shared.types import TaskState
 
 
 class TasksPanel(Vertical):
     def __init__(self, container: Any, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._container = container
-        self._task_state_query = None
+        self._api = None
 
     def compose(self) -> ComposeResult:
         yield Static("Tasks", id="tasks-title")
+        yield Button("Refresh", id="btn-refresh")
         yield Button("Create Task", id="btn-create-task")
         yield DataTable(id="tasks-table")
 
@@ -26,7 +28,7 @@ class TasksPanel(Vertical):
 
     def _load_data(self) -> None:
         try:
-            self._task_state_query = self._container.retrieve(ITaskStateQuery)
+            self._api = self._container.retrieve(CapabilityAPI)
             self.call_after_refresh(self._refresh_tasks)
         except Exception as e:
             import traceback
@@ -34,7 +36,7 @@ class TasksPanel(Vertical):
             traceback.print_exc()
 
     def _refresh_tasks(self) -> None:
-        if self._task_state_query is None:
+        if self._api is None:
             return
         table = self.query_one("#tasks-table", DataTable)
         table.clear(columns=True)
@@ -48,7 +50,11 @@ class TasksPanel(Vertical):
 
         @work(thread=True)
         def fetch_tasks():
-            return self._task_state_query.list_tasks()
+            from sovereignai.shared.auth import AuthError
+            try:
+                return self._api.query_task_states("dummy_token")
+            except AuthError:
+                return []
 
         tasks = fetch_tasks()
 
@@ -56,32 +62,32 @@ class TasksPanel(Vertical):
         now = datetime.now(UTC)
 
         for task in tasks:
-            state = self._task_state_query.get_state(task.task_id)
-            if state:
-                age_seconds = (
-                    (now - task.created_at).total_seconds()
-                    if hasattr(task, "created_at")
-                    else 0
-                )
-                age_minutes = int(age_seconds / 60) if age_seconds else 0
+            age_seconds = (
+                (now - task.submitted_at).total_seconds()
+                if hasattr(task, "submitted_at")
+                else 0
+            )
+            age_minutes = int(age_seconds / 60) if age_seconds else 0
 
-                color_map = {
-                    TaskState.RECEIVED: "[dim]",
-                    TaskState.QUEUED: "[yellow]",
-                    TaskState.EXECUTING: "[blue]",
-                    TaskState.COMPLETE: "[green]",
-                    TaskState.FAILED: "[red]",
-                }
-                color = color_map.get(state, "")
+            color_map = {
+                TaskState.RECEIVED: "[dim]",
+                TaskState.QUEUED: "[yellow]",
+                TaskState.EXECUTING: "[blue]",
+                TaskState.COMPLETE: "[green]",
+                TaskState.FAILED: "[red]",
+            }
+            color = color_map.get(task.state, "")
 
-                table.add_row(
-                    f"{color}{str(task.task_id)[:8]}...[/]",
-                    "General",
-                    f"{color}{state.value}[/]",
-                    f"{age_minutes}m",
-                    "[Cancel]"
-                )
+            table.add_row(
+                f"{color}{str(task.task_id)[:8]}...[/]",
+                "General",
+                f"{color}{task.state.value}[/]",
+                f"{age_minutes}m",
+                "[Cancel]"
+            )
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-refresh":
             self._refresh_tasks()
+        elif event.button.id == "btn-create-task":
+            pass
