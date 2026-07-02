@@ -190,8 +190,10 @@ OR72. [Mandatory] TUI is a first-class UI consuming the same capability API as t
 
 OR73. [Mandatory] CHANGELOG append discipline. At `/close` step 12, append a new `## prompt-N — <title>` section to CHANGELOG.md at the end of the file (oldest at top; never prepend to top, never edit existing entries). Entry structure: `## prompt-N — <title>` header, then metadata lines (`**Date**:`, `**Plan file**:`, `**Tests**:`, `**Coverage**:`), then a bullet list of shipped scope (≥1 bullet). The verbatim entry text must be echoed in the execution log — the `+N` line-count marker alone is NOT sufficient. `scripts/ar_checks/check_changelog.py` enforces mechanically at `/close` step 17.5: exit≠0 = STOP. Editing an existing CHANGELOG entry after its plan is tagged = STOP per OR51.
 
----
+OR74. [Mandatory] TUI panel switching must use ContentSwitcher (from textual.widgets) or TabbedContent — never manual add_class/removeClass('hidden'). Import path: textual.widgets.ContentSwitcher (NOT textual.containers).
 
-See `LANDMINES.md` for failure patterns linked to rules.
+OR75. [Mandatory] Execution log file at /close must be ≥500 lines OR contain a '## Session Incomplete' marker. check_changelog.py enforces. Prevents 102-line stubs passing the gate (observed in P20.5 commit d7679e7).
+
+---
 
 See `LANDMINES.md` for failure patterns linked to rules.

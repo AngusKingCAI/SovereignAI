@@ -36,6 +36,26 @@ WEB_MAIN_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.task_state_machine',
     'sovereignai.shared.task_state_machine.ITaskStateQuery'
 }
+TUI_MAIN_ALLOWED_IMPORTS = {  # noqa: E501
+    'sovereignai.shared.container',
+    'sovereignai.shared.container.DIContainer',
+    'sovereignai.shared.capability_api',
+    'sovereignai.shared.capability_api.CapabilityAPI',
+    'sovereignai.shared.capability_graph',
+    'sovereignai.shared.capability_graph.ICapabilityIndex',
+    'sovereignai.shared.auth',
+    'sovereignai.shared.auth.AuthMiddleware',
+    'sovereignai.shared.trace_emitter',
+    'sovereignai.shared.trace_emitter.TraceEmitter',
+    'sovereignai.shared.types',
+    'sovereignai.shared.types.CapabilityCategory',
+    'sovereignai.shared.types.TaskState',
+    'sovereignai.shared.types.TraceLevel',
+    'sovereignai.shared.task_state_machine',
+    'sovereignai.shared.task_state_machine.ITaskStateQuery',
+    'sovereignai.main',
+    'sovereignai.main.build_container'
+}
 UI_PACKAGE_DENYLIST = {  # noqa: E501
     'sovereignai.shared',
     'sovereignai.orchestrator',
@@ -95,9 +115,17 @@ def test_ui_directories_do_not_import_core_internals(ui_dir: str) -> None:
             if any(imp.startswith(prefix) for prefix in UI_PACKAGE_DENYLIST)
         }
         is_web_main = py_file.name == 'main.py' and py_file.parent.name == 'web'
+        is_tui_main = py_file.name == 'main.py' and py_file.parent.name == 'tui'
 
         if is_web_main:
             forbidden_concrete -= WEB_MAIN_ALLOWED_IMPORTS
+            forbidden_package -= {'sovereignai.main'}
+            forbidden_package -= {  # noqa: E501
+                imp for imp in forbidden_package
+                if imp.startswith('sovereignai.shared')
+            }
+        if is_tui_main:
+            forbidden_concrete -= TUI_MAIN_ALLOWED_IMPORTS
             forbidden_package -= {'sovereignai.main'}
             forbidden_package -= {  # noqa: E501
                 imp for imp in forbidden_package

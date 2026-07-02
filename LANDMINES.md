@@ -277,6 +277,13 @@ Append-only. Never edit or remove entries. Format:
 
 ---
 
+## L54 — ContentSwitcher import path error
+**Trigger**: `from textual.containers import ContentSwitcher` (observed in P20.4 ImportError). Correct import is `from textual.widgets import ContentSwitcher`.
+**Impact**: ImportError at runtime; manual `hidden` class fallback with 4 bugs (B1-B3 in Plan 20.6).
+**Graduated to**: OR74.
+
+---
+
 N/A — no new patterns (OR66 added per plan requirements, not a failure pattern)
 
 ---
