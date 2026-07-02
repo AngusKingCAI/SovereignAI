@@ -87,9 +87,9 @@ def main() -> int:
             violations.extend(scan_file(file_path))
 
     if violations:
-        print(f"AR6 violations found ({len(violations)}):")
+        print(f"AR6 violations found ({len(violations)}):", file=sys.stderr)
         for v in violations:
-            print(f"  {v}")
+            print(f"  {v}", file=sys.stderr)
         return 1
 
     print("AR6: no context-bag violations found.")
