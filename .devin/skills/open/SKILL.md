@@ -13,16 +13,6 @@ allowed-tools:
 
 Run the /open workflow for the current plan. Follow all steps in order. Don't skip steps.
 
-## Pre-flight
-
-1. `taskkill //F //IM bash.exe 2>&1 || true`
-2. `git fetch origin && git ls-remote --tags origin | grep "prompt-{N-1}"` — STOP if missing (skip Plan 1).
-3. `git status -s | tail -n 10 && git branch --show-current` — STOP if dirty or wrong branch.
-4. `if [ ! -d ".venv" ]; then py -3.11 -m venv .venv && .venv/Scripts/pip.exe install -e .[dev]; fi` then `.venv/Scripts/python.exe --version` — STOP if broken.
-4.5. Run python scripts/ar_checks/check_dependencies.py. Exit≠0 = STOP per OR77. If missing deps, add to txt/requirements.txt (production) or pyproject.toml [project.optional-dependencies] dev (dev/test), then run .venv/Scripts/pip.exe install -e .[dev] and re-run check.
-4.6. Run python scripts/ar_checks/check_rule_conciseness.py. Exit≠0 = STOP per OR80. Trim over-long rules per GR18 before proceeding.
-4.7. Snapshot open hash: echo $(git rev-parse HEAD) > .open_hash. Used by /close step 17.7 for plan immutability check.
-
 ## Read context
 
 5. Read `AGENTS.md` in full.

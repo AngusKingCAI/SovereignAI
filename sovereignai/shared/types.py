@@ -4,7 +4,7 @@ from contextvars import ContextVar, Token
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import NewType
+from typing import List, NewType, Optional, Tuple
 from uuid import UUID, uuid4
 
 # ============================================================================
@@ -368,3 +368,32 @@ class TaskStateSummary:
     worker_id: str | None
     submitted_at: datetime
     completed_at: datetime | None
+
+
+# ============================================================================
+# Memory query types (used by memory backends per AR6)
+# ============================================================================
+
+@dataclass(frozen=True)
+class EpisodicQuery:
+    session_id: str
+    time_range: Optional[Tuple[datetime, datetime]] = None
+    tags: Optional[List[str]] = None
+
+
+@dataclass(frozen=True)
+class ProceduralQuery:
+    skill_name: Optional[str] = None
+    capability_type: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class WorkingQuery:
+    context_id: str
+    max_items: int = 10
+
+
+@dataclass(frozen=True)
+class TraceQuery:
+    correlation_id: Optional[str] = None
+    span_type: Optional[str] = None

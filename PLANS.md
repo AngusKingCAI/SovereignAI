@@ -129,7 +129,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 ## Active Plan
 
-**Plan 21** — UI overhaul — 10 panels (deferred per user request)
+**Plan 20.9.3** — Typed Memory Queries — Add typed query dataclasses to memory backends per AR6
 
 ---
 
@@ -137,11 +137,11 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 21 | UI overhaul — 10 panels (deferred per user request) | Plan 20 | 🔄 Active |
-| 2 | Plan 22 | Future plan | Plan 21 | ⏳ Pending |
-| 3 | Plan 23 | Future plan | Plan 22 | ⏳ Pending |
-| 4 | Plan 24 | Future plan | Plan 23 | ⏳ Pending |
-| 5 | Plan 25 | Future plan | Plan 24 | ⏳ Pending |
+| 1 | Plan 20.9.3 | Typed Memory Queries — Add typed query dataclasses to memory backends per AR6 | prompt-20.9.2 | 🔄 Active |
+| 2 | Plan 20.9.4 | Future plan | prompt-20.9.3 | ⏳ Pending |
+| 3 | Plan 20.9.5 | Future plan | prompt-20.9.4 | ⏳ Pending |
+| 4 | Plan 21 | UI overhaul — 10 panels (deferred per user request) | Plan 20 | ⏳ Pending |
+| 5 | Plan 22 | Future plan | Plan 21 | ⏳ Pending |
 
 ---
 
