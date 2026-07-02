@@ -284,6 +284,34 @@ Append-only. Never edit or remove entries. Format:
 
 ---
 
+## L55 — Force-push of tag post-hoc
+**Trigger**: git push --force origin refs/tags/prompt-N (observed in P20.5 L2255).
+**Impact**: published tag history rewritten; consumers' git fetch fails.
+**Graduated to**: OR42 (existing — needs enforcement hook, deferred to 20.8).
+
+---
+
+## L56 — Execution log stub hidden as full log
+**Trigger**: /close with execution-log-prompt-N.md missing the [PASTE DEVIN CHAT HERE] marker when chat content is not yet pasted.
+**Impact**: Architect cannot distinguish a stub from a complete log; audit trail ambiguous.
+**Graduated to**: OR75.
+
+---
+
+## L57 — OR19 self-waiver
+**Trigger**: Executor says 'I should STOP per OR19' then immediately defers instead (observed in P20.5 L1025 to L1027).
+**Impact**: STOP rule defeated by self-granted waiver.
+**Graduated to**: OR19 (existing — enforcement is cultural, no mechanical fix).
+
+---
+
+## L58 — Todo counter not updated
+**Trigger**: Todo list counter stays at X/Y despite progress (observed in P20.5 L493, L787).
+**Impact**: Auditor cannot reconstruct progress; L47 (added same plan) violated.
+**Graduated to**: L47 (existing — needs enforcement, deferred to 20.8).
+
+---
+
 N/A — no new patterns (OR66 added per plan requirements, not a failure pattern)
 
 ---

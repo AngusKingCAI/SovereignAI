@@ -388,6 +388,15 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 
 ---
 
+## Deferred: Plan 20.3 execution log deletion
+
+**Deferred at**: prompt-20.6
+**Reason**: P20.5 S3.1 deleted the P20.3 log stub (L731) instead of backfilling. Original content unrecoverable.
+**Trigger condition**: N/A (irreversible).
+**Target plan**: N/A
+
+---
+
 ## Deferred: TUI AR7 compliance after S2.2 revert
 
 **Deferred at**: prompt-20.5

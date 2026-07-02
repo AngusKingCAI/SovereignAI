@@ -80,7 +80,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 - S0.2: Read `AGENTS.md` in full
 - S0.2.5: Re-read `AGENTS.md` if governance patch added rules
 - S0.3: Add new rules, commit before coding
-- S0.4: If plan involves new tech stack/framework, add best practices research (web search) findings to plan header per Architect Workflow step 5
+- S0.4: If plan involves new tech stack/framework, add best practices research (web search) findings to plan header per Architect Workflow step 5. Add S0.4 to Plan Template if this is the first plan requiring step 5.
 
 **Plan body (S1-Sn)**: Execute steps. Run `/verify` after each edit. For HTML/CSS/JS plans: include a "WILL edit" UI element list.
 

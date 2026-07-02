@@ -15,6 +15,7 @@
 - Fixed ruff W292 error (missing newline at end of file)
 - All panels now use call_after_refresh for async data loading to prevent UI blocking
 - TUI is now fully functional with clickable buttons and proper layout
+- Tag: untagged — ad-hoc fix between prompt-20.4 and prompt-20.5; not back-tagged per OR42
 
 ---
 
@@ -1117,4 +1118,5 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Created .gitattributes with text=auto eol=lf and binary markers
 - Added git mv fallback note to close.md workflow
 - Fixed ruff errors in check_changelog.py and check_test_mode_hooks.py
+- OR51 exception: S3.9 edited prompt-20.4 entry (456→455 test count correction) — one-time exception, documented per Plan 20.6 G11
 

@@ -192,7 +192,7 @@ OR73. [Mandatory] CHANGELOG append discipline. At `/close` step 12, append a new
 
 OR74. [Mandatory] TUI panel switching must use ContentSwitcher (from textual.widgets) or TabbedContent — never manual add_class/removeClass('hidden'). Import path: textual.widgets.ContentSwitcher (NOT textual.containers).
 
-OR75. [Mandatory] Execution log file at /close must be ≥500 lines OR contain a '## Session Incomplete' marker. check_changelog.py enforces. Prevents 102-line stubs passing the gate (observed in P20.5 commit d7679e7).
+OR75. [Mandatory] Execution log file at /close must be created by Devin with: (a) header (# Execution Log: prompt-N, **Plan**:, **Date**:, **Executor**: Devin), (b) a ## Devin Chat section containing the verbatim marker [PASTE DEVIN CHAT HERE] if the chat content is not yet pasted, (c) structured ## S0 — Opening through ## S5 — Closing summary sections with task counts, deviations, and verbatim CHANGELOG echo per OR73. The [PASTE DEVIN CHAT HERE] marker is the SSOT signal that the log is a stub awaiting User paste. Devin must NOT fabricate chat content. check_changelog.py does NOT enforce this; it is a manual Architect check.
 
 ---
 
