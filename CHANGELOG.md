@@ -1,196 +1,5 @@
 # CHANGELOG
 
-## prompt-20.4.1 — TUI Visibility and Button Clickability Fix
-**Date**: 2026-07-02
-**Plan file**: N/A — ad-hoc TUI fix
-**Tests**: N/A — no test changes
-**Coverage**: N/A — no core code changes
-**Browser smoke test screenshots**: N/A — TUI is terminal-based, not web UI
-**AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
-- Fixed TUI visibility issue by deferring container building to on_mount instead of __init__
-- Fixed button clickability by adding proper type annotations and null checks in on_button_pressed
-- Fixed layout by using Header/Footer widgets with dock: left sidebar
-- Added null checks in all panel refresh methods to prevent mypy errors
-- Fixed ruff W292 error (missing newline at end of file)
-- All panels now use call_after_refresh for async data loading to prevent UI blocking
-- TUI is now fully functional with clickable buttons and proper layout
-- Tag: untagged — ad-hoc fix between prompt-20.4 and prompt-20.5; not back-tagged per OR42
-
----
-
-## prompt-20.4 — TUI Skeleton with Real Backend Integration
-**Date**: 2026-07-02
-**Plan file**: prompts/plan-20.4-Rev0.md
-**Tests**: 455 passed, 1 deselected (spec_match — see Plan 20.5 H1), 5 skipped (0 chronic)
-**Coverage**: 93% (no change — TUI is new UI surface, not core code)
-**Browser smoke test screenshots**: N/A — TUI is terminal-based, not web UI
-**AR7 allowlist diff**: Added tui/ and tui/test_workers/ to AR7 allowlist for sovereignai.shared imports
-**OR63 check result**: discovery clean
-- Added OR72 to AGENTS.md: "TUI is a first-class UI consuming the same capability API as the WebUI. TUI panels must display real backend state, not placeholder text."
-- Created TUI skeleton in tui/main.py with Textual App, sidebar with 10 buttons, and panel switching via CSS classes
-- Implemented 10 TUI panels with real backend integration:
-  - Options Panel (tui/panels/options.py) — displays services and databases with health status
-  - Memory Panel (tui/panels/memory.py) — displays memory backend statistics and test write functionality
-  - Hardware Panel (tui/panels/hardware.py) — displays CPU, memory, GPU, disk info and process table
-  - Logs Panel (tui/panels/logs.py) — displays system logs with level filtering
-  - Adapters Panel (tui/panels/adapters.py) — displays registered adapters via CapabilityAPI
-  - Skills Panel (tui/panels/skills.py) — displays registered skills via CapabilityAPI
-  - Orchestrator Panel (tui/panels/orchestrator.py) — chat interface for task submission via CapabilityAPI
-  - Models Panel (tui/panels/models.py) — displays available models from ModelCatalog
-  - Workers Panel (tui/panels/workers.py) — displays worker status (TestWorker placeholder)
-  - Tasks Panel (tui/panels/tasks.py) — displays task list from ITaskStateQuery
-- Created TestManager and TestWorker in sovereignai/workers/ (core components, not TUI-specific)
-- Registered TestManager and TestWorker in DI container (sovereignai/main.py)
-- Updated pyproject.toml to include tui/ as installable package
-- Added textual>=0.50.0 to requirements.txt
-- Updated AR7 test to allow sovereignai.shared imports in tui/panels/ only
-- All panels use CapabilityAPI for backend access per AR7 (no direct sovereignai.* imports except shared)
-- All panels have proper type annotations and ComposeResult return types
-- All scans passed: pytest (456 passed, 5 skipped), ruff (0 errors), mypy (0 errors)
-
----
-
-## prompt-20.3 — Diagnostic Harness (Real End-to-End AI Workflow)
-**Date**: 2026-07-02
-**Plan file**: prompts/plan-20.3-Rev0.md
-**Tests**: 455 passed, 6 skipped (0 chronic)
-**Coverage**: 93% (no change — diagnostic scripts are tools, not core code)
-**Browser smoke test screenshots**: N/A — no UI changes
-**AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
-- Created diagnostic harness in scripts/diagnostics/ with 6 stages testing real AI workflow
-- Stage 1: Start AI Service — checks Ollama and LlamaCpp adapter health
-- Stage 2: Download Model — pulls tinyllama via Ollama or checks for GGUF models
-- Stage 3: Load Model + Generate — tests actual text generation with Ollama
-- Stage 4: Test Memory Backends — validates WorkingMemoryBackend store/query
-- Stage 5: Test MessageDispatcher — verifies MessageDispatcher instantiation
-- Stage 6: Test Trace Memory — validates TraceMemoryBackend event storage
-- Created scripts/diagnostics/run.py as entry point with --auto-fix flag
-- Created scripts/diagnostics/installers.py with install_ollama(), start_ollama(), pull_model(), install_llama_cpp()
-- Harness passed all 6 stages on Executor machine (6 PASS, 0 FAIL, 0 SKIP)
-- All scans passed: pytest (455 passed, 6 skipped), ruff (0 errors), mypy (0 errors on scripts/diagnostics/)
-- Added OR71 to AGENTS.md: "Diagnostic harness tests real end-to-end AI workflow with explicit model lifecycle: load → use → unload per stage. Mock tests verify code paths; harness tests verify system functionality."
-- Note: Plan specified 12 stages testing full Orchestrator→Manager→Worker chain, but these components don't exist yet (directories empty). Adapted to 6 stages testing available infrastructure (adapters, memory backends, MessageDispatcher).
-
----
-
-## prompt-20.2 — Fix Post-20.1 Test & Type Failures
-**Date**: 2026-07-01
-**Plan file**: prompts/plan-20.2-Rev0.md
-**Tests**: 455 passed, 6 skipped (0 chronic)
-**Coverage**: 93% (increased from 90% — added test fixes, no new test files)
-**Browser smoke test screenshots**: N/A — no UI changes
-**AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
-- Fixed test_procedural_backend_lock_timeout by patching _acquire_lock to return False to simulate lock contention
-- Fixed mypy errors in llama_cpp_adapter/adapter.py (renamed variables to prevent shadowing, added type ignore for Any return)
-- Fixed detect-secrets CLI flag from --exclude to --exclude-files in scan workflow
-- Fixed Ruff E501 line-length errors in test files (test_manifest_parser.py, test_capability_api.py, test_ar7_no_core_imports_in_ui.py, check_tracing.py, spec_match.py, test_state_machine_properties.py, llama_cpp_adapter/adapter.py, check_p4_compliance.py, model_catalog.py)
-- Fixed Ruff SIM102 nested if errors in check_p4_compliance.py, check_tracing.py, model_catalog.py
-- Fixed test_manifest_parser.py string literal issue (double backslashes to single backslashes for newlines)
-- Verified TeacherWorker cleanup complete (no references found in code files)
-- Updated vulture-whitelist.txt with all false positives (test fixtures, mock attributes, unused constants)
-- All scans passed: pytest (93% coverage), ruff (0 errors), bandit (baseline unchanged), detect-secrets (pass), vulture (whitelisted), check_placeholders (clean), check_tracing (clean), spec_match (clean)
-
----
-
-## prompt-20.1 — Coverage Improvement, TeacherWorker Removal, Scan Infrastructure Fix
-**Date**: 2026-07-01
-**Plan file**: prompts/plan-20.1-Rev0.md
-**Tests**: 455 passed, 6 skipped (0 chronic)
-**Coverage**: 90% (increased from 83% — added comprehensive tests for procedural_backend, self_correction skill, librarian, conformance runner)
-**Browser smoke test screenshots**: N/A — no UI changes
-**AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
-- Removed TeacherWorker implementation and all related tests (test_teacher_worker.py, test_education_department.py, test_model_registry.py, test_qlora_integration.py, test_gpu_lock.py)
-- Removed sovereignai/workers/education/ directory
-- Added comprehensive test coverage for procedural_backend (file-based mode, query limit, delete not-found, prune no-removal)
-- Added tests for self_correction skill (update_procedural_memory exception, recommend_retraining, analyze_task with routing failure)
-- Added tests for librarian (_merge_results for working/episodic/trace, _route memory storage, _route invalid capability, store, query, delete)
-- Added tests for conformance runner (cache eviction, first-party fail-closed, third-party fail-open, test exception, LRU eviction in check)
-- Added test for conformance base concrete implementation
-- Fixed mypy errors in conformance/base.py (added Any import and type annotation)
-- Fixed mypy errors in llama_cpp_adapter/adapter.py (renamed variables to avoid shadowing, added type ignore for Any return)
-- Fixed vulture unused variable warnings in test_hf_database.py (prefixed unused mocks with underscore)
-- Added DEBUG trace emit to llama_cpp_adapter.generate() for metadata-only path documentation
-- Verified scan scripts use correct scripts/ar_checks/ path (check_placeholders.py, check_tracing.py, spec_match.py)
-
----
-
-## prompt-20 — pynvml Deprecation Fix, HfApi Direction Parameter Removal
-**Date**: 2026-07-01
-**Plan file**: prompts/plan-20-Rev0.md
-**Tests**: 407 passed, 12 skipped (0 chronic)
-**Coverage**: 83% (hardware_probe.py GPU paths deferred to DEBT.md)
-**Browser smoke test screenshots**: N/A — no UI changes
-**AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
-- Replaced pynvml with nvidia-ml-py in dependencies (with backward compatibility fallback)
-- Removed deprecated `direction` parameter from HfApi.list_models() call
-- Documented hardware_probe.py coverage gap (GPU detection paths require hardware)
-- Updated spec_match.py to recognize databases/ and services/ paths
-
----
-
-## prompt-19 — llama.cpp Adapter, Routing Engine Failover, First-Run Experience
-**Date**: 2026-07-01
-**Plan file**: prompts/plan-19-Rev9.md
-**Tests**: 407 passed, 12 skipped (0 chronic)
-**Coverage**: 90%
-**Browser smoke test screenshots**: N/A — UI edits deferred to DEBT.md
-**AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
-- Added llama.cpp adapter scaffold with health_check, load_model, generate methods
-- Implemented model path resolver for nested org/name model directory structure
-- Enhanced RoutingEngine with failover, health check filtering, and routing priority
-- Added ComponentMetadata, AdapterHealth, AdapterUnavailableError, NoHealthyAdapterError types
-- Implemented first-run adapter health check in main.py
-- Added /api/first-run-check endpoint returning FirstRunStatusDTO
-- Added P4 compliance verification script check_p4_compliance.py
-- Extended routing engine tests to cover failover, health checks, and priority sorting
-- Fixed test authentication for first-run check endpoint
-- Added OR70: routing_priority field in adapter manifests with default 1000
-
----
-
-## prompt-18 — Hardware Panel and Models Panel
-**Date**: 2026-07-01
-**Plan file**: prompts/plan-18-Rev4.md
-**Tests**: 391 passed, 9 skipped (0 chronic)
-**Coverage**: 91%
-**Browser smoke test screenshots**: N/A — requires manual verification
-**AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
-- Added HardwareProbe.sample() method returning HardwareSnapshot dataclass
-- Added CapabilityAPI.sample_hardware() and stream_hardware() methods
-- Implemented Hardware panel UI with SSE streaming endpoint
-- Implemented Models panel UI with search, filter, and quantization options
-- Added ModelCatalog with estimate_tok_s() for performance estimation
-- Added comprehensive test coverage for hardware and models panels
-
----
-
-## prompt-17 — Database and Service Providers
-**Date**: 2026-07-01
-**Plan file**: prompts/plan-17-Rev9.md
-**Tests**: 362 passed, 9 skipped, 4 deselected (0 chronic)
-**Coverage**: 90%
-- Implemented root-level packages databases/ and services/ per OR67
-- Added DatabaseRegistry and ServiceRegistry with health_check() per OR68
-- Implemented HFDatabaseProvider with huggingface_hub integration
-- Implemented OllamaServiceProvider with subprocess and httpx
-- Added quant priority selection function
-- Wired providers into main.py DI container
-- Added Options panel UI with database/service status display
-- Added test coverage for all new components — SovereignAI
-
-Chronological change log. Append-only. Oldest entry at top, newest at bottom.
-
-> **Note**: Rule numbers in historical entries refer to the numbering scheme active at that time.
-
----
-
 ## prompt-0 — Bootstrap: Governance docs and infrastructure
 
 **Date**: 2026-06-28
@@ -1087,6 +896,197 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Created /api/traces/history and /api/traces/stream endpoints in web/main.py
 - Added tests/test_logs_panel.py with 5 passing tests
 - Updated close.md workflow to include new AR checks in step 8
+
+---
+
+## prompt-17 — Database and Service Providers
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-17-Rev9.md
+**Tests**: 362 passed, 9 skipped, 4 deselected (0 chronic)
+**Coverage**: 90%
+- Implemented root-level packages databases/ and services/ per OR67
+- Added DatabaseRegistry and ServiceRegistry with health_check() per OR68
+- Implemented HFDatabaseProvider with huggingface_hub integration
+- Implemented OllamaServiceProvider with subprocess and httpx
+- Added quant priority selection function
+- Wired providers into main.py DI container
+- Added Options panel UI with database/service status display
+- Added test coverage for all new components — SovereignAI
+
+Chronological change log. Append-only. Oldest entry at top, newest at bottom.
+
+> **Note**: Rule numbers in historical entries refer to the numbering scheme active at that time.
+
+---
+
+## prompt-18 — Hardware Panel and Models Panel
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-18-Rev4.md
+**Tests**: 391 passed, 9 skipped (0 chronic)
+**Coverage**: 91%
+**Browser smoke test screenshots**: N/A — requires manual verification
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Added HardwareProbe.sample() method returning HardwareSnapshot dataclass
+- Added CapabilityAPI.sample_hardware() and stream_hardware() methods
+- Implemented Hardware panel UI with SSE streaming endpoint
+- Implemented Models panel UI with search, filter, and quantization options
+- Added ModelCatalog with estimate_tok_s() for performance estimation
+- Added comprehensive test coverage for hardware and models panels
+
+---
+
+## prompt-19 — llama.cpp Adapter, Routing Engine Failover, First-Run Experience
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-19-Rev9.md
+**Tests**: 407 passed, 12 skipped (0 chronic)
+**Coverage**: 90%
+**Browser smoke test screenshots**: N/A — UI edits deferred to DEBT.md
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Added llama.cpp adapter scaffold with health_check, load_model, generate methods
+- Implemented model path resolver for nested org/name model directory structure
+- Enhanced RoutingEngine with failover, health check filtering, and routing priority
+- Added ComponentMetadata, AdapterHealth, AdapterUnavailableError, NoHealthyAdapterError types
+- Implemented first-run adapter health check in main.py
+- Added /api/first-run-check endpoint returning FirstRunStatusDTO
+- Added P4 compliance verification script check_p4_compliance.py
+- Extended routing engine tests to cover failover, health checks, and priority sorting
+- Fixed test authentication for first-run check endpoint
+- Added OR70: routing_priority field in adapter manifests with default 1000
+
+---
+
+## prompt-20 — pynvml Deprecation Fix, HfApi Direction Parameter Removal
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-20-Rev0.md
+**Tests**: 407 passed, 12 skipped (0 chronic)
+**Coverage**: 83% (hardware_probe.py GPU paths deferred to DEBT.md)
+**Browser smoke test screenshots**: N/A — no UI changes
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Replaced pynvml with nvidia-ml-py in dependencies (with backward compatibility fallback)
+- Removed deprecated `direction` parameter from HfApi.list_models() call
+- Documented hardware_probe.py coverage gap (GPU detection paths require hardware)
+- Updated spec_match.py to recognize databases/ and services/ paths
+
+---
+
+## prompt-20.1 — Coverage Improvement, TeacherWorker Removal, Scan Infrastructure Fix
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-20.1-Rev0.md
+**Tests**: 455 passed, 6 skipped (0 chronic)
+**Coverage**: 90% (increased from 83% — added comprehensive tests for procedural_backend, self_correction skill, librarian, conformance runner)
+**Browser smoke test screenshots**: N/A — no UI changes
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Removed TeacherWorker implementation and all related tests (test_teacher_worker.py, test_education_department.py, test_model_registry.py, test_qlora_integration.py, test_gpu_lock.py)
+- Removed sovereignai/workers/education/ directory
+- Added comprehensive test coverage for procedural_backend (file-based mode, query limit, delete not-found, prune no-removal)
+- Added tests for self_correction skill (update_procedural_memory exception, recommend_retraining, analyze_task with routing failure)
+- Added tests for librarian (_merge_results for working/episodic/trace, _route memory storage, _route invalid capability, store, query, delete)
+- Added tests for conformance runner (cache eviction, first-party fail-closed, third-party fail-open, test exception, LRU eviction in check)
+- Added test for conformance base concrete implementation
+- Fixed mypy errors in conformance/base.py (added Any import and type annotation)
+- Fixed mypy errors in llama_cpp_adapter/adapter.py (renamed variables to avoid shadowing, added type ignore for Any return)
+- Fixed vulture unused variable warnings in test_hf_database.py (prefixed unused mocks with underscore)
+- Added DEBUG trace emit to llama_cpp_adapter.generate() for metadata-only path documentation
+- Verified scan scripts use correct scripts/ar_checks/ path (check_placeholders.py, check_tracing.py, spec_match.py)
+
+---
+
+## prompt-20.2 — Fix Post-20.1 Test & Type Failures
+**Date**: 2026-07-01
+**Plan file**: prompts/plan-20.2-Rev0.md
+**Tests**: 455 passed, 6 skipped (0 chronic)
+**Coverage**: 93% (increased from 90% — added test fixes, no new test files)
+**Browser smoke test screenshots**: N/A — no UI changes
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Fixed test_procedural_backend_lock_timeout by patching _acquire_lock to return False to simulate lock contention
+- Fixed mypy errors in llama_cpp_adapter/adapter.py (renamed variables to prevent shadowing, added type ignore for Any return)
+- Fixed detect-secrets CLI flag from --exclude to --exclude-files in scan workflow
+- Fixed Ruff E501 line-length errors in test files (test_manifest_parser.py, test_capability_api.py, test_ar7_no_core_imports_in_ui.py, check_tracing.py, spec_match.py, test_state_machine_properties.py, llama_cpp_adapter/adapter.py, check_p4_compliance.py, model_catalog.py)
+- Fixed Ruff SIM102 nested if errors in check_p4_compliance.py, check_tracing.py, model_catalog.py
+- Fixed test_manifest_parser.py string literal issue (double backslashes to single backslashes for newlines)
+- Verified TeacherWorker cleanup complete (no references found in code files)
+- Updated vulture-whitelist.txt with all false positives (test fixtures, mock attributes, unused constants)
+- All scans passed: pytest (93% coverage), ruff (0 errors), bandit (baseline unchanged), detect-secrets (pass), vulture (whitelisted), check_placeholders (clean), check_tracing (clean), spec_match (clean)
+
+---
+
+## prompt-20.3 — Diagnostic Harness (Real End-to-End AI Workflow)
+**Date**: 2026-07-02
+**Plan file**: prompts/plan-20.3-Rev0.md
+**Tests**: 455 passed, 6 skipped (0 chronic)
+**Coverage**: 93% (no change — diagnostic scripts are tools, not core code)
+**Browser smoke test screenshots**: N/A — no UI changes
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Created diagnostic harness in scripts/diagnostics/ with 6 stages testing real AI workflow
+- Stage 1: Start AI Service — checks Ollama and LlamaCpp adapter health
+- Stage 2: Download Model — pulls tinyllama via Ollama or checks for GGUF models
+- Stage 3: Load Model + Generate — tests actual text generation with Ollama
+- Stage 4: Test Memory Backends — validates WorkingMemoryBackend store/query
+- Stage 5: Test MessageDispatcher — verifies MessageDispatcher instantiation
+- Stage 6: Test Trace Memory — validates TraceMemoryBackend event storage
+- Created scripts/diagnostics/run.py as entry point with --auto-fix flag
+- Created scripts/diagnostics/installers.py with install_ollama(), start_ollama(), pull_model(), install_llama_cpp()
+- Harness passed all 6 stages on Executor machine (6 PASS, 0 FAIL, 0 SKIP)
+- All scans passed: pytest (455 passed, 6 skipped), ruff (0 errors), mypy (0 errors on scripts/diagnostics/)
+- Added OR71 to AGENTS.md: "Diagnostic harness tests real end-to-end AI workflow with explicit model lifecycle: load → use → unload per stage. Mock tests verify code paths; harness tests verify system functionality."
+- Note: Plan specified 12 stages testing full Orchestrator→Manager→Worker chain, but these components don't exist yet (directories empty). Adapted to 6 stages testing available infrastructure (adapters, memory backends, MessageDispatcher).
+
+---
+
+## prompt-20.4 — TUI Skeleton with Real Backend Integration
+**Date**: 2026-07-02
+**Plan file**: prompts/plan-20.4-Rev0.md
+**Tests**: 455 passed, 1 deselected (spec_match — see Plan 20.5 H1), 5 skipped (0 chronic)
+**Coverage**: 93% (no change — TUI is new UI surface, not core code)
+**Browser smoke test screenshots**: N/A — TUI is terminal-based, not web UI
+**AR7 allowlist diff**: Added tui/ and tui/test_workers/ to AR7 allowlist for sovereignai.shared imports
+**OR63 check result**: discovery clean
+- Added OR72 to AGENTS.md: "TUI is a first-class UI consuming the same capability API as the WebUI. TUI panels must display real backend state, not placeholder text."
+- Created TUI skeleton in tui/main.py with Textual App, sidebar with 10 buttons, and panel switching via CSS classes
+- Implemented 10 TUI panels with real backend integration:
+  - Options Panel (tui/panels/options.py) — displays services and databases with health status
+  - Memory Panel (tui/panels/memory.py) — displays memory backend statistics and test write functionality
+  - Hardware Panel (tui/panels/hardware.py) — displays CPU, memory, GPU, disk info and process table
+  - Logs Panel (tui/panels/logs.py) — displays system logs with level filtering
+  - Adapters Panel (tui/panels/adapters.py) — displays registered adapters via CapabilityAPI
+  - Skills Panel (tui/panels/skills.py) — displays registered skills via CapabilityAPI
+  - Orchestrator Panel (tui/panels/orchestrator.py) — chat interface for task submission via CapabilityAPI
+  - Models Panel (tui/panels/models.py) — displays available models from ModelCatalog
+  - Workers Panel (tui/panels/workers.py) — displays worker status (TestWorker placeholder)
+  - Tasks Panel (tui/panels/tasks.py) — displays task list from ITaskStateQuery
+- Created TestManager and TestWorker in sovereignai/workers/ (core components, not TUI-specific)
+- Registered TestManager and TestWorker in DI container (sovereignai/main.py)
+- Updated pyproject.toml to include tui/ as installable package
+- Added textual>=0.50.0 to requirements.txt
+- Updated AR7 test to allow sovereignai.shared imports in tui/panels/ only
+- All panels use CapabilityAPI for backend access per AR7 (no direct sovereignai.* imports except shared)
+- All panels have proper type annotations and ComposeResult return types
+- All scans passed: pytest (456 passed, 5 skipped), ruff (0 errors), mypy (0 errors)
+
+---
+
+## prompt-20.4.1 — TUI Visibility and Button Clickability Fix
+**Date**: 2026-07-02
+**Plan file**: N/A — ad-hoc TUI fix
+**Tests**: N/A — no test changes
+**Coverage**: N/A — no core code changes
+**Browser smoke test screenshots**: N/A — TUI is terminal-based, not web UI
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Fixed TUI visibility issue by deferring container building to on_mount instead of __init__
+- Fixed button clickability by adding proper type annotations and null checks in on_button_pressed
+- Fixed layout by using Header/Footer widgets with dock: left sidebar
+- Added null checks in all panel refresh methods to prevent mypy errors
+- Fixed ruff W292 error (missing newline at end of file)
+- All panels now use call_after_refresh for async data loading to prevent UI blocking
+- TUI is now fully functional with clickable buttons and proper layout
+- Tag: untagged — ad-hoc fix between prompt-20.4 and prompt-20.5; not back-tagged per OR42
 
 ---
 
