@@ -70,7 +70,7 @@ OR12. [Mandatory] Never mix naive/aware datetime. Use `datetime.now(timezone.utc
 
 OR13. [Mandatory] Temp files in dedicated temp dir, not repo root. Delete after consuming. Check for strays before `git add`.
 
-OR14. [Mandatory] Read `AGENTS.md` in full once per session before first edit. Always-on mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57, OR58, OR59, OR60, OR61, OR63, OR64, OR65, OR66.
+OR14. [Mandatory] Read `AGENTS.md` in full once per session before first edit. All rules are mandatory by default. Always-on mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57, OR58, OR59, OR60, OR61, OR63, OR64, OR65, OR66.
 
 OR15. [Mandatory] Every new implementation has corresponding test file with passing tests.
 
@@ -191,5 +191,7 @@ OR72. [Mandatory] TUI is a first-class UI consuming the same capability API as t
 OR73. [Mandatory] CHANGELOG append discipline. At `/close` step 12, append a new `## prompt-N — <title>` section to CHANGELOG.md at the end of the file (oldest at top; never prepend to top, never edit existing entries). Entry structure: `## prompt-N — <title>` header, then metadata lines (`**Date**:`, `**Plan file**:`, `**Tests**:`, `**Coverage**:`), then a bullet list of shipped scope (≥1 bullet). The verbatim entry text must be echoed in the execution log — the `+N` line-count marker alone is NOT sufficient. `scripts/ar_checks/check_changelog.py` enforces mechanically at `/close` step 17.5: exit≠0 = STOP. Editing an existing CHANGELOG entry after its plan is tagged = STOP per OR51.
 
 ---
+
+See `LANDMINES.md` for failure patterns linked to rules.
 
 See `LANDMINES.md` for failure patterns linked to rules.
