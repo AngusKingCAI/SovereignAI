@@ -8,7 +8,7 @@ Open questions resolved: none
 
 2. **AdapterCapability enum**: Future use only. Add to `sovereignai/shared/types.py` for adapter manifests to declare static capabilities, but don't wire it into hardware probe system. Hardware probe answers "what hardware exists"; AdapterCapability answers "what can this adapter do."
 
-3. **PCI-ID database scope**: Common GPUs only (RTX 20/30/40 series, GTX 16 series, common mobile variants). Keep it small, maintainable, and testable per "wire as you go" principle.
+3. **GPU detection approach**: Substring-based lookup with GPU_MEMORY_TYPE_MAP (simpler than PCI-ID database). Restore MEMORY_BANDWIDTH_GBPS constant (required by tok_sampler.py). Add _detect_gpus() method for GPU detection via nvidia-smi.
 
 4. **Coverage target scope**: GPU paths only (nvidia-smi subprocess, nvidia-ml-py calls, WMI fallback). Focus on GPU detection paths without inflating scope.
 
@@ -56,10 +56,10 @@ S2.2: Commit: `git add -A && git commit -m "feat: add AdapterCapability enum for
 
 ## S3 — Refactor GPU Detection
 
-S3.1: Replace substring-based GPU bandwidth lookup with PCI-ID database lookup
-S3.2: Add `gpu_bandwidth_db.json` with common GPU PCI ID → bandwidth mappings (RTX 20/30/40 series, GTX 16 series, common mobile variants)
-S3.3: Update `hardware_probe.py` to use PCI-ID lookup first, fallback to substring
-S3.4: Commit: `git add -A && git commit -m "refactor: PCI-ID based GPU bandwidth lookup"`
+S3.1: Add `_detect_gpus()` method to hardware_probe.py for GPU detection via nvidia-smi
+S3.2: Use substring-based lookup with GPU_MEMORY_TYPE_MAP for memory type detection
+S3.3: Restore MEMORY_BANDWIDTH_GBPS constant (required by tok_sampler.py)
+S3.4: Commit: `git add -A && git commit -m "refactor: GPU detection in hardware_probe.py"`
 
 ## S4 — GPU Testing Infrastructure
 

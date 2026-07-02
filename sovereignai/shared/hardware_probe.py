@@ -17,6 +17,17 @@ GPU_MEMORY_TYPE_MAP: dict[str, str] = {
 }
 
 
+MEMORY_BANDWIDTH_GBPS: dict[str, int] = {
+    "GDDR6": 768,
+    "GDDR6X": 1008,
+    "HBM2": 2000,
+    "HBM2e": 2600,
+    "HBM3": 3350,
+    "DDR5": 480,
+    "DDR4": 384,
+}
+
+
 class HardwareProbe:
 
     def has_nvidia_gpu(self) -> bool:
@@ -81,7 +92,11 @@ class HardwareProbe:
         try:
             import subprocess
             result = subprocess.run(
-                ["nvidia-smi", "--query-gpu=name,memory.total,memory.used,utilization.gpu", "--format=csv,noheader,nounits"],
+                [
+                    "nvidia-smi",
+                    "--query-gpu=name,memory.total,memory.used,utilization.gpu",
+                    "--format=csv,noheader,nounits",
+                ],
                 capture_output=True,
                 text=True,
                 timeout=5,

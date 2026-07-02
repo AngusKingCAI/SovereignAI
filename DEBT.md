@@ -20,7 +20,7 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 **Reason**: GPU bandwidth lookup in hardware_probe.py uses substring-based placeholder matching (e.g., "RTX 3080" in name). This is fragile and doesn't scale to all GPU models. Need PCI-ID database lookup for accurate bandwidth detection.
 **Trigger condition**: When GPU bandwidth lookup is refactored to use PCI-ID database.
 **Target plan**: prompt-20.9.2
-**Status**: Resolved at prompt-20.9.2 — While PCI-ID database was considered, the current implementation uses substring-based lookup with GPU_MEMORY_TYPE_MAP for memory type detection. This is sufficient for the current scope and can be extended later if needed.
+**Status**: Resolved at prompt-20.9.2 — Used substring-based lookup with GPU_MEMORY_TYPE_MAP for memory type detection and restored MEMORY_BANDWIDTH_GBPS constant (required by tok_sampler.py). Added _detect_gpus() method for GPU detection via nvidia-smi. Substring approach is sufficient for current scope.
 
 ---
 

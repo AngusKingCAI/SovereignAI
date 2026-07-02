@@ -147,7 +147,10 @@ def test_detect_gpus_multiple_gpus(shared_probe: HardwareProbe) -> None:
     ), patch('subprocess.run') as mock_run:
         mock_result = Mock()
         mock_result.returncode = 0
-        mock_result.stdout = 'NVIDIA GeForce RTX 3080, 10240, 2048, 50.0\nNVIDIA GeForce RTX 3090, 24576, 4096, 75.0\n'
+        mock_result.stdout = (
+            'NVIDIA GeForce RTX 3080, 10240, 2048, 50.0\n'
+            'NVIDIA GeForce RTX 3090, 24576, 4096, 75.0\n'
+        )
         mock_run.return_value = mock_result
         gpus = shared_probe._detect_gpus()
         assert len(gpus) == 2

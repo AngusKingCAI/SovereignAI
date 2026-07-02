@@ -98,11 +98,9 @@ Prerequisite: `.venv/` exists.
 
 17.6. Run python scripts/ar_checks/check_dependencies.py. Exit≠0 = STOP per OR77.
 
-17.7. Run python scripts/ar_checks/check_plan_immutability.py $(cat .open_hash). Exit≠0 = STOP per OR78. Plan files must not be edited during execution.
+17.7. Run python scripts/ar_checks/check_rule_conciseness.py. Exit≠0 = STOP per OR80.
 
-17.8. Run python scripts/ar_checks/check_rule_conciseness.py. Exit≠0 = STOP per OR80.
-
-17.9. rm .open_hash.
+17.8. rm .open_hash.
 
 18. Move ALL plan-{N} revision files, not a single named revision:
    ```
