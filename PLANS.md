@@ -43,7 +43,7 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 
 ## Test Baseline
 
-**Current**: 456 tests (Plan 20.4 `/close`)
+**Current**: 359 tests (Plan 20.5 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q

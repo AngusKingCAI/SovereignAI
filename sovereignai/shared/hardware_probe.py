@@ -3,14 +3,10 @@ import platform
 from sovereignai.shared.types import DiskUsage, GpuInfo, HardwareSnapshot
 
 try:
-    import pynvml
+    import nvidia_ml_py3 as pynvml
     PYNVML_AVAILABLE = True
 except ImportError:
-    try:
-        import nvidia_ml_py3 as pynvml
-        PYNVML_AVAILABLE = True
-    except ImportError:
-        PYNVML_AVAILABLE = False
+    PYNVML_AVAILABLE = False
 
 
 GPU_MEMORY_TYPE_MAP: dict[str, str] = {

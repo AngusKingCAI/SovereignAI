@@ -12,79 +12,79 @@
 mock_unlink  # pytest fixture parameter in test_hf_database.py (Plan 19)
 
 # Test fixtures and mock attributes (Plan 20.2)
-provider_id  # unused variable (sovereignai\shared\capability_api.py:83)
-_is_valid_uuid  # unused function (sovereignai\shared\types.py:84)
-COMMUNICATION  # unused variable (sovereignai\shared\types.py:100)
-submitted_at  # unused variable (sovereignai\shared\types.py:194)
-DEGRADED  # unused variable (sovereignai\shared\types.py:203)
-capabilities  # unused variable (sovereignai\shared\types.py:268)
-num_layers  # unused variable (sovereignai\shared\types.py:297)
-source_db  # unused variable (sovereignai\shared\types.py:299)
-total_gb  # unused variable (sovereignai\shared\types.py:313)
-used_gb  # unused variable (sovereignai\shared\types.py:314)
-free_gb  # unused variable (sovereignai\shared\types.py:315)
-MatrixEntry  # unused class (sovereignai\versioning\compatibility_matrix.py:15)
-tested_at  # unused variable (sovereignai\versioning\compatibility_matrix.py:24)
-mock_adapter  # unused function (tests\conformance\conftest.py:6)
-mock_skill  # unused function (tests\conformance\conftest.py:13)
-mock_memory_backend  # unused function (tests\conformance\conftest.py:20)
-pytest_configure  # unused function (tests\conftest.py:4)
-cleanup_matrix_files  # unused function (tests\test_compatibility_matrix.py:9)
-_.update_model  # unused method (tests\test_database_registry.py:19)
-_.uninstall_model  # unused method (tests\test_database_registry.py:22)
-_.side_effect  # unused attribute (tests\test_hardware_probe.py:30)
-_.current  # unused attribute (tests\test_hardware_probe.py:37)
-_.dwLength  # unused attribute (tests\test_hardware_probe.py:56)
-_.ullTotalPhys  # unused attribute (tests\test_hardware_probe.py:57)
-_.ullAvailPhys  # unused attribute (tests\test_hardware_probe.py:58)
-_.GlobalMemoryStatusEx  # unused attribute (tests\test_hardware_probe.py:59)
-_.side_effect  # unused attribute (tests\test_hardware_probe.py:265)
-_.side_effect  # unused attribute (tests\test_hardware_probe.py:303)
-_.side_effect  # unused attribute (tests\test_hardware_probe.py:364)
-_.side_effect  # unused attribute (tests\test_hardware_probe.py:510)
-_.side_effect  # unused attribute (tests\test_hardware_probe.py:661)
-_.modelId  # unused attribute (tests\test_hf_database.py:34)
-_.modelId  # unused attribute (tests\test_hf_database.py:62)
-_.rfilename  # unused attribute (tests\test_hf_database.py:104)
-_.siblings  # unused attribute (tests\test_hf_database.py:105)
-_.siblings  # unused attribute (tests\test_hf_database.py:129)
-_.rfilename  # unused attribute (tests\test_hf_database.py:164)
-_.siblings  # unused attribute (tests\test_hf_database.py:165)
-_.rfilename  # unused attribute (tests\test_hf_database.py:207)
-_.rfilename  # unused attribute (tests\test_hf_database.py:209)
-_.siblings  # unused attribute (tests\test_hf_database.py:210)
-_.rfilename  # unused attribute (tests\test_hf_database.py:250)
-_.siblings  # unused attribute (tests\test_hf_database.py:251)
-_.rfilename  # unused attribute (tests\test_hf_database.py:298)
-_.siblings  # unused attribute (tests\test_hf_database.py:299)
-_.side_effect  # unused attribute (tests\test_hf_database.py:305)
-_.side_effect  # unused attribute (tests\test_logs_panel.py:21)
-_.side_effect  # unused attribute (tests\test_logs_panel.py:42)
-_.side_effect  # unused attribute (tests\test_ollama_adapter.py:27)
-_.side_effect  # unused attribute (tests\test_ollama_adapter.py:42)
-_.side_effect  # unused attribute (tests\test_ollama_adapter.py:52)
-_.side_effect  # unused attribute (tests\test_ollama_adapter.py:68)
-_.side_effect  # unused attribute (tests\test_ollama_adapter.py:78)
-_.side_effect  # unused attribute (tests\test_ollama_adapter.py:84)
-_.side_effect  # unused attribute (tests\test_ollama_service.py:65)
-_.side_effect  # unused attribute (tests\test_ollama_service.py:148)
-_.side_effect  # unused attribute (tests\test_routing_engine.py:84)
-_.side_effect  # unused attribute (tests\test_routing_engine.py:86)
-_.side_effect  # unused attribute (tests\test_routing_engine.py:125)
-_.side_effect  # unused attribute (tests\test_routing_engine.py:152)
-_.side_effect  # unused attribute (tests\test_routing_engine.py:182)
-_.side_effect  # unused attribute (tests\test_routing_engine.py:239)
-_.side_effect  # unused attribute (tests\test_routing_engine.py:285)
-_.side_effect  # unused attribute (tests\test_self_correction_skill.py:67)
-_.side_effect  # unused attribute (tests\test_web_server.py:52)
-_.side_effect  # unused attribute (tests\test_web_server.py:96)
-_.side_effect  # unused attribute (tests\test_web_server.py:128)
-_.side_effect  # unused attribute (tests\test_web_server.py:143)
-_.side_effect  # unused attribute (tests\test_web_server.py:154)
-_.side_effect  # unused attribute (tests\test_web_server.py:174)
-_container_no_users  # unused function (tests\test_web_ui_integration.py:11)
-_.side_effect  # unused attribute (tests\test_web_ui_panels.py:50)
-_.raise_for_status  # unused attribute (tests\test_websearch_skill.py:32)
-_.raise_for_status  # unused attribute (tests\test_websearch_skill.py:46)
-_.raise_for_status  # unused attribute (tests\test_websearch_skill.py:66)
-_.raise_for_status  # unused attribute (tests\test_websearch_skill.py:80)
+provider_id  # unused variable (sovereignai\shared\capability_api.py:83) — dataclass field used by __init__
+_is_valid_uuid  # unused function (sovereignai\shared\types.py:84) — helper function for future use
+COMMUNICATION  # unused variable (sovereignai\shared\types.py:100) — enum member used by enum machinery
+submitted_at  # unused variable (sovereignai\shared\types.py:194) — dataclass field used by __init__
+DEGRADED  # unused variable (sovereignai\shared\types.py:203) — enum member used by enum machinery
+capabilities  # unused variable (sovereignai\shared\types.py:268) — dataclass field used by __init__
+num_layers  # unused variable (sovereignai\shared\types.py:297) — dataclass field used by __init__
+source_db  # unused variable (sovereignai\shared\types.py:299) — dataclass field used by __init__
+total_gb  # unused variable (sovereignai\shared\types.py:313) — dataclass field used by __init__
+used_gb  # unused variable (sovereignai\shared\types.py:314) — dataclass field used by __init__
+free_gb  # unused variable (sovereignai\shared\types.py:315) — dataclass field used by __init__
+MatrixEntry  # unused class (sovereignai\versioning\compatibility_matrix.py:15) — dataclass used by matrix machinery
+tested_at  # unused variable (sovereignai\versioning\compatibility_matrix.py:24) — dataclass field used by __init__
+mock_adapter  # unused function (tests\conformance\conftest.py:6) — pytest fixture required by parametrize
+mock_skill  # unused function (tests\conformance\conftest.py:13) — pytest fixture required by parametrize
+mock_memory_backend  # unused function (tests\conformance\conftest.py:20) — pytest fixture required by parametrize
+pytest_configure  # unused function (tests\conftest.py:4) — pytest hook function called by framework
+cleanup_matrix_files  # unused function (tests\test_compatibility_matrix.py:9) — test helper called by teardown
+_.update_model  # unused method (tests\test_database_registry.py:19) — mock method used in test setup
+_.uninstall_model  # unused method (tests\test_database_registry.py:22) — mock method used in test setup
+_.side_effect  # unused attribute (tests\test_hardware_probe.py:30) — mock attribute used in test setup
+_.current  # unused attribute (tests\test_hardware_probe.py:37) — mock attribute used in test setup
+_.dwLength  # unused attribute (tests\test_hardware_probe.py:56) — mock attribute used in test setup
+_.ullTotalPhys  # unused attribute (tests\test_hardware_probe.py:57) — mock attribute used in test setup
+_.ullAvailPhys  # unused attribute (tests\test_hardware_probe.py:58) — mock attribute used in test setup
+_.GlobalMemoryStatusEx  # unused attribute (tests\test_hardware_probe.py:59) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_hardware_probe.py:265) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_hardware_probe.py:303) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_hardware_probe.py:364) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_hardware_probe.py:510) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_hardware_probe.py:661) — mock attribute used in test setup
+_.modelId  # unused attribute (tests\test_hf_database.py:34) — mock attribute used in test setup
+_.modelId  # unused attribute (tests\test_hf_database.py:62) — mock attribute used in test setup
+_.rfilename  # unused attribute (tests\test_hf_database.py:104) — mock attribute used in test setup
+_.siblings  # unused attribute (tests\test_hf_database.py:105) — mock attribute used in test setup
+_.siblings  # unused attribute (tests\test_hf_database.py:129) — mock attribute used in test setup
+_.rfilename  # unused attribute (tests\test_hf_database.py:164) — mock attribute used in test setup
+_.siblings  # unused attribute (tests\test_hf_database.py:165) — mock attribute used in test setup
+_.rfilename  # unused attribute (tests\test_hf_database.py:207) — mock attribute used in test setup
+_.rfilename  # unused attribute (tests\test_hf_database.py:209) — mock attribute used in test setup
+_.siblings  # unused attribute (tests\test_hf_database.py:210) — mock attribute used in test setup
+_.rfilename  # unused attribute (tests\test_hf_database.py:250) — mock attribute used in test setup
+_.siblings  # unused attribute (tests\test_hf_database.py:251) — mock attribute used in test setup
+_.rfilename  # unused attribute (tests\test_hf_database.py:298) — mock attribute used in test setup
+_.siblings  # unused attribute (tests\test_hf_database.py:299) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_hf_database.py:305) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_logs_panel.py:21) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_logs_panel.py:42) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_ollama_adapter.py:27) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_ollama_adapter.py:42) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_ollama_adapter.py:52) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_ollama_adapter.py:68) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_ollama_adapter.py:78) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_ollama_adapter.py:84) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_ollama_service.py:65) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_ollama_service.py:148) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_routing_engine.py:84) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_routing_engine.py:86) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_routing_engine.py:125) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_routing_engine.py:152) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_routing_engine.py:182) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_routing_engine.py:239) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_routing_engine.py:285) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_self_correction_skill.py:67) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_web_server.py:52) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_web_server.py:96) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_web_server.py:128) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_web_server.py:143) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_web_server.py:154) — mock attribute used in test setup
+_.side_effect  # unused attribute (tests\test_web_server.py:174) — mock attribute used in test setup
+_container_no_users  # unused function (tests\test_web_ui_integration.py:11) — pytest fixture used by tests
+_.side_effect  # unused attribute (tests\test_web_ui_panels.py:50) — mock attribute used in test setup
+_.raise_for_status  # unused attribute (tests\test_websearch_skill.py:32) — mock attribute used in test setup
+_.raise_for_status  # unused attribute (tests\test_websearch_skill.py:46) — mock attribute used in test setup
+_.raise_for_status  # unused attribute (tests\test_websearch_skill.py:66) — mock attribute used in test setup
+_.raise_for_status  # unused attribute (tests\test_websearch_skill.py:80) — mock attribute used in test setup

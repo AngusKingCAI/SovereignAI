@@ -77,6 +77,8 @@ Prerequisite: `.venv/` exists.
 
 17. `git add -A && git status -s` — verify no unintended files.
 
+17.5. Run `python scripts/ar_checks/check_changelog.py <plan_number>`. Exit≠0 = STOP per OR73.
+
 18. Move ALL plan-{N} revision files, not a single named revision:
     ```
     BEFORE_COUNT=$(ls prompts/plan-{N}-Rev*.md 2>/dev/null | wc -l)
@@ -85,6 +87,7 @@ Prerequisite: `.venv/` exists.
     ls prompts/plan-{N}* 2>/dev/null
     ```
     Must be empty AND `AFTER_COUNT` = `BEFORE_COUNT` — STOP if not. Never substitute a specific filename for the glob.
+    Note: If git mv fails with "bad source", use plain mv then git add -A. Per L23, mv + git add -A is safe (git add -A catches the rename).
 
 19. `git add -A && git status -s && git commit -m "prompt-{N}: {title}" -m "{note 1}" -m "{note 2}" -m "{note 3}"` — one `-m` per CHANGELOG Notes bullet.
 

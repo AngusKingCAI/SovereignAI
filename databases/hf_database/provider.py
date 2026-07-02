@@ -46,11 +46,6 @@ class HFDatabaseProvider:
         return HfApi()
 
     def list_models(self) -> list[ModelEntry]:
-        import os
-
-        if os.environ.get("SOVEREIGNAI_TEST_MODE") == "1":
-            return []
-
         now = time.monotonic()
         if (
             self._cached_models is not None
@@ -218,15 +213,6 @@ class HFDatabaseProvider:
         shutil.rmtree(local_dir, ignore_errors=True)
 
     def health_check(self) -> DatabaseStatus:
-        import os
-
-        if os.environ.get("SOVEREIGNAI_TEST_MODE") == "1":
-            return DatabaseStatus(
-                installed=True,
-                version="test-mode",
-                size_bytes=0,
-            )
-
         hf_cache = Path.home() / ".cache" / "huggingface"
         installed = hf_cache.exists()
 

@@ -3,7 +3,7 @@ component_id = "llama_cpp_adapter"
 name = "llama.cpp Local Models"
 version = "0.1.0"
 author = "user"
-content_hash = "sha256:placeholder-llama-cpp-adapter"
+content_hash = "sha256:e67e94ea87773fc71d8e4337bf4b95d21baf5cb4e3223331998accd3fcf8805f"
 routing_priority = 20
 
 [[provides]]

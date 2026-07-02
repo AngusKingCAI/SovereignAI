@@ -34,11 +34,7 @@ WEB_MAIN_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.types.TaskStateChanged',
     'sovereignai.shared.types.TraceLevel',
     'sovereignai.shared.task_state_machine',
-    'sovereignai.shared.task_state_machine.ITaskStateQuery',
-    'sovereignai.shared.database_registry',
-    'sovereignai.shared.database_registry.DatabaseRegistry',
-    'sovereignai.shared.service_registry',
-    'sovereignai.shared.service_registry.ServiceRegistry'
+    'sovereignai.shared.task_state_machine.ITaskStateQuery'
 }
 UI_PACKAGE_DENYLIST = {  # noqa: E501
     'sovereignai.shared',
@@ -99,18 +95,10 @@ def test_ui_directories_do_not_import_core_internals(ui_dir: str) -> None:
             if any(imp.startswith(prefix) for prefix in UI_PACKAGE_DENYLIST)
         }
         is_web_main = py_file.name == 'main.py' and py_file.parent.name == 'web'
-        is_tui_main = py_file.name == 'main.py' and py_file.parent.name == 'tui'
-        is_tui_panel = py_file.parent.name == 'panels' and py_file.parent.parent.name == 'tui'
 
-        if is_web_main or is_tui_main:
+        if is_web_main:
             forbidden_concrete -= WEB_MAIN_ALLOWED_IMPORTS
             forbidden_package -= {'sovereignai.main'}
-            forbidden_package -= {  # noqa: E501
-                imp for imp in forbidden_package
-                if imp.startswith('sovereignai.shared')
-            }
-
-        if is_tui_panel:
             forbidden_package -= {  # noqa: E501
                 imp for imp in forbidden_package
                 if imp.startswith('sovereignai.shared')

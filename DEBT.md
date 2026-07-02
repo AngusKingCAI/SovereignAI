@@ -305,3 +305,102 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Trigger condition**: When GPU hardware testing infrastructure is available or when mocking strategy is validated against real GPU behavior.
 **Target plan**: TBD (hardware testing infrastructure plan).
 
+---
+
+## Deferred: spec_match failures across plans 16-20.4
+
+**Deferred at**: prompt-20.5
+**Reason**: After S1.2 reverted the spec_match.py self-exemption, spec_match will fail across plans 16-20.4 diffs. This indicates real scope drift accumulated over 7 plans. Fixing this requires a dedicated plan to either clean up the drift or redesign spec_match to handle accumulated changes.
+**Trigger condition**: When spec_match redesign + scope drift cleanup plan is scheduled.
+**Target plan**: 20.6
+
+---
+
+## Deferred: mypy 156 errors across 29 files
+
+**Deferred at**: prompt-20.5
+**Reason**: 156 mypy errors across 29 files accumulated since plans 16-20.4 (per Plan 20.2 log L5414). Per OR53, no "pre-existing" exemption. Fixing requires a dedicated type remediation plan.
+**Trigger condition**: When type remediation plan is scheduled.
+**Target plan**: 20.7
+
+---
+
+## Deferred: plan file immutability pre-commit hook
+
+**Deferred at**: prompt-20.5
+**Reason**: Plan file immutability hook (block edits to prompts/plan-*.md during execution) needs pre-commit infrastructure. This prevents mid-execution plan mutations (L50 pattern).
+**Trigger condition**: When pre-commit hook infrastructure is implemented.
+**Target plan**: 20.8
+
+---
+
+## Deferred: AR6 violations retirement decision
+
+**Deferred at**: prompt-20.5
+**Reason**: AR6 violations 5+ plans old (deferred since prompt-15.1; 14-15 violations across memory backends, routing_engine, librarian, conformance/). Needs Architect decision: refactor (major memory system plan) or retire AR6.
+**Trigger condition**: Architect next session.
+**Target plan**: Architect next session
+
+---
+
+## Deferred: SSE thread safety IndexError
+
+**Deferred at**: prompt-20.5
+**Reason**: PytestUnhandledThreadExceptionWarning: IndexError: pop from empty list in tests/test_web_ui_panels.py::test_hardware_stream_endpoint_sse (per P20.2 log L5280, L6493). Likely thread-safety issue in the SSE infinite-loop generator. Fix may require bounding the generator or using client.stream() in the test.
+**Trigger condition**: When SSE thread safety investigation is completed.
+**Target plan**: 20.10
+
+---
+
+## Deferred: CVE dependency upgrades
+
+**Deferred at**: prompt-20.5
+**Reason**: pip-audit CVEs in DEBT.md (setuptools ×5 from P18, diskcache ×1 from P20.1). Need to confirm transitive dep status and upgrade dependencies.
+**Trigger condition**: When dependency upgrade plan is scheduled.
+**Target plan**: 20.11
+
+---
+
+## Deferred: GPU testing infrastructure
+
+**Deferred at**: prompt-20.5
+**Reason**: web/hardware_probe.py GPU paths need ≥90% coverage. Mocking strategy (mock subprocess.run for nvidia-smi, mock pynvml/nvidia-ml-py imports) may not reach 90%. If mocking can't reach 90%, need GPU testing infrastructure.
+**Trigger condition**: When GPU testing infrastructure is implemented or mocking strategy validated.
+**Target plan**: 20.9
+
+---
+
+## Deferred: AR-check output caching investigation
+
+**Deferred at**: prompt-20.5
+**Reason**: AR-check scripts may have byte-identical output (per P20.4 log L3964-3999). Likely subprocess stdout capture bug. Need investigation to fix or document.
+**Trigger condition**: When AR-check output caching is investigated.
+**Target plan**: 20.12
+
+---
+
+## Deferred: Plan 20.3 execution log content
+
+**Deferred at**: prompt-20.5
+**Reason**: The in-repo logs/execution-log-prompt-20.3.md is a 26-token stub (per P20.3 log L1254-1256). Original session log content unrecoverable.
+**Trigger condition**: N/A (irreversible).
+**Target plan**: N/A
+
+---
+
+## Deferred: TUI AR7 compliance after S2.2 revert
+
+**Deferred at**: prompt-20.5
+**Reason**: S2.2 reverted the tui/panels allowlist exception for sovereignai.shared imports. TUI panels (adapters.py, hardware.py, models.py, memory.py, options.py, services.py) import sovereignai.shared.capability_api and sovereignai.shared.types to use the Capability API. Per AR7, UIs must not import sovereignai.* packages directly. Fixing requires either: (a) adding TUI allowlist back (weakens AR7), or (b) refactoring TUI to avoid sovereignai.shared imports (non-trivial - needs Architect decision on TUI architecture).
+**Trigger condition**: Architect next session.
+**Target plan**: Architect next session
+
+---
+
+## Deferred: pynvml test refactoring after S3.5
+
+**Deferred at**: prompt-20.5
+**Reason**: S3.5 removed pynvml fallback (dual-import strategy). Tests test_shared_sample_with_pynvml_gpu, test_shared_sample_pynvml_exception, test_shared_sample_gpu_memory_type_mapping mock the old pynvml import path. Need to refactor to mock nvidia_ml_py3 correctly or delete if testing dual-import behavior is no longer relevant.
+**Trigger condition**: When pynvml test strategy is decided.
+**Target plan**: TBD
+

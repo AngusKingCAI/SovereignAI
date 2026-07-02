@@ -333,7 +333,7 @@ def test_shared_sample_with_pynvml_gpu(shared_probe: HardwareProbe) -> None:
     with patch(  # noqa: E501
         'sovereignai.shared.hardware_probe.PYNVML_AVAILABLE',
         True
-    ), patch('sovereignai.shared.hardware_probe.pynvml') as mock_pynvml:
+    ), patch('nvidia_ml_py3') as mock_pynvml:
         mock_pynvml.nvmlInit.return_value = None
         mock_pynvml.nvmlDeviceGetCount.return_value = 1
         mock_handle = Mock()
@@ -360,7 +360,7 @@ def test_shared_sample_pynvml_exception(shared_probe: HardwareProbe) -> None:
     with patch(  # noqa: E501
         'sovereignai.shared.hardware_probe.PYNVML_AVAILABLE',
         True
-    ), patch('sovereignai.shared.hardware_probe.pynvml') as mock_pynvml:
+    ), patch('nvidia_ml_py3') as mock_pynvml:
         mock_pynvml.nvmlInit.side_effect = Exception('NVML error')
 
         snapshot = shared_probe.sample()
@@ -371,7 +371,7 @@ def test_shared_sample_gpu_memory_type_mapping(shared_probe: HardwareProbe) -> N
     with patch(  # noqa: E501
         'sovereignai.shared.hardware_probe.PYNVML_AVAILABLE',
         True
-    ), patch('sovereignai.shared.hardware_probe.pynvml') as mock_pynvml:
+    ), patch('nvidia_ml_py3') as mock_pynvml:
         mock_pynvml.nvmlInit.return_value = None
         mock_pynvml.nvmlDeviceGetCount.return_value = 1
         mock_handle = Mock()
