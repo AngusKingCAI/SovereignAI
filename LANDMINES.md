@@ -312,6 +312,20 @@ Append-only. Never edit or remove entries. Format:
 
 ---
 
+## L67 — Plan split without independent /open and /close
+**Trigger**: Devin splits an over-long plan into sub-plans but one or more sub-plans skip /open or /close.
+**Impact**: Governance gates (check_dependencies.py, check_plan_immutability.py, check_rule_conciseness.py, check_changelog.py) not enforced on the skipped sub-plan; AR-check bypass.
+**Graduated to**: OR78.
+
+---
+
+## L68 — Plan split with content modification
+**Trigger**: Devin splits an over-long plan but reorders, adds, removes, or rewords S0-Sn steps or WILL-edit entries during the split.
+**Impact**: Round Table review undermined; scope creep hidden as "repackaging".
+**Graduated to**: OR78.
+
+---
+
 N/A — no new patterns (OR66 added per plan requirements, not a failure pattern)
 
 ---
