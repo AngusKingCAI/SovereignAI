@@ -162,7 +162,14 @@ class LlamaCppAdapter:
             )
             raise AdapterUnavailableError(f"Failed to load model: {exc}") from exc
 
-    def generate(self, model_id: str, prompt: str, max_tokens: int, temperature: float, timeout_seconds: float = 30.0) -> str:
+    def generate(
+        self,
+        model_id: str,
+        prompt: str,
+        max_tokens: int,
+        temperature: float,
+        timeout_seconds: float = 30.0,
+    ) -> str:
         self._trace.emit(  # noqa: E501
             component="llama_cpp_adapter",
             level=TraceLevel.DEBUG,
@@ -194,7 +201,9 @@ class LlamaCppAdapter:
         thread.join(timeout=timeout_seconds)
 
         if not timeout_event.is_set():
-            raise GenerationTimeoutError(f"Generation exceeded timeout of {timeout_seconds} seconds")
+            raise GenerationTimeoutError(
+                f"Generation exceeded timeout of {timeout_seconds} seconds"
+            )
 
         if error is not None:
             self._trace.emit(

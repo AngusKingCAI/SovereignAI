@@ -177,6 +177,6 @@ class CapabilityGraph:
             result.sort(key=lambda x: x.routing_priority)
             return result
 
-    def get_adapter(self, component_id: str) -> Any:
+    def get_adapter(self, component_id: str) -> object:
         with self._lock:
             return self._instances.get(ComponentId(component_id))

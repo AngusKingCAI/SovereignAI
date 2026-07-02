@@ -7,7 +7,6 @@ graph on startup and reports DEGRADED status if Ollama is not running.
 from __future__ import annotations
 
 import threading
-import time
 
 import ollama
 
@@ -103,7 +102,9 @@ class OllamaAdapter:
         thread.join(timeout=timeout_seconds)
 
         if not timeout_event.is_set():
-            raise GenerationTimeoutError(f"Generation exceeded timeout of {timeout_seconds} seconds")
+            raise GenerationTimeoutError(
+                f"Generation exceeded timeout of {timeout_seconds} seconds"
+            )
 
         if error is not None:
             self._trace.emit(

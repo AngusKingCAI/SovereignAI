@@ -27,6 +27,11 @@ class RoutingEngine:
         self._trace = trace
         self._health_check_cache: dict[str, tuple[bool, float]] = {}
         self._health_check_ttl = 30.0
+        self._trace.emit(
+            component="RoutingEngine",
+            level=TraceLevel.DEBUG,
+            message="RoutingEngine initialized with health_check caching (TTL=30s)",
+        )
 
     def route(self, capability: str, method_name: str, *args: object) -> object:
         adapters = self._index.adapters_by_capability(capability)

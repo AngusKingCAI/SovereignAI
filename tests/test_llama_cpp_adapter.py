@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -179,18 +179,6 @@ def test_adapter_health_dataclass():
 
 
 def test_generate_timeout(adapter, mock_database_registry, mock_model_path_resolver, mock_trace):
-    mock_model = MagicMock()
-    mock_model.vram_required_mb = 1000
-    mock_model.num_layers = 32
-    mock_database_registry.find_model.return_value = ("test/model", mock_model)
-
-    from pathlib import Path
-    mock_path = MagicMock(spec=Path)
-    mock_path.glob.return_value = [mock_path]
-    mock_path.stem = "test-model-q4"
-    mock_path.open.return_value.__enter__.return_value.read.return_value = b"GGUF\x02\x00\x00\x00"
-    mock_model_path_resolver.return_value = mock_path
-
     import sys
     mock_llama_cpp = MagicMock()
     mock_llm = MagicMock()
@@ -202,27 +190,17 @@ def test_generate_timeout(adapter, mock_database_registry, mock_model_path_resol
     mock_llama_cpp.Llama = MagicMock(return_value=mock_llm)
     sys.modules["llama_cpp"] = mock_llama_cpp
 
-    try:
-        with pytest.raises(GenerationTimeoutError, match='exceeded timeout'):
-            adapter.generate("test/model", "test prompt", 100, 0.7, timeout_seconds=0.1)
-    finally:
-        if "llama_cpp" in sys.modules:
-            del sys.modules["llama_cpp"]
+    with patch.object(adapter, 'load_model'):
+        adapter._llm = mock_llm
+        try:
+            with pytest.raises(GenerationTimeoutError, match='exceeded timeout'):
+                adapter.generate("test/model", "test prompt", 100, 0.7, timeout_seconds=0.1)
+        finally:
+            if "llama_cpp" in sys.modules:
+                del sys.modules["llama_cpp"]
 
 
 def test_generate_no_timeout(adapter, mock_database_registry, mock_model_path_resolver, mock_trace):
-    mock_model = MagicMock()
-    mock_model.vram_required_mb = 1000
-    mock_model.num_layers = 32
-    mock_database_registry.find_model.return_value = ("test/model", mock_model)
-
-    from pathlib import Path
-    mock_path = MagicMock(spec=Path)
-    mock_path.glob.return_value = [mock_path]
-    mock_path.stem = "test-model-q4"
-    mock_path.open.return_value.__enter__.return_value.read.return_value = b"GGUF\x02\x00\x00\x00"
-    mock_model_path_resolver.return_value = mock_path
-
     import sys
     mock_llama_cpp = MagicMock()
     mock_llm = MagicMock()
@@ -230,9 +208,11 @@ def test_generate_no_timeout(adapter, mock_database_registry, mock_model_path_re
     mock_llama_cpp.Llama = MagicMock(return_value=mock_llm)
     sys.modules["llama_cpp"] = mock_llama_cpp
 
-    try:
-        result = adapter.generate("test/model", "test prompt", 100, 0.7, timeout_seconds=30.0)
-        assert result == "Generated text"
-    finally:
-        if "llama_cpp" in sys.modules:
-            del sys.modules["llama_cpp"]
+    with patch.object(adapter, 'load_model'):
+        adapter._llm = mock_llm
+        try:
+            result = adapter.generate("test/model", "test prompt", 100, 0.7, timeout_seconds=30.0)
+            assert result == "Generated text"
+        finally:
+            if "llama_cpp" in sys.modules:
+                del sys.modules["llama_cpp"]
