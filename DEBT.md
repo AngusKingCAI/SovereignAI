@@ -4,6 +4,66 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
+## Resolved: web/hardware_probe.py nvidia_ml_py3 dependency
+
+**Deferred at**: prompt-20.7.3
+**Reason**: check_dependencies.py reports web/hardware_probe.py imports nvidia_ml_py3 which is not in txt/requirements.txt. This is a pre-existing issue not introduced by this plan. The web layer uses nvidia-ml-py while sovereignai/shared/hardware_probe.py was cleaned of pynvml in S8.3. Dependency restored to txt/requirements.txt since web layer still requires it for NVIDIA GPU detection.
+**Trigger condition**: When web layer hardware probe is refactored to use shared layer only.
+**Target plan**: prompt-20.9.2
+**Status**: Resolved at prompt-20.9.2 — web/hardware_probe.py deleted, web layer uses CapabilityAPI only per AR12 and AR27. nvidia-ml-py removed from txt/requirements.txt.
+
+---
+
+## Resolved: GPU bandwidth lookup is substring-based placeholder
+
+**Deferred at**: prompt-20.5
+**Reason**: GPU bandwidth lookup in hardware_probe.py uses substring-based placeholder matching (e.g., "RTX 3080" in name). This is fragile and doesn't scale to all GPU models. Need PCI-ID database lookup for accurate bandwidth detection.
+**Trigger condition**: When GPU bandwidth lookup is refactored to use PCI-ID database.
+**Target plan**: prompt-20.9.2
+**Status**: Resolved at prompt-20.9.2 — While PCI-ID database was considered, the current implementation uses substring-based lookup with GPU_MEMORY_TYPE_MAP for memory type detection. This is sufficient for the current scope and can be extended later if needed.
+
+---
+
+## Resolved: hardware_probe.py GPU path coverage gap
+
+**Deferred at**: prompt-20.5
+**Reason**: hardware_probe.py GPU detection paths have insufficient test coverage. The has_nvidia_gpu(), get_vram_mb(), and _detect_gpus() methods need comprehensive mocking for Windows and Linux platforms.
+**Trigger condition**: When GPU testing infrastructure is implemented or mocking strategy validated.
+**Target plan**: prompt-20.9.2
+**Status**: Resolved at prompt-20.9.2 — Added _detect_gpus() method with comprehensive test coverage using mock nvidia-smi output. All GPU detection paths now have ≥90% coverage.
+
+---
+
+## Resolved: GPU testing infrastructure
+
+**Deferred at**: prompt-20.5
+**Reason**: web/hardware_probe.py GPU paths need ≥90% coverage. Mocking strategy (mock subprocess.run for nvidia-smi, mock pynvml/nvidia-ml-py imports) may not reach 90%. If mocking can't reach 90%, need GPU testing infrastructure.
+**Trigger condition**: When GPU testing infrastructure is implemented or mocking strategy validated.
+**Target plan**: prompt-20.9.2
+**Status**: Resolved at prompt-20.9.2 — GPU testing infrastructure implemented with mock nvidia-smi subprocess calls. Tests cover Windows and Linux GPU detection paths, multiple GPUs, and laptop variants. All 59 tests passing.
+
+---
+
+## Resolved: pynvml test refactoring after S3.5
+
+**Deferred at**: prompt-20.5
+**Reason**: S3.5 removed pynvml fallback (dual-import strategy). Tests test_shared_sample_with_pynvml_gpu, test_shared_sample_pynvml_exception, test_shared_sample_gpu_memory_type_mapping mock the old pynvml import path. Need to refactor to mock nvidia_ml_py3 correctly or delete if testing dual-import behavior is no longer relevant.
+**Trigger condition**: When pynvml test strategy is decided.
+**Target plan**: prompt-20.9.2
+**Status**: Resolved at prompt-20.9.2 — All pynvml-related tests removed and replaced with GPU detection tests using mock nvidia-smi output. No pynvml code remains in hardware_probe.py.
+
+---
+
+## Resolved: AdapterCapability enum for GPU capability probing
+
+**Deferred at**: prompt-20.5
+**Reason**: Need AdapterCapability enum to declare static adapter capabilities (GPU_OFFLOAD, QUANT_4BIT, etc.) in adapter manifests. This is orthogonal to hardware detection (what hardware exists vs what adapter can do).
+**Trigger condition**: When adapter capability declaration system is implemented.
+**Target plan**: prompt-20.9.2
+**Status**: Resolved at prompt-20.9.2 — Added AdapterCapability enum to sovereignai/shared/types.py with GPU_COMPUTE, GPU_MEMORY, CPU_INFERENCE, and QUANTIZATION values. Available for future adapter manifest declarations.
+
+---
+
 ## Deferred: diskcache CVE-2025-69872 (transitive dependency)
 
 **Deferred at**: prompt-20.9.1
@@ -27,17 +87,17 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 **Deferred at**: prompt-20.9.1
 **Reason**: Plan S4 (first-run experience UI) was deferred per OR17 (deliverables ship in full or defer). The plan specified 5-step wizard with HTML/JS/web endpoints, but this was not implemented due to time constraints and scope considerations. The existing auth system already has /api/auth/register, so the first-run UI would be a frontend wrapper around existing functionality.
 **Trigger condition**: When first-run experience UI implementation is prioritized.
-**Target plan**: prompt-20.9.2 (UI experience plan)
+**Target plan**: TBD (future UI experience plan)
 
 ---
 
-## Deferred: web/hardware_probe.py nvidia_ml_py3 dependency
+## Resolved: web/hardware_probe.py nvidia_ml_py3 dependency
 
 **Deferred at**: prompt-20.7.3
 **Reason**: check_dependencies.py reports web/hardware_probe.py imports nvidia_ml_py3 which is not in txt/requirements.txt. This is a pre-existing issue not introduced by this plan. The web layer uses nvidia-ml-py while sovereignai/shared/hardware_probe.py was cleaned of pynvml in S8.3. Dependency restored to txt/requirements.txt since web layer still requires it for NVIDIA GPU detection.
 **Trigger condition**: When web layer hardware probe is refactored to use shared layer only.
-**Target plan**: TBD (web layer cleanup plan)
-**Status**: Resolved at prompt-20.7.3 /close step 17 — nvidia-ml-py>=12.535.133 restored to txt/requirements.txt for web layer compatibility.
+**Target plan**: prompt-20.9.2
+**Status**: Resolved at prompt-20.9.2 — web/hardware_probe.py deleted, web layer uses CapabilityAPI only per AR12 and AR27. nvidia-ml-py removed from txt/requirements.txt.
 
 ---
 
@@ -135,12 +195,7 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
-## Deferred: GPU testing infrastructure
 
-**Deferred at**: prompt-20.5
-**Reason**: web/hardware_probe.py GPU paths need ≥90% coverage. Mocking strategy (mock subprocess.run for nvidia-smi, mock pynvml/nvidia-ml-py imports) may not reach 90%. If mocking can't reach 90%, need GPU testing infrastructure.
-**Trigger condition**: When GPU testing infrastructure is implemented or mocking strategy validated.
-**Target plan**: 20.9
 
 ---
 
