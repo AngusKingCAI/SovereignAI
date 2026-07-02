@@ -48,13 +48,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 20.9.2**: Baseline → 59 tests. Delta: -405 — see CHANGELOG prompt-20.9.2 (hardware probe refactor, scoped tests only).
 **Plan 20.9.3**: Baseline → 464 tests. Delta: +405 — see CHANGELOG prompt-20.9.3 (typed memory queries, AR6 fixes).
 **Plan 20.9.4**: Baseline → 468 tests. Delta: +4 — see CHANGELOG prompt-20.9.4 (health_check caching, generate() timeout).
-**Plan 20.9.5**: Baseline → TBD tests. Delta: TBD — see CHANGELOG prompt-20.9.5 (AR6 context bag cleanup, AR-check caching).
+**Plan 20.9.5**: Baseline → 471 tests. Delta: +3 — see CHANGELOG prompt-20.9.5 (AR6 context bag cleanup, AR-check caching).
 
 ---
 
 ## Test Baseline
 
-**Current**: 468 tests (Plan 20.9.4 `/close`)
+**Current**: 471 tests (Plan 20.9.5 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -129,6 +129,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-20.7.3 | `prompt-20.7.3` | 20.6 Rollback + sailogs/ Implementation + Test Mocks — FileTraceSubscriber, sailogs/, test_file_trace_subscriber.py, 30s timeout, HFDatabaseProvider mocks, S8 rollbacks, pynvml removal | 464 | 0 | 0 | 2026-07-02 |
 | prompt-20.9.3 | `prompt-20.9.3` | Typed Memory Queries — Add typed query dataclasses to memory backends per AR6 | 464 | 0 | 0 | 2026-07-03 |
 | prompt-20.9.4 | `prompt-20.9.4` | Performance Improvements — health_check caching, generate() timeout | 468 | 0 | 0 | 2026-07-03 |
+| prompt-20.9.5 | `prompt-20.9.5` | AR6 Context Bag Cleanup + AR-Check Caching | 471 | 0 | 0 | 2026-07-03 |
 
 ---
 
