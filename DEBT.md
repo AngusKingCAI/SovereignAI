@@ -452,3 +452,13 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 
 ---
 
+---
+
+## Deferred: tui/panels/adapters.py AR7 refactoring not completed
+
+**Deferred at**: prompt-20.7.3
+**Reason**: Plan S8.2b specified refactoring tui/panels/adapters.py to consume Capability API only per DD-20.6.1, but execution found the AR7 violation was in tui/panels/workers.py instead. adapters.py was not edited during execution. The plan's WILL-edit list includes adapters.py but the actual diff does not, causing spec_match.py to fail. This is a documentation discrepancy between plan and execution.
+**Trigger condition**: When TUI panel AR7 refactoring is revisited.
+**Target plan**: TBD (TUI refactoring plan)
+
+---

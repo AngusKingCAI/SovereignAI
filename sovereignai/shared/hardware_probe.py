@@ -2,7 +2,6 @@ import platform
 
 from sovereignai.shared.types import DiskUsage, GpuInfo, HardwareSnapshot
 
-
 GPU_MEMORY_TYPE_MAP: dict[str, str] = {
     "RTX 4090": "GDDR6X",
     "RTX 4080": "GDDR6X",

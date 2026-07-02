@@ -69,6 +69,11 @@ ALLOWLIST = {
     "DECISIONS.md",
     "CHANGELOG.md",
     "AI_HANDOFF.md",
+    "pyproject.toml",
+    "txt/requirements.txt",
+    ".gitignore",
+    ".open_hash",
+    "sailogs/.gitkeep",
 }
 
 

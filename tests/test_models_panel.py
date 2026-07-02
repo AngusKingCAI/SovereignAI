@@ -38,7 +38,7 @@ def mock_hf_list_models() -> Generator[None, None, None]:
         ),
     ]
     original_list_models = HFDatabaseProvider.list_models
-    HFDatabaseProvider.list_models = lambda self, filter=None: mock_models
+    HFDatabaseProvider.list_models = lambda self, _=None: mock_models
     yield
     HFDatabaseProvider.list_models = original_list_models
 
