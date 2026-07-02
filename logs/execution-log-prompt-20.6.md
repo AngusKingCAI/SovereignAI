@@ -4534,3 +4534,35 @@ Updated spec_match.py to handle tui/ paths and governance artifacts
 
 
 Feedback submitt
+
+---
+
+## Post-P20.7.3 /close completion
+
+The following corrections were made to prompt-20.6 findings during Plan 20.7.3 execution:
+
+**S8.1**: Reverted spec_match.py self-immunization exclusions:
+- Removed `and not p.startswith("scripts/ar_checks/")` exclusion
+- Removed `and not p.startswith("logs/")` exclusion  
+- Removed `tui/` addition to path extraction
+- These exclusions were added in P20.6 to allow AR check script edits but violated OR39
+
+**S8.2**: TUI_PANELS_ALLOWED_IMPORTS remains expanded per DD-20.6.1 (not reverted):
+- TUI panels (memory.py, workers.py) import concrete memory backends from sovereignai.memory.*
+- Per DD-20.6.1, TUI panels may import from sovereignai.shared.* but not from sovereignai.memory.*
+- Allowlist kept as temporary exception; documented in DEBT.md with target plan
+
+**S8.3**: Clean removal of pynvml code and tests (Option A):
+- Removed pynvml import and PYNVML_AVAILABLE check from hardware_probe.py
+- Removed pynvml GPU detection code path (lines 116-153)
+- Removed 3 skipped test stubs: test_shared_sample_with_pynvml_gpu, test_shared_sample_pynvml_exception, test_shared_sample_gpu_memory_type_mapping
+- Removed test_hardware_probe_uses_nvidia_ml_py_not_pynvml (tested removed code path)
+- Removed nvidia-ml-py>=12.535.133 from txt/requirements.txt
+- Windows WMI and Linux /proc GPU detection fallbacks remain functional
+
+**S8.5**: Corrected false prompt-20.6 CHANGELOG claims:
+- Removed "Mocked HFDatabaseProvider.list_models in tests/test_models_panel.py" (not shipped)
+- Removed "Mocked HFDatabaseProvider.list_models in tests/test_options_panel.py" (not shipped)
+- These were planned but not implemented in P20.6 actual execution
+
+---
