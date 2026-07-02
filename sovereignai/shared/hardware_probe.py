@@ -1,4 +1,6 @@
+import json
 import platform
+from pathlib import Path
 
 from sovereignai.shared.types import DiskUsage, GpuInfo, HardwareSnapshot
 
@@ -27,7 +29,41 @@ MEMORY_BANDWIDTH_GBPS: dict[str, int] = {
 }
 
 
+def _load_gpu_bandwidth_db() -> dict[str, dict[str, dict[str, int | str]]]:
+    """Load PCI-ID to GPU bandwidth mapping from JSON database.
+
+    Returns:
+        Nested dict structure: {vendor_id: {device_id: {name, bandwidth_gbps}}}
+    """
+    db_path = Path(__file__).parent / "gpu_bandwidth_db.json"
+    try:
+        with open(db_path) as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
 class HardwareProbe:
+    GPU_BANDWIDTH_MAP: dict[str, int] = {
+        "RTX 4090": 1008,
+        "RTX 4080": 717,
+        "RTX 4070 Ti": 504,
+        "RTX 4070": 504,
+        "RTX 4060 Ti": 288,
+        "RTX 4060": 288,
+        "RTX 3060 Laptop": 192,
+        "RTX 3060": 360,
+        "RTX 3070": 448,
+        "RTX 3080": 760,
+        "RTX 3090": 936,
+        "RTX 2080 Ti": 616,
+        "RTX 2080": 448,
+        "RTX 2070": 448,
+        "RTX 2060": 336,
+        "GTX 1660 Ti": 288,
+        "GTX 1660": 192,
+        "GTX 1650": 128,
+    }
 
     def has_nvidia_gpu(self) -> bool:
         if platform.system() == "Windows":
@@ -77,6 +113,75 @@ class HardwareProbe:
         except (ImportError, OSError):
             return False
 
+    def _get_gpu_bandwidth_by_pci_id(self, vendor_id: str, device_id: str) -> int | None:
+        """Get GPU bandwidth from PCI-ID database lookup.
+
+        Args:
+            vendor_id: PCI vendor ID (e.g., "10DE" for NVIDIA)
+            device_id: PCI device ID
+
+        Returns:
+            Bandwidth in GB/s or None if not found in database
+        """
+        db = _load_gpu_bandwidth_db()
+        if vendor_id in db and device_id in db[vendor_id]:
+            return db[vendor_id][device_id].get("bandwidth_gbps")
+        return None
+
+    def _get_gpu_bandwidth_by_name(self, gpu_name: str) -> int | None:
+        """Get GPU bandwidth from substring-based name lookup (fallback).
+
+        Args:
+            gpu_name: GPU name string
+
+        Returns:
+            Bandwidth in GB/s or None if not found
+        """
+        for key, bandwidth in self.GPU_BANDWIDTH_MAP.items():
+            if key in gpu_name:
+                return bandwidth
+        return None
+
+    def _detect_gpus(self) -> list[GpuInfo]:
+        """Detect GPUs and their information.
+
+        Returns:
+            List of GpuInfo objects with detected GPU information
+        """
+        gpus: list[GpuInfo] = []
+
+        if not self.has_nvidia_gpu():
+            return gpus
+
+        try:
+            import subprocess
+            result = subprocess.run(
+                ["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader,nounits"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            if result.returncode == 0:
+                for line in result.stdout.strip().split("\n"):
+                    if not line:
+                        continue
+                    parts = line.split(",")
+                    if len(parts) >= 2:
+                        name = parts[0].strip()
+                        vram_mb = int(parts[1].strip())
+                        bandwidth = self._get_gpu_bandwidth_by_name(name) or 0.0
+                        gpus.append(
+                            GpuInfo(
+                                name=name,
+                                vram_mb=vram_mb,
+                                memory_bandwidth_gbps=bandwidth,
+                            )
+                        )
+        except (FileNotFoundError, subprocess.TimeoutExpired, ValueError):
+            pass
+
+        return gpus
+
     def sample(self) -> HardwareSnapshot:
         import psutil
 
@@ -103,7 +208,7 @@ class HardwareProbe:
             except (PermissionError, OSError):
                 continue
 
-        gpus: list[GpuInfo] = []
+        gpus = self._detect_gpus()
         memory_bandwidth_gbps = 512.0
 
         return HardwareSnapshot(

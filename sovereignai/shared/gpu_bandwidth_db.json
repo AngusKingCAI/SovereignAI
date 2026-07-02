@@ -1,0 +1,80 @@
+{
+  "description": "PCI ID to GPU bandwidth mapping for common NVIDIA GPUs",
+  "version": "1.0",
+  "mappings": {
+    "10DE": {
+      "2684": {
+        "name": "RTX 4090",
+        "bandwidth_gbps": 1008
+      },
+      "2704": {
+        "name": "RTX 4080",
+        "bandwidth_gbps": 717
+      },
+      "2782": {
+        "name": "RTX 4070 Ti",
+        "bandwidth_gbps": 504
+      },
+      "2786": {
+        "name": "RTX 4070",
+        "bandwidth_gbps": 504
+      },
+      "2619": {
+        "name": "RTX 4060 Ti",
+        "bandwidth_gbps": 288
+      },
+      "2621": {
+        "name": "RTX 4060",
+        "bandwidth_gbps": 288
+      },
+      "2204": {
+        "name": "RTX 3080",
+        "bandwidth_gbps": 760
+      },
+      "2206": {
+        "name": "RTX 3070",
+        "bandwidth_gbps": 448
+      },
+      "2504": {
+        "name": "RTX 3060",
+        "bandwidth_gbps": 360
+      },
+      "2520": {
+        "name": "RTX 3060 Laptop",
+        "bandwidth_gbps": 192
+      },
+      "2208": {
+        "name": "RTX 3090",
+        "bandwidth_gbps": 936
+      },
+      "1E02": {
+        "name": "RTX 2080 Ti",
+        "bandwidth_gbps": 616
+      },
+      "1E04": {
+        "name": "RTX 2080",
+        "bandwidth_gbps": 448
+      },
+      "1E07": {
+        "name": "RTX 2070",
+        "bandwidth_gbps": 448
+      },
+      "1F02": {
+        "name": "RTX 2060",
+        "bandwidth_gbps": 336
+      },
+      "2182": {
+        "name": "GTX 1660 Ti",
+        "bandwidth_gbps": 288
+      },
+      "1F82": {
+        "name": "GTX 1660",
+        "bandwidth_gbps": 192
+      },
+      "1F91": {
+        "name": "GTX 1650",
+        "bandwidth_gbps": 128
+      }
+    }
+  }
+}
