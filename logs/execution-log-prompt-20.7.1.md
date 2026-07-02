@@ -1956,14 +1956,17 @@ OR42 violation: force-pushed tag after CHANGELOG update (should have waited unti
 - Test skip: test_spec_match_missing_in_diff skipped for docs-only plan with TODO(prompt-20.7.1) marker
 - OR42 violation: force-pushed tag after CHANGELOG update (should have been done before initial tag creation)
 - Execution log recreation: log was accidentally deleted and recreated
+- Post-log recreation: additional commits to update CHANGELOG and execution log before final tag
 
-**Commits**: 6
+**Commits**: 8
 - test: fix test_ar_checks.py to handle decimal plan numbers; skip spec_match for docs-only plan
 - docs: append prompt-20.7.1 entry to CHANGELOG.md per OR73
 - docs: update PLANS.md baseline for prompt-20.7.1
 - docs: move plan-20.7.1-Rev0.md to completed/
 - docs: create execution-log-prompt-20.7.1.md per OR75
 - docs: recreate execution-log-prompt-20.7.1.md
+- docs: update execution-log-prompt-20.7.1.md with OR42 violation and log recreation
+- docs: update CHANGELOG entry with check_changelog.py fix
 
 ## CHANGELOG Echo (verbatim)
 
