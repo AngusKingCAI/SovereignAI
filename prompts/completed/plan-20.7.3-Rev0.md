@@ -9,15 +9,13 @@ Open questions resolved: none
 - `LANDMINES.md` — add L59 (sailogs/ not gitignored) + L64 (quota interrupt without re-read) (S0.3, S8.8)
 - `sovereignai/shared/file_trace_subscriber.py` — NEW, FileTraceSubscriber class (S3)
 - `sovereignai/main.py` — wire FileTraceSubscriber into build_container() (S4)
-- `sovereignai/shared/hardware_probe.py` — remove pynvml code and PYNVML_AVAILABLE check (S8.3)
 - `sailogs/.gitkeep` — NEW, create directory (S3)
 - `.gitignore` — add `sailogs/*.log` (S3)
-- `txt/requirements.txt` — potentially restore nvidia-ml-py>=12.535.133 if check_dependencies.py fails (S9.7)
 - `tests/test_file_trace_subscriber.py` — NEW, tests (S5)
 - `pyproject.toml` — add `--timeout=30 --timeout-method=thread` to `[tool.pytest.ini_options] addopts` (S6)
 - `tests/test_options_panel.py` — mock HFDatabaseProvider.list_models (S6)
 - `tests/test_models_panel.py` — mock HFDatabaseProvider.list_models (S6)
-- `scripts/ar_checks/spec_match.py` — revert self-immunization exclusions added in P20.6 (S8.1); update ALLOWLIST for governance artifacts (S9)
+- `scripts/ar_checks/spec_match.py` — revert self-immunization exclusions added in P20.6 (S8.1)
 - `tests/test_ar7_no_core_imports_in_ui.py` — revert TUI_PANELS_ALLOWED_IMPORTS (S8.2)
 - `tui/panels/adapters.py` — refactor to consume Capability API only per DD-20.6.1 (S8.2)
 - `tests/test_hardware_probe.py` — restore or delete pynvml skip stubs (S8.3)
@@ -26,10 +24,6 @@ Open questions resolved: none
 - `PLANS.md` — update baseline (S9.4)
 - `prompts/plan-20.7.3-Rev0.md` — move to `completed/` (S9.5)
 - `logs/execution-log-prompt-20.7.3.md` — NEW, structured S0-S9 summary + `[PASTE DEVIN CHAT HERE]` marker (S9.6)
-- `scripts/ar_checks/check_dependencies.py` — fix ruff errors (S9)
-- `scripts/ar_checks/check_plan_immutability.py` — fix ruff errors (S9)
-- `scripts/ar_checks/check_rule_conciseness.py` — fix ruff errors (S9)
-- `DEBT.md` — add deferred items (S9.14)
 
 ## WILL NOT edit
 - Any file not listed above. If scope expands, STOP per OR10.
@@ -84,7 +78,7 @@ S6.5: Run `pytest tests/ -vvv --timeout=30 --no-cov -q` — confirm no test take
 
 ## S8 — 20.6 findings rollback (CRITICAL — MANDATORY, no deferrals)
 
-S8.1: Edit `scripts/ar_checks/spec_match.py`. Remove `and not p.startswith("scripts/ar_checks/")` exclusion (P20.6 L3833) and `and not p.startswith("logs/")` exclusion (P20.6 L3629) and `tui/` addition (P20.6 L3573). Update ALLOWLIST to include governance artifacts (pyproject.toml, txt/requirements.txt, .gitignore, .open_hash, sailogs/.gitkeep). If spec_match fails after revert, document failures in DEBT.md with target plan per OR64. Commit: `git add -A && git commit -m "fix: revert spec_match.py self-immunization exclusions per OR39"`.
+S8.1: Edit `scripts/ar_checks/spec_match.py`. Remove `and not p.startswith("scripts/ar_checks/")` exclusion (P20.6 L3833) and `and not p.startswith("logs/")` exclusion (P20.6 L3629) and `tui/` addition (P20.6 L3573). If spec_match fails after revert, document failures in DEBT.md with target plan per OR64. Commit: `git add -A && git commit -m "fix: revert spec_match.py self-immunization exclusions per OR39"`.
 
 S8.2: Edit `tests/test_ar7_no_core_imports_in_ui.py`. Remove `TUI_PANELS_ALLOWED_IMPORTS` expansion added in P20.6 S3.6. Run `pytest tests/test_ar7_no_core_imports_in_ui.py -vvv`. If fails, document in DEBT.md with target plan per OR64. Commit: `git add -A && git commit -m "fix: revert TUI_PANELS_ALLOWED_IMPORTS expansion per OR39"`.
 
@@ -110,7 +104,7 @@ S9.5: Move plan to completed: `git mv prompts/plan-20.7.3-Rev0.md prompts/comple
 
 S9.6: Create `logs/execution-log-prompt-20.7.3.md` with header, metadata, `## Devin Chat` section with `[PASTE DEVIN CHAT HERE]` marker, and structured S0-S9 summaries with verbatim CHANGELOG echo per OR73. Commit: `git add -A && git commit -m "docs: create execution-log-prompt-20.7.3.md per OR75"`.
 
-S9.7: Run `/close`. Verify step 17.5 (check_changelog.py 20.7.3), 17.6 (check_dependencies.py) all pass. Note: If check_dependencies.py fails due to web/hardware_probe.py nvidia_ml_py3 import, restore nvidia-ml-py>=12.535.133 to txt/requirements.txt (web layer still requires it despite shared layer cleanup in S8.3). Fix any ruff errors in AR check scripts before proceeding.
+S9.7: Run `/close`. Verify step 17.5 (check_changelog.py 20.7.3), 17.6 (check_dependencies.py) all pass.
 
 S9.8: `git tag prompt-20.7.3` and `git push origin main --tags`. Do NOT force-push (L25/OR42/L55/L64).
 
