@@ -33,7 +33,7 @@ class SovereignTUI(App):
                     yield Button(name.title(), id=f"btn-{name}")
             with ContentSwitcher(id="main-content"):
                 for name, module_path, class_name in PANEL_REGISTRY:
-                    yield Static(f"Loading {name.title()}...", id=f"panel-{name}")
+                    yield Static(f"Loading {name.title()}...", id=f"placeholder-{name}")
         yield Footer()
 
     def on_mount(self) -> None:
@@ -56,8 +56,9 @@ class SovereignTUI(App):
     def _load_panel(self, panel_name: str) -> None:
         from tui.panels import PANEL_REGISTRY
 
+        placeholder_id = f"placeholder-{panel_name}"
         panel_id = f"panel-{panel_name}"
-        placeholder = self.query_one(f"#{panel_id}", Static)
+        placeholder = self.query_one(f"#{placeholder_id}", Static)
 
         if not isinstance(placeholder, Static):
             return
@@ -67,7 +68,8 @@ class SovereignTUI(App):
                 module = __import__(module_path, fromlist=[class_name])
                 panel_class = getattr(module, class_name)
                 panel = panel_class(self.container, id=panel_id)
-                placeholder.replace(panel)
+                placeholder.remove()
+                self.query_one("#main-content", ContentSwitcher).mount(panel)
                 break
 
     def action_cycle_panel(self) -> None:
