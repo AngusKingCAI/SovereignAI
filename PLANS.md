@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-07-02 (prompt-20.6)
+**Last updated**: 2026-07-02 (prompt-20.7.1)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -40,12 +40,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 20.4**: Baseline → 456 tests. Delta: +1 — see CHANGELOG prompt-20.4.
 **Plan 20.5**: Baseline → 359 tests. Delta: -97 — see CHANGELOG prompt-20.5 (spec_match, TUI AR7, pynvml tests deferred).
 **Plan 20.6**: Baseline → 458 tests. Delta: +99 — see CHANGELOG prompt-20.6 (TUI tests added, deferred tests re-enabled).
+**Plan 20.7.1**: Baseline → 466 tests. Delta: +8 — see CHANGELOG prompt-20.7.1 (test_ar_checks.py decimal plan number fix).
 
 ---
 
 ## Test Baseline
 
-**Current**: 458 tests (Plan 20.6 `/close`)
+**Current**: 466 tests (Plan 20.7.1 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -109,6 +110,12 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-19 | `prompt-19` | llama.cpp Adapter, Routing Engine Failover, First-Run Experience | 407 | 0 | 0 | 2026-07-01 |
 | prompt-20 | `prompt-20` | pynvml Deprecation Fix, HfApi Direction Parameter Removal | 407 | 0 | 0 | 2026-07-01 |
 | prompt-20.1 | `prompt-20.1` | Coverage Improvement, TeacherWorker Removal, Scan Infrastructure Fix | 455 | 0 | 0 | 2026-07-01 |
+| prompt-20.2 | `prompt-20.2` | Governance Patch: spec_match.py allowlist, TUI AR7, OR51-OR53 | 455 | 0 | 0 | 2026-07-02 |
+| prompt-20.3 | `prompt-20.3` | Governance Patch: Crash Recovery, OR57-OR60, L46-L49 | 455 | 0 | 0 | 2026-07-02 |
+| prompt-20.4 | `prompt-20.4` | Governance Patch: OR61-OR66, L50-L55, TUI AR7 fix | 456 | 0 | 0 | 2026-07-02 |
+| prompt-20.5 | `prompt-20.5` | Governance Patch: pynvml removal, spec_match.py TUI paths, OR67-OR68 | 359 | 0 | 0 | 2026-07-02 |
+| prompt-20.6 | `prompt-20.6` | TUI Panel Loading Fix — ContentSwitcher, Refresh buttons, TUI tests | 458 | 0 | 0 | 2026-07-02 |
+| prompt-20.7.1 | `prompt-20.7.1` | AGENTS.md Conciseness Pass + New Rules — GR18, OR75/OR77/OR79/OR80/OR81, L60-L66 | 466 | 0 | 0 | 2026-07-02 |
 
 ---
 
