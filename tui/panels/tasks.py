@@ -27,7 +27,7 @@ class TasksPanel(Vertical):
     def _load_data(self) -> None:
         try:
             self._task_state_query = self._container.retrieve(ITaskStateQuery)
-            self._refresh_tasks()
+            self.call_after_refresh(self._refresh_tasks)
         except Exception as e:
             import traceback
             print(f"TasksPanel load error: {e}")
@@ -44,7 +44,13 @@ class TasksPanel(Vertical):
         table.add_column("Age")
         table.add_column("Actions")
 
-        tasks = self._task_state_query.list_tasks()
+        from textual import work
+
+        @work(thread=True)
+        def fetch_tasks():
+            return self._task_state_query.list_tasks()
+
+        tasks = fetch_tasks()
 
         from datetime import datetime
         now = datetime.now(UTC)

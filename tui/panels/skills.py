@@ -18,6 +18,7 @@ class SkillsPanel(Vertical):
 
     def compose(self) -> ComposeResult:
         yield Static("Skills", id="skills-title")
+        yield Button("Refresh", id="btn-refresh")
         yield DataTable(id="skills-table")
 
     def on_mount(self) -> None:
@@ -42,18 +43,25 @@ class SkillsPanel(Vertical):
         table.add_column("Category")
         table.add_column("Actions")
 
+        from sovereignai.shared.auth import AuthMiddleware
         from sovereignai.shared.types import CapabilityQuery
 
-        query = CapabilityQuery(category=CapabilityCategory.TOOL, name="")
-        response = self._api.query_capabilities("test-token", query)
+        try:
+            auth = self._container.retrieve(AuthMiddleware)
+            token = auth.generate_token("test-user")
 
-        for component_id in response.providers:
-            table.add_row(
-                str(component_id),
-                "unknown",
-                "Tool",
-                "[Invoke]"
-            )
+            query = CapabilityQuery(category=CapabilityCategory.TOOL, name="")
+            response = self._api.query_capabilities(token, query)
+
+            for component_id in response.providers:
+                table.add_row(
+                    str(component_id),
+                    "unknown",
+                    "Tool",
+                    "[Invoke]"
+                )
+        except Exception:
+            table.add_row("No skills registered", "", "", "")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-refresh":

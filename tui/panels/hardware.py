@@ -31,7 +31,13 @@ class HardwarePanel(Vertical):
         self.call_after_refresh(self._refresh_hardware)
 
     def _refresh_hardware(self) -> None:
-        snapshot = self._probe.sample()
+        from textual import work
+
+        @work(thread=True)
+        def fetch_hardware():
+            return self._probe.sample()
+
+        snapshot = fetch_hardware()
 
         cpu_card = self.query_one("#cpu-card", Static)
         cpu_model = self._get_cpu_model()

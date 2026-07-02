@@ -14,6 +14,7 @@ class WorkersPanel(Vertical):
 
     def compose(self) -> ComposeResult:
         yield Static("Workers", id="workers-title")
+        yield Button("Refresh", id="btn-refresh")
         yield DataTable(id="workers-table")
 
     def on_mount(self) -> None:
@@ -28,13 +29,22 @@ class WorkersPanel(Vertical):
         table.add_column("Status")
         table.add_column("Actions")
 
-        table.add_row(
-            "TestWorker",
-            "Test",
-            "Auto-assigned",
-            "Ready",
-            "[Test]"
-        )
+        from sovereignai.shared.lifecycle_manager import LifecycleManager
+
+        try:
+            lifecycle = self._container.retrieve(LifecycleManager)
+            for component_id in lifecycle.list_components():
+                status = lifecycle.get_status(component_id)
+                status_text = "[green]Active[/green]" if status == "ACTIVE" else f"[yellow]{status}[/yellow]"
+                table.add_row(
+                    str(component_id),
+                    "General",
+                    "Auto-assigned",
+                    status_text,
+                    "[Test]"
+                )
+        except Exception:
+            table.add_row("No workers registered", "", "", "", "")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-refresh":

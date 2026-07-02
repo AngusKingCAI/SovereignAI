@@ -17,6 +17,7 @@ class AdaptersPanel(Vertical):
 
     def compose(self) -> ComposeResult:
         yield Static("Adapters", id="adapters-title")
+        yield Button("Refresh", id="btn-refresh")
         yield DataTable(id="adapters-table")
 
     def on_mount(self) -> None:
@@ -41,21 +42,28 @@ class AdaptersPanel(Vertical):
         table.add_column("Capabilities")
         table.add_column("Actions")
 
+        from sovereignai.shared.auth import AuthMiddleware
         from sovereignai.shared.types import CapabilityCategory, CapabilityQuery
 
-        query = CapabilityQuery(category=CapabilityCategory.MODEL_INFERENCE, name="")
-        response = self._api.query_capabilities("test-token", query)
+        try:
+            auth = self._container.retrieve(AuthMiddleware)
+            token = auth.generate_token("test-user")
 
-        for component_id in response.providers:
-            capabilities = "model_inference"
-            status = "[green]Available[/green]"
+            query = CapabilityQuery(category=CapabilityCategory.MODEL_INFERENCE, name="")
+            response = self._api.query_capabilities(token, query)
 
-            table.add_row(
-                str(component_id),
-                status,
-                capabilities,
-                "[Health Check]"
-            )
+            for component_id in response.providers:
+                capabilities = "model_inference"
+                status = "[green]Available[/green]"
+
+                table.add_row(
+                    str(component_id),
+                    status,
+                    capabilities,
+                    "[Health Check]"
+                )
+        except Exception:
+            table.add_row("No adapters registered", "", "", "")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-refresh":

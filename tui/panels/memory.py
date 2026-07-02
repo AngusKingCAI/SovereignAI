@@ -23,9 +23,9 @@ class MemoryPanel(Vertical):
 
     def compose(self) -> ComposeResult:
         yield Static("Memory Backends", id="memory-title")
-        yield DataTable(id="memory-table")
         yield Button("Refresh", id="btn-refresh")
         yield Button("Test Write", id="btn-test-write")
+        yield DataTable(id="memory-table")
         yield RichLog(id="trace-log")
 
     def on_mount(self) -> None:
@@ -57,13 +57,23 @@ class MemoryPanel(Vertical):
             ("Trace", self._trace),
         ]
 
-        for name, backend in backends:
-            try:
-                records = self._get_record_count(backend)
-                last_write = self._get_last_write(backend)
-                table.add_row(name, str(records), last_write or "N/A")
-            except Exception as e:
-                table.add_row(name, "Error", str(e))
+        from textual import work
+
+        @work(thread=True)
+        def fetch_stats():
+            results = []
+            for name, backend in backends:
+                try:
+                    records = self._get_record_count(backend)
+                    last_write = self._get_last_write(backend)
+                    results.append((name, str(records), last_write or "N/A"))
+                except Exception as e:
+                    results.append((name, "Error", str(e)))
+            return results
+
+        stats = fetch_stats()
+        for name, records, last_write in stats:
+            table.add_row(name, records, last_write)
 
     def _get_record_count(self, backend: Any) -> int:
         if isinstance(backend, WorkingMemoryBackend):

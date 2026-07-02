@@ -40,15 +40,17 @@ class LogsPanel(Vertical):
             traceback.print_exc()
 
     def _load_logs(self) -> None:
-        self._load_all_events()
+        from textual import work
 
-    def _load_all_events(self) -> None:
-        if self._trace is None:
-            return
+        @work(thread=True)
+        def fetch_events():
+            return self._trace.get_events()
+
+        events = fetch_events()
         log = self.query_one("#trace-log", RichLog)
         log.clear()
 
-        for event in self._trace.get_events():
+        for event in events:
             self._append_event(event)
 
     def _append_event(self, event: Any) -> None:

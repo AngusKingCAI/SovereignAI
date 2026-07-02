@@ -21,6 +21,7 @@ class ModelsPanel(Vertical):
 
     def compose(self) -> ComposeResult:
         yield Static("Models", id="models-title")
+        yield Button("Refresh", id="btn-refresh")
         yield DataTable(id="models-table")
 
     def on_mount(self) -> None:
@@ -49,8 +50,14 @@ class ModelsPanel(Vertical):
         table.add_column("Status")
         table.add_column("Actions")
 
-        from sovereignai.shared.types import ModelFilter
-        models = self._model_catalog.list_models(ModelFilter(search=""))
+        from textual import work
+
+        @work(thread=True)
+        def fetch_models():
+            from sovereignai.shared.types import ModelFilter
+            return self._model_catalog.list_models(ModelFilter(search=""))
+
+        models = fetch_models()
 
         for model in models[:20]:
             size_gb = model.file_size_bytes / (1024**3) if model.file_size_bytes else 0

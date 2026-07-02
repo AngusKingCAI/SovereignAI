@@ -54,7 +54,10 @@ class OrchestratorPanel(Vertical):
         input_widget.value = ""
 
         try:
-            token = "test-token"
+            from sovereignai.shared.auth import AuthMiddleware
+
+            auth = self._container.retrieve(AuthMiddleware)
+            token = auth.generate_token("test-user")
             task_id = self._api.submit_task(
                 token,
                 CapabilityCategory.MODEL_INFERENCE,
