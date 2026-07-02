@@ -188,7 +188,7 @@ OR71. Diagnostic harness tests real end-to-end AI workflow with explicit model l
 
 OR72. TUI is a first-class UI consuming the same capability API as the WebUI. TUI panels must display real backend state, not placeholder text.
 
-OR73. CHANGELOG prepend discipline. At `/close` step 12, prepend a new `## prompt-N — <title>` section to CHANGELOG.md immediately below the `# CHANGELOG` header (newest at top; never append to bottom, never edit existing entries). Entry structure: `## prompt-N — <title>` header, then metadata lines (`**Date**:`, `**Plan file**:`, `**Tests**:`, `**Coverage**:`), then a bullet list of shipped scope (≥1 bullet). The verbatim entry text must be echoed in the execution log — the `+N` line-count marker alone is NOT sufficient. `scripts/ar_checks/check_changelog.py` enforces mechanically at `/close` step 17.5: exit≠0 = STOP. Editing an existing CHANGELOG entry after its plan is tagged = STOP per OR51.
+OR73. CHANGELOG append discipline. At `/close` step 12, append a new `## prompt-N — <title>` section to CHANGELOG.md at the end of the file (oldest at top; never prepend to top, never edit existing entries). Entry structure: `## prompt-N — <title>` header, then metadata lines (`**Date**:`, `**Plan file**:`, `**Tests**:`, `**Coverage**:`), then a bullet list of shipped scope (≥1 bullet). The verbatim entry text must be echoed in the execution log — the `+N` line-count marker alone is NOT sufficient. `scripts/ar_checks/check_changelog.py` enforces mechanically at `/close` step 17.5: exit≠0 = STOP. Editing an existing CHANGELOG entry after its plan is tagged = STOP per OR51.
 
 ---
 

@@ -241,7 +241,7 @@ Append-only. Never edit or remove entries. Format:
 **Graduated to**: OR65.
 
 ## L47 — CHANGELOG edited mid-execution or not appended
-**Trigger**: Editing CHANGELOG before `/close` step 12, skipping the prepend, or revising an existing entry after its plan was tagged.
+**Trigger**: Editing CHANGELOG before `/close` step 12, skipping the append, or revising an existing entry after its plan was tagged.
 **Impact**: Audit trail broken; CHANGELOG claims unshipped scope (OR55 violation); future Architects cannot reconstruct what shipped.
 **Graduated to**: OR73.
 
