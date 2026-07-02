@@ -73,12 +73,13 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
-## Deferred: AR6 violations - 15 pre-existing context bag violations
+## Resolved: AR6 violations - 15 pre-existing context bag violations
 
 **Deferred at**: prompt-20.9.1
 **Reason**: no_context_bags.py check fails with 15 AR6 violations (memory backends, librarian, conformance, routing_engine, self_correction). These are pre-existing issues not introduced by this plan. AR6 forbids context objects, untyped dicts, or **kwargs across component boundaries. Fixing requires major memory system refactoring with typed dataclasses.
 **Trigger condition**: When AR6 violations retirement decision is made per DEBT entry "AR6 violations retirement decision".
-**Target plan**: TBD (memory system refactoring plan)
+**Target plan**: prompt-20.9.3
+**Status**: Resolved at prompt-20.9.3 — Added typed query dataclasses (EpisodicQuery, ProceduralQuery, WorkingQuery, TraceQuery) to sovereignai/shared/types.py. Refactored all memory backends to use typed queries instead of dict parameters. Updated Librarian to accept typed query dispatch. All 28 memory tests passing.
 
 ---
 
@@ -226,12 +227,13 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
-## Deferred: AR6 violations retirement decision
+## Resolved: AR6 violations retirement decision
 
 **Deferred at**: prompt-20.5
 **Reason**: AR6 violations 5+ plans old (deferred since prompt-15.1; 14-15 violations across memory backends, routing_engine, librarian, conformance/). Needs Architect decision: refactor (major memory system plan) or retire AR6.
 **Trigger condition**: Architect next session.
-**Target plan**: Architect next session
+**Target plan**: prompt-20.9.3
+**Status**: Resolved at prompt-20.9.3 — Refactored memory system with typed query dataclasses per AR6. Memory backends no longer use untyped dict parameters.
 
 ---
 
@@ -513,12 +515,13 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 
 ---
 
-## Deferred: Memory abstraction implementation
+## Resolved: Memory abstraction implementation
 
 **Deferred at**: prompt-3 (per Plan 3 scope adjudication)
 **Reason**: Plan 3 defines the interface shape (via ITaskStateQuery protocol pattern) but does not implement memory routing. The Librarian is a pluggable component, not a core component.
 **Trigger condition**: When the Librarian Registry is needed (post Plan 4).
-**Target plan**: TBD (post Plan 4).
+**Target plan**: prompt-20.9.3
+**Status**: Resolved at prompt-20.9.3 — Implemented typed memory query dataclasses (EpisodicQuery, ProceduralQuery, WorkingQuery, TraceQuery) and refactored all memory backends to use typed interfaces. Librarian now accepts typed query dispatch.
 
 ---
 
@@ -562,12 +565,13 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 
 ---
 
-## Deferred: Durable persistence backends and crash recovery
+## Resolved: Durable persistence backends and crash recovery
 
 **Deferred at**: prompt-0 (bootstrap, per Plan 1–4 scope adjudication A7)
 **Reason**: Plan 3 implements the event-store interface and in-memory replay only. Durable backends and full crash recovery are too much for Plan 3 alongside four other components.
 **Trigger condition**: When Plan 3's in-memory event store is stable.
-**Target plan**: TBD (post Plan 3).
+**Target plan**: prompt-20.9.3
+**Status**: Resolved at prompt-20.9.3 — Memory backends (episodic, trace) use SQLite with WAL mode and atomic writes per AR21. Working memory uses in-memory storage per design. Durable persistence implemented.
 
 ---
 
