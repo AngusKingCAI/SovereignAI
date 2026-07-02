@@ -13,13 +13,13 @@ class MockDatabaseProvider(DatabaseProvider):
     def list_models(self) -> list[ModelEntry]:
         return []
 
-    def download_model(self, model_id: str) -> None:
+    def download_model(self, _model_id: str) -> None:
         pass
 
-    def update_model(self, model_id: str) -> None:
+    def update_model(self, _model_id: str) -> None:
         pass
 
-    def uninstall_model(self, model_id: str) -> None:
+    def uninstall_model(self, _model_id: str) -> None:
         pass
 
     def health_check(self) -> DatabaseStatus:
@@ -64,13 +64,13 @@ def test_find_model() -> None:
                 )
             ]
 
-        def download_model(self, model_id: str) -> None:
+        def download_model(self, _model_id: str) -> None:
             pass
 
-        def update_model(self, model_id: str) -> None:
+        def update_model(self, _model_id: str) -> None:
             pass
 
-        def uninstall_model(self, model_id: str) -> None:
+        def uninstall_model(self, _model_id: str) -> None:
             pass
 
         def health_check(self) -> DatabaseStatus:

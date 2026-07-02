@@ -40,7 +40,7 @@ def test_procedural_backend_lock_timeout_raises_exception(procedural_backend: Pr
     lock_path = procedural_backend._path + '.lock'
     with open(lock_path, 'w') as f:
         f.write('test-pid')
-    procedural_backend._acquire_lock = lambda timeout_s=0.1: False
+    procedural_backend._acquire_lock = lambda _timeout_s=0.1: False
     with pytest.raises(ProceduralMemoryLockTimeoutError):
         procedural_backend.store(data={'pattern': 'test pattern', 'confidence': 0.9})
     import contextlib
