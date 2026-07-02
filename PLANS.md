@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-07-02 (prompt-20.9.1)
+**Last updated**: 2026-07-02 (prompt-20.9.2)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -45,6 +45,7 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 20.7.3**: Baseline → 464 tests. Delta: -2 — see CHANGELOG prompt-20.7.3 (removed pynvml tests, test count correction).
 **Plan 20.9**: Baseline → 480 tests. Delta: +16 — see CHANGELOG prompt-20.9 (workflow optimization scripts + tests).
 **Plan 20.9.1**: Baseline → 480 tests. Delta: 0 — see CHANGELOG prompt-20.9.1 (TUI AR7 compliance refactoring, scoped tests only).
+**Plan 20.9.2**: Baseline → TBD tests. Delta: TBD — see CHANGELOG prompt-20.9.2.
 
 ---
 

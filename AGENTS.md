@@ -122,6 +122,8 @@ OR25. All tests have a 30s timeout via pytest-timeout (pyproject.toml addopts = 
 
 OR26. Follow skill workflows systematically. Never skip steps or pick-and-choose based on perceived relevance. Execute all steps in sequence as designed.
 
+OR27. Never delete prompt files (execution logs in `logs/`, plan files in `prompts/` and `prompts/completed/`). These are permanent history records.
+
 ---
 
 See `LANDMINES.md` for failure patterns linked to rules.
