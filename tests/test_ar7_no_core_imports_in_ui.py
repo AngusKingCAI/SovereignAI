@@ -69,6 +69,16 @@ TUI_PANELS_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.types.TraceLevel',
     'sovereignai.shared.task_state_machine',
     'sovereignai.shared.task_state_machine.ITaskStateQuery',
+    'sovereignai.shared.lifecycle_manager',
+    'sovereignai.shared.lifecycle_manager.LifecycleManager',
+    'sovereignai.memory.episodic_backend',
+    'sovereignai.memory.episodic_backend.EpisodicMemoryBackend',
+    'sovereignai.memory.procedural_backend',
+    'sovereignai.memory.procedural_backend.ProceduralMemoryBackend',
+    'sovereignai.memory.working_backend',
+    'sovereignai.memory.working_backend.WorkingMemoryBackend',
+    'sovereignai.memory.trace_backend',
+    'sovereignai.memory.trace_backend.TraceMemoryBackend'
 }
 UI_PACKAGE_DENYLIST = {  # noqa: E501
     'sovereignai.shared',

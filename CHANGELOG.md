@@ -1134,8 +1134,6 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Modified all panel refresh methods to use textual.work decorator for async data loading
 - Added TUI_PANELS_ALLOWED_IMPORTS to test_ar7_no_core_imports_in_ui.py per DD-20.6.1
 - Created tests/tui/test_tui_main.py with Pilot-based TUI tests
-- Mocked HFDatabaseProvider.list_models in tests/test_models_panel.py to avoid 501 live API calls
-- Mocked HFDatabaseProvider.list_models in tests/test_options_panel.py to avoid stalling
 - Skipped 3 pynvml tests in test_hardware_probe.py (code path removed in P20.5 S3.5)
 - Updated spec_match.py to add tui/ to path extraction and logs/, scripts/ar_checks/ to allowlist
 - All TUI panels now consume capability API only per AR7
