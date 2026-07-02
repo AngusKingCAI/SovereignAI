@@ -47,12 +47,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 20.9.1**: Baseline → 480 tests. Delta: 0 — see CHANGELOG prompt-20.9.1 (TUI AR7 compliance refactoring, scoped tests only).
 **Plan 20.9.2**: Baseline → 59 tests. Delta: -405 — see CHANGELOG prompt-20.9.2 (hardware probe refactor, scoped tests only).
 **Plan 20.9.3**: Baseline → 464 tests. Delta: +405 — see CHANGELOG prompt-20.9.3 (typed memory queries, AR6 fixes).
+**Plan 20.9.4**: Baseline → 468 tests. Delta: +4 — see CHANGELOG prompt-20.9.4 (health_check caching, generate() timeout).
 
 ---
 
 ## Test Baseline
 
-**Current**: 464 tests (Plan 20.9.3 `/close`)
+**Current**: 468 tests (Plan 20.9.4 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -74,11 +75,11 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | **Ruff** | 0 errors | Plan 1 | D100/D104 excluded per pyproject.toml |
 | **Mypy (file-scoped)** | 0 errors | Plan 1 | File-scoped per OR2 |
 | **Bandit** | 0 findings | Plan 11 | 2 nosec B608 for SQL injection warnings (parameterized queries) |
-| **pip-audit** | 5 CVEs in setuptools | Plan 11 | Not blocking — setuptools 65.5.0 has known vulnerabilities |
+| **pip-audit** | 1 CVE in diskcache | Plan 20.9.4 | diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md) |
 | **Vulture** | 0 findings | Plan 1 | High-confidence (≥80) only |
 | **detect-secrets** | pass | Plan 1 | Baseline established prompt-0 |
 | **pre-commit** | pass | Plan 1 | Hooks configured at prompt-0 |
-| **Coverage** | 90% | Plan 20.1 | Increased from 83% (Plan 20) to 90% — added comprehensive tests for procedural_backend, self_correction skill, librarian, conformance runner. Target: 90% floor. Coverage measured at every /close per OR43. |
+| **Coverage** | 89% | Plan 20.9.4 | Scoped tests only (routing_engine, adapters). Target: 90% floor. Coverage measured at every /close per OR43. |
 
 ---
 
@@ -131,7 +132,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 ## Active Plan
 
-**Plan 20.9.4** — CVE Remediation and Performance Improvements — Upgrade diskcache/setuptools, add health_check caching, implement generate() timeout
+None (plan 20.9.4 completed)
 
 ---
 
@@ -139,11 +140,11 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 20.9.4 | CVE Remediation and Performance Improvements — Upgrade diskcache/setuptools, add health_check caching, implement generate() timeout | prompt-20.9.3 | 🔄 Active |
-| 2 | Plan 20.9.5 | Future plan | prompt-20.9.4 | ⏳ Pending |
-| 3 | Plan 21 | UI overhaul — 10 panels (deferred per user request) | Plan 20 | ⏳ Pending |
-| 4 | Plan 22 | Future plan | Plan 21 | ⏳ Pending |
-| 5 | Plan 23 | Future plan | Plan 22 | ⏳ Pending |
+| 1 | Plan 20.9.5 | Future plan | prompt-20.9.4 | ⏳ Pending |
+| 2 | Plan 21 | UI overhaul — 10 panels (deferred per user request) | Plan 20 | ⏳ Pending |
+| 3 | Plan 22 | Future plan | Plan 21 | ⏳ Pending |
+| 4 | Plan 23 | Future plan | Plan 22 | ⏳ Pending |
+| 5 | Plan 24 | Future plan | Plan 23 | ⏳ Pending |
 
 ---
 

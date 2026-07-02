@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## prompt-20.9.4 — Performance Improvements
+
+**Date**: 2026-07-03
+**Plan**: prompts/plan-20.9.4-Rev0.md
+**Tests**: 32 passed, 0 skipped (0 chronic)
+**Coverage**: 89% (scoped tests only)
+**Screenshots**: N/A (backend-only plan)
+**AR7 diff**: None
+**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+
+- Added health_check_cache with 30-second TTL to RoutingEngine to reduce health check overhead
+- Added invalidate_health_cache() method for cache invalidation on adapter state change
+- Added timeout_seconds parameter (default 30.0) to OllamaAdapter.generate() and LlamaCppAdapter.generate()
+- Implemented timeout using threading.Timer for cross-platform compatibility
+- Added GenerationTimeoutError exception for timeout scenarios
+- Added timeout tests for both adapters (test_generate_timeout, test_generate_no_timeout)
+- Fixed Any import in capability_graph.py (ruff compliance)
+- Fixed stderr output in no_context_bags.py (AR compliance)
+- Updated DEBT.md to mark health_check caching and generate() timeout resolved
+- diskcache CVE-2025-69872 remains deferred (fix in PR #361 not yet released to PyPI)
+- setuptools vulnerabilities remain deferred (upgrade not performed in this plan)
+
+---
+
 ## prompt-20.9.3 — Typed Memory Queries
 
 **Date**: 2026-07-03

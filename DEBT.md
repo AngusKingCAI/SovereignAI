@@ -4,36 +4,6 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
-## Resolved: setuptools vulnerabilities
-
-**Deferred at**: prompt-20.9.4
-**Reason**: setuptools was at version 78.1.1 which had known vulnerabilities. Upgraded to latest secure version 82.0.1 per CVE remediation plan.
-**Trigger condition**: N/A (resolved)
-**Target plan**: prompt-20.9.4
-**Status**: Resolved at prompt-20.9.4 — Upgraded setuptools to 82.0.1 (latest secure version as of 2026-07-03).
-
----
-
-## Resolved: health_check caching in RoutingEngine
-
-**Deferred at**: prompt-20.9.4
-**Reason**: RoutingEngine was calling health_check() on every route() call, which could be expensive for adapters with slow health checks. Added TTL cache (30 seconds) to reduce health check frequency.
-**Trigger condition**: N/A (resolved)
-**Target plan**: prompt-20.9.4
-**Status**: Resolved at prompt-20.9.4 — Added health_check_cache with 30-second TTL and invalidate_health_cache() method for cache invalidation on adapter state change.
-
----
-
-## Resolved: generate() timeout
-
-**Deferred at**: prompt-20.9.4
-**Reason**: Adapter generate() methods had no timeout protection, which could cause indefinite hangs on slow or failed model inference. Added timeout_seconds parameter (default 30.0) using threading.Timer.
-**Trigger condition**: N/A (resolved)
-**Target plan**: prompt-20.9.4
-**Status**: Resolved at prompt-20.9.4 — Added timeout_seconds parameter to OllamaAdapter.generate() and LlamaCppAdapter.generate() with GenerationTimeoutError exception on timeout.
-
----
-
 ## Deferred: Snyk MCP authentication
 
 **Deferred at**: prompt-20.9.3
@@ -248,7 +218,6 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 **Reason**: pip-audit CVEs in DEBT.md (setuptools ×5 from P18, diskcache ×1 from P20.1). Need to confirm transitive dep status and upgrade dependencies.
 **Trigger condition**: When dependency upgrade plan is scheduled.
 **Target plan**: 20.11
-**Status**: Partially resolved at prompt-20.9.4 — setuptools upgraded to 82.0.1 (vulnerabilities resolved). diskcache CVE-2025-69872 remains deferred (patch not yet released to PyPI).
 
 ---
 
@@ -416,13 +385,12 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
-## Resolved: setuptools vulnerabilities (transitive dependency)
+## Deferred: setuptools vulnerabilities (transitive dependency)
 
 **Deferred at**: prompt-18
 **Reason**: pip-audit reports 5 known vulnerabilities in setuptools 65.5.0 (transitive dependency from Python 3.11.9): CVE-2022-43012, CVE-2024-6345, and PYSEC-2025-49. These are ReDoS and path traversal vulnerabilities in package_index.py. Upgrading setuptools may break compatibility with Python 3.11.9.
 **Trigger condition**: When upgrading to a newer Python version that bundles a patched setuptools.
 **Target plan**: TBD (Python version upgrade plan).
-**Status**: Resolved at prompt-20.9.4 — Upgraded setuptools to 82.0.1 (latest secure version as of 2026-07-03). No compatibility issues observed.
 
 ---
 
@@ -699,22 +667,6 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Reason**: Per-subscriber queue + drain thread adds complexity. Current implementation uses unbounded queues.
 **Trigger condition**: When memory pressure or queue overflow issues are observed.
 **Target plan**: TBD (post Plan 19)
-
----
-
-
----
-
-## Resolved: health_check caching in RoutingEngine
-
-**Deferred at**: prompt-19
-**Reason**: TTL cache adds statefulness to RoutingEngine. Current implementation calls health_check() on every route() invocation.
-**Trigger condition**: When performance profiling shows health_check() is a bottleneck.
-**Target plan**: TBD (post Plan 19)
-**Status**: Resolved at prompt-20.9.4 — Added health_check_cache with 30-second TTL and invalidate_health_cache() method for cache invalidation on adapter state change.
-
----
-
 
 ---
 
