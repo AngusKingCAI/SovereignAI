@@ -2,12 +2,6 @@ import platform
 
 from sovereignai.shared.types import DiskUsage, GpuInfo, HardwareSnapshot
 
-try:
-    import nvidia_ml_py3 as pynvml
-    PYNVML_AVAILABLE = True
-except ImportError:
-    PYNVML_AVAILABLE = False
-
 
 GPU_MEMORY_TYPE_MAP: dict[str, str] = {
     "RTX 4090": "GDDR6X",
@@ -112,45 +106,6 @@ class HardwareProbe:
 
         gpus: list[GpuInfo] = []
         memory_bandwidth_gbps = 512.0
-
-        if PYNVML_AVAILABLE:
-            try:
-                pynvml.nvmlInit()
-                device_count = pynvml.nvmlDeviceGetCount()
-                for i in range(device_count):
-                    handle = pynvml.nvmlDeviceGetHandleByIndex(i)
-                    name = pynvml.nvmlDeviceGetName(handle)
-                    if isinstance(name, bytes):
-                        name = name.decode("utf-8")
-
-                    mem_info = pynvml.nvmlDeviceGetMemoryInfo(handle)
-                    vram_total_mb = mem_info.total // (1024**2)
-                    vram_used_mb = mem_info.used // (1024**2)
-
-                    utilization = pynvml.nvmlDeviceGetUtilizationRates(handle)
-                    utilization_percent = float(utilization.gpu)
-
-                    memory_type = None
-                    for gpu_substring, mem_type in GPU_MEMORY_TYPE_MAP.items():
-                        if gpu_substring in name:
-                            memory_type = mem_type
-                            bandwidth = float(MEMORY_BANDWIDTH_GBPS.get(mem_type, 512))
-                            if bandwidth > memory_bandwidth_gbps:
-                                memory_bandwidth_gbps = bandwidth
-                            break
-
-                    gpus.append(
-                        GpuInfo(
-                            name=name,
-                            vram_total_mb=vram_total_mb,
-                            vram_used_mb=vram_used_mb,
-                            utilization_percent=utilization_percent,
-                            memory_type=memory_type,
-                        )
-                    )
-                pynvml.nvmlShutdown()
-            except Exception:
-                pass
 
         return HardwareSnapshot(
             cpu_percent=cpu_percent,

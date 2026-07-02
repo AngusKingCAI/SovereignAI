@@ -439,4 +439,16 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 **Reason**: S3.5 removed pynvml fallback (dual-import strategy). Tests test_shared_sample_with_pynvml_gpu, test_shared_sample_pynvml_exception, test_shared_sample_gpu_memory_type_mapping mock the old pynvml import path. Need to refactor to mock nvidia_ml_py3 correctly or delete if testing dual-import behavior is no longer relevant.
 **Trigger condition**: When pynvml test strategy is decided.
 **Target plan**: 20.6
+**Resolved at**: prompt-20.7.3 (deleted pynvml skip stubs and pynvml code from hardware_probe.py per S8.3 Option A - clean removal of dead code).
+
+---
+
+## Deferred: TUI memory.py AR7 compliance
+
+**Deferred at**: prompt-20.7.3
+**Reason**: tui/panels/memory.py imports concrete memory backends (EpisodicMemoryBackend, ProceduralMemoryBackend, WorkingMemoryBackend, TraceMemoryBackend) directly from sovereignai.memory.*, violating AR7. Per DD-20.6.1, TUI panels may import from sovereignai.shared.* but not from sovereignai.memory.*. Refactoring would require a Capability API layer for memory operations that doesn't exist yet. Added back to TUI_PANELS_ALLOWED_IMPORTS as temporary exception per OR64.
+**Trigger condition**: When Capability API is extended with memory query operations or a separate memory panel API is designed.
+**Target plan**: TBD (TUI refactoring plan)
+
+---
 

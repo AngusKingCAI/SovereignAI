@@ -20,6 +20,7 @@ class MemoryPanel(Vertical):
         self._procedural = None
         self._working = None
         self._trace = None
+        self._api = None
 
     def compose(self) -> ComposeResult:
         yield Static("Memory Backends", id="memory-title")

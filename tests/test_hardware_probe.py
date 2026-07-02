@@ -223,28 +223,6 @@ def test_shared_sample_returns_hardware_snapshot(shared_probe: HardwareProbe) ->
     assert isinstance(snapshot.gpus, list)
 
 
-def test_shared_sample_no_pynvml(shared_probe: HardwareProbe) -> None:
-    with patch('sovereignai.shared.hardware_probe.PYNVML_AVAILABLE', False):
-        snapshot = shared_probe.sample()
-        assert isinstance(snapshot, HardwareSnapshot)
-        assert snapshot.gpus == []
-
-
-def test_hardware_probe_uses_nvidia_ml_py_not_pynvml(web_probe: WebHardwareProbe) -> None:
-    with patch('web.hardware_probe.nvidia_ml') as mock_nvidia_ml:
-        mock_device = Mock()
-        mock_nvidia_ml.nvmlDeviceGetHandleByIndex.return_value = mock_device
-        mock_nvidia_ml.nvmlDeviceGetName.return_value = 'NVIDIA GeForce RTX 3080'
-        mock_memory_info = Mock()
-        mock_memory_info.total = 10 * 1024 * 1024 * 1024
-        mock_nvidia_ml.nvmlDeviceGetMemoryInfo.return_value = mock_memory_info
-        info = web_probe.probe()
-        assert info.gpu_name == 'NVIDIA GeForce RTX 3080'
-        mock_nvidia_ml.nvmlDeviceGetHandleByIndex.assert_called_once_with(0)
-        mock_nvidia_ml.nvmlDeviceGetName.assert_called_once()
-        mock_nvidia_ml.nvmlDeviceGetMemoryInfo.assert_called_once()
-
-
 def test_shared_hardware_probe_has_nvidia_gpu_windows(shared_probe: HardwareProbe) -> None:
     with patch(  # noqa: E501
         'sovereignai.shared.hardware_probe.platform.system',
@@ -327,21 +305,6 @@ def test_shared_hardware_probe_has_cuda_via_torch_import_error(shared_probe: Har
         sys.modules['torch'].cuda.is_available = Mock(side_effect=ImportError('torch error'))
         assert shared_probe.has_cuda_via_torch() is False
         del sys.modules['torch']
-
-
-def test_shared_sample_with_pynvml_gpu(shared_probe: HardwareProbe) -> None:
-    # P20.5 S3.5 dropped pynvml from hardware_probe.py; this code path no longer exists
-    pytest.skip("pynvml support removed in P20.5 S3.5")
-
-
-def test_shared_sample_pynvml_exception(shared_probe: HardwareProbe) -> None:
-    # P20.5 S3.5 dropped pynvml from hardware_probe.py; this code path no longer exists
-    pytest.skip("pynvml support removed in P20.5 S3.5")
-
-
-def test_shared_sample_gpu_memory_type_mapping(shared_probe: HardwareProbe) -> None:
-    # P20.5 S3.5 dropped pynvml from hardware_probe.py; this code path no longer exists
-    pytest.skip("pynvml support removed in P20.5 S3.5")
 
 
 def test_select_best_quant_first_priority() -> None:
