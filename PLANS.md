@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-07-02 (prompt-20.7.1)
+**Last updated**: 2026-07-02 (prompt-20.7.2)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -41,12 +41,13 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 20.5**: Baseline → 359 tests. Delta: -97 — see CHANGELOG prompt-20.5 (spec_match, TUI AR7, pynvml tests deferred).
 **Plan 20.6**: Baseline → 458 tests. Delta: +99 — see CHANGELOG prompt-20.6 (TUI tests added, deferred tests re-enabled).
 **Plan 20.7.1**: Baseline → 466 tests. Delta: +8 — see CHANGELOG prompt-20.7.1 (test_ar_checks.py decimal plan number fix).
+**Plan 20.7.2**: Baseline → 466 tests. Delta: 0 — see CHANGELOG prompt-20.7.2 (AR-check scripts + skills integration, no test changes).
 
 ---
 
 ## Test Baseline
 
-**Current**: 466 tests (Plan 20.7.1 `/close`)
+**Current**: 466 tests (Plan 20.7.2 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -116,6 +117,7 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-20.5 | `prompt-20.5` | Governance Patch: pynvml removal, spec_match.py TUI paths, OR67-OR68 | 359 | 0 | 0 | 2026-07-02 |
 | prompt-20.6 | `prompt-20.6` | TUI Panel Loading Fix — ContentSwitcher, Refresh buttons, TUI tests | 458 | 0 | 0 | 2026-07-02 |
 | prompt-20.7.1 | `prompt-20.7.1` | AGENTS.md Conciseness Pass + New Rules — GR18, OR75/OR77/OR79/OR80/OR81, L60-L66 | 466 | 0 | 0 | 2026-07-02 |
+| prompt-20.7.2 | `prompt-20.7.2` | AR-Check Scripts + Skills Integration — check_dependencies.py, check_plan_immutability.py, check_rule_conciseness.py, /open and /close skill updates | 466 | 0 | 0 | 2026-07-02 |
 
 ---
 
