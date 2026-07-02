@@ -36,21 +36,13 @@ class SovereignTUI(App):
                     yield Cls(self.container, id=f"panel-{name}")
         yield Footer()
 
-    async def on_mount(self) -> None:
-        from textual import work
+    def on_mount(self) -> None:
+        self.call_after_refresh(self._load_container)
 
-        @work(thread=True)
-        async def build_container() -> None:
-            from sovereignai.main import build_container
-
-            self.container = await self._build_container()
-
-        await build_container()
-
-    async def _build_container(self):
+    def _load_container(self) -> None:
         from sovereignai.main import build_container
 
-        return build_container()
+        self.container = build_container()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         button_id = event.button.id
