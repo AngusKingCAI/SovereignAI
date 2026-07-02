@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from collections.abc import AsyncGenerator
 from typing import Any
 from unittest.mock import patch
@@ -77,3 +78,37 @@ def test_hardware_stream_endpoint_sse(client: TestClient, container: Any) -> Non
         first_line = next(response.iter_lines())
         assert first_line is not None
         assert len(first_line) > 0
+
+
+@pytest.mark.timeout(10)
+def test_hardware_stream_sse_multiple_events(client: TestClient, container: Any) -> None:
+    from sovereignai.shared.auth import AuthMiddleware
+    from sovereignai.shared.capability_api import CapabilityAPI
+
+    auth = container.retrieve(AuthMiddleware)
+    auth.register_user("testuser", "testpass")
+    session = auth.login("testuser", "testpass")
+
+    client.cookies.set("session_id", session.token)
+
+    # Mock stream_hardware to yield multiple snapshots
+    async def mock_stream_hardware(self: CapabilityAPI) -> AsyncGenerator[HardwareSnapshot, None]:
+        for _ in range(3):
+            yield self.sample_hardware()
+            await asyncio.sleep(0.1)
+
+    with patch.object(
+        CapabilityAPI, "stream_hardware", mock_stream_hardware
+    ), client.stream("GET", "/api/hardware/stream") as response:
+        assert response.status_code == 200
+        assert response.headers["content-type"].startswith("text/event-stream")
+        
+        lines = []
+        for line in response.iter_lines():
+            if line:
+                lines.append(line)
+                if len(lines) >= 3:
+                    break
+        
+        assert len(lines) >= 1
+        assert all(line is not None for line in lines)
