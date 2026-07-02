@@ -43,6 +43,7 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 20.7.1**: Baseline → 466 tests. Delta: +8 — see CHANGELOG prompt-20.7.1 (test_ar_checks.py decimal plan number fix).
 **Plan 20.7.2**: Baseline → 466 tests. Delta: 0 — see CHANGELOG prompt-20.7.2 (AR-check scripts + skills integration, no test changes).
 **Plan 20.7.3**: Baseline → 464 tests. Delta: -2 — see CHANGELOG prompt-20.7.3 (removed pynvml tests, test count correction).
+**Plan 20.9**: Baseline → 480 tests. Delta: +16 — see CHANGELOG prompt-20.9 (workflow optimization scripts + tests).
 
 ---
 

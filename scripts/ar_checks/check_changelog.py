@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""OR73 enforcement: CHANGELOG append discipline.
+"""OR73 enforcement: CHANGELOG prepend discipline.
 
 Usage: check_changelog.py <plan_number>
 Example: check_changelog.py 20.5
 
 Checks:
-  1. CHANGELOG.md exists and ends with `## prompt-N — `
+  1. CHANGELOG.md exists and starts with `## prompt-N — `
      (the newest entry matches the plan number passed as argv[1]).
-  2. The newest entry is at the end of the file (no orphan content after).
-  3. The newest entry has ≥1 bullet point (`- ` line) before EOF.
-  4. No `## prompt-M` entry appears AFTER the newest entry
-     (would indicate an out-of-order append).
+  2. The newest entry is at the top of the file (after header, no other prompt entries before it).
+  3. The newest entry has ≥1 bullet point (`- ` line).
+  4. No `## prompt-M` entry appears BEFORE the newest entry
+     (would indicate an out-of-order prepend).
   5. Exit 0 if all checks pass; exit 1 with diagnostic on any failure.
 """
 
@@ -32,7 +32,7 @@ def main() -> int:
 
     content = changelog_path.read_text()
 
-    # Check 1: File ends with header and newest entry matches plan number
+    # Check 1: File starts with header and newest entry matches plan number
     # Check line by line to handle various dash characters
     lines = content.splitlines()
     if len(lines) < 3:
@@ -42,36 +42,43 @@ def main() -> int:
         print("ERROR: CHANGELOG.md does not start with '# CHANGELOG'", file=sys.stderr)
         return 1
 
-    # Find the last entry (should be at the end)
-    last_entry_line = None
-    for i in range(len(lines) - 1, -1, -1):
+    # Find the first entry (should be at the top, after header)
+    first_entry_line = None
+    for i in range(1, len(lines)):  # Skip header line
         if lines[i].startswith("## prompt-"):
-            last_entry_line = i
+            first_entry_line = i
             break
 
-    if last_entry_line is None:
+    if first_entry_line is None:
         print("ERROR: No prompt entry found in CHANGELOG.md", file=sys.stderr)
         return 1
 
-    if not lines[last_entry_line].startswith(f"## prompt-{plan_number}"):
-        print(f"ERROR: Last entry does not start with '## prompt-{plan_number}'", file=sys.stderr)
-        print(f"Actual: {lines[last_entry_line][:80]}", file=sys.stderr)
+    if not lines[first_entry_line].startswith(f"## prompt-{plan_number}"):
+        print(f"ERROR: First entry does not start with '## prompt-{plan_number}'", file=sys.stderr)
+        print(f"Actual: {lines[first_entry_line][:80]}", file=sys.stderr)
         return 1
 
-    # Check 2: No other prompt entry after newest entry
+    # Check 2: No other prompt entry before newest entry (except header)
     found_another_entry = False
-    for i in range(last_entry_line + 1, len(lines)):
+    for i in range(1, first_entry_line):  # Check between header and first entry
         if lines[i].startswith("## prompt-"):
             found_another_entry = True
             break
 
     if found_another_entry:
-        print(f"ERROR: Another prompt entry found after prompt-{plan_number}", file=sys.stderr)
+        print(f"ERROR: Another prompt entry found before prompt-{plan_number}", file=sys.stderr)
         return 1
 
-    # Check 3: Newest entry has ≥1 bullet point before EOF
+    # Check 3: Newest entry has ≥1 bullet point
     bullet_count = 0
-    for line in lines[last_entry_line:]:
+    # Find the end of this entry (next prompt entry or EOF)
+    entry_end = len(lines)
+    for i in range(first_entry_line + 1, len(lines)):
+        if lines[i].startswith("## prompt-"):
+            entry_end = i
+            break
+
+    for line in lines[first_entry_line:entry_end]:
         if line.startswith("- "):
             bullet_count += 1
 
@@ -79,7 +86,7 @@ def main() -> int:
         print(f"ERROR: Entry for prompt-{plan_number} has no bullet points", file=sys.stderr)
         return 1
 
-    # Check 4: No prompt-M entry after newest entry (already covered by check 2)
+    # Check 4: No prompt-M entry before newest entry (already covered by check 2)
 
     print(f"OR73: CHANGELOG entry for prompt-{plan_number} is correctly formatted")
     return 0

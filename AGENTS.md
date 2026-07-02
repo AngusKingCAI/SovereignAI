@@ -78,7 +78,7 @@ OR3. Never use `replace_all`. Edit each occurrence individually.
 
 OR4. Structured-markdown edits (AGENTS.md, AI_HANDOFF.md, plans, CHANGELOG, workflow files) use Edit tool only. Never `sed` or redirection.
 
-OR5. CHANGELOG.md and LANDMINES.md append-only. Never insert at top or edit existing entries.
+OR5. CHANGELOG.md and LANDMINES.md prepend-only (newest entries at top). Never append to end or edit existing entries.
 
 OR6. Pre-declare scope before editing. List files WILL edit and will NOT edit.
 

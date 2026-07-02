@@ -17,7 +17,7 @@ Run the /scan workflow for the current plan. Whole-repo scan. No new features. F
 
 1. Run `/close` skill steps 1-8 (tests, ruff, mypy full repo, bandit, pip-audit, vulture, detect-secrets, AR checks). Additionally run auto-discovered tools from `pyproject.toml`/`.pre-commit-config.yaml`. For each tool: if exit≠0, STOP that tool's check, fix it, then continue. Do NOT cascade — once a tool passes (or is fixed), proceed to next tool. After all tools pass, continue to steps 2-13 regardless of what was found.
 
-2. Scan `LANDMINES.md` — propose rules for any landmine without corresponding OR. If new OR added: append to OR14 always-on subset if it targets an 18.x failure class; otherwise note in plan brief.
+2. Scan `LANDMINES.md` — propose rules for any landmine without corresponding OR. If new OR added: prepend to OR14 always-on subset if it targets an 18.x failure class; otherwise note in plan brief.
 
 3. Scan `CHANGELOG.md` — verify every plan in completed batch has entry.
 

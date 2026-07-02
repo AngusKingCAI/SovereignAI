@@ -59,7 +59,7 @@ Prerequisite: `.venv/` exists.
 
 ## Documentation
 
-12. Append to CHANGELOG.md:
+12. Prepend to CHANGELOG.md:
    ```
    ## prompt-{N} — {title}
    **Date**: {YYYY-MM-DD}
