@@ -79,11 +79,6 @@ class HardwareProbe:
             return False
 
     def _detect_gpus(self) -> list[GpuInfo]:
-        """Detect GPUs and their information.
-
-        Returns:
-            List of GpuInfo objects with detected GPU information
-        """
         gpus: list[GpuInfo] = []
 
         if not self.has_nvidia_gpu():
