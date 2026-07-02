@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from sovereignai.shared.container import DIContainer
 from sovereignai.shared.event_bus import EventBus
+from sovereignai.shared.file_trace_subscriber import FileTraceSubscriber
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
     TraceLevel,
@@ -17,6 +18,11 @@ def build_container(dev_mode: bool = False) -> DIContainer:
     # 1. TraceEmitter — no dependencies, singleton
     trace = TraceEmitter()
     container.register_singleton(TraceEmitter, trace)
+
+    # 1.5. FileTraceSubscriber — depends on TraceEmitter, singleton (Plan 20.7.3)
+    file_subscriber = FileTraceSubscriber()
+    trace.subscribe_callback(file_subscriber)
+    container.register_singleton(FileTraceSubscriber, file_subscriber)
 
     # 2. EventBus — depends on TraceEmitter, singleton
     bus = EventBus(trace=trace)
