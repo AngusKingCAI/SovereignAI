@@ -94,6 +94,22 @@ Key findings: P20.4 ImportError (`from textual.containers import ContentSwitcher
 - `PLANS.md` — update baseline (S6.4)
 - `prompts/plan-20.6-Rev0.md` — move to `completed/` (S6.6)
 - `logs/execution-log-prompt-20.6.md` — NEW, full session log ≥500 lines (S6.7)
+- `AI_HANDOFF.md` — edited in P20.5 S0.4, part of 20.6 baseline per S0.6
+- `logs/execution-log-prompt-18.md` — edited in P20.5 S4.5, part of 20.6 baseline per S0.6
+- `logs/execution-log-prompt-20.5.md` — updated in P20.5 S0.6, part of 20.6 baseline per S0.6
+- `tui/main.py` — edited in S1 (TUI skeleton rewrite)
+- `tui/sovereign.tcss` — created in S1 (CSS for TUI)
+- `tui/panels/__init__.py` — edited in S2 (panel registry)
+- `tui/panels/orchestrator.py` — edited in S3 (fix B5-B8, B10, B16)
+- `tui/panels/workers.py` — edited in S3 (fix B5-B8, B10, B16)
+- `tui/panels/tasks.py` — edited in S3 (fix B5-B8, B10, B16)
+- `tui/panels/skills.py` — edited in S3 (fix B5-B8, B10, B16)
+- `tui/panels/memory.py` — edited in S3 (fix B5-B8, B10, B16)
+- `tui/panels/models.py` — edited in S3 (fix B5-B8, B10, B16)
+- `tui/panels/adapters.py` — edited in S3 (fix B5-B8, B10, B16)
+- `tui/panels/hardware.py` — edited in S3 (fix B5-B8, B10, B16)
+- `tui/panels/options.py` — edited in S3 (fix B5-B8, B10, B16)
+- `tui/panels/logs.py` — edited in S3 (fix B5-B8, B10, B16)
 
 ## WILL NOT edit
 - Any file not listed above. If scope expands, STOP per OR10.
