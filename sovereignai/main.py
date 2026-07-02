@@ -79,6 +79,7 @@ def build_container(dev_mode: bool = False) -> DIContainer:
     # Rev2 per Finding 1: passes the concrete TaskStateMachine so submit_task
     # can call submit() (the ITaskStateQuery protocol is query-only).
     # Plan 18: added HardwareProbe dependency for sample_hardware() and stream_hardware()
+    # Plan 20.9.1: database_registry, service_registry, memory_backends added after registration
     from sovereignai.shared.capability_api import CapabilityAPI
     from sovereignai.shared.capability_graph import ICapabilityIndex
     from sovereignai.shared.hardware_probe import HardwareProbe
@@ -180,6 +181,18 @@ def build_container(dev_mode: bool = False) -> DIContainer:
 
     service_registry = ServiceRegistry(trace=trace)
     container.register_singleton(ServiceRegistry, service_registry)
+
+    # 14.5. Update CapabilityAPI with registries and memory backends (Plan 20.9.1)
+    from sovereignai.shared.capability_api import CapabilityAPI
+    api_instance = container.retrieve(CapabilityAPI)
+    api_instance._database_registry = db_registry
+    api_instance._service_registry = service_registry
+    api_instance._memory_backends = {
+        "episodic": episodic_backend,
+        "procedural": procedural_backend,
+        "working": working_backend,
+        "trace": trace_backend,
+    }
 
     # 15. Register HFDatabaseProvider (Plan 17)
     from pathlib import Path
