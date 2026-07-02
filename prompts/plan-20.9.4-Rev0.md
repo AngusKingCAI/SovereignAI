@@ -5,8 +5,8 @@ Open questions resolved: none
 ## WILL edit
 - `sovereignai/shared/routing_engine.py` — add health_check caching
 - `sovereignai/shared/capability_graph.py` — fix Any import (AR compliance)
-- `adapters/external/ollama_adapter/adapter.py` — add timeout parameter, GenerationTimeoutError, fix imports
-- `adapters/external/llama_cpp_adapter/adapter.py` — add timeout parameter, GenerationTimeoutError, fix imports
+- `adapters/external/ollama_adapter/adapter.py` — add GenerationTimeoutError class, timeout_seconds parameter, threading import
+- `adapters/external/llama_cpp_adapter/adapter.py` — add GenerationTimeoutError class, timeout_seconds parameter, threading import
 - `tests/test_ollama_adapter.py` — add timeout tests
 - `tests/test_llama_cpp_adapter.py` — add timeout tests
 - `scripts/ar_checks/no_context_bags.py` — fix stderr output

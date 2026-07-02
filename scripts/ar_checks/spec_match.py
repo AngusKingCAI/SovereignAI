@@ -12,7 +12,7 @@ def extract_will_edit_paths(plan_path: Path) -> set[str]:
     pattern = r'^\s*[-*]\s+`?([\w./-]+\.[a-zA-Z0-9]+)'
     for match in re.finditer(pattern, content, re.MULTILINE):
         path = match.group(1)
-        if path.startswith("sovereignai/") or path.startswith("web/") or path.startswith("tui/"):
+        if path.startswith("sovereignai/") or path.startswith("web/") or path.startswith("tui/") or path.startswith("adapters/"):
             paths.add(path)
 
     return paths
