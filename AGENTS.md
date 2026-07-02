@@ -204,6 +204,8 @@ OR80. [Mandatory] AR/OR rules in AGENTS.md must use minimal tokens whilst mainta
 
 OR81. [Mandatory] MCP usage: Devin queries Context7 before using any library API unfamiliar or updated since training cutoff. Devin invokes Snyk MCP scan at /close for plans touching txt/requirements.txt or security-sensitive code. Reduces hallucinated APIs (P20.4 ContentSwitcher ImportError) and catches CVEs earlier (P20.5 diskcache).
 
+OR76. [Mandatory] sailogs/ contains per-run JSONL trace logs named YYYY-MM-DD_HH-MM-SS.log. One file per process run. FileTraceSubscriber writes every TraceEmitter event. sailogs/*.log gitignored. No rotation — user archives/deletes manually.
+
 ---
 
 See `LANDMINES.md` for failure patterns linked to rules.

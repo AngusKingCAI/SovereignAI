@@ -377,3 +377,12 @@ N/A — no new patterns for prompt-18
 ---
 
 N/A — no new patterns for prompt-20
+
+---
+
+## L59 — sailogs/ not gitignored
+**Trigger**: sailogs/ created without .gitignore entry.
+**Impact**: trace logs (may contain sensitive data) committed to repo.
+**Graduated to**: OR76.
+
+---
