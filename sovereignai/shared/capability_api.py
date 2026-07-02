@@ -218,7 +218,7 @@ class CapabilityAPI:
                 )
         return results
 
-    def query_service_registry(self, token: str) -> list[ServiceStatus]:
+    def query_service_registry(self, token: str) -> list[tuple[str, ServiceStatus]]:
         self._auth.validate(token)
         results = []
         if self._service_registry is None:
@@ -226,7 +226,7 @@ class CapabilityAPI:
         for service_name in self._service_registry.list_services():
             provider = self._service_registry.get_service(service_name)
             status = provider.health_check()
-            results.append(status)
+            results.append((service_name, status))
         return results
 
     def query_logs(self, token: str, correlation_id: str | None = None) -> list[TraceEvent]:
