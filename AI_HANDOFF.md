@@ -31,10 +31,11 @@ This ensures the Architect always reviews current state, not a stale clone.
 2. **Verify repo state.** Tag on origin, CHANGELOG matches, PLANS.md updated, no scope creep.
 3. **Re-read** `LANDMINES.md` + `principles.md`.
 4. **Review C9 proposals + scan for patterns.** Propose new rules or reject. Include in next plan's S0.
-5. **Make plan files + context brief + Round Table prompt.** N plan files + 1 brief (per Brief Format) + 1 prompt (per Round Table Prompt, full or diff-summary per GR14).
-6. **Pause for Round Table.** Runs until clean pass. Apply findings at discretion.
-7. **Score panelists (GR16).** Posted inline in chat.
-8. **Deliver.** Tell User to copy to `C:/SovereignAI/prompts/plan-{N}.md`.
+5. **Best practices research (web search).** For technical implementation plans (especially new tech stacks or frameworks), search for official docs, best practices, and common pitfalls. Document findings in plan header. Example: Textual ContentSwitcher import path, CSS patterns, async worker patterns.
+6. **Make plan files + context brief + Round Table prompt.** N plan files + 1 brief (per Brief Format) + 1 prompt (per Round Table Prompt, full or diff-summary per GR14).
+7. **Pause for Round Table.** Runs until clean pass. Apply findings at discretion.
+8. **Score panelists (GR16).** Posted inline in chat.
+9. **Deliver.** Tell User to copy to `C:/SovereignAI/prompts/plan-{N}.md`.
 
 ---
 
@@ -79,6 +80,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 - S0.2: Read `AGENTS.md` in full
 - S0.2.5: Re-read `AGENTS.md` if governance patch added rules
 - S0.3: Add new rules, commit before coding
+- S0.4: If plan involves new tech stack/framework, add best practices research (web search) findings to plan header per Architect Workflow step 5
 
 **Plan body (S1-Sn)**: Execute steps. Run `/verify` after each edit. For HTML/CSS/JS plans: include a "WILL edit" UI element list.
 
