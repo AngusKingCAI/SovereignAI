@@ -18,9 +18,9 @@ def test_get_services_unauthorized() -> None:
 
 
 def test_get_databases_authorized() -> None:
+    from databases.hf_database.provider import HFDatabaseProvider
     from sovereignai.main import build_container
     from sovereignai.shared.types import ModelEntry
-    from databases.hf_database.provider import HFDatabaseProvider
 
     container = build_container()
 

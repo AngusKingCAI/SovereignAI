@@ -166,6 +166,33 @@ At `/close` step 12, if an item is genuinely new, append an entry in the format 
 
 ---
 
+## Deferred: diskcache CVE-2025-69872
+
+**Deferred at**: prompt-20.7.1
+**Reason**: pip-audit detected CVE-2025-69872 in diskcache 5.6.3. This is an existing dependency not modified in this docs-only plan. CVE resolution requires version upgrade which may have breaking changes.
+**Trigger condition**: When diskcache version with CVE fix is available and compatibility verified.
+**Target plan**: TBD (security-focused plan)
+
+---
+
+## Deferred: Vulture unused variables in test files
+
+**Deferred at**: prompt-20.7.1
+**Reason**: Vulture detected unused variables in tests/test_models_panel.py:56 ('filter') and tests/test_options_panel.py:43 ('filter'). These are pre-existing issues not introduced by this docs-only plan. Variables are likely used in test setup but vulture flags them.
+**Trigger condition**: When test cleanup or refactoring is done.
+**Target plan**: TBD (test-focused plan)
+
+---
+
+## Deferred: AR6 context bag violations
+
+**Deferred at**: prompt-20.7.1
+**Reason**: no_context_bags.py check fails with "AR6 violations found". This is a pre-existing issue not introduced by this docs-only plan. AR6 forbids context objects, untyped dicts, or **kwargs across component boundaries.
+**Trigger condition**: When AR6 violations are identified and fixed.
+**Target plan**: TBD (governance-focused plan)
+
+---
+
 ## Note: duplicate entry — Full Q8 versioning / capability negotiation
 
 **Logged at**: prompt-5 (governance review)

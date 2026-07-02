@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from textual.app import App
-from textual.widgets import Button, ContentSwitcher, Header, Footer, Static
+from textual.widgets import Button, ContentSwitcher, Footer, Header, Static
 
 from tui.main import SovereignTUI
 
@@ -14,7 +13,7 @@ def test_tui_app_initialization():
 def test_tui_compose_structure():
     app = SovereignTUI()
     async def check_compose():
-        async with app.run_test() as pilot:
+        async with app.run_test() as _pilot:
             # Check Header exists
             header = app.query_one(Header)
             assert header is not None
@@ -49,7 +48,7 @@ def test_tui_compose_structure():
 def test_tui_panel_buttons_exist():
     app = SovereignTUI()
     async def check_buttons():
-        async with app.run_test() as pilot:
+        async with app.run_test() as _pilot:
             from tui.panels import PANEL_NAMES
             for panel_name in PANEL_NAMES:
                 button = app.query_one(f"#btn-{panel_name}", Button)

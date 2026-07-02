@@ -35,7 +35,11 @@ class WorkersPanel(Vertical):
             lifecycle = self._container.retrieve(LifecycleManager)
             for component_id in lifecycle.list_components():
                 status = lifecycle.get_status(component_id)
-                status_text = "[green]Active[/green]" if status == "ACTIVE" else f"[yellow]{status}[/yellow]"
+                status_text = (
+                    "[green]Active[/green]"
+                    if status == "ACTIVE"
+                    else f"[yellow]{status}[/yellow]"
+                )
                 table.add_row(
                     str(component_id),
                     "General",

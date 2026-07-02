@@ -1,13 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, ContentSwitcher, Footer, Header, Static
-
-if TYPE_CHECKING:
-    from tui.panels import PANEL_NAMES, PANEL_REGISTRY
 
 
 class SovereignTUI(App):
@@ -32,7 +27,7 @@ class SovereignTUI(App):
                 for name in PANEL_NAMES:
                     yield Button(name.title(), id=f"btn-{name}")
             with ContentSwitcher(id="main-content"):
-                for name, module_path, class_name in PANEL_REGISTRY:
+                for name, _module_path, _class_name in PANEL_REGISTRY:
                     yield Static(f"Loading {name.title()}...", id=f"placeholder-{name}")
         yield Footer()
 

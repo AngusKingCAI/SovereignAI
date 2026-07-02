@@ -41,18 +41,18 @@ def main() -> int:
     if lines[0] != "# CHANGELOG":
         print("ERROR: CHANGELOG.md does not start with '# CHANGELOG'", file=sys.stderr)
         return 1
-    
+
     # Find the last entry (should be at the end)
     last_entry_line = None
     for i in range(len(lines) - 1, -1, -1):
         if lines[i].startswith("## prompt-"):
             last_entry_line = i
             break
-    
+
     if last_entry_line is None:
         print("ERROR: No prompt entry found in CHANGELOG.md", file=sys.stderr)
         return 1
-    
+
     if not lines[last_entry_line].startswith(f"## prompt-{plan_number}"):
         print(f"ERROR: Last entry does not start with '## prompt-{plan_number}'", file=sys.stderr)
         print(f"Actual: {lines[last_entry_line][:80]}", file=sys.stderr)
@@ -60,7 +60,11 @@ def main() -> int:
 
     # Check 2: No orphan content after newest entry
     if last_entry_line < len(lines) - 1:
-        print(f"ERROR: Orphan content after prompt-{plan_number} entry (lines {last_entry_line + 1} to {len(lines)})", file=sys.stderr)
+        error_msg = (
+            f"ERROR: Orphan content after prompt-{plan_number} entry "
+            f"(lines {last_entry_line + 1} to {len(lines)})"
+        )
+        print(error_msg, file=sys.stderr)
         return 1
 
     # Check 3: Newest entry has ≥1 bullet point before EOF

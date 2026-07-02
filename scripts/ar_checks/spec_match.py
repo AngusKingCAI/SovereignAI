@@ -72,7 +72,7 @@ ALLOWLIST = {
 }
 
 
-def main():
+def main() -> None:
     if len(sys.argv) < 2:
         print("Usage: spec_match.py <plan_file>")
         sys.exit(1)

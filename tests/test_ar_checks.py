@@ -1,8 +1,9 @@
 import re
 import subprocess
 import sys
-import pytest
 from pathlib import Path
+
+import pytest
 
 _PLAN_RE = re.compile(r"plan-([\d.]+)-Rev(\d+)\.md$")
 
@@ -175,8 +176,12 @@ def test_something():
     assert result.returncode == 0
 
 
-# TODO(prompt-20.7.1): test_spec_match_missing_in_diff skipped - docs-only plan, spec_match designed for production code changes. Test infrastructure cannot handle decimal plan numbers (20.7.1, 20.7.2, 20.7.3) - picks highest instead of current.
-@pytest.mark.skip(reason="TODO(prompt-20.7.1): docs-only plan, spec_match designed for production code changes")
+# TODO(prompt-20.7.1): test_spec_match_missing_in_diff skipped - docs-only plan,
+# spec_match designed for production code changes. Test infrastructure cannot
+# handle decimal plan numbers (20.7.1, 20.7.2, 20.7.3) - picks highest instead of current.
+@pytest.mark.skip(
+    reason="TODO(prompt-20.7.1): docs-only plan, spec_match designed for production code changes"
+)
 def test_spec_match_missing_in_diff() -> None:
     result = subprocess.run(
         [sys.executable, "scripts/ar_checks/spec_match.py", _current_plan_path()],
