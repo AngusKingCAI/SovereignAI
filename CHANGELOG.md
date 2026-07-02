@@ -1117,6 +1117,29 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Fixed PLANS.md current test baseline (455 tests)
 - Created .gitattributes with text=auto eol=lf and binary markers
 - Added git mv fallback note to close.md workflow
+
+---
+
+## prompt-20.6 — TUI Panel Loading Fix
+**Date**: 2026-07-02
+**Plan file**: prompts/plan-20.6-Rev0.md
+**Tests**: 458 passed, 8 skipped
+**Coverage**: 93% (590 missing lines)
+**Browser smoke test screenshots**: N/A — TUI is terminal-based, not web UI
+**AR7 allowlist diff**: Added TUI_PANELS_ALLOWED_IMPORTS for TUI panels
+**OR63 check result**: discovery clean
+- Fixed TUI panel lazy loading by using ContentSwitcher with unique placeholder IDs
+- Fixed DuplicateIds error by removing placeholder Static widgets before mounting actual panels
+- Added Refresh buttons to all TUI panels (orchestrator, workers, tasks, skills, memory, models, adapters, hardware, options, logs)
+- Modified all panel refresh methods to use textual.work decorator for async data loading
+- Added TUI_PANELS_ALLOWED_IMPORTS to test_ar7_no_core_imports_in_ui.py per DD-20.6.1
+- Created tests/tui/test_tui_main.py with Pilot-based TUI tests
+- Mocked HFDatabaseProvider.list_models in tests/test_models_panel.py to avoid 501 live API calls
+- Mocked HFDatabaseProvider.list_models in tests/test_options_panel.py to avoid stalling
+- Skipped 3 pynvml tests in test_hardware_probe.py (code path removed in P20.5 S3.5)
+- Updated spec_match.py to add tui/ to path extraction and logs/, scripts/ar_checks/ to allowlist
+- All TUI panels now consume capability API only per AR7
+- Tag: prompt-20.6
 - Fixed ruff errors in check_changelog.py and check_test_mode_hooks.py
 - OR51 exception: S3.9 edited prompt-20.4 entry (456→455 test count correction) — one-time exception, documented per Plan 20.6 G11
 

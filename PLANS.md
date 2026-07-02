@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-07-02 (prompt-20.4)
+**Last updated**: 2026-07-02 (prompt-20.6)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -38,12 +38,14 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 20.2**: Baseline → 455 tests. Delta: 0 — see CHANGELOG prompt-20.2.
 **Plan 20.3**: Baseline → 455 tests. Delta: 0 — see CHANGELOG prompt-20.3.
 **Plan 20.4**: Baseline → 456 tests. Delta: +1 — see CHANGELOG prompt-20.4.
+**Plan 20.5**: Baseline → 359 tests. Delta: -97 — see CHANGELOG prompt-20.5 (spec_match, TUI AR7, pynvml tests deferred).
+**Plan 20.6**: Baseline → 458 tests. Delta: +99 — see CHANGELOG prompt-20.6 (TUI tests added, deferred tests re-enabled).
 
 ---
 
 ## Test Baseline
 
-**Current**: 359 tests (Plan 20.5 `/close`)
+**Current**: 458 tests (Plan 20.6 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
