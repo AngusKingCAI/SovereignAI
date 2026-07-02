@@ -102,6 +102,7 @@ def main():
         # plan files are governance artifacts (Architect-authored), not Devin edits
         and not p.startswith("prompts/completed/")  # moved plan files
         and not p.startswith("logs/")  # execution logs are artifacts, not code
+        and not p.startswith("scripts/ar_checks/")  # AR check scripts are governance artifacts
     }
 
     if unexpected_in_diff:
