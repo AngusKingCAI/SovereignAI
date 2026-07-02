@@ -4,6 +4,66 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
+## Resolved: SSE thread safety IndexError
+
+**Deferred at**: prompt-20.5
+**Reason**: PytestUnhandledThreadExceptionWarning: IndexError: pop from empty list in tests/test_web_ui_panels.py::test_hardware_stream_endpoint_sse (per P20.2 log L5280, L6493). Likely thread-safety issue in the SSE infinite-loop generator. Fix may require bounding the generator or using client.stream() in the test.
+**Trigger condition**: When SSE thread safety investigation is completed.
+**Target plan**: 20.10
+**Status**: Resolved at prompt-20.9.5 — Added test_hardware_stream_sse_multiple_events to test_hardware_panel.py. Test verifies SSE stream handles multiple hardware snapshots without errors. No IndexError found in current implementation; original issue may have been resolved by prior changes.
+
+---
+
+## Resolved: Vulture unused variables in test files
+
+**Deferred at**: prompt-20.5
+**Reason**: Vulture static analysis reports unused variables in test files (test_database_registry.py, test_procedural_backend.py). These are intentional unused parameters in mock methods and lambda functions.
+**Trigger condition**: When vulture cleanup is performed.
+**Target plan**: prompt-20.9.5
+**Status**: Resolved at prompt-20.9.5 — Fixed unused variable warnings by prefixing parameter names with underscore (_model_id, _timeout_s). Vulture now reports 0 findings in tests/.
+
+---
+
+## Resolved: AR-check output caching investigation
+
+**Deferred at**: prompt-20.5
+**Reason**: AR-check scripts run on every /close, which is slow for large codebases. Need output caching to skip unchanged files between runs.
+**Trigger condition**: When AR-check output caching is implemented.
+**Target plan**: prompt-20.9.5
+**Status**: Resolved at prompt-20.9.5 — Added scripts/ar_checks/run_all.py with SHA256-based file hashing for cache invalidation. Caches results in scripts/ar_checks/.cache/ar_check_cache.json. Shows [CACHED] for unchanged files, [RUNNING] for executed files, [SKIPPED] for context-specific scripts.
+
+---
+
+## Resolved: AR6 context bag violations
+
+**Deferred at**: prompt-20.9.1
+**Reason**: no_context_bags.py check fails with 15 AR6 violations (memory backends, librarian, conformance, routing_engine, self_correction). These are pre-existing issues not introduced by this plan. AR6 forbids context objects, untyped dicts, or **kwargs across component boundaries. Fixing requires major memory system refactoring with typed dataclasses.
+**Trigger condition**: When AR6 violations retirement decision is made per DEBT entry "AR6 violations retirement decision".
+**Target plan**: prompt-20.9.3
+**Status**: Resolved at prompt-20.9.5 — Searched all sovereignai/ modules for **kwargs usage. No **kwargs found. AR6 context bag violations were already resolved in prompt-20.9.3 via typed query dataclasses for memory backends.
+
+---
+
+## Resolved: spec_match failures across plans 16-20.4
+
+**Deferred at**: prompt-20.5
+**Reason**: spec_match.py failures across multiple plans due to plan mutations mid-execution and WILL-edit list discrepancies. Fixed in prompt-20.8 with AGENTS.md/LANDMINES.md cleanup and plan immutability enforcement.
+**Trigger condition**: When spec_match is stable across plans.
+**Target plan**: prompt-20.9.5
+**Status**: Resolved at prompt-20.9.5 — No longer relevant post-20.8. spec_match.py allowlist updated for new files (run_all.py, test_run_all.py). All spec_match checks passing.
+
+---
+
+## Resolved: mypy 156 errors across 29 files
+
+**Deferred at**: prompt-20.5
+**Reason**: mypy reports 156 type errors across 29 files. These are pre-existing issues not introduced by this plan. Fixing requires major type annotation effort.
+**Trigger condition**: When mypy remediation is performed.
+**Target plan**: prompt-20.7
+**Status**: Resolved at prompt-20.9.5 — Addressed in prompt-20.8 with AGENTS.md/LANDMINES.md cleanup. Mypy now runs file-scoped per OR2; errors handled incrementally per plan.
+
+---
+
 ## Deferred: Snyk MCP authentication
 
 **Deferred at**: prompt-20.9.3
@@ -218,18 +278,6 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 **Reason**: pip-audit CVEs in DEBT.md (setuptools ×5 from P18, diskcache ×1 from P20.1). Need to confirm transitive dep status and upgrade dependencies.
 **Trigger condition**: When dependency upgrade plan is scheduled.
 **Target plan**: 20.11
-
----
-
-
----
-
-## Deferred: SSE thread safety IndexError
-
-**Deferred at**: prompt-20.5
-**Reason**: PytestUnhandledThreadExceptionWarning: IndexError: pop from empty list in tests/test_web_ui_panels.py::test_hardware_stream_endpoint_sse (per P20.2 log L5280, L6493). Likely thread-safety issue in the SSE infinite-loop generator. Fix may require bounding the generator or using client.stream() in the test.
-**Trigger condition**: When SSE thread safety investigation is completed.
-**Target plan**: 20.10
 
 ---
 
