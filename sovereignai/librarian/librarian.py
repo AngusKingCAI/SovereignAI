@@ -8,7 +8,11 @@ from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
     CapabilityCategory,
     ComponentId,
+    EpisodicQuery,
+    ProceduralQuery,
     TraceLevel,
+    TraceQuery,
+    WorkingQuery,
 )
 
 if TYPE_CHECKING:
@@ -51,7 +55,11 @@ class Librarian:
         )
         return record_id
 
-    def query(self, memory_type: str, query: dict) -> list[dict]:
+    def query(
+        self,
+        memory_type: str,
+        query: EpisodicQuery | ProceduralQuery | WorkingQuery | TraceQuery,
+    ) -> list[dict]:
         from sovereignai.shared.types import NoActiveProviderError
 
         providers = self._route(memory_type, "memory_query")
@@ -69,11 +77,11 @@ class Librarian:
         all_results: list[dict] = []
         for component_id in providers:
             # In a full implementation, we would retrieve the backend instance from the DI container
-            # and call its query() method. For now, we return empty results.
+            # and call its query() method with the typed query. For now, we return empty results.
             self._trace.emit(
                 component="Librarian",
                 level=TraceLevel.DEBUG,
-                message=f"Queried backend {component_id} for memory_type '{memory_type}'",
+                message=f"Queried backend {component_id} for memory_type '{memory_type}' with typed query",
             )
 
         # Apply merge semantics per memory type
