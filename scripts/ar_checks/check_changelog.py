@@ -58,13 +58,15 @@ def main() -> int:
         print(f"Actual: {lines[last_entry_line][:80]}", file=sys.stderr)
         return 1
 
-    # Check 2: No orphan content after newest entry
-    if last_entry_line < len(lines) - 1:
-        error_msg = (
-            f"ERROR: Orphan content after prompt-{plan_number} entry "
-            f"(lines {last_entry_line + 1} to {len(lines)})"
-        )
-        print(error_msg, file=sys.stderr)
+    # Check 2: No other prompt entry after newest entry
+    found_another_entry = False
+    for i in range(last_entry_line + 1, len(lines)):
+        if lines[i].startswith("## prompt-"):
+            found_another_entry = True
+            break
+
+    if found_another_entry:
+        print(f"ERROR: Another prompt entry found after prompt-{plan_number}", file=sys.stderr)
         return 1
 
     # Check 3: Newest entry has ≥1 bullet point before EOF
