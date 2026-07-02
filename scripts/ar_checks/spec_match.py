@@ -12,7 +12,7 @@ def extract_will_edit_paths(plan_path: Path) -> set[str]:
     pattern = r'^\s*[-*]\s+`?([\w./-]+\.[a-zA-Z0-9]+)'
     for match in re.finditer(pattern, content, re.MULTILINE):
         path = match.group(1)
-        if path.startswith("sovereignai/") or path.startswith("web/"):
+        if path.startswith("sovereignai/") or path.startswith("web/") or path.startswith("tui/"):
             paths.add(path)
 
     return paths
@@ -68,6 +68,7 @@ ALLOWLIST = {
     "DEBT.md",
     "DECISIONS.md",
     "CHANGELOG.md",
+    "AI_HANDOFF.md",
 }
 
 
@@ -100,6 +101,7 @@ def main():
         and not p.startswith("prompts/plan-")  # noqa: E501
         # plan files are governance artifacts (Architect-authored), not Devin edits
         and not p.startswith("prompts/completed/")  # moved plan files
+        and not p.startswith("logs/")  # execution logs are artifacts, not code
     }
 
     if unexpected_in_diff:
