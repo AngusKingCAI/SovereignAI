@@ -1,6 +1,4 @@
-import json
 import platform
-from pathlib import Path
 
 from sovereignai.shared.types import DiskUsage, GpuInfo, HardwareSnapshot
 
@@ -12,58 +10,14 @@ GPU_MEMORY_TYPE_MAP: dict[str, str] = {
     "RTX 3080": "GDDR6X",
     "RTX 3070": "GDDR6",
     "RTX 3060": "GDDR6",
+    "RTX 3060 Laptop": "GDDR6",
     "A100": "HBM2",
     "A6000": "GDDR6",
     "V100": "HBM2",
 }
 
 
-MEMORY_BANDWIDTH_GBPS: dict[str, int] = {
-    "GDDR6": 768,
-    "GDDR6X": 1008,
-    "HBM2": 2000,
-    "HBM2e": 2600,
-    "HBM3": 3350,
-    "DDR5": 480,
-    "DDR4": 384,
-}
-
-
-def _load_gpu_bandwidth_db() -> dict[str, dict[str, dict[str, int | str]]]:
-    """Load PCI-ID to GPU bandwidth mapping from JSON database.
-
-    Returns:
-        Nested dict structure: {vendor_id: {device_id: {name, bandwidth_gbps}}}
-    """
-    db_path = Path(__file__).parent / "gpu_bandwidth_db.json"
-    try:
-        with open(db_path) as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return {}
-
-
 class HardwareProbe:
-    GPU_BANDWIDTH_MAP: dict[str, int] = {
-        "RTX 4090": 1008,
-        "RTX 4080": 717,
-        "RTX 4070 Ti": 504,
-        "RTX 4070": 504,
-        "RTX 4060 Ti": 288,
-        "RTX 4060": 288,
-        "RTX 3060 Laptop": 192,
-        "RTX 3060": 360,
-        "RTX 3070": 448,
-        "RTX 3080": 760,
-        "RTX 3090": 936,
-        "RTX 2080 Ti": 616,
-        "RTX 2080": 448,
-        "RTX 2070": 448,
-        "RTX 2060": 336,
-        "GTX 1660 Ti": 288,
-        "GTX 1660": 192,
-        "GTX 1650": 128,
-    }
 
     def has_nvidia_gpu(self) -> bool:
         if platform.system() == "Windows":
@@ -113,35 +67,6 @@ class HardwareProbe:
         except (ImportError, OSError):
             return False
 
-    def _get_gpu_bandwidth_by_pci_id(self, vendor_id: str, device_id: str) -> int | None:
-        """Get GPU bandwidth from PCI-ID database lookup.
-
-        Args:
-            vendor_id: PCI vendor ID (e.g., "10DE" for NVIDIA)
-            device_id: PCI device ID
-
-        Returns:
-            Bandwidth in GB/s or None if not found in database
-        """
-        db = _load_gpu_bandwidth_db()
-        if vendor_id in db and device_id in db[vendor_id]:
-            return db[vendor_id][device_id].get("bandwidth_gbps")
-        return None
-
-    def _get_gpu_bandwidth_by_name(self, gpu_name: str) -> int | None:
-        """Get GPU bandwidth from substring-based name lookup (fallback).
-
-        Args:
-            gpu_name: GPU name string
-
-        Returns:
-            Bandwidth in GB/s or None if not found
-        """
-        for key, bandwidth in self.GPU_BANDWIDTH_MAP.items():
-            if key in gpu_name:
-                return bandwidth
-        return None
-
     def _detect_gpus(self) -> list[GpuInfo]:
         """Detect GPUs and their information.
 
@@ -156,7 +81,7 @@ class HardwareProbe:
         try:
             import subprocess
             result = subprocess.run(
-                ["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader,nounits"],
+                ["nvidia-smi", "--query-gpu=name,memory.total,memory.used,utilization.gpu", "--format=csv,noheader,nounits"],
                 capture_output=True,
                 text=True,
                 timeout=5,
@@ -166,15 +91,23 @@ class HardwareProbe:
                     if not line:
                         continue
                     parts = line.split(",")
-                    if len(parts) >= 2:
+                    if len(parts) >= 4:
                         name = parts[0].strip()
-                        vram_mb = int(parts[1].strip())
-                        bandwidth = self._get_gpu_bandwidth_by_name(name) or 0.0
+                        vram_total_mb = int(parts[1].strip())
+                        vram_used_mb = int(parts[2].strip())
+                        utilization_percent = float(parts[3].strip())
+                        memory_type = None
+                        for model, mem_type in GPU_MEMORY_TYPE_MAP.items():
+                            if model in name:
+                                memory_type = mem_type
+                                break
                         gpus.append(
                             GpuInfo(
                                 name=name,
-                                vram_mb=vram_mb,
-                                memory_bandwidth_gbps=bandwidth,
+                                vram_total_mb=vram_total_mb,
+                                vram_used_mb=vram_used_mb,
+                                utilization_percent=utilization_percent,
+                                memory_type=memory_type,
                             )
                         )
         except (FileNotFoundError, subprocess.TimeoutExpired, ValueError):

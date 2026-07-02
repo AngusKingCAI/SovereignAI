@@ -113,6 +113,63 @@ def test_shared_hardware_probe_has_cuda_via_torch_import_error(shared_probe: Har
         del sys.modules['torch']
 
 
+def test_detect_gpus_with_nvidia(shared_probe: HardwareProbe) -> None:
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.platform.system',
+        return_value='Windows'
+    ), patch('subprocess.run') as mock_run:
+        mock_result = Mock()
+        mock_result.returncode = 0
+        mock_result.stdout = 'NVIDIA GeForce RTX 3080, 10240, 2048, 50.0\n'
+        mock_run.return_value = mock_result
+        gpus = shared_probe._detect_gpus()
+        assert len(gpus) == 1
+        assert gpus[0].name == 'NVIDIA GeForce RTX 3080'
+        assert gpus[0].vram_total_mb == 10240
+        assert gpus[0].vram_used_mb == 2048
+        assert gpus[0].utilization_percent == 50.0
+
+
+def test_detect_gpus_no_nvidia(shared_probe: HardwareProbe) -> None:
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.platform.system',
+        return_value='Windows'
+    ), patch('subprocess.run') as mock_run:
+        mock_run.side_effect = FileNotFoundError('nvidia-smi not found')
+        gpus = shared_probe._detect_gpus()
+        assert len(gpus) == 0
+
+
+def test_detect_gpus_multiple_gpus(shared_probe: HardwareProbe) -> None:
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.platform.system',
+        return_value='Windows'
+    ), patch('subprocess.run') as mock_run:
+        mock_result = Mock()
+        mock_result.returncode = 0
+        mock_result.stdout = 'NVIDIA GeForce RTX 3080, 10240, 2048, 50.0\nNVIDIA GeForce RTX 3090, 24576, 4096, 75.0\n'
+        mock_run.return_value = mock_result
+        gpus = shared_probe._detect_gpus()
+        assert len(gpus) == 2
+        assert gpus[0].name == 'NVIDIA GeForce RTX 3080'
+        assert gpus[1].name == 'NVIDIA GeForce RTX 3090'
+
+
+def test_detect_gpus_rtx_3060_laptop(shared_probe: HardwareProbe) -> None:
+    with patch(  # noqa: E501
+        'sovereignai.shared.hardware_probe.platform.system',
+        return_value='Windows'
+    ), patch('subprocess.run') as mock_run:
+        mock_result = Mock()
+        mock_result.returncode = 0
+        mock_result.stdout = 'NVIDIA GeForce RTX 3060 Laptop, 6144, 1024, 30.0\n'
+        mock_run.return_value = mock_result
+        gpus = shared_probe._detect_gpus()
+        assert len(gpus) == 1
+        assert gpus[0].name == 'NVIDIA GeForce RTX 3060 Laptop'
+        assert gpus[0].vram_total_mb == 6144
+
+
 def test_select_best_quant_first_priority() -> None:
     from sovereignai.shared.quant_priority import select_best_quant
     assert select_best_quant(['q4_K_M', 'q5_K_M']) == 'q4_K_M'
