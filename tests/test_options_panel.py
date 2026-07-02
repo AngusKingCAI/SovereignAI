@@ -1,8 +1,45 @@
 from __future__ import annotations
 
+from collections.abc import Generator
+
+import pytest
 from fastapi.testclient import TestClient
 
+from databases.hf_database.provider import HFDatabaseProvider
+from sovereignai.shared.types import ModelEntry
 from web.main import app
+
+
+@pytest.fixture(autouse=True)
+def mock_hf_list_models() -> Generator[None, None, None]:
+    mock_models = [
+        ModelEntry(
+            org="test",
+            family="model-1",
+            version="latest",
+            quant="gguf",
+            file_size_bytes=0,
+            vram_required_mb=0,
+            num_layers=32,
+            category="llm",
+            source_db="huggingface"
+        ),
+        ModelEntry(
+            org="test",
+            family="model-2",
+            version="latest",
+            quant="gguf",
+            file_size_bytes=0,
+            vram_required_mb=0,
+            num_layers=32,
+            category="llm",
+            source_db="huggingface"
+        ),
+    ]
+    original_list_models = HFDatabaseProvider.list_models
+    HFDatabaseProvider.list_models = lambda self, filter=None: mock_models
+    yield
+    HFDatabaseProvider.list_models = original_list_models
 
 
 def test_get_databases_unauthorized() -> None:
@@ -18,30 +55,9 @@ def test_get_services_unauthorized() -> None:
 
 
 def test_get_databases_authorized() -> None:
-    from databases.hf_database.provider import HFDatabaseProvider
     from sovereignai.main import build_container
-    from sovereignai.shared.types import ModelEntry
 
     container = build_container()
-
-    # Mock HF provider to avoid 501 live API calls
-    mock_models = [
-        ModelEntry(
-            org="test",
-            family="model-1",
-            version="latest",
-            quant="gguf",
-            file_size_bytes=0,
-            vram_required_mb=0,
-            num_layers=32,
-            category="llm",
-            source_db="huggingface"
-        ),
-    ]
-
-    original_list_models = HFDatabaseProvider.list_models
-    HFDatabaseProvider.list_models = lambda self, filter=None: mock_models
-
     app.state.container = container
 
     with TestClient(app, raise_server_exceptions=False) as client:
@@ -63,9 +79,6 @@ def test_get_databases_authorized() -> None:
         if response.status_code == 200:
             data = response.json()
             assert isinstance(data, list)
-
-    # Restore original method
-    HFDatabaseProvider.list_models = original_list_models
 
 
 def test_get_services_authorized() -> None:

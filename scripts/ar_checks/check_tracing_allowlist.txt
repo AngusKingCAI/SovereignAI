@@ -18,6 +18,8 @@ shared/task_state_machine.py:__init__
 shared/task_state_machine.py:_publish
 shared/trace_emitter.py:__init__
 shared/types.py:__init__
+shared/file_trace_subscriber.py:__init__
+shared/file_trace_subscriber.py:__call__
 skills/official/self_correction/skill.py:__init__
 versioning/compatibility_matrix.py:__init__
 versioning/negotiator.py:__init__

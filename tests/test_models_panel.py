@@ -1,21 +1,18 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
 
+from databases.hf_database.provider import HFDatabaseProvider
 from sovereignai.main import build_container
 from sovereignai.shared.types import ModelEntry
 
 
-@pytest.fixture
-def client() -> TestClient:
-    from web.main import app
-    container = build_container()
-
-    # Mock HF provider to avoid 501 live API calls
-    from databases.hf_database.provider import HFDatabaseProvider
+@pytest.fixture(autouse=True)
+def mock_hf_list_models() -> Generator[None, None, None]:
     mock_models = [
         ModelEntry(
             org="test",
@@ -39,29 +36,20 @@ def client() -> TestClient:
             category="llm",
             source_db="huggingface"
         ),
-        ModelEntry(
-            org="test",
-            family="model-3",
-            version="latest",
-            quant="fp16",
-            file_size_bytes=8000000000,
-            vram_required_mb=8000,
-            num_layers=32,
-            category="llm",
-            source_db="huggingface"
-        ),
     ]
-
     original_list_models = HFDatabaseProvider.list_models
     HFDatabaseProvider.list_models = lambda self, filter=None: mock_models
+    yield
+    HFDatabaseProvider.list_models = original_list_models
 
+
+@pytest.fixture
+def client() -> TestClient:
+    from web.main import app
+    container = build_container()
     app.state.container = container
     test_client = TestClient(app)
-
     yield test_client
-
-    # Restore original method
-    HFDatabaseProvider.list_models = original_list_models
 
 
 @pytest.fixture
