@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## prompt-20.8 — AGENTS.md + LANDMINES.md Cleanup and Restructure
+
+**Date**: 2026-07-02
+**Plan file**: prompts/plan-20.8-Rev1.md
+**Tests**: N/A (documentation-only plan)
+**Coverage**: N/A (documentation-only plan)
+**Browser smoke test screenshots**: N/A (documentation-only plan)
+**AR7 allowlist diff**: None
+**OR63 check result**: N/A (documentation-only plan)
+
+- Removed 38 redundant rules from AGENTS.md (mechanically enforced by scripts/skills/templates)
+- Reclassified 18 OR rules to AR rules (better organization of architectural constraints)
+- Removed AR9 speculative architecture rule (violates P5 "wire as you go")
+- Removed [Mandatory] tags from all rules (redundant noise)
+- Renumbered all rules numerically (AR1-AR30, OR1-OR25)
+- Created archive/LANDMINES-ARCHIVE.md with 35 historical landmines
+- Purged LANDMINES.md to 18 active landmines
+- Total reduction: AGENTS.md 12,576 → 5,993 chars (52%), LANDMINES.md 15,483 → 7,319 chars (53%)
+
+
+
 ## prompt-0 — Bootstrap: Governance docs and infrastructure
 
 **Date**: 2026-06-28
