@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import time
 from unittest.mock import MagicMock
 
 import pytest
 
-from adapters.external.llama_cpp_adapter.adapter import LlamaCppAdapter
+from adapters.external.llama_cpp_adapter.adapter import GenerationTimeoutError, LlamaCppAdapter
 from databases.base import ModelNotFoundError
 from sovereignai.shared.types import AdapterHealth
 
@@ -175,3 +176,63 @@ def test_adapter_health_dataclass():
     health2 = AdapterHealth(healthy=False, detail="Error")
     assert health2.healthy is False
     assert health2.detail == "Error"
+
+
+def test_generate_timeout(adapter, mock_database_registry, mock_model_path_resolver, mock_trace):
+    mock_model = MagicMock()
+    mock_model.vram_required_mb = 1000
+    mock_model.num_layers = 32
+    mock_database_registry.find_model.return_value = ("test/model", mock_model)
+
+    from pathlib import Path
+    mock_path = MagicMock(spec=Path)
+    mock_path.glob.return_value = [mock_path]
+    mock_path.stem = "test-model-q4"
+    mock_path.open.return_value.__enter__.return_value.read.return_value = b"GGUF\x02\x00\x00\x00"
+    mock_model_path_resolver.return_value = mock_path
+
+    import sys
+    mock_llama_cpp = MagicMock()
+    mock_llm = MagicMock()
+    mock_llm.create_completion = MagicMock()
+    def slow_completion(*args, **kwargs):
+        time.sleep(5)
+        return {"choices": [{"text": "Generated text"}]}
+    mock_llm.create_completion.side_effect = slow_completion
+    mock_llama_cpp.Llama = MagicMock(return_value=mock_llm)
+    sys.modules["llama_cpp"] = mock_llama_cpp
+
+    try:
+        with pytest.raises(GenerationTimeoutError, match='exceeded timeout'):
+            adapter.generate("test/model", "test prompt", 100, 0.7, timeout_seconds=0.1)
+    finally:
+        if "llama_cpp" in sys.modules:
+            del sys.modules["llama_cpp"]
+
+
+def test_generate_no_timeout(adapter, mock_database_registry, mock_model_path_resolver, mock_trace):
+    mock_model = MagicMock()
+    mock_model.vram_required_mb = 1000
+    mock_model.num_layers = 32
+    mock_database_registry.find_model.return_value = ("test/model", mock_model)
+
+    from pathlib import Path
+    mock_path = MagicMock(spec=Path)
+    mock_path.glob.return_value = [mock_path]
+    mock_path.stem = "test-model-q4"
+    mock_path.open.return_value.__enter__.return_value.read.return_value = b"GGUF\x02\x00\x00\x00"
+    mock_model_path_resolver.return_value = mock_path
+
+    import sys
+    mock_llama_cpp = MagicMock()
+    mock_llm = MagicMock()
+    mock_llm.create_completion = MagicMock(return_value={"choices": [{"text": "Generated text"}]})
+    mock_llama_cpp.Llama = MagicMock(return_value=mock_llm)
+    sys.modules["llama_cpp"] = mock_llama_cpp
+
+    try:
+        result = adapter.generate("test/model", "test prompt", 100, 0.7, timeout_seconds=30.0)
+        assert result == "Generated text"
+    finally:
+        if "llama_cpp" in sys.modules:
+            del sys.modules["llama_cpp"]

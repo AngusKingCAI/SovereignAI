@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import time
 from unittest.mock import patch
 
 import pytest
 
-from adapters.external.ollama_adapter.adapter import OllamaAdapter
+from adapters.external.ollama_adapter.adapter import GenerationTimeoutError, OllamaAdapter
 from sovereignai.shared.trace_emitter import TraceEmitter
 
 
@@ -86,3 +87,24 @@ def test_degraded_registration_on_init(trace: TraceEmitter) -> None:
         assert adapter.health_check() is False
         events = trace.get_events()
         assert any('DEGRADED' in event.message for event in events)
+
+def test_generate_timeout(trace: TraceEmitter) -> None:
+    with patch('adapters.external.ollama_adapter.adapter.ollama.list') as mock_list:
+        mock_list.return_value = []
+        adapter = OllamaAdapter(trace=trace)
+    with patch('adapters.external.ollama_adapter.adapter.ollama.generate') as mock_generate:
+        def slow_generate(*args, **kwargs):
+            time.sleep(5)
+            return {'response': 'Generated text'}
+        mock_generate.side_effect = slow_generate
+        with pytest.raises(GenerationTimeoutError, match='exceeded timeout'):
+            adapter.generate('test prompt', timeout_seconds=0.1)
+
+def test_generate_no_timeout(trace: TraceEmitter) -> None:
+    with patch('adapters.external.ollama_adapter.adapter.ollama.list') as mock_list:
+        mock_list.return_value = []
+        adapter = OllamaAdapter(trace=trace)
+    with patch('adapters.external.ollama_adapter.adapter.ollama.generate') as mock_generate:
+        mock_generate.return_value = {'response': 'Generated text'}
+        result = adapter.generate('test prompt', timeout_seconds=30.0)
+        assert result == 'Generated text'

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import threading
 from collections.abc import Callable
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -12,6 +13,10 @@ from sovereignai.shared.types import AdapterHealth, AdapterUnavailableError, Tra
 if TYPE_CHECKING:
     from sovereignai.shared.database_registry import DatabaseRegistry
     from sovereignai.shared.hardware_probe import HardwareProbe
+
+
+class GenerationTimeoutError(Exception):
+    pass
 
 
 class LlamaCppAdapter:
@@ -157,7 +162,7 @@ class LlamaCppAdapter:
             )
             raise AdapterUnavailableError(f"Failed to load model: {exc}") from exc
 
-    def generate(self, model_id: str, prompt: str, max_tokens: int, temperature: float) -> str:
+    def generate(self, model_id: str, prompt: str, max_tokens: int, temperature: float, timeout_seconds: float = 30.0) -> str:
         self._trace.emit(  # noqa: E501
             component="llama_cpp_adapter",
             level=TraceLevel.DEBUG,
@@ -168,18 +173,41 @@ class LlamaCppAdapter:
         )
         self.load_model(model_id)
 
-        try:
-            result = self._llm.create_completion(
-                prompt, max_tokens=max_tokens, temperature=temperature
-            )
-            return str(result["choices"][0]["text"])  # type: ignore[index]
-        except Exception as exc:
+        result: str | None = None
+        error: Exception | None = None
+        timeout_event = threading.Event()
+
+        def _generate() -> None:
+            nonlocal result, error
+            try:
+                completion = self._llm.create_completion(
+                    prompt, max_tokens=max_tokens, temperature=temperature
+                )
+                result = str(completion["choices"][0]["text"])  # type: ignore[index]
+            except Exception as exc:
+                error = exc
+            finally:
+                timeout_event.set()
+
+        thread = threading.Thread(target=_generate, daemon=True)
+        thread.start()
+        thread.join(timeout=timeout_seconds)
+
+        if not timeout_event.is_set():
+            raise GenerationTimeoutError(f"Generation exceeded timeout of {timeout_seconds} seconds")
+
+        if error is not None:
             self._trace.emit(
                 component="llama_cpp_adapter",
                 level=TraceLevel.ERROR,
-                message=f"Generation failed: {exc}",
+                message=f"Generation failed: {error}",
             )
-            raise AdapterUnavailableError(str(exc)) from exc
+            raise AdapterUnavailableError(str(error)) from error
+
+        if result is None:
+            raise AdapterUnavailableError("llama.cpp generation returned None")
+
+        return result
 
     def health_check(self) -> AdapterHealth:
         try:

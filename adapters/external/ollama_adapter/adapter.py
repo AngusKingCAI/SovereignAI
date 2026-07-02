@@ -6,9 +6,16 @@ graph on startup and reports DEGRADED status if Ollama is not running.
 """
 from __future__ import annotations
 
+import threading
+import time
+
 import ollama
 
 from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
+
+
+class GenerationTimeoutError(Exception):
+    pass
 
 
 class OllamaAdapter:
@@ -59,38 +66,62 @@ class OllamaAdapter:
             )
             return False
 
-    def generate(self, prompt: str, model: str = "llama3.2") -> str:
+    def generate(self, prompt: str, model: str = "llama3.2", timeout_seconds: float = 30.0) -> str:
         """Generate text using the specified Ollama model.
 
         Args:
             prompt: The text prompt to generate from.
             model: The Ollama model to use (default: llama3.2).
+            timeout_seconds: Maximum time to wait for generation (default: 30.0).
 
         Returns:
             Generated text string.
 
         Raises:
             RuntimeError: If Ollama is not healthy or generation fails.
+            GenerationTimeoutError: If generation exceeds timeout.
         """
         if not self._healthy:
             raise RuntimeError("Ollama adapter is not healthy - cannot generate text")
 
-        try:
-            response = ollama.generate(model=model, prompt=prompt)
-            result = str(response.get("response", ""))  # type: ignore[no-any-return]
-            self._trace.emit(
-                component="OllamaAdapter",
-                level=TraceLevel.DEBUG,
-                message=f"Generated {len(result)} characters using model {model}",
-            )
-            return result
-        except Exception as exc:
+        result: str | None = None
+        error: Exception | None = None
+        timeout_event = threading.Event()
+
+        def _generate() -> None:
+            nonlocal result, error
+            try:
+                response = ollama.generate(model=model, prompt=prompt)
+                result = str(response.get("response", ""))  # type: ignore[no-any-return]
+            except Exception as exc:
+                error = exc
+            finally:
+                timeout_event.set()
+
+        thread = threading.Thread(target=_generate, daemon=True)
+        thread.start()
+        thread.join(timeout=timeout_seconds)
+
+        if not timeout_event.is_set():
+            raise GenerationTimeoutError(f"Generation exceeded timeout of {timeout_seconds} seconds")
+
+        if error is not None:
             self._trace.emit(
                 component="OllamaAdapter",
                 level=TraceLevel.ERROR,
-                message=f"Generation failed: {exc}",
+                message=f"Generation failed: {error}",
             )
-            raise RuntimeError(f"Ollama generation failed: {exc}") from exc
+            raise RuntimeError(f"Ollama generation failed: {error}") from error
+
+        if result is None:
+            raise RuntimeError("Ollama generation returned None")
+
+        self._trace.emit(
+            component="OllamaAdapter",
+            level=TraceLevel.DEBUG,
+            message=f"Generated {len(result)} characters using model {model}",
+        )
+        return result
 
     def chat(self, messages: list[dict], model: str = "llama3.2") -> dict:
         """Generate a chat completion using the specified Ollama model.
