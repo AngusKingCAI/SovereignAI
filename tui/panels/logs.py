@@ -13,7 +13,7 @@ class LogsPanel(Vertical):
     def __init__(self, container: Any, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._container = container
-        self._trace = container.retrieve(TraceEmitter)
+        self._trace = None
 
     def compose(self) -> ComposeResult:
         yield Static("System Logs", id="logs-title")
@@ -28,9 +28,23 @@ class LogsPanel(Vertical):
         yield RichLog(id="trace-log", auto_scroll=True)
 
     def on_mount(self) -> None:
+        self.call_after_refresh(self._load_data)
+
+    def _load_data(self) -> None:
+        try:
+            self._trace = self._container.retrieve(TraceEmitter)
+            self._load_logs()
+        except Exception as e:
+            import traceback
+            print(f"LogsPanel load error: {e}")
+            traceback.print_exc()
+
+    def _load_logs(self) -> None:
         self._load_all_events()
 
     def _load_all_events(self) -> None:
+        if self._trace is None:
+            return
         log = self.query_one("#trace-log", RichLog)
         log.clear()
 
@@ -53,6 +67,8 @@ class LogsPanel(Vertical):
         log.write(f"{color}[{level.upper()}] {event.component}: {event.message}")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
+        if self._trace is None:
+            return
         log = self.query_one("#trace-log", RichLog)
         log.clear()
 

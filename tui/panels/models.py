@@ -15,18 +15,32 @@ class ModelsPanel(Vertical):
     def __init__(self, container: Any, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._container = container
-        self._database_registry = container.retrieve(DatabaseRegistry)
-        self._trace = container.retrieve(TraceEmitter)
-        self._model_catalog = ModelCatalog(self._database_registry, self._trace)
+        self._database_registry = None
+        self._trace = None
+        self._model_catalog = None
 
     def compose(self) -> ComposeResult:
         yield Static("Models", id="models-title")
         yield DataTable(id="models-table")
 
     def on_mount(self) -> None:
-        self._refresh_models()
+        self.call_after_refresh(self._load_data)
+
+    def _load_data(self) -> None:
+        try:
+            self._database_registry = self._container.retrieve(DatabaseRegistry)
+            self._trace = self._container.retrieve(TraceEmitter)
+            if self._database_registry is not None and self._trace is not None:
+                self._model_catalog = ModelCatalog(self._database_registry, self._trace)
+                self._refresh_models()
+        except Exception as e:
+            import traceback
+            print(f"ModelsPanel load error: {e}")
+            traceback.print_exc()
 
     def _refresh_models(self) -> None:
+        if self._model_catalog is None:
+            return
         table = self.query_one("#models-table", DataTable)
         table.clear(columns=True)
         table.add_column("Name")

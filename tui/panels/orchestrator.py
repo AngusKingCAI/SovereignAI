@@ -14,7 +14,7 @@ class OrchestratorPanel(Vertical):
     def __init__(self, container: Any, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._container = container
-        self._api = container.retrieve(CapabilityAPI)
+        self._api = None
 
     def compose(self) -> ComposeResult:
         yield Static("Orchestrator", id="orchestrator-title")
@@ -23,7 +23,16 @@ class OrchestratorPanel(Vertical):
         yield RichLog(id="chat-log", auto_scroll=True)
 
     def on_mount(self) -> None:
-        self._populate_model_selector()
+        self.call_after_refresh(self._load_data)
+
+    def _load_data(self) -> None:
+        try:
+            self._api = self._container.retrieve(CapabilityAPI)
+            self._populate_model_selector()
+        except Exception as e:
+            import traceback
+            print(f"OrchestratorPanel load error: {e}")
+            traceback.print_exc()
 
     def _populate_model_selector(self) -> None:
         pass
@@ -33,6 +42,8 @@ class OrchestratorPanel(Vertical):
             await self._send_message()
 
     async def _send_message(self) -> None:
+        if self._api is None:
+            return
         input_widget = self.query_one("#message-input", Input)
         message = input_widget.value
         if not message:

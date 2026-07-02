@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## prompt-20.4.1 — TUI Visibility and Button Clickability Fix
+**Date**: 2026-07-02
+**Plan file**: N/A — ad-hoc TUI fix
+**Tests**: N/A — no test changes
+**Coverage**: N/A — no core code changes
+**Browser smoke test screenshots**: N/A — TUI is terminal-based, not web UI
+**AR7 allowlist diff**: None
+**OR63 check result**: discovery clean
+- Fixed TUI visibility issue by deferring container building to on_mount instead of __init__
+- Fixed button clickability by adding proper type annotations and null checks in on_button_pressed
+- Fixed layout by using Header/Footer widgets with dock: left sidebar
+- Added null checks in all panel refresh methods to prevent mypy errors
+- Fixed ruff W292 error (missing newline at end of file)
+- All panels now use call_after_refresh for async data loading to prevent UI blocking
+- TUI is now fully functional with clickable buttons and proper layout
+
+---
+
 ## prompt-20.4 — TUI Skeleton with Real Backend Integration
 **Date**: 2026-07-02
 **Plan file**: prompts/plan-20.4-Rev0.md

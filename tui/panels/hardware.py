@@ -28,7 +28,7 @@ class HardwarePanel(Vertical):
         yield DataTable(id="process-table")
 
     def on_mount(self) -> None:
-        self._refresh_hardware()
+        self.call_after_refresh(self._refresh_hardware)
 
     def _refresh_hardware(self) -> None:
         snapshot = self._probe.sample()

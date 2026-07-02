@@ -13,16 +13,27 @@ class AdaptersPanel(Vertical):
     def __init__(self, container: Any, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._container = container
-        self._api = container.retrieve(CapabilityAPI)
+        self._api = None
 
     def compose(self) -> ComposeResult:
         yield Static("Adapters", id="adapters-title")
         yield DataTable(id="adapters-table")
 
     def on_mount(self) -> None:
-        self._refresh_adapters()
+        self.call_after_refresh(self._load_data)
+
+    def _load_data(self) -> None:
+        try:
+            self._api = self._container.retrieve(CapabilityAPI)
+            self._refresh_adapters()
+        except Exception as e:
+            import traceback
+            print(f"AdaptersPanel load error: {e}")
+            traceback.print_exc()
 
     def _refresh_adapters(self) -> None:
+        if self._api is None:
+            return
         table = self.query_one("#adapters-table", DataTable)
         table.clear(columns=True)
         table.add_column("Name")

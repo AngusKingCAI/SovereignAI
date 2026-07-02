@@ -16,10 +16,10 @@ class MemoryPanel(Vertical):
     def __init__(self, container: Any, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._container = container
-        self._episodic = container.retrieve(EpisodicMemoryBackend)
-        self._procedural = container.retrieve(ProceduralMemoryBackend)
-        self._working = container.retrieve(WorkingMemoryBackend)
-        self._trace = container.retrieve(TraceMemoryBackend)
+        self._episodic = None
+        self._procedural = None
+        self._working = None
+        self._trace = None
 
     def compose(self) -> ComposeResult:
         yield Static("Memory Backends", id="memory-title")
@@ -29,7 +29,19 @@ class MemoryPanel(Vertical):
         yield RichLog(id="trace-log")
 
     def on_mount(self) -> None:
-        self._refresh_memory_table()
+        self.call_after_refresh(self._load_data)
+
+    def _load_data(self) -> None:
+        try:
+            self._episodic = self._container.retrieve(EpisodicMemoryBackend)
+            self._procedural = self._container.retrieve(ProceduralMemoryBackend)
+            self._working = self._container.retrieve(WorkingMemoryBackend)
+            self._trace = self._container.retrieve(TraceMemoryBackend)
+            self._refresh_memory_table()
+        except Exception as e:
+            import traceback
+            print(f"MemoryPanel load error: {e}")
+            traceback.print_exc()
 
     def _refresh_memory_table(self) -> None:
         table = self.query_one("#memory-table", DataTable)
@@ -86,6 +98,8 @@ class MemoryPanel(Vertical):
             self._test_write()
 
     def _test_write(self) -> None:
+        if self._working is None:
+            return
         log = self.query_one("#trace-log", RichLog)
         log.write("Testing write to WorkingMemory...")
 

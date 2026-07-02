@@ -14,8 +14,8 @@ class OptionsPanel(Vertical):
     def __init__(self, container: Any, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._container = container
-        self._service_registry = container.retrieve(ServiceRegistry)
-        self._database_registry = container.retrieve(DatabaseRegistry)
+        self._service_registry = None
+        self._database_registry = None
 
     def compose(self) -> ComposeResult:
         yield Static("Services", id="services-title")
@@ -24,10 +24,23 @@ class OptionsPanel(Vertical):
         yield DataTable(id="databases-table")
 
     def on_mount(self) -> None:
-        self._refresh_services()
-        self._refresh_databases()
+        print("OptionsPanel on_mount called", flush=True)
+        self.call_after_refresh(self._load_data)
+
+    def _load_data(self) -> None:
+        try:
+            self._service_registry = self._container.retrieve(ServiceRegistry)
+            self._database_registry = self._container.retrieve(DatabaseRegistry)
+            self._refresh_services()
+            self._refresh_databases()
+        except Exception as e:
+            import traceback
+            print(f"OptionsPanel mount error: {e}")
+            traceback.print_exc()
 
     def _refresh_services(self) -> None:
+        if self._service_registry is None:
+            return
         table = self.query_one("#services-table", DataTable)
         table.clear(columns=True)
         table.add_column("Name")
@@ -52,6 +65,8 @@ class OptionsPanel(Vertical):
             )
 
     def _refresh_databases(self) -> None:
+        if self._database_registry is None:
+            return
         table = self.query_one("#databases-table", DataTable)
         table.clear(columns=True)
         table.add_column("Name")

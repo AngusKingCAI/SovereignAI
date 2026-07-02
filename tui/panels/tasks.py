@@ -14,7 +14,7 @@ class TasksPanel(Vertical):
     def __init__(self, container: Any, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._container = container
-        self._task_state_query = container.retrieve(ITaskStateQuery)
+        self._task_state_query = None
 
     def compose(self) -> ComposeResult:
         yield Static("Tasks", id="tasks-title")
@@ -22,9 +22,20 @@ class TasksPanel(Vertical):
         yield DataTable(id="tasks-table")
 
     def on_mount(self) -> None:
-        self._refresh_tasks()
+        self.call_after_refresh(self._load_data)
+
+    def _load_data(self) -> None:
+        try:
+            self._task_state_query = self._container.retrieve(ITaskStateQuery)
+            self._refresh_tasks()
+        except Exception as e:
+            import traceback
+            print(f"TasksPanel load error: {e}")
+            traceback.print_exc()
 
     def _refresh_tasks(self) -> None:
+        if self._task_state_query is None:
+            return
         table = self.query_one("#tasks-table", DataTable)
         table.clear(columns=True)
         table.add_column("ID")
