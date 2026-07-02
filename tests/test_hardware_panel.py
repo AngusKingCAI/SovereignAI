@@ -102,13 +102,13 @@ def test_hardware_stream_sse_multiple_events(client: TestClient, container: Any)
     ), client.stream("GET", "/api/hardware/stream") as response:
         assert response.status_code == 200
         assert response.headers["content-type"].startswith("text/event-stream")
-        
+
         lines = []
         for line in response.iter_lines():
             if line:
                 lines.append(line)
                 if len(lines) >= 3:
                     break
-        
+
         assert len(lines) >= 1
         assert all(line is not None for line in lines)

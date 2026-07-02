@@ -12,7 +12,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 CACHE_DIR = Path(__file__).parent / ".cache"
 CACHE_FILE = CACHE_DIR / "ar_check_cache.json"
 
@@ -29,7 +28,7 @@ def get_cache() -> dict:
     try:
         with open(CACHE_FILE, encoding="utf-8") as f:
             return json.load(f)
-    except (json.JSONDecodeError, IOError):
+    except OSError:
         return {}
 
 
@@ -40,7 +39,11 @@ def save_cache(cache: dict) -> None:
         json.dump(cache, f, indent=2)
 
 
-def run_check(script_path: Path, cache: dict, default_args: list[str] | None = None) -> tuple[int, list[str]]:
+def run_check(
+    script_path: Path,
+    cache: dict,
+    default_args: list[str] | None = None,
+) -> tuple[int, list[str]]:
     """Run a single AR-check script and return exit code and output."""
     script_name = script_path.name
     script_hash = get_file_hash(script_path)
@@ -79,7 +82,6 @@ def main() -> int:
     """Run all AR-check scripts with caching."""
     cache = get_cache()
     ar_checks_dir = Path(__file__).parent
-    repo_root = Path(__file__).parent.parent.parent
 
     scripts = sorted(ar_checks_dir.glob("*.py"))
     scripts = [s for s in scripts if s.name != "run_all.py" and not s.name.startswith("_")]
@@ -94,15 +96,22 @@ def main() -> int:
 
     # Scripts that require specific arguments - skip in consolidated run
     # These are meant to be run in specific contexts (plan validation, etc.)
-    SKIP_SCRIPTS = {
+    skip_scripts = {
         "check_changelog.py",  # Requires plan number
         "check_plan_immutability.py",  # Requires --open-hash
         "spec_match.py",  # Requires plan file
     }
 
     # Scripts that accept path arguments - provide default paths
-    PATH_SCRIPTS = {
-        "constructor_arg_cap.py": ["sovereignai", "databases", "services", "web", "tui", "adapters"],
+    path_scripts = {
+        "constructor_arg_cap.py": [
+            "sovereignai",
+            "databases",
+            "services",
+            "web",
+            "tui",
+            "adapters",
+        ],
         "no_context_bags.py": ["sovereignai"],
         "no_globals.py": ["sovereignai"],
         "no_hardcoded_component_names.py": ["web", "tui"],
@@ -110,13 +119,13 @@ def main() -> int:
 
     all_passed = True
     for script in scripts:
-        if script.name in SKIP_SCRIPTS:
+        if script.name in skip_scripts:
             print(f"[SKIPPED] {script.name} (requires specific arguments)")
             continue
 
         default_args = None
-        if script.name in PATH_SCRIPTS:
-            default_args = PATH_SCRIPTS[script.name]
+        if script.name in path_scripts:
+            default_args = path_scripts[script.name]
 
         exit_code, output = run_check(script, cache, default_args)
         if exit_code != 0:
