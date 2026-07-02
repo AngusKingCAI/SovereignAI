@@ -74,6 +74,15 @@ ALLOWLIST = {
     ".gitignore",
     ".open_hash",
     "sailogs/.gitkeep",
+    "scripts/verify_syntax.py",
+    "scripts/check_rule_crossrefs.py",
+    "scripts/check_ar7_allowlist.py",
+    "scripts/get_current_plan.py",
+    "tests/test_verify_syntax.py",
+    "tests/test_check_rule_crossrefs.py",
+    "tests/test_check_ar7_allowlist.py",
+    "tests/test_get_current_plan.py",
+    "efficiency-audit-brief.md",
 }
 
 

@@ -26,7 +26,7 @@ AR9. All skill authoring methods produce identical output: manifest + code + DAG
 
 AR10. External components copied to local disk before use. No runtime remote-only calls.
 
-AR11. No docstrings in Python source. Use clear function/class/variable names instead. Ruff D103 disabled. Code must be self-documenting.
+AR11. No docstrings (D103 disabled). Self-documenting names required.
 
 AR12. FastAPI web app runs as separate process. Imports from `sovereignai/` only via public API surface.
 
@@ -48,7 +48,7 @@ AR20. Crash recovery: check `~/.sovereignai/.shutdown_marker`. Skip if exists. M
 
 AR21. Durable backends use atomic writes. SQLite = WAL + transactions. JSON = temp + `os.replace()`. Locks never force-acquired.
 
-AR22. Universal Tracing Mandate. Every function with side effects emits ≥1 trace event. `check_tracing.py` classifies mechanically — self-declared exemptions rejected.
+AR22. Every function with side effects emits ≥1 trace event. Mechanical classification via check_tracing.py; no self-exemptions.
 
 AR23. Correlation IDs propagate from entry point through all downstream calls via context var.
 
@@ -62,7 +62,7 @@ AR27. Models panel and Hardware panel must consume capability API only — no di
 
 AR28. Adapter manifests declare `routing_priority` int. Routes ascending (lower = higher priority). Default 1000. Reserved 0-999.
 
-AR29. Diagnostic harness tests real end-to-end AI workflow: load → use → unload per stage. Mocks verify code paths; harness verifies system.
+AR29. Diagnostic harness: load → use → unload per stage. Mocks verify paths; harness verifies system.
 
 AR30. TUI is a first-class UI consuming the same capability API as the WebUI. TUI panels must display real backend state, not placeholder text.
 

@@ -88,6 +88,18 @@ Append-only. Each entry: context, options considered, decision, rationale, trade
 
 ---
 
+## D6-Correction — Rule reference fix for docstring prohibition
+
+**Context**: D6 incorrectly cited AR17 as the docstring prohibition rule and referenced AR21 as the prior docstring discipline rule. Current AGENTS.md shows AR17 is about hard-coded component references (capability graph discovery), and AR21 does not exist. The actual docstring prohibition rule is AR11.
+**Options considered**: A) Edit D6 in-place (violates append-only); B) Append correction entry; C) Leave as-is.
+**Decision**: Option B — Append this correction entry.
+**Rationale**: DECISIONS.md is append-only per OR5. The correction preserves historical accuracy (D6 reflected the rule numbering at the time) while providing current rule mapping. The actual rule (no docstrings) remains unchanged; only the citation is corrected.
+**Trade-offs**: Readers must check both D6 and D6-Correction for complete context. Accepted: this is the standard pattern for append-only corrections.
+**Status**: Active. D6's rule citations are stale; refer to AR11 for current docstring prohibition rule.
+**Source**: Cross-reference check during workflow analysis, 2026-07-02.
+
+---
+
 ## How to add a new decision
 
 At `/close` step (when a decision is codified), append an entry in the format above. Do not edit or remove existing entries — DECISIONS.md is append-only.

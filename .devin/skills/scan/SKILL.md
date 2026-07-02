@@ -23,9 +23,9 @@ Run the /scan workflow for the current plan. Whole-repo scan. No new features. F
 
 4. Scan `PLANS.md` — verify baselines current, queue reflects state. Update if stale.
 
-5. Scan all source for references to removed/renamed modules. Fix mechanically.
+5. Scan all source for references to removed/renamed modules. Fix mechanically. Search patterns: `grep -r 'from removed_module' --include='*.py' .` for each known removed module.
 
-5.5. **Cross-reference check**: Extract all `OR\d+` and `AR\d+` tokens from PLANS.md, DEBT.md, DECISIONS.md, AI_HANDOFF.md (excluding sections marked with historical disclaimers). Diff against rules defined in AGENTS.md. Any token not defined in AGENTS.md = STOP. Exempt: CHANGELOG.md (has disclaimer), PLANS.md "Completed Prompts" table rows (historical, has disclaimer). `DEFINED=$(grep -oE '^(OR|AR)[0-9]+' AGENTS.md | sort); CITED=$(grep -rohE '(OR|AR)[0-9]+' PLANS.md DEBT.md DECISIONS.md AI_HANDOFF.md | sort -u); comm -23 <(echo "$CITED") <(echo "$DEFINED")` — output must be empty (manual review to exclude historical-table entries before STOPping).
+5.5. **Cross-reference check**: `.venv/Scripts/python.exe scripts/check_rule_crossrefs.py` — STOP if exit≠0. Checks PLANS.md, DEBT.md, DECISIONS.md, AI_HANDOFF.md for undefined OR/AR citations. Excludes historical sections automatically.
 
 6. Full test suite: `.venv/Scripts/python.exe -m pytest tests/ -vvv`
 
@@ -44,8 +44,8 @@ Run the /scan workflow for the current plan. Whole-repo scan. No new features. F
    === SCAN COMPLETE (prompt-{N}) ===
    Tools: pytest {count} pass, ruff {count}, mypy {count}, bandit {count}, pip-audit {count} CVE, vulture {count}, AR checks {pass/fail}
    Fixes: {list}
-   Vision: 14/14 pass / {count} violations
-   Criteria: 40/40 pass / {count} failures
+   Vision: {principles count}/{total} pass / {count} violations
+   Criteria: {criteria count}/{total} pass / {count} failures
    DEBT: {count} reviewed, {count} flagged
    Open questions: {count} resolved, {count} remain
    ```

@@ -17,7 +17,7 @@ Prerequisite: `.venv/` exists.
 
 ## Resolve current plan file
 
-0. `CURRENT_PLAN=$(ls -v prompts/plan-{N}-Rev*.md | tail -n 1)` — this is the ONE plan file for the remainder of `/close`. Every later step referencing a plan filename uses `$CURRENT_PLAN`. STOP if empty.
+0. `CURRENT_PLAN=$(.venv/Scripts/python.exe scripts/get_current_plan.py)` — this is the ONE plan file for the remainder of `/close`. Every later step referencing a plan filename uses `$CURRENT_PLAN`. STOP if empty.
 
 ## Static analysis
 
@@ -55,7 +55,7 @@ Prerequisite: `.venv/` exists.
 
 10. `.venv/Scripts/python.exe scripts/ar_checks/check_tracing.py` — STOP if exit≠0.
 
-11. `diff <(git show prompt-{N-1}:tests/test_ar7_no_core_imports_in_ui.py | awk '/WEB_MAIN_ALLOWED_IMPORTS/{f=1} f' | grep -oE '"[^"]+"') <(awk '/WEB_MAIN_ALLOWED_IMPORTS/{f=1} f' tests/test_ar7_no_core_imports_in_ui.py | grep -oE '"[^"]+"')` — STOP on any unapproved addition.
+11. `.venv/Scripts/python.exe scripts/check_ar7_allowlist.py prompt-{N-1} tests/test_ar7_no_core_imports_in_ui.py` — STOP on any unapproved addition.
 
 ## Documentation
 
@@ -63,13 +63,13 @@ Prerequisite: `.venv/` exists.
    ```
    ## prompt-{N} — {title}
    **Date**: {YYYY-MM-DD}
-   **Plan file**: $CURRENT_PLAN
-   **Tests**: {count} passed, {count} skipped ({chronic} chronic)
+   **Plan**: $CURRENT_PLAN
+   **Tests**: {passed} passed, {skipped} skipped ({chronic} chronic)
    **Coverage**: {%}
-   **Browser smoke test screenshots**: {paths from step 15, or "N/A"}
-   **AR7 allowlist diff**: {entries from step 11, or "None"}
-   **OR63 check result**: {result from step 9}
-   {≤3 bullets, one line each, summarizing S1-Sn phase work — no restatement of the fields above}
+   **Screenshots**: {paths or "N/A"}
+   **AR7 diff**: {entries or "None"}
+   **OR63**: {result}
+   {≤3 bullets summarizing work}
    ```
 
 13. Update `PLANS.md` baseline: test count, coverage, bandit count.
@@ -84,7 +84,7 @@ Prerequisite: `.venv/` exists.
 
 15. Start dev server, load page. For each new UI element in plan's "WILL edit" scope: verify present in DOM, click + observe state change, capture screenshot `<element-id>.png` to `logs/screenshots/prompt-{N}/`. Verify each screenshot >1KB. STOP if not done. STOP if dev server won't start.
 
-16. `DIFF_LINES=$(git diff prompt-{N-1}..HEAD | wc -l)` — if >5000, chunk review per phase. `.venv/Scripts/python.exe scripts/ar_checks/spec_match.py $CURRENT_PLAN` — STOP if exit≠0. No exceptions. Blocks steps 17-22 until it passes.
+16. `DIFF_LINES=$(git diff prompt-{N-1}..HEAD | wc -l)`. `.venv/Scripts/python.exe scripts/ar_checks/spec_match.py $CURRENT_PLAN` — STOP if exit≠0. No exceptions. Blocks steps 17-22 until it passes.
 
 ## Git
 
