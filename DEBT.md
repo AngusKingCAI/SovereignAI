@@ -76,9 +76,9 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 ## Deferred: diskcache CVE-2025-69872 (transitive dependency)
 
 **Deferred at**: prompt-20.9.1
-**Reason**: pip-audit reports CVE-2025-69872 in diskcache 5.6.3 (transitive dependency from huggingface_hub). This is a path traversal vulnerability. Upgrading diskcache may break compatibility with huggingface_hub. This is a pre-existing issue not introduced by this plan.
-**Trigger condition**: When huggingface_hub updates to a version that uses a patched diskcache or when upgrading to a newer huggingface_hub version.
-**Target plan**: TBD (dependency upgrade plan)
+**Reason**: pip-audit reports CVE-2025-69872 in diskcache 5.6.3 (transitive dependency from huggingface_hub). This is a path traversal vulnerability. Fix is in PR #361 but not yet merged to PyPI as of 2026-07-03. Latest PyPI version is still 5.6.3 (vulnerable). This is a pre-existing issue not introduced by this plan.
+**Trigger condition**: When diskcache PR #361 is merged and released to PyPI (patched version available).
+**Target plan**: TBD (dependency upgrade plan after diskcache patch release)
 
 ---
 
