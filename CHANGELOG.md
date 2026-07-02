@@ -1163,3 +1163,18 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Removed .devin/workflows/ directory (deprecated)
 - Historical records (CHANGELOG.md, prompts/completed/*.md, logs/*.md) preserved unchanged per OR73
 
+---
+
+## prompt-20.7.1 — AGENTS.md Conciseness Pass + New Rules
+**Date**: 2026-07-02
+**Plan file**: prompts/plan-20.7.1-Rev0.md
+**Tests**: 457 passed, 9 skipped
+**Coverage**: N/A (no new production code)
+- Tightened OR14, OR25, OR40, OR51, OR53, OR54, OR68, OR70, OR71, OR73 per GR18 (minimal tokens, constraint+consequence only)
+- Added OR75 (execution log), OR77 (dependency discipline), OR79 (test timeouts), OR80 (rule conciseness), OR81 (MCP usage)
+- Added L60-L66 to LANDMINES.md (missing dep, plan mutation, test stall, rule verbose, Context7 skipped, Snyk skipped)
+- Added GR18 to AI_HANDOFF.md (rule terseness)
+- Fixed test_ar_checks.py to handle decimal plan numbers (20.7.1, 20.7.2, 20.7.3)
+- Skipped test_spec_match_missing_in_diff for docs-only plan (spec_match designed for production code changes)
+- Architect correction applied mid-execution: OR80/L63/GR18/S1.2 text revised per Architect guidance. Plan file not edited per OR78.
+
