@@ -31,7 +31,7 @@ This ensures the Architect always reviews current state, not a stale clone.
 2. **Verify repo state.** Tag on origin, CHANGELOG matches, PLANS.md updated, no scope creep.
 3. **Re-read** `LANDMINES.md` + `principles.md`.
 4. **Review C9 proposals + scan for patterns.** Propose new rules or reject. Include in next plan's S0.
-5. **Best practices research (web search).** For technical implementation plans (especially new tech stacks or frameworks), search for official docs, best practices, and common pitfalls. Document findings in plan header. Example: Textual ContentSwitcher import path, CSS patterns, async worker patterns.
+5. **Best practices research (web search).** For technical implementation plans (especially new tech stacks or frameworks), search for official docs, best practices, and common pitfalls. Document findings in plan header. Example: Textual ContentSwitcher import path, CSS patterns, async worker patterns. Use Context7 MCP for library-specific API questions (import paths, method signatures, version-specific behavior). Use web search for broader patterns (multi-panel layouts, testing strategies). Context7 prevents hallucinated APIs (P20.4 ContentSwitcher ImportError); web search catches framework-level best practices.
 6. **Make plan files + context brief + Round Table prompt.** N plan files + 1 brief (per Brief Format) + 1 prompt (per Round Table Prompt, full or diff-summary per GR14).
 7. **Pause for Round Table.** Runs until clean pass. Apply findings at discretion.
 8. **Score panelists (GR16).** Posted inline in chat.
@@ -167,3 +167,5 @@ GR15. Open questions for Round Table (distinct from GR2's "resolved" list) get a
 Q-ID. Answers become DD-IDs or stay logged open next rev
 GR16. On clean pass, Architect posts a panelist scorecard inline: 1-100 quality score weighted toward accepted findings (GR4) over volume and recommendation (keep as-is | narrow scope | consolidate | cut).
 GR17. Before drafting a plan with UI changes, Architect checks existing specs/prior plans/context docs for precedent and states what was checked and why it didn't resolve the question. Only unresolved UI-shape questions go to the User — ≤6 per plan, 2-4 options each. Overflow beyond 6 is logged as Proposed DD-IDs for Round Table ratification instead of being dropped. "You decide" → Architect decides and logs it as a Proposed DD-ID the same way.
+
+GR18. Rules in AGENTS.md must use minimal tokens whilst maintaining functionality. Constraint + consequence only; context belongs in LANDMINES.md (linked). Not a hard char limit — function over brevity. Token cost: AGENTS.md read in full per OR14/OR45; verbose rules cost ~200 tokens per re-read. SWE-1.6 research (Cognition 2026-07) shows concise function-first rules are followed more verbatim.
