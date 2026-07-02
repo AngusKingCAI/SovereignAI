@@ -24,6 +24,7 @@ htmlcov/
 .coverage
 .coverage.*
 .tox/
+scripts/ar_checks/.cache/
 
 # IDE
 .vscode/
