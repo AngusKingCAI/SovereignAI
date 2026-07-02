@@ -142,17 +142,20 @@ class CapabilityAPI:
             return results
         for name, backend in self._memory_backends.items():
             try:
-                from sovereignai.memory.working_backend import WorkingMemoryBackend
                 from sovereignai.memory.episodic_backend import EpisodicMemoryBackend
                 from sovereignai.memory.procedural_backend import ProceduralMemoryBackend
                 from sovereignai.memory.trace_backend import TraceMemoryBackend
+                from sovereignai.memory.working_backend import WorkingMemoryBackend
 
                 backend_type = "unknown"
                 if isinstance(backend, WorkingMemoryBackend):
                     backend_type = "working"
                     capacity_mb = 0
                     used_mb = sum(len(records) for records in backend._store.values())
-                elif isinstance(backend, (EpisodicMemoryBackend, ProceduralMemoryBackend, TraceMemoryBackend)):
+                elif isinstance(
+                    backend,
+                    (EpisodicMemoryBackend, ProceduralMemoryBackend, TraceMemoryBackend),
+                ):
                     if isinstance(backend, EpisodicMemoryBackend):
                         backend_type = "episodic"
                     elif isinstance(backend, ProceduralMemoryBackend):
