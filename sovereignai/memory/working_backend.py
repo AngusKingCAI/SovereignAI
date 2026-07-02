@@ -4,7 +4,7 @@ import uuid
 from typing import TYPE_CHECKING
 
 from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import TraceLevel
+from sovereignai.shared.types import TraceLevel, WorkingQuery
 
 if TYPE_CHECKING:
     pass
@@ -41,17 +41,20 @@ class WorkingMemoryBackend:
         )
         return record_id
 
-    def query(self, query: dict) -> list[dict]:
+    def query(self, query: WorkingQuery) -> list[dict]:
         results = []
 
+        # Map context_id to task_id for compatibility
         for task_id, records in self._store.items():
-            if "task_id" in query and task_id != query["task_id"]:
+            if task_id != query.context_id:
                 continue
 
             for record in records:
-                if "key" in query and record.get("key") != query["key"]:
-                    continue
                 results.append(record)
+
+        # Limit results to max_items
+        if len(results) > query.max_items:
+            results = results[:query.max_items]
 
         self._trace.emit(
             component="working_memory",

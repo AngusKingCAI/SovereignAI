@@ -7,7 +7,7 @@ import uuid
 from typing import TYPE_CHECKING
 
 from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import TraceLevel, now_utc
+from sovereignai.shared.types import EpisodicQuery, TraceLevel, now_utc
 
 if TYPE_CHECKING:
     pass
@@ -76,45 +76,49 @@ class EpisodicMemoryBackend:
         )
         return record_id
 
-    def query(self, query: dict) -> list[dict]:
+    def query(self, query: EpisodicQuery) -> list[dict]:
         if not self._conn:
             return []
 
-        # Build SQL query dynamically based on parameters
+        # Build SQL query dynamically based on EpisodicQuery parameters
         conditions = []
         params = []
 
-        if "task_id" in query:
-            conditions.append("task_id = ?")
-            params.append(query["task_id"])
+        # Map session_id to task_id for compatibility
+        conditions.append("task_id = ?")
+        params.append(query.session_id)
 
-        if "task_ids" in query and isinstance(query["task_ids"], list):
-            placeholders = ",".join(["?"] * len(query["task_ids"]))
-            conditions.append(f"task_id IN ({placeholders})")
-            params.extend(query["task_ids"])
+        if query.time_range:
+            start_ts, end_ts = query.time_range
+            conditions.append("timestamp >= ? AND timestamp <= ?")
+            params.extend([start_ts.timestamp(), end_ts.timestamp()])
 
-        if "component" in query:
-            conditions.append("component = ?")
-            params.append(query["component"])
-
-        if "event_type" in query:
-            conditions.append("event_type = ?")
-            params.append(query["event_type"])
+        if query.tags:
+            # Tags stored in metadata JSON - query requires parsing
+            # For now, return all records and filter in Python
+            # TODO: Add proper tag indexing if performance issues arise
+            pass
 
         where_clause = " AND ".join(conditions) if conditions else "1=1"
-        limit_clause = f"LIMIT {query['limit']}" if "limit" in query else ""
 
         sql = f"""
             SELECT id, timestamp, component, task_id, event_type, data, metadata
             FROM episodes
             WHERE {where_clause}
             ORDER BY timestamp ASC
-            {limit_clause}
         """  # nosec B608
 
         cursor = self._conn.execute(sql, params)
         results = []
         for row in cursor:
+            metadata = json.loads(row[6]) if row[6] else None
+
+            # Filter by tags if specified
+            if query.tags and metadata:
+                record_tags = metadata.get("tags", [])
+                if not any(tag in record_tags for tag in query.tags):
+                    continue
+
             results.append({
                 "id": row[0],
                 "timestamp": row[1],
@@ -122,7 +126,7 @@ class EpisodicMemoryBackend:
                 "task_id": row[3],
                 "event_type": row[4],
                 "data": row[5],
-                "metadata": json.loads(row[6]) if row[6] else None,
+                "metadata": metadata,
             })
 
         self._trace.emit(

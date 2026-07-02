@@ -5,7 +5,7 @@ import uuid
 from typing import TYPE_CHECKING
 
 from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import TraceEvent, TraceLevel, now_utc
+from sovereignai.shared.types import TraceEvent, TraceLevel, TraceQuery, now_utc
 
 if TYPE_CHECKING:
     pass
@@ -90,38 +90,28 @@ class TraceMemoryBackend:
         )
         return record_id
 
-    def query(self, query: dict) -> list[dict]:
+    def query(self, query: TraceQuery) -> list[dict]:
         if not self._conn:
             return []
 
         conditions = []
         params = []
 
-        if "task_id" in query:
-            conditions.append("task_id = ?")
-            params.append(query["task_id"])
-
-        if "correlation_id" in query:
+        if query.correlation_id:
             conditions.append("correlation_id = ?")
-            params.append(query["correlation_id"])
+            params.append(query.correlation_id)
 
-        if "component" in query:
+        if query.span_type:
             conditions.append("component = ?")
-            params.append(query["component"])
-
-        if "level" in query:
-            conditions.append("level = ?")
-            params.append(query["level"])
+            params.append(query.span_type)
 
         where_clause = " AND ".join(conditions) if conditions else "1=1"
-        limit_clause = f"LIMIT {query['limit']}" if "limit" in query else ""
 
         sql = f"""
             SELECT id, timestamp, level, component, message, correlation_id, task_id, task_state
             FROM traces
             WHERE {where_clause}
             ORDER BY timestamp ASC
-            {limit_clause}
         """  # nosec B608
 
         cursor = self._conn.execute(sql, params)

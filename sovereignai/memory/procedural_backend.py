@@ -7,7 +7,7 @@ import uuid
 from typing import TYPE_CHECKING
 
 from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import TraceLevel
+from sovereignai.shared.types import ProceduralQuery, TraceLevel
 
 if TYPE_CHECKING:
     pass
@@ -132,22 +132,19 @@ class ProceduralMemoryBackend:
         finally:
             self._release_lock()
 
-    def query(self, query: dict) -> list[dict]:
+    def query(self, query: ProceduralQuery) -> list[dict]:
         patterns = self._read_patterns()
         results = []
 
         for pattern in patterns:
-            if "pattern" in query and query["pattern"] not in pattern.get("pattern", ""):
+            if query.skill_name and query.skill_name not in pattern.get("pattern", ""):
                 continue
-            if "min_confidence" in query and pattern.get("confidence", 0) < query["min_confidence"]:
+            if query.capability_type and query.capability_type not in pattern.get("pattern", ""):
                 continue
             results.append(pattern)
 
         # Sort by confidence descending
         results.sort(key=lambda p: p.get("confidence", 0), reverse=True)
-
-        if "limit" in query:
-            results = results[: query["limit"]]
 
         self._trace.emit(
             component="procedural_memory",
