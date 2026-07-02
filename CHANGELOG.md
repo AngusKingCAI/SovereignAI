@@ -1177,4 +1177,5 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 - Fixed test_ar_checks.py to handle decimal plan numbers (20.7.1, 20.7.2, 20.7.3)
 - Skipped test_spec_match_missing_in_diff for docs-only plan (spec_match designed for production code changes)
 - Architect correction applied mid-execution: OR80/L63/GR18/S1.2 text revised per Architect guidance. Plan file not edited per OR78.
-
+- Fixed ruff errors (import ordering, line length, unused variables)
+- Added deferred items to DEBT.md: diskcache CVE-2025-69872, Vulture unused variables, AR6 context bag violations
