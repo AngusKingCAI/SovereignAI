@@ -386,3 +386,10 @@ N/A — no new patterns for prompt-20
 **Graduated to**: OR76.
 
 ---
+
+## L64 — Quota interrupt without re-read
+**Trigger**: Devin resumes work after quota interrupt without re-reading plan + AGENTS.md (OR45).
+**Impact**: Context lost; rules forgotten; steps skipped.
+**Graduated to**: OR45.
+
+---
