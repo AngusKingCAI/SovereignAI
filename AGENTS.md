@@ -192,9 +192,17 @@ OR73. [Mandatory] CHANGELOG append discipline. At `/close` step 12, append a new
 
 OR74. [Mandatory] TUI panel switching must use ContentSwitcher (from textual.widgets) or TabbedContent — never manual add_class/removeClass('hidden'). Import path: textual.widgets.ContentSwitcher (NOT textual.containers).
 
-OR75. [Mandatory] Execution log file at /close must be created by Devin with: (a) header (# Execution Log: prompt-N, **Plan**:, **Date**:, **Executor**: Devin), (b) a ## Devin Chat section containing the verbatim marker [PASTE DEVIN CHAT HERE] if the chat content is not yet pasted, (c) structured ## S0 — Opening through ## S5 — Closing summary sections with task counts, deviations, and verbatim CHANGELOG echo per OR73. The [PASTE DEVIN CHAT HERE] marker is the SSOT signal that the log is a stub awaiting User paste. Devin must NOT fabricate chat content. check_changelog.py does NOT enforce this; it is a manual Architect check.
+OR75. [Mandatory] Execution log at /close: Devin writes header + `## Devin Chat` section with `[PASTE DEVIN CHAT HERE]` marker + structured S0-S5 summary with verbatim CHANGELOG echo. User pastes chat. Devin must NOT fabricate chat content. Manual Architect check (not script-enforced).
 
 OR78. [Mandatory] Devin must NOT edit prompts/plan-N-RevM.md execution content during execution. Plans are frozen inputs reviewed by Round Table before delivery. Allowed operations: (a) move to prompts/completed/ at /close step 17; (b) SPLIT an over-long plan (>120 lines) into sub-plans (plan-N.M-Rev0.md, plan-N.M.1-Rev0.md, etc. — decimal sub-plan numbers, NOT Rev increments) IF AND ONLY IF each sub-plan runs /open and /close independently, the split preserves all original S0-Sn steps verbatim (no reordering, no adding, no removing, no rewording), and the WILL-edit list is partitioned not duplicated. Editing executable code, steps, or WILL-edit entries = STOP per OR19. If WILL-edit list is incomplete, STOP and request Architect-issued Rev.
+
+OR77. [Mandatory] Dependency discipline: every new import in production code requires the package in txt/requirements.txt. Every new dev/test import requires the package in pyproject.toml [project.optional-dependencies] dev. check_dependencies.py enforces at /open and /close. Missing dep = STOP. Run pip install -e .[dev] after any requirements.txt change.
+
+OR79. [Mandatory] All tests have a 30s timeout via pytest-timeout (pyproject.toml addopts = --timeout=30 --timeout-method=thread). Per-test override via @pytest.mark.timeout(N). Stalled test = FAILED (not hung). Investigate root cause per OR18; do not re-run without fix.
+
+OR80. [Mandatory] AR/OR rules in AGENTS.md must use minimal tokens whilst maintaining functionality. Constraint + consequence only; context belongs in LANDMINES.md. check_rule_conciseness.py flags rules >400 chars for review (advisory, not blocking). Hard limit: no rule >600 chars.
+
+OR81. [Mandatory] MCP usage: Devin queries Context7 before using any library API unfamiliar or updated since training cutoff. Devin invokes Snyk MCP scan at /close for plans touching txt/requirements.txt or security-sensitive code. Reduces hallucinated APIs (P20.4 ContentSwitcher ImportError) and catches CVEs earlier (P20.5 diskcache).
 
 ---
 

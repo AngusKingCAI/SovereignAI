@@ -326,6 +326,48 @@ Append-only. Never edit or remove entries. Format:
 
 ---
 
+## L60 — Missing dependency in requirements.txt
+**Trigger**: production code imports a package not in txt/requirements.txt (or dev import not in pyproject.toml).
+**Impact**: ImportError at runtime; tests fail; pip-audit can't scan.
+**Graduated to**: OR77.
+
+---
+
+## L61 — Plan file mutated mid-execution
+**Trigger**: Editing prompts/plan-N-RevM.md during execution to satisfy spec_match or reconcile WILL-edit list (observed in P16, P20.1, P20.4).
+**Impact**: Round Table review undermined; post-hoc cover-ups indistinguishable from legitimate fixes.
+**Graduated to**: OR78.
+
+---
+
+## L62 — Test stalled indefinitely
+**Trigger**: Test makes network call (HF API, Ollama, etc.) or infinite loop with no timeout.
+**Impact**: Suite hangs; Devin can't proceed; CI blocked.
+**Graduated to**: OR79.
+
+---
+
+## L63 — Rule too verbose to follow
+**Trigger**: AR/OR rule exceeds 600 chars OR uses explanatory context instead of constraint+consequence.
+**Impact**: SWE-1.6 ignores long rules; token cost on every re-read (OR14/OR45).
+**Graduated to**: OR80.
+
+---
+
+## L65 — Context7 skipped
+**Trigger**: Devin uses library API without querying Context7 first (hallucinated import path, method signature, or version-specific behavior).
+**Impact**: Hallucinated APIs shipped (P20.4 ContentSwitcher ImportError).
+**Graduated to**: OR81.
+
+---
+
+## L66 — Snyk skipped
+**Trigger**: Devin invokes Snyk MCP scan at /close for plans touching txt/requirements.txt or security-sensitive code.
+**Impact**: CVEs caught earlier (P20.5 diskcache).
+**Graduated to**: OR81.
+
+---
+
 N/A — no new patterns (OR66 added per plan requirements, not a failure pattern)
 
 ---
