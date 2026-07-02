@@ -120,6 +120,8 @@ OR24. User-authorized exceptions need target plan documentation. "Deferred to ne
 
 OR25. All tests have a 30s timeout via pytest-timeout (pyproject.toml addopts = --timeout=30 --timeout-method=thread). Per-test override via @pytest.mark.timeout(N). Stalled test = FAILED (not hung).
 
+OR26. Follow skill workflows systematically. Never skip steps or pick-and-choose based on perceived relevance. Execute all steps in sequence as designed.
+
 ---
 
 See `LANDMINES.md` for failure patterns linked to rules.
