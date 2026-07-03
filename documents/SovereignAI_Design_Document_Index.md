@@ -9,7 +9,7 @@
 
 | # | Document | DDs Covered | Status | Depends On |
 |---|----------|-------------|--------|------------|
-| 1 | `SovereignAI_Skill_Agent_System_Design_v1.0.md` | DD-1 through DD-12 | Approved | principles.md, AGENTS.md, DECISIONS.md |
+| 1 | `SovereignAI_Skill_Agent_System_Design_v1.0.md` | DD-1 through DD-12 | Approved | ../PRINCIPLES.md, ../AGENTS.md, ../DECISIONS.md |
 | 2 | `SovereignAI_Cross_Department_Messaging_Design_v1.0.md` | DD-20.10.4 through DD-20.10.11 | Approved | Doc #1 |
 | 3 | `SovereignAI_LLM_Function_Calling_Design_v1.0.md` | DD-21.3.1 | Approved | Doc #1 |
 | 4 | `SovereignAI_Diff_Based_Editing_Design_v1.0.md` | DD-21.9.1 | Approved | Doc #1 |

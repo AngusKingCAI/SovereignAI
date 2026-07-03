@@ -3,7 +3,7 @@
 **Status**: Draft -- approved for implementation  
 **Date**: 2026-07-03  
 **Author**: Architect  
-**Depends on**: `principles.md`, `AGENTS.md`, `DECISIONS.md`, `AI_HANDOFF.md`
+**Depends on**: `../PRINCIPLES.md`, `../AGENTS.md`, `../DECISIONS.md`, `../AI_HANDOFF.md`
 
 ---
 
