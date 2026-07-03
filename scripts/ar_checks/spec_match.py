@@ -128,10 +128,6 @@ ALLOWLIST = {
     "prompts/completed/plan-20.9.6.md",
     "scripts/ar_checks/spec_match.py",
     "prompts/plan-20.9.9.md",
-    "AGENTS.md",
-    "LANDMINES.md",
-    "PLANS.md",
-    "CHANGELOG.md"
 }
 
 

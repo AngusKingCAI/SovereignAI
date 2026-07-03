@@ -31,13 +31,13 @@ Run the /scan workflow for the current plan. Whole-repo scan. No new features. F
 
 7. Verify coverage: `.venv/Scripts/python.exe -m pytest tests/ --cov=. --cov-report=term 2>&1 | tail -n 10` — STOP if dropped >5% from baseline.
 
-8. Audit against `principles.md` (14 core + workflow principles). STOP on violations — architectural fixes require regular plan + Round Table.
+8. Audit against `PRINCIPLES.md` (14 core + workflow principles). STOP on violations — architectural fixes require regular plan + Round Table.
 
-9. Audit against `principles.md` success criteria (if any defined). STOP on failures.
+9. Audit against `PRINCIPLES.md` success criteria (if any defined). STOP on failures.
 
 10. Review `DEBT.md` — check trigger conditions. Flag met triggers for next plan.
 
-11. Audit open questions in `principles.md` — move resolved ones to "Resolved" with note.
+11. Audit open questions in `PRINCIPLES.md` — move resolved ones to "Resolved" with note.
 
 12. Final summary:
    ```

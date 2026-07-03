@@ -4,7 +4,7 @@
 
 Local-first modular AI assistant for one user. Strong modular core. Wire as you go. UIs are separate processes consuming capability API. Every adapter/skill/memory backend/model interchangeable.
 
-**Vision**: `principles.md`. 14 principles + workflow principles.
+**Vision**: `PRINCIPLES.md`. 14 principles + workflow principles.
 **Stack**: Python v1, Windows only. Rust-migratable later.
 
 ---
@@ -29,7 +29,7 @@ This ensures the Architect always reviews current state, not a stale clone.
 
 1. **Read execution logs end-to-end.** Extract test counts, scan results, STOPs, deviations.
 2. **Verify repo state.** Tag on origin, CHANGELOG matches, PLANS.md updated, no scope creep.
-3. **Re-read** `LANDMINES.md` + `principles.md`.
+3. **Re-read** `LANDMINES.md` + `PRINCIPLES.md`.
 4. **Review C9 proposals + scan for patterns.** Propose new rules or reject. Include in next plan's S0.
 5. **Best practices research (web search).** For technical implementation plans (especially new tech stacks or frameworks), search for official docs, best practices, and common pitfalls. Document findings in plan header. Example: Textual ContentSwitcher import path, CSS patterns, async worker patterns. Use Context7 MCP for library-specific API questions (import paths, method signatures, version-specific behavior). Use web search for broader patterns (multi-panel layouts, testing strategies). Context7 prevents hallucinated APIs (P20.4 ContentSwitcher ImportError); web search catches framework-level best practices.
 6. **Make plan files + context brief + Round Table prompt.** N plan files + 1 brief (per Brief Format) + 1 prompt (per Round Table Prompt, full or diff-summary per GR14).
@@ -93,7 +93,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 | Document | Responsibility | Who writes |
 |---|---|---|
 | `AI_HANDOFF.md` | Process guide | Architect |
-| `principles.md` | Living principles (14 core + workflow) | User + Architect |
+| `PRINCIPLES.md` | Living principles (14 core + workflow) | User + Architect |
 | `PLANS.md` | Dynamic state, baselines, queue | Executor |
 | `LANDMINES.md` | Failure patterns | Executor |
 | `CHANGELOG.md` | Per-plan change log | Executor |

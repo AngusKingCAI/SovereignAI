@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**AR** = Architecture Rules (30 rules) · **OR** = Operational Rules (28 rules). Ambiguous → read `LANDMINES.md`. Authority: `principles.md`.
+**AR** = Architecture Rules (30 rules) · **OR** = Operational Rules (28 rules). Ambiguous → read `LANDMINES.md`. Authority: `PRINCIPLES.md`.
 
 ---
 

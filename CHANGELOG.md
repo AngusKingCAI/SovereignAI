@@ -1492,7 +1492,7 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 **Files changed**:
 - AGENTS.md (added OR39)
 - .devin/workflows/open.md (fixed master -> main)
-- documents/principles.md (fixed title + revision history — metadata only)
+- PRINCIPLES.md (fixed title + revision history — metadata only)
 - PLANS.md (state update: prompt-0 complete, Plan 1 active)
 - README.md (new, minimal)
 - .gitignore (new)
