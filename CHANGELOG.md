@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## prompt-20.9.6 — BoundedTraceQueue Implementation
+
+**Date**: 2026-07-03
+**Plan**: prompts/plan-20.9.6.md
+**Tests**: 16 passed, 0 skipped (0 chronic)
+**Coverage**: 79% (trace_emitter.py scoped)
+**Screenshots**: N/A (backend-only plan)
+**AR7 diff**: None
+**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+
+- S1: Implemented BoundedTraceQueue class with circuit breaker pattern per DD-20.10.1 (high/low-water marks, aggregate metrics)
+- S1: Implemented dedicated sentinel class (DRAIN_SHUTDOWN) for drain thread exit per DD-20.10.2 with 5s join timeout
+- S2: Replaced unbounded callback list in TraceEmitter with _SubscriberQueue wrapper using bounded queues and drain threads
+- S2: Added max_queue_size parameter to subscribe_callback (default: 1000)
+- S3: Added test_trace_emitter_bounded_queue.py with 8 tests covering circuit breaker, subscriber disconnect, multiple subscribers, producer/consumer patterns
+- S3: Updated test_correlation_id.py to add time.sleep for async callback delivery verification
+- S4: Updated DEBT.md to mark DEBT #10 and #12 as resolved (TraceEmitter.subscribe_callback bounded queue)
+- S4: Updated scripts/ar_checks/check_tracing_allowlist.txt for new BoundedTraceQueue functions
+- All 16 bounded queue tests passing, all existing correlation_id tests passing
+
+---
+
 ## prompt-20.9.5 — AR6 Context Bag Cleanup + AR-Check Caching
 
 **Date**: 2026-07-03

@@ -17,6 +17,11 @@ shared/lifecycle_manager.py:__init__
 shared/task_state_machine.py:__init__
 shared/task_state_machine.py:_publish
 shared/trace_emitter.py:__init__
+shared/trace_emitter.py:put
+shared/trace_emitter.py:_trip_circuit_breaker
+shared/trace_emitter.py:_reset_circuit_breaker
+shared/trace_emitter.py:start_drain_thread
+shared/trace_emitter.py:stop_drain_thread
 shared/types.py:__init__
 shared/file_trace_subscriber.py:__init__
 shared/file_trace_subscriber.py:__call__

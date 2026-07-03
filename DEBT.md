@@ -4,6 +4,16 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
+## Resolved: TraceEmitter.subscribe_callback bounded queue (DEBT #10, #12)
+
+**Deferred at**: prompt-20.7.1 (#10), prompt-20.6 (#12)
+**Reason**: TraceEmitter.subscribe_callback needed per-subscriber bounded queue + drain thread to prevent memory leaks. Current implementation accumulated unprocessed callbacks.
+**Trigger condition**: When TraceEmitter callback system was refactored for bounded queues.
+**Target plan**: prompt-20.9.6
+**Status**: Resolved at prompt-20.9.6 — Implemented BoundedTraceQueue with circuit breaker pattern per DD-20.10.1 and DD-20.10.2. Replaced unbounded callback list with _SubscriberQueue wrapper using bounded queues and drain threads.
+
+---
+
 ## Deferred: Snyk MCP authentication
 
 **Deferred at**: prompt-20.9.3
@@ -103,15 +113,6 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 **Reason**: Round Table Finding 5 requests TraceEmitter correlation_id be typed as UUID instead of str. Current implementation uses str for correlation_id to avoid circular import with types.py. Would require refactoring correlation_id handling across the codebase.
 **Trigger condition**: When correlation_id typing is prioritized.
 **Target plan**: TBD (correlation_id typing plan)
-
----
-
-## Deferred: TraceEmitter.subscribe_callback unbounded queue memory leak
-
-**Deferred at**: prompt-20.6
-**Reason**: TraceEmitter.subscribe_callback uses unbounded queue for callbacks. If subscribers don't drain fast enough, memory accumulates. Need bounded queue + drain thread.
-**Trigger condition**: When TraceEmitter callback system is refactored for bounded queues.
-**Target plan**: TBD (TraceEmitter refactoring plan)
 
 ---
 

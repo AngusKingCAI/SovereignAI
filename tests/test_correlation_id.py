@@ -1,3 +1,4 @@
+import time
 from uuid import UUID
 
 from sovereignai.shared.capability_api import CapabilityAPI
@@ -174,6 +175,7 @@ def test_subscribe_callback_receives_live_events():
     trace.emit(component="Test", level=TraceLevel.INFO, message="test1")
     trace.emit(component="Test", level=TraceLevel.INFO, message="test2")
 
+    time.sleep(0.2)
     assert len(received) == 2
     assert received[0].message == "test1"
     assert received[1].message == "test2"
@@ -181,6 +183,7 @@ def test_subscribe_callback_receives_live_events():
     unsubscribe()
     trace.emit(component="Test", level=TraceLevel.INFO, message="test3")
 
+    time.sleep(0.2)
     assert len(received) == 2
 
 
@@ -199,5 +202,6 @@ def test_faulty_callback_does_not_block_emit():
 
     trace.emit(component="Test", level=TraceLevel.INFO, message="test")
 
+    time.sleep(0.2)
     assert len(received) == 1
     assert received[0].message == "test"
