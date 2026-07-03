@@ -112,6 +112,8 @@ Prerequisite: `.venv/` exists.
    Must be empty AND `AFTER_COUNT` = `BEFORE_COUNT` — STOP if not. Never substitute a specific filename for the glob.
    Note: If git mv fails with "bad source", use plain mv then git add -A. Per L23, mv + git add -A is safe (git add -A catches the rename).
 
+18.5. `git add prompts/*.md && git status -s` — ensure ALL plan files in prompts/ are added to git (tracked or untracked). This prevents treating untracked plan files as cleanup artifacts per L69.
+
 19. `git add -A && git status -s && git commit -m "prompt-{N}: {title}" -m "{note 1}" -m "{note 2}" -m "{note 3}"` — one `-m` per CHANGELOG Notes bullet.
 
 20. `git tag --list prompt-{N}` — STOP if not empty. Then `git tag prompt-{N}`.

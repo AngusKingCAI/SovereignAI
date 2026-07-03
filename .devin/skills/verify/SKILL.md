@@ -19,4 +19,6 @@ Run the /verify workflow after every file edit during plan execution.
 
 2. Ruff on edited file (Python only): `.venv/Scripts/ruff.exe check <file>` — if auto-fixable: `ruff check --fix <file>` and re-verify. If not: STOP.
 
-3. Report: `<file>: OK` or `<file>: FAIL`
+3. `git add prompts/*.md` — ensure ALL plan files in prompts/ are added to git (tracked or untracked). This prevents treating untracked plan files as cleanup artifacts per L69. Do this on every verify to catch any intermediate pushes.
+
+4. Report: `<file>: OK` or `<file>: FAIL`
