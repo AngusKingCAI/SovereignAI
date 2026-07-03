@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## prompt-20.9.8 — Correlation ID Typing + VersionNegotiator Disable
+
+**Date**: 2026-07-03
+**Plan**: prompts/plan-20.9.8.md
+**Tests**: 492 passed, 8 skipped (0 chronic)
+**Coverage**: N/A (typing + config changes)
+**Screenshots**: N/A (backend-only plan)
+**AR7 diff**: None
+**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+
+- S1: Extracted CorrelationId newtype to types_base.py to break circular import between types.py and trace_emitter.py
+- S1: Updated TraceEvent, Event, and all correlation_id usages to use CorrelationId type instead of UUID
+- S1: Updated trace_emitter.py emit() method to accept CorrelationId parameter
+- S1: Updated task_state_machine.py _publish() to wrap task_id in CorrelationId
+- S1: Updated memory/trace_backend.py to wrap UUID in CorrelationId when creating TraceEvent
+- S2: Added Config dataclass with version_negotiation_enabled field (default True)
+- S2: Wired Config into main.py build_container() with --no-version-negotiation CLI flag
+- S2: Updated main.py to skip VersionNegotiator instantiation when disabled, emit info trace
+- S3: Fixed test_hardware_probe.py procedural backend tests to use ProceduralQuery instead of dict
+- S3: Fixed test_logs_panel.py test_faulty_callback_does_not_block_emit to use unsubscribe + longer sleep
+- S4: Added test_correlation_id_typing.py with 4 tests for CorrelationId newtype behavior
+- S4: Added test_version_negotiator_disable.py with 3 tests for Config dataclass
+- S5: Marked DEBT entries "Round Table Finding 5" and "VersionNegotiator disable option cleanup" as resolved
+- All 492 tests passing, correlation_id now properly typed as UUID wrapper, version negotiation can be disabled via CLI
+
+---
+
 ## prompt-20.9.7 — TUI Memory Panel AR7 Compliance via CapabilityAPI
 
 **Date**: 2026-07-03

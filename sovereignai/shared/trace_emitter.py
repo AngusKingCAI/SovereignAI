@@ -8,7 +8,6 @@ from collections import deque
 from collections.abc import Callable
 from threading import Lock
 from typing import TYPE_CHECKING
-from uuid import UUID
 
 from sovereignai.shared.types import (
     TraceEvent,
@@ -17,6 +16,7 @@ from sovereignai.shared.types import (
     new_correlation_id,
     now_utc,
 )
+from sovereignai.shared.types_base import CorrelationId
 
 if TYPE_CHECKING:
     pass
@@ -252,7 +252,7 @@ class TraceEmitter:
         component: str,
         level: TraceLevel,
         message: str,
-        correlation_id: UUID | None = None,
+        correlation_id: CorrelationId | None = None,
     ) -> None:
         if correlation_id is None:
             correlation_id = current_correlation_id() or new_correlation_id()

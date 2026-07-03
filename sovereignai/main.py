@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+from sovereignai.shared.config import Config
 from sovereignai.shared.container import DIContainer
 from sovereignai.shared.event_bus import EventBus
 from sovereignai.shared.file_trace_subscriber import FileTraceSubscriber
@@ -9,8 +12,14 @@ from sovereignai.shared.types import (
 )
 from sovereignai.versioning.negotiator import FatalIncompatibilityError
 
+if TYPE_CHECKING:
+    from sovereignai.versioning.negotiator import NegotiationResult
 
-def build_container(dev_mode: bool = False) -> DIContainer:
+
+def build_container(dev_mode: bool = False, config: Config | None = None) -> DIContainer:
+    if config is None:
+        config = Config()
+
     # Create container with event_bus and trace for remove() support (per Rev9)
     # We'll set these after they're created
     container = DIContainer()
@@ -241,43 +250,54 @@ def build_container(dev_mode: bool = False) -> DIContainer:
 
     # 19. Version negotiator (Plan 12)
     # Per Rev3 N7: non-interactive detection; per Rev3 N11: remove from DI container
-    from sovereignai.versioning.negotiator import VersionNegotiator
-    negotiator = VersionNegotiator(
-        capability_graph=container.retrieve(ICapabilityIndex),  # type: ignore[type-abstract]
-        trace=trace,
-    )
-    result = negotiator.negotiate()
+    result: NegotiationResult | None = None
+    if config.version_negotiation_enabled:
+        from sovereignai.versioning.negotiator import VersionNegotiator
+        negotiator = VersionNegotiator(
+            capability_graph=container.retrieve(ICapabilityIndex),  # type: ignore[type-abstract]
+            trace=trace,
+        )
+        result = negotiator.negotiate()
 
-    if not result.can_start:
+        if not result.can_start:
+            trace.emit(
+                component="versioning",
+                level=TraceLevel.ERROR,
+                message=(
+                    f"Fatal incompatibilities: "
+                    f"{[str(i) for i in result.fatal_incompatibilities]}"
+                ),
+            )
+            raise FatalIncompatibilityError(result.fatal_incompatibilities)
+
+        for warning in result.warnings:
+            trace.emit(
+                component="versioning",
+                level=TraceLevel.WARN,
+                message=warning,
+            )
+
+        # Remove disabled plugins from BOTH the graph AND the DI container (per Rev3 N11)
+        for plugin_id in result.disabled_plugins:
+            graph.remove(plugin_id)
+            # Note: we don't have the actual class type here, so we can't remove from container
+            # The negotiator would need to track component classes to support this
+            trace.emit(
+                component="versioning",
+                level=TraceLevel.WARN,
+                message=(
+                    f"Plugin {plugin_id} disabled due to version "
+                    "incompatibility; removed from graph"
+                ),
+            )
+
+        container.register_singleton(VersionNegotiator, negotiator)
+    else:
         trace.emit(
             component="versioning",
-            level=TraceLevel.ERROR,
-            message=f"Fatal incompatibilities: {[str(i) for i in result.fatal_incompatibilities]}",
+            level=TraceLevel.INFO,
+            message="Version negotiation disabled via config — using default versions",
         )
-        raise FatalIncompatibilityError(result.fatal_incompatibilities)
-
-    for warning in result.warnings:
-        trace.emit(
-            component="versioning",
-            level=TraceLevel.WARN,
-            message=warning,
-        )
-
-    # Remove disabled plugins from BOTH the graph AND the DI container (per Rev3 N11)
-    for plugin_id in result.disabled_plugins:
-        graph.remove(plugin_id)
-        # Note: we don't have the actual class type here, so we can't remove from container
-        # The negotiator would need to track component classes to support this
-        trace.emit(
-            component="versioning",
-            level=TraceLevel.WARN,
-            message=(
-                f"Plugin {plugin_id} disabled due to version "
-                "incompatibility; removed from graph"
-            ),
-        )
-
-    container.register_singleton(VersionNegotiator, negotiator)
 
     # 16. HardwareProbe — no dependencies, singleton (Plan 14)
     from sovereignai.shared.hardware_probe import HardwareProbe
@@ -475,10 +495,19 @@ if __name__ == "__main__":
         action="store_true",
         help="Skip conformance gate (development only)",
     )
+    parser.add_argument(
+        "--no-version-negotiation",
+        action="store_true",
+        help="Disable version negotiation (use default versions)",
+    )
     args = parser.parse_args()
 
+    config = Config(
+        version_negotiation_enabled=not args.no_version_negotiation
+    )
+
     try:
-        container = build_container(dev_mode=args.dev)
+        container = build_container(dev_mode=args.dev, config=config)
         trace = container.retrieve(TraceEmitter)
         bus = container.retrieve(EventBus)
 

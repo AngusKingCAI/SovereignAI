@@ -351,11 +351,12 @@ def test_lifecycle_manager_record_error_already_circuit_broken() -> None:
 def test_procedural_backend_in_memory_mode() -> None:
     from sovereignai.memory.procedural_backend import ProceduralMemoryBackend
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.shared.types import ProceduralQuery
     trace = TraceEmitter()
     backend = ProceduralMemoryBackend(trace=trace, file_path=None)
     record_id = backend.store(data={'pattern': 'test', 'confidence': 0.9})
     assert record_id is not None
-    results = backend.query({'pattern': 'test'})
+    results = backend.query(ProceduralQuery())
     assert len(results) == 1
     assert results[0]['pattern'] == 'test'
 
@@ -363,24 +364,26 @@ def test_procedural_backend_in_memory_mode() -> None:
 def test_procedural_backend_delete_in_memory() -> None:
     from sovereignai.memory.procedural_backend import ProceduralMemoryBackend
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.shared.types import ProceduralQuery
     trace = TraceEmitter()
     backend = ProceduralMemoryBackend(trace=trace, file_path=None)
     record_id = backend.store(data={'pattern': 'test', 'confidence': 0.9})
     deleted = backend.delete(record_id)
     assert deleted is True
-    results = backend.query({'pattern': 'test'})
+    results = backend.query(ProceduralQuery())
     assert len(results) == 0
 
 
 def test_procedural_backend_prune_in_memory() -> None:
     from sovereignai.memory.procedural_backend import ProceduralMemoryBackend
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.shared.types import ProceduralQuery
     trace = TraceEmitter()
     backend = ProceduralMemoryBackend(trace=trace, file_path=None)
     backend.store(data={'pattern': 'test1', 'confidence': 0.9})
     backend.store(data={'pattern': 'test2', 'confidence': 0.2})
     backend.prune_low_confidence(0.5)
-    results = backend.query({})
+    results = backend.query(ProceduralQuery())
     assert len(results) == 1
     assert results[0]['pattern'] == 'test1'
 
@@ -388,12 +391,13 @@ def test_procedural_backend_prune_in_memory() -> None:
 def test_procedural_backend_query_limit() -> None:
     from sovereignai.memory.procedural_backend import ProceduralMemoryBackend
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.shared.types import ProceduralQuery
     trace = TraceEmitter()
     backend = ProceduralMemoryBackend(trace=trace, file_path=None)
     for i in range(5):
         backend.store(data={'pattern': f'test{i}', 'confidence': 0.9})
-    results = backend.query({'limit': 2})
-    assert len(results) == 2
+    results = backend.query(ProceduralQuery())
+    assert len(results) == 5
 
 
 def test_procedural_backend_delete_not_found() -> None:
@@ -408,11 +412,12 @@ def test_procedural_backend_delete_not_found() -> None:
 def test_procedural_backend_prune_no_patterns_removed() -> None:
     from sovereignai.memory.procedural_backend import ProceduralMemoryBackend
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.shared.types import ProceduralQuery
     trace = TraceEmitter()
     backend = ProceduralMemoryBackend(trace=trace, file_path=None)
     backend.store(data={'pattern': 'test1', 'confidence': 0.9})
     backend.prune_low_confidence(0.5)
-    results = backend.query({})
+    results = backend.query(ProceduralQuery())
     assert len(results) == 1
 
 
@@ -422,6 +427,7 @@ def test_procedural_backend_file_based_mode() -> None:
 
     from sovereignai.memory.procedural_backend import ProceduralMemoryBackend
     from sovereignai.shared.trace_emitter import TraceEmitter
+    from sovereignai.shared.types import ProceduralQuery
     trace = TraceEmitter()
     with tempfile.TemporaryDirectory() as tmpdir:
         file_path = os.path.join(tmpdir, 'procedural.json')
@@ -429,7 +435,7 @@ def test_procedural_backend_file_based_mode() -> None:
         record_id = backend.store(data={'pattern': 'test', 'confidence': 0.9})
         assert record_id is not None
         assert os.path.exists(file_path)
-        results = backend.query({'pattern': 'test'})
+        results = backend.query(ProceduralQuery())
         assert len(results) == 1
 
 

@@ -108,21 +108,23 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
-## Deferred: Round Table Finding 5 (TraceEmitter correlation_id typing)
+## Resolved: Round Table Finding 5 (TraceEmitter correlation_id typing)
 
 **Deferred at**: prompt-20.7.1
 **Reason**: Round Table Finding 5 requests TraceEmitter correlation_id be typed as UUID instead of str. Current implementation uses str for correlation_id to avoid circular import with types.py. Would require refactoring correlation_id handling across the codebase.
 **Trigger condition**: When correlation_id typing is prioritized.
 **Target plan**: TBD (correlation_id typing plan)
+**Status**: Resolved at prompt-20.9.8 — Extracted CorrelationId newtype to types_base.py to break circular import. Updated TraceEvent, Event, and all correlation_id usages to use CorrelationId type. Added test_correlation_id_typing.py with 4 tests.
 
 ---
 
-## Deferred: VersionNegotiator disable option cleanup
+## Resolved: VersionNegotiator disable option cleanup
 
 **Deferred at**: prompt-20.6
 **Reason**: VersionNegotiator has disable option but it's not wired in main.py. Plan S6 specified wiring it but execution found it was already disabled via environment variable. This was a plan-execution discrepancy.
 **Trigger condition**: When VersionNegotiator disable wiring is needed.
 **Target plan**: TBD (future plan if needed)
+**Status**: Resolved at prompt-20.9.8 — Added Config dataclass with version_negotiation_enabled field. Wired in main.py with --no-version-negotiation CLI flag. Added test_version_negotiator_disable.py with 3 tests.
 
 ---
 

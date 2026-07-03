@@ -16,6 +16,7 @@ from sovereignai.shared.types import (
     UnknownTaskError,
     now_utc,
 )
+from sovereignai.shared.types_base import CorrelationId
 
 # NOTE (Rev6 Finding 3): UnknownTaskError, InvalidStateTransitionError, and
 # DAGValidationError are defined in shared/types.py (Plan 3 S1.1 per Rev5
@@ -89,7 +90,7 @@ class TaskStateMachine:
                  new_state: TaskState) -> None:
         event = TaskStateChanged(
             channel=TASK_STATE_CHANNEL,
-            correlation_id=task_id,
+            correlation_id=CorrelationId(task_id),
             timestamp=now_utc(),
             task_id=task_id,
             old_state=old_state or TaskState.RECEIVED,

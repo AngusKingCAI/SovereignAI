@@ -10,6 +10,10 @@ Prepend-only (newest entries at top). Never edit or remove entries. Format:
 
 ---
 
+N/A — no new patterns (plan completed without STOP, no new ORs added, AR checks passed)
+
+---
+
 ## L69 — Untracked plan files deleted as cleanup artifacts
 
 **Trigger**: Deleting untracked plan files (plan-20.9.8.md, plan-20.9.9.md) during cleanup using `rm` or `Remove-Item`.

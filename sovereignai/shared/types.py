@@ -7,6 +7,8 @@ from enum import StrEnum
 from typing import NewType
 from uuid import UUID, uuid4
 
+from sovereignai.shared.types_base import CorrelationId
+
 # ============================================================================
 # Trace types (used by TraceEmitter in S3)
 # ============================================================================
@@ -25,7 +27,7 @@ class TraceEvent:
     level: TraceLevel
     message: str            # plain-English description of what happened
     timestamp: datetime     # UTC, timezone-aware
-    correlation_id: UUID    # groups events from the same task or request
+    correlation_id: CorrelationId    # groups events from the same task or request
 
 
 # ============================================================================
@@ -41,7 +43,7 @@ Channel = NewType("Channel", str)
 @dataclass(frozen=True)
 class Event:
     channel: Channel
-    correlation_id: UUID
+    correlation_id: CorrelationId
     timestamp: datetime     # UTC, timezone-aware
 
 
@@ -60,20 +62,20 @@ def now_utc() -> datetime:
     return datetime.now(UTC)
 
 
-def new_correlation_id() -> UUID:
-    return uuid4()
+def new_correlation_id() -> CorrelationId:
+    return CorrelationId(uuid4())
 
 
-_current_correlation_id: ContextVar[UUID | None] = ContextVar(
+_current_correlation_id: ContextVar[CorrelationId | None] = ContextVar(
     "_current_correlation_id", default=None
 )
 
 
-def bind_correlation_id(cid: UUID) -> Token:
+def bind_correlation_id(cid: CorrelationId) -> Token:
     return _current_correlation_id.set(cid)
 
 
-def current_correlation_id() -> UUID | None:
+def current_correlation_id() -> CorrelationId | None:
     return _current_correlation_id.get()
 
 

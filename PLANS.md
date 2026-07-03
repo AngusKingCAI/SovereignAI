@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-07-03 (prompt-20.9.7)
+**Last updated**: 2026-07-03 (prompt-20.9.8)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -48,16 +48,16 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 20.9.2**: Baseline → 59 tests. Delta: -405 — see CHANGELOG prompt-20.9.2 (hardware probe refactor, scoped tests only).
 **Plan 20.9.3**: Baseline → 464 tests. Delta: +405 — see CHANGELOG prompt-20.9.3 (typed memory queries, AR6 fixes).
 **Plan 20.9.4**: Baseline → 468 tests. Delta: +4 — see CHANGELOG prompt-20.9.4 (health_check caching, generate() timeout).
-**Plan 20.9.5**: Baseline → 472 tests. Delta: +4 — see CHANGELOG prompt-20.9.5 (AR-check caching + test).
-**Plan 20.9.6**: Baseline → 480 tests. Delta: +8 — see CHANGELOG prompt-20.9.6 (bounded queue implementation + tests).
-**Plan 20.9.7**: Baseline → 485 tests. Delta: +5 — see CHANGELOG prompt-20.9.7 (CapabilityAPI memory query extension + TUI AR7 tests).
 **Plan 20.9.5**: Baseline → 471 tests. Delta: +3 — see CHANGELOG prompt-20.9.5 (AR6 context bag cleanup, AR-check caching).
+**Plan 20.9.6**: Baseline → 480 tests. Delta: +9 — see CHANGELOG prompt-20.9.6 (bounded queue implementation + tests).
+**Plan 20.9.7**: Baseline → 485 tests. Delta: +5 — see CHANGELOG prompt-20.9.7 (CapabilityAPI memory query extension + TUI AR7 tests).
+**Plan 20.9.8**: Baseline → 492 tests. Delta: +7 — see CHANGELOG prompt-20.9.8 (correlation_id typing + VersionNegotiator disable).
 
 ---
 
 ## Test Baseline
 
-**Current**: 485 tests (Plan 20.9.7 `/close`)
+**Current**: 492 tests (Plan 20.9.8 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q
@@ -147,7 +147,7 @@ Plan 20.9.7 — TUI Memory Panel AR7 Compliance via CapabilityAPI
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 20.9.7 | TUI Memory Panel AR7 Compliance via CapabilityAPI | none | 🔄 Active |
+| 1 | Plan 20.9.8 | Correlation ID Typing + VersionNegotiator Disable | none | 🔄 Active |
 | 2 | Plan 21 | UI overhaul — 10 panels (deferred per user request) | Plan 20 | ⏳ Pending |
 | 3 | Plan 22 | Future plan | Plan 21 | ⏳ Pending |
 | 4 | Plan 23 | Future plan | Plan 22 | ⏳ Pending |

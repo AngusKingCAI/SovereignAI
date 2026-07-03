@@ -2,6 +2,24 @@ Depends on: none
 Vision principles: P2 (everything pluggable), P10 (no silent failures)
 Open questions resolved: none
 
+WILL edit:
+- sovereignai/shared/types_base.py (new file)
+- sovereignai/shared/config.py (new file)
+- sovereignai/shared/types.py
+- sovereignai/shared/event_bus.py
+- sovereignai/shared/task_state_machine.py
+- sovereignai/shared/trace_emitter.py
+- sovereignai/memory/trace_backend.py
+- sovereignai/main.py
+- tests/test_correlation_id_typing.py (new file)
+- tests/test_version_negotiator_disable.py (new file)
+- tests/test_hardware_probe.py
+- tests/test_logs_panel.py
+- CHANGELOG.md
+- DEBT.md
+- PLANS.md
+- LANDMINES.md
+
 S0 -- Opening
 S0.1: Run `/open`
 S0.2: Read `AGENTS.md` in full

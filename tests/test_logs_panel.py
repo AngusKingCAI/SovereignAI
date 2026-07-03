@@ -77,6 +77,8 @@ def test_unsubscribe_stops_receiving_events():
 
 
 def test_faulty_callback_does_not_block_emit():
+    import time
+
     mock_trace = TraceEmitter()
 
     received_events = []
@@ -87,10 +89,15 @@ def test_faulty_callback_does_not_block_emit():
     def good_callback(event):
         received_events.append(event)
 
-    mock_trace.subscribe_callback(faulty_callback)
-    mock_trace.subscribe_callback(good_callback)
+    unsub1 = mock_trace.subscribe_callback(faulty_callback)
+    unsub2 = mock_trace.subscribe_callback(good_callback)
 
     mock_trace.emit(component="Test", level=TraceLevel.INFO, message="test message")
+
+    time.sleep(0.5)  # Allow async callback delivery
+
+    unsub1()
+    unsub2()
 
     assert len(received_events) == 1
     assert received_events[0].message == "test message"

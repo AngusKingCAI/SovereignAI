@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import TraceEvent, TraceLevel, TraceQuery, now_utc
+from sovereignai.shared.types_base import CorrelationId
 
 if TYPE_CHECKING:
     pass
@@ -58,7 +59,7 @@ class TraceMemoryBackend:
             level=TraceLevel(data["level"]),
             message=data["message"],
             timestamp=data.get("timestamp") or now_utc(),
-            correlation_id=uuid.UUID(data["correlation_id"]),
+            correlation_id=CorrelationId(uuid.UUID(data["correlation_id"])),
         )
         task_id = (metadata or {}).get("task_id")
         task_state = (metadata or {}).get("task_state")
