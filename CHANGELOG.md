@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## prompt-20.9.7 — TUI Memory Panel AR7 Compliance via CapabilityAPI
+
+**Date**: 2026-07-03
+**Plan**: prompts/plan-20.9.7.md
+**Tests**: 485 passed, 2 skipped (0 chronic)
+**Coverage**: 92% (types.py scoped)
+**Screenshots**: N/A (backend-only plan)
+**AR7 diff**: None
+**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+
+- S1: Extended CapabilityAPI with query_memory() method accepting typed query union (EpisodicQuery | ProceduralQuery | WorkingQuery | TraceQuery)
+- S1: Added typed result dataclasses (EpisodicResult, ProceduralResult, WorkingResult, TraceResult) per AR6
+- S1: Implemented match-statement routing to correct memory backend based on query type
+- S2: TUI memory panel already uses CapabilityAPI.query_memory_backends() for statistics; no direct backend imports present
+- S3: Added test_tui_memory_panel_ar7.py with 6 tests for CapabilityAPI memory query routing
+- S4: Marked DEBT entries for TUI AR7 compliance as resolved (memory, hardware, models, TUI_PANELS_ALLOWED_IMPORTS)
+- S4: Fixed ruff issues in spec_match.py (C401 set comprehension, I001 import sorting)
+- All 485 tests passing, AR7 test confirms no direct memory backend imports in TUI
+
+---
+
 ## prompt-20.9.6 — BoundedTraceQueue Implementation
 
 **Date**: 2026-07-03

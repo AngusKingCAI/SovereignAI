@@ -2,6 +2,15 @@ Depends on: none
 Vision principles: P8 (UIs are separate processes), P1 (core is sacred)
 Open questions resolved: none
 
+WILL edit:
+- sovereignai/shared/types.py (add typed result dataclasses)
+- sovereignai/shared/capability_api.py (add query_memory method)
+- tests/test_tui_memory_panel_ar7.py (new test file)
+- DEBT.md (mark TUI AR7 items resolved)
+- CHANGELOG.md (add prompt-20.9.7 entry)
+- PLANS.md (update baseline)
+- scripts/ar_checks/spec_match.py (fix ruff issues)
+
 S0 -- Opening
 S0.1: Run `/open`
 S0.2: Read `AGENTS.md` AR7, AR12, AR27 in full

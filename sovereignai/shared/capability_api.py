@@ -20,15 +20,23 @@ from sovereignai.shared.types import (
     CapabilityQuery,
     CapabilityResponse,
     DAGValidationError,
+    EpisodicQuery,
+    EpisodicResult,
     HardwareSnapshot,
     MemoryBackendInfo,
     ModelEntry,
     NoActiveProviderError,
+    ProceduralQuery,
+    ProceduralResult,
     Task,
     TaskState,
     TaskStateSummary,
     TraceEvent,
     TraceLevel,
+    TraceQuery,
+    TraceResult,
+    WorkingQuery,
+    WorkingResult,
     bind_correlation_id,
     current_correlation_id,
     new_correlation_id,
@@ -235,3 +243,92 @@ class CapabilityAPI:
     def query_logs(self, token: str, correlation_id: str | None = None) -> list[TraceEvent]:
         self._auth.validate(token)
         return self._trace.get_events()
+
+    def query_memory(
+        self,
+        token: str,
+        query: EpisodicQuery | ProceduralQuery | WorkingQuery | TraceQuery,
+    ) -> list[EpisodicResult | ProceduralResult | WorkingResult | TraceResult]:
+        self._auth.validate(token)
+        if self._memory_backends is None:
+            return []
+
+        match query:
+            case EpisodicQuery():
+                backend = self._memory_backends.get("episodic")
+                if backend is None:
+                    return []
+                from sovereignai.memory.episodic_backend import EpisodicMemoryBackend
+
+                if not isinstance(backend, EpisodicMemoryBackend):
+                    return []
+                raw_results = backend.query(query)
+                return [
+                    EpisodicResult(
+                        id=r["id"],
+                        timestamp=r["timestamp"],
+                        component=r["component"],
+                        task_id=r["task_id"],
+                        event_type=r["event_type"],
+                        data=r["data"],
+                        metadata=r["metadata"],
+                    )
+                    for r in raw_results
+                ]
+            case ProceduralQuery():
+                backend = self._memory_backends.get("procedural")
+                if backend is None:
+                    return []
+                from sovereignai.memory.procedural_backend import ProceduralMemoryBackend
+
+                if not isinstance(backend, ProceduralMemoryBackend):
+                    return []
+                raw_results = backend.query(query)
+                return [
+                    ProceduralResult(
+                        id=r.get("id", ""),
+                        pattern=r.get("pattern", ""),
+                        confidence=r.get("confidence", 0.0),
+                        created_at=r.get("created_at", 0.0),
+                    )
+                    for r in raw_results
+                ]
+            case WorkingQuery():
+                backend = self._memory_backends.get("working")
+                if backend is None:
+                    return []
+                from sovereignai.memory.working_backend import WorkingMemoryBackend
+
+                if not isinstance(backend, WorkingMemoryBackend):
+                    return []
+                raw_results = backend.query(query)
+                return [
+                    WorkingResult(
+                        id=r.get("id", ""),
+                        context_id=r.get("context_id", ""),
+                        data=r,
+                    )
+                    for r in raw_results
+                ]
+            case TraceQuery():
+                backend = self._memory_backends.get("trace")
+                if backend is None:
+                    return []
+                from sovereignai.memory.trace_backend import TraceMemoryBackend
+
+                if not isinstance(backend, TraceMemoryBackend):
+                    return []
+                raw_results = backend.query(query)
+                return [
+                    TraceResult(
+                        id=r.get("id", ""),
+                        timestamp=r.get("timestamp", 0.0),
+                        component=r.get("component", ""),
+                        level=r.get("level", ""),
+                        message=r.get("message", ""),
+                        correlation_id=r.get("correlation_id", ""),
+                    )
+                    for r in raw_results
+                ]
+            case _:
+                return []

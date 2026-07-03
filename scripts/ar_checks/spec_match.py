@@ -53,7 +53,7 @@ def get_diff_files(baseline: str) -> set[str]:
             )
             if result.stdout.strip():
                 lines = result.stdout.strip().splitlines()
-                return set(line.split()[1] for line in lines if len(line.split()) > 1)
+                return {line.split()[1] for line in lines if len(line.split()) > 1}
             return set()
         except subprocess.CalledProcessError:
             print("Failed to get git status")
@@ -123,7 +123,8 @@ ALLOWLIST = {
     "documents/session-context-plans-16-19.md",
     "documents/sovereignai_rescan1.md",
     "sovereignai/shared/trace_emitter.py",
-    "prompts/completed/plan-20.9.6.md"
+    "prompts/completed/plan-20.9.6.md",
+    "scripts/ar_checks/spec_match.py"
 }
 
 

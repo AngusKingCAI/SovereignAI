@@ -50,13 +50,14 @@ Full explanations live in `CHANGELOG.md` (one entry per plan) — this section t
 **Plan 20.9.4**: Baseline → 468 tests. Delta: +4 — see CHANGELOG prompt-20.9.4 (health_check caching, generate() timeout).
 **Plan 20.9.5**: Baseline → 472 tests. Delta: +4 — see CHANGELOG prompt-20.9.5 (AR-check caching + test).
 **Plan 20.9.6**: Baseline → 480 tests. Delta: +8 — see CHANGELOG prompt-20.9.6 (bounded queue implementation + tests).
+**Plan 20.9.7**: Baseline → 485 tests. Delta: +5 — see CHANGELOG prompt-20.9.7 (CapabilityAPI memory query extension + TUI AR7 tests).
 **Plan 20.9.5**: Baseline → 471 tests. Delta: +3 — see CHANGELOG prompt-20.9.5 (AR6 context bag cleanup, AR-check caching).
 
 ---
 
 ## Test Baseline
 
-**Current**: 479 tests (Plan 20.9.6 `/close`)
+**Current**: 485 tests (Plan 20.9.7 `/close`)
 Generated via (do not hand-sum a per-suite breakdown — see Plan 5's reconciliation note for what happens when it drifts):
 ```
 .venv/Scripts/python.exe -m pytest tests/ --collect-only -q

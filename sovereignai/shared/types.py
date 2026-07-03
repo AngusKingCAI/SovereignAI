@@ -398,3 +398,39 @@ class TraceQuery:
     correlation_id: str | None = None
     span_type: str | None = None
     task_id: str | None = None
+
+
+@dataclass(frozen=True)
+class EpisodicResult:
+    id: str
+    timestamp: float
+    component: str
+    task_id: str
+    event_type: str
+    data: str
+    metadata: dict | None
+
+
+@dataclass(frozen=True)
+class ProceduralResult:
+    id: str
+    pattern: str
+    confidence: float
+    created_at: float
+
+
+@dataclass(frozen=True)
+class WorkingResult:
+    id: str
+    context_id: str
+    data: dict
+
+
+@dataclass(frozen=True)
+class TraceResult:
+    id: str
+    timestamp: float
+    component: str
+    level: str
+    message: str
+    correlation_id: str

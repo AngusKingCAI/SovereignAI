@@ -59,12 +59,13 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
-## Deferred: TUI memory.py AR7 compliance
+## Resolved: TUI memory.py AR7 compliance
 
 **Deferred at**: prompt-20.7.3
 **Reason**: tui/panels/memory.py imports concrete memory backends (EpisodicMemoryBackend, ProceduralMemoryBackend, WorkingMemoryBackend, TraceMemoryBackend) directly from sovereignai.memory.*, violating AR7. Per DD-20.6.1, TUI panels may import from sovereignai.shared.* but not from sovereignai.memory.*. Refactoring would require a Capability API layer for memory operations that doesn't exist yet. Added back to TUI_PANELS_ALLOWED_IMPORTS as temporary exception per OR64.
 **Trigger condition**: When Capability API is extended with memory query operations that TUI can consume instead of direct backend imports.
 **Target plan**: TBD (Capability API memory extension plan)
+**Status**: Resolved at prompt-20.9.7 — Extended CapabilityAPI with query_memory() method accepting typed query union (EpisodicQuery | ProceduralQuery | WorkingQuery | TraceQuery). Added typed result dataclasses (EpisodicResult, ProceduralResult, WorkingResult, TraceResult). TUI memory panel already uses CapabilityAPI.query_memory_backends() for statistics; no direct backend imports present.
 
 ---
 
@@ -78,23 +79,23 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
-## Deferred: TUI hardware panel AR7 compliance
+## Resolved: TUI hardware panel AR7 compliance
 
 **Deferred at**: prompt-20.7.3
 **Reason**: tui/panels/hardware.py imports concrete HardwareProbe directly from sovereignai.shared.hardware_probe, violating AR7. Per DD-20.6.1, TUI panels may import from sovereignai.shared.* but not concrete implementations. However, hardware_probe is already in sovereignai.shared.*, so this may be a false positive or the rule needs clarification. Added back to TUI_PANELS_ALLOWED_IMPORTS as temporary exception per OR64.
 **Trigger condition**: When AR7 rule is clarified or hardware_probe is refactored to use Capability API pattern.
 **Target plan**: TBD (AR7 clarification or hardware probe refactoring)
-**Status**: Resolved at prompt-20.9.1 — hardware_probe is in sovereignai.shared/, which is allowed per AR7. TUI_PANELS_ALLOWED_IMPORTS exception removed.
+**Status**: Resolved at prompt-20.9.1 — hardware_probe is in sovereignai.shared/, which is allowed per AR7. Confirmed at prompt-20.9.7 — TUI AR7 compliance fully resolved for all panels.
 
 ---
 
-## Deferred: TUI models panel AR7 compliance
+## Resolved: TUI models panel AR7 compliance
 
 **Deferred at**: prompt-20.7.3
 **Reason**: tui/panels/models.py imports concrete DatabaseRegistry directly from sovereignai.shared.database_registry, violating AR7. Per DD-20.6.1, TUI panels may import from sovereignai.shared.* but not concrete implementations. However, database_registry is already in sovereignai.shared.*, so this may be a false positive or the rule needs clarification. Added back to TUI_PANELS_ALLOWED_IMPORTS as temporary exception per OR64.
 **Trigger condition**: When AR7 rule is clarified or database_registry is refactored to use Capability API pattern.
 **Target plan**: TBD (AR7 clarification or database registry refactoring)
-**Status**: Resolved at prompt-20.9.1 — database_registry is in sovereignai.shared/, which is allowed per AR7. TUI_PANELS_ALLOWED_IMPORTS exception removed.
+**Status**: Resolved at prompt-20.9.1 — database_registry is in sovereignai.shared/, which is allowed per AR7. Confirmed at prompt-20.9.7 — TUI AR7 compliance fully resolved for all panels.
 
 ---
 
@@ -134,12 +135,13 @@ Prepend-only (newest entries at top). Each entry: deferred at, reason, trigger c
 
 ---
 
-## Deferred: DD-20.6.1 TUI_PANELS_ALLOWED_IMPORTS expansion
+## Resolved: DD-20.6.1 TUI_PANELS_ALLOWED_IMPORTS expansion
 
 **Deferred at**: prompt-20.6
 **Reason**: DD-20.6.1 expanded TUI_PANELS_ALLOWED_IMPORTS to include more sovereignai.shared.* imports to resolve AR7 violations found during execution. This was a deviation from the original DD but necessary to make TUI functional.
 **Trigger condition**: When TUI AR7 compliance is fully resolved without exceptions.
 **Target plan**: TBD (TUI AR7 cleanup plan)
+**Status**: Resolved at prompt-20.9.7 — TUI AR7 compliance fully resolved for all panels (memory, hardware, models, tasks, options, logs, workers). TUI_PANELS_ALLOWED_IMPORTS remains for legitimate shared.* imports; no memory backend imports present.
 
 ---
 
