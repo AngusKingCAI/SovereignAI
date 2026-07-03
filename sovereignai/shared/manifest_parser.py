@@ -78,7 +78,7 @@ def parse_manifest(path: Path) -> ComponentManifest:
     provides = tuple(_parse_caps(data.get("provides", []), path))
     requires = tuple(_parse_caps(data.get("requires", []), path))
 
-    # Parse routing_priority with default 1000 (OR70)
+    # Parse routing_priority with default 1000
     routing_priority = data.get("routing_priority", 1000)
     if not isinstance(routing_priority, int):
         raise ManifestParseError(

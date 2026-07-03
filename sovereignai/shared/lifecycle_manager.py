@@ -78,7 +78,7 @@ class LifecycleManager:
             cutoff = now - CIRCUIT_BREAKER_WINDOW_SECONDS
             while log and log[0] < cutoff:
                 log.popleft()
-            # Check threshold (AR16: "more than 50" — exclusive, trips at 51)
+            # Check threshold (more than 50 — exclusive, trips at 51)
             if len(log) > CIRCUIT_BREAKER_THRESHOLD:
                 if self._statuses.get(component_id) != ComponentStatus.CIRCUIT_BROKEN:
                     self._statuses[component_id] = ComponentStatus.CIRCUIT_BROKEN

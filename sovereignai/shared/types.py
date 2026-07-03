@@ -125,7 +125,7 @@ class ComponentManifest:
     content_hash: str  # provenance — verified on install (P14)
     core: bool = False
     _source_path: str = ""  # Rev8: source path for first-party detection
-    routing_priority: int = 1000  # OR70: lower = higher priority; default 1000
+    routing_priority: int = 1000  # lower = higher priority; default 1000
 
 
 # ============================================================================
@@ -208,7 +208,7 @@ class Task:
 class ComponentStatus(StrEnum):
     ACTIVE = "active"                # healthy and available
     DEGRADED = "degraded"            # experiencing errors but still running
-    CIRCUIT_BROKEN = "circuit_broken"  # unloaded due to >50 errors/10s (AR16)
+    CIRCUIT_BROKEN = "circuit_broken"  # unloaded due to >50 errors/10s
     STOPPED = "stopped"              # explicitly stopped, not available
 
     def is_available(self) -> bool:
@@ -371,7 +371,7 @@ class TaskStateSummary:
 
 
 # ============================================================================
-# Memory query types (used by memory backends per AR6)
+# Memory query types (used by memory backends)
 # ============================================================================
 
 @dataclass(frozen=True)
