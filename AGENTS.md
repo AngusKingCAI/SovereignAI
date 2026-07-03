@@ -122,7 +122,7 @@ OR25. All tests have a 30s timeout via pytest-timeout (pyproject.toml addopts = 
 
 OR26. Follow skill workflows systematically. Never skip steps or pick-and-choose based on perceived relevance. Execute all steps in sequence as designed.
 
-OR27. Never delete prompt files (execution logs in `logs/`, plan files in `prompts/` and `prompts/completed/`). These are permanent history records.
+OR27. Never delete prompt files (execution logs in `logs/`, plan files in `prompts/` and `prompts/completed/`). These are permanent history records. Applies to ALL plan files regardless of git status (tracked or untracked). Untracked plan files are valid plans awaiting commit; treat them the same as tracked files.
 
 ---
 

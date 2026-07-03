@@ -10,6 +10,14 @@ Prepend-only (newest entries at top). Never edit or remove entries. Format:
 
 ---
 
+## L69 — Untracked plan files deleted as cleanup artifacts
+
+**Trigger**: Deleting untracked plan files (plan-20.9.8.md, plan-20.9.9.md) during cleanup using `rm` or `Remove-Item`.
+**Impact**: Loss of valid plan files that were awaiting commit. Untracked files are not "artifacts" - they are valid plans that haven't been committed yet. OR27 applies to ALL plan files regardless of git status.
+**Graduated to**: OR27 clarification (prompt-20.9.7).
+
+---
+
 N/A — no new patterns (plan completed without STOP, no new ORs added, AR checks passed)
 
 ---
