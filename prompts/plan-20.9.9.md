@@ -2,6 +2,20 @@ Depends on: none
 Vision principles: P9 (observability by default), governance
 Open questions resolved: none
 
+WILL edit:
+- AGENTS.md (add OR28)
+- LANDMINES.md (remove N/A stubs)
+- PLANS.md (add missing prompt rows, update baseline)
+- CHANGELOG.md (add prompt-20.9.9 entry)
+- tests/test_document_hygiene.py (new file)
+- prompts/plan-20.9.9.md (add WILL/WILL NOT sections)
+- documents/SovereignAI_Cross_Department_Messaging_Design_v1.0.md (add to git tracking only)
+
+WILL NOT edit:
+- No core code changes
+- No UI changes
+- No document content changes (OR28 prohibits deletion)
+
 S0 -- Opening
 S0.1: Run `/open`
 S0.2: Read `AGENTS.md`, `PLANS.md`, `LANDMINES.md` in full

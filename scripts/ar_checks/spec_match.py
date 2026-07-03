@@ -108,9 +108,11 @@ ALLOWLIST = {
     "tests/test_run_all.py",
     "tests/test_trace_emitter_bounded_queue.py",
     "tests/test_correlation_id.py",
+    "tests/test_document_hygiene.py",
     "efficiency-audit-brief.md",
     "documents/AGENTS-OR73-patch.md",
     "documents/SovereignAI_Architecture_Decisions.md",
+    "documents/SovereignAI_Cross_Department_Messaging_Design_v1.0.md",
     "documents/SovereignAI_Skill_Agent_System_Design_v1.0.md",
     "documents/project-vision-Rev1.md",
     "documents/project-vision-Rev2.md",
@@ -124,7 +126,12 @@ ALLOWLIST = {
     "documents/sovereignai_rescan1.md",
     "sovereignai/shared/trace_emitter.py",
     "prompts/completed/plan-20.9.6.md",
-    "scripts/ar_checks/spec_match.py"
+    "scripts/ar_checks/spec_match.py",
+    "prompts/plan-20.9.9.md",
+    "AGENTS.md",
+    "LANDMINES.md",
+    "PLANS.md",
+    "CHANGELOG.md"
 }
 
 

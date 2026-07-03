@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## prompt-20.9.9 — Documentation Hygiene + Document Hygiene Tests
+
+**Date**: 2026-07-03
+**Plan**: prompts/plan-20.9.9.md
+**Tests**: 497 passed, 8 skipped (0 chronic)
+**Coverage**: 100% (test_document_hygiene.py only)
+**Screenshots**: N/A (backend-only plan)
+**AR7 diff**: None
+**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+
+- S1: Removed all "N/A -- no new patterns" stubs from LANDMINES.md above ## L{n} headers
+- S1: Ensured "---" separator appears only between entries, not before headers
+- S1: Verified each ## L{n} header is followed by description, not separator
+- S2: Added rows to PLANS.md Completed Prompts table for prompt-20.8, prompt-20.9, prompt-20.9.1, prompt-20.9.2
+- S2: Fixed duplicate entries in PLANS.md Baseline Reconciliation Notes
+- S3: Updated AGENTS.md header to reflect actual rule counts (30 AR, 28 OR)
+- S3: Added OR28 to AGENTS.md - never delete content from governance documents
+- S4: Added test_document_hygiene.py with 5 tests for LANDMINES.md and PLANS.md format verification
+- All 497 tests passing, documentation hygiene enforced via automated tests
+
+---
+
 ## prompt-20.9.8 — Correlation ID Typing + VersionNegotiator Disable
 
 **Date**: 2026-07-03

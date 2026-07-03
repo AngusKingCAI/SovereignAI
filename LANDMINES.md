@@ -22,27 +22,10 @@ N/A — no new patterns (plan completed without STOP, no new ORs added, AR check
 
 ---
 
-N/A — no new patterns (plan completed without STOP, no new ORs added, AR checks passed)
-
----
-
 ## L68 — Plan split with content modification
 **Trigger**: Devin splits an over-long plan but reorders, adds, removes, or rewords S0-Sn steps or WILL-edit entries during the split.
 **Impact**: Round Table review undermined; scope creep hidden as "repackaging".
 **Graduated to**: check_plan_immutability.py (script-enforced).
-
----
-
-N/A — no new patterns (AR19 added per plan requirements, not a failure pattern)
-
----
-
-N/A — no new patterns for prompt-18
-
----
-
-N/A — no new patterns for prompt-20
-
 
 ---
 
@@ -53,16 +36,10 @@ N/A — no new patterns for prompt-20
 
 ---
 
-
----
-
 ## L59 — sailogs/ not gitignored
 **Trigger**: sailogs/ created without .gitignore entry.
 **Impact**: trace logs (may contain sensitive data) committed to repo.
 **Graduated to**: Implementation detail (removed from rules, enforced in code).
-
----
-
 
 ---
 
@@ -73,16 +50,10 @@ N/A — no new patterns for prompt-20
 
 ---
 
-
----
-
 ## L53 — Task-list denominator changed mid-execution without log
 **Trigger**: Todo list growing or shrinking during execution without a one-line reason in the execution log (observed in plans 16: 40→41, 18: 19→27, 20.2: 35→34, 20.4: 14→14+6).
 **Impact**: Auditor cannot reconstruct what was added/removed or why; strict numerical order spirit violated.
 **Graduated to**: New OR (deferred to DEBT.md, target plan 20.8).
-
----
-
 
 ---
 
@@ -99,14 +70,12 @@ N/A — no new patterns for prompt-20
 **Impact**: Novel failure patterns unrecorded; future plans repeat them.
 **Graduated to**: /close skill (existing — needs enumeration requirement, enforced via /close step 14.6).
 
-
 ---
 
 ## L50 — Plan file mutated mid-execution
 **Trigger**: Editing `prompts/plan-N-RevM.md` during execution (observed in plans 16, 20.1, 20.4).
 **Impact**: Round Table review undermined; post-hoc cover-ups indistinguishable from legitimate fixes.
 **Graduated to**: New pre-commit hook (deferred to DEBT.md, target plan 20.8).
-
 
 ---
 
@@ -115,14 +84,12 @@ N/A — no new patterns for prompt-20
 **Impact**: AR7 one-way ratchet; architecture boundary erodes; OR23 exception becomes the rule.
 **Graduated to**: OR23 (existing — needs Architect sign-off requirement, deferred to DEBT.md).
 
-
 ---
 
 ## L48 — Governance tool self-modified to pass its own check
 **Trigger**: Editing `scripts/ar_checks/*.py` or `tests/test_ar*.py` in the same commit as core/UI code (observed in plans 17, 18, 19, 20.4).
 **Impact**: Mechanical gate defeated; governance tools become unreliable; OR22 violation.
 **Graduated to**: OR22 (existing — needs enforcement hook, deferred to DEBT.md).
-
 
 ---
 
@@ -131,14 +98,12 @@ N/A — no new patterns for prompt-20
 **Impact**: Unintended files committed.
 **Graduated to**: OR33.
 
-
 ---
 
 ## L43 — Tests used incorrect fixture shapes
 **Trigger**: Test fixtures didn't match production data shapes.
 **Impact**: Tests pass but production breaks.
 **Graduated to**: OR32.
-
 
 ---
 
@@ -147,14 +112,12 @@ N/A — no new patterns for prompt-20
 **Impact**: Invalid code shipped.
 **Graduated to**: OR31.
 
-
 ---
 
 ## L40 — Skipped tests without target-resolution plan
 **Trigger**: Tests skipped with no documented target.
 **Impact**: Skipped tests accumulate.
 **Graduated to**: OR30.
-
 
 ---
 
@@ -163,14 +126,12 @@ N/A — no new patterns for prompt-20
 **Impact**: Broken tests in production.
 **Graduated to**: OR29.
 
-
 ---
 
 ## L38 — "Already done" claim without verification
 **Trigger**: Marking steps complete via visual inspection only.
 **Impact**: Incomplete work marked done.
 **Graduated to**: OR28.
-
 
 ---
 
@@ -179,14 +140,12 @@ N/A — no new patterns for prompt-20
 **Impact**: Feature non-functional.
 **Graduated to**: OR27.
 
-
 ---
 
 ## L36 — Crash recovery disabled
 **Trigger**: `run_crash_recovery()` body replaced with `pass`.
 **Impact**: No crash recovery.
 **Graduated to**: AR21.
-
 
 ---
 
@@ -195,14 +154,12 @@ N/A — no new patterns for prompt-20
 **Impact**: Backends not accessible.
 **Graduated to**: AR20.
 
-
 ---
 
 ## L34 — Mypy errors dismissed as "pre-existing"
 **Trigger**: Mypy errors dismissed without fixing.
 **Impact**: Type errors shipped.
 **Graduated to**: OR29.
-
 
 ---
 
@@ -211,14 +168,12 @@ N/A — no new patterns for prompt-20
 **Impact**: Filter never matched.
 **Graduated to**: AR23.
 
-
 ---
 
 ## L30 — Disabled production features to make tests pass
 **Trigger**: Disabling crash recovery/memory backends to pass tests.
 **Impact**: Production features off.
 **Graduated to**: AR20, OR19.
-
 
 ---
 
@@ -227,14 +182,12 @@ N/A — no new patterns for prompt-20
 **Impact**: Files deleted instead of moved.
 **Graduated to**: close.md fix (prompt-15).
 
-
 ---
 
 ## L22 — Executor weakens AR check scripts or tests to make a failure pass
 **Trigger**: Editing tests/checks to weaken assertions.
 **Impact**: Failures hidden.
 **Graduated to**: OR22.
-
 
 ---
 
@@ -243,7 +196,6 @@ N/A — no new patterns for prompt-20
 **Impact**: Existing tests fail on new signature.
 **Graduated to**: OR9.
 
-
 ---
 
 ## L6 — Naive/aware datetime mixing
@@ -251,14 +203,12 @@ N/A — no new patterns for prompt-20
 **Impact**: Comparison errors, timezone bugs.
 **Graduated to**: OR7.
 
-
 ---
 
 ## L5 — Vulture flags unused test fixtures incorrectly
 **Trigger**: Vulture on test files with pytest fixtures.
 **Impact**: Fixtures flagged unused despite decorator requirement.
 **Graduated to**: OR22.
-
 
 ---
 

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**AR** = Architecture Rules · **OR** = Operational Rules. Ambiguous → read `LANDMINES.md`. Authority: `principles.md`.
+**AR** = Architecture Rules (30 rules) · **OR** = Operational Rules (28 rules). Ambiguous → read `LANDMINES.md`. Authority: `principles.md`.
 
 ---
 
@@ -123,6 +123,8 @@ OR25. All tests have a 30s timeout via pytest-timeout (pyproject.toml addopts = 
 OR26. Follow skill workflows systematically. Never skip steps or pick-and-choose based on perceived relevance. Execute all steps in sequence as designed.
 
 OR27. Never delete prompt files (execution logs in `logs/`, plan files in `prompts/` and `prompts/completed/`). These are permanent history records. Applies to ALL plan files regardless of git status (tracked or untracked). Untracked plan files are valid plans awaiting commit; treat them the same as tracked files.
+
+OR28. Never delete content from governance documents (AGENTS.md, LANDMINES.md, PLANS.md, CHANGELOG.md) or files in the /documents folder. Only add new content. Historical context must be preserved.
 
 ---
 
