@@ -49,6 +49,28 @@
 
 ---
 
+## prompt-20.9.2 — Hardware Probe Refactoring - GPU Detection and Dependency Cleanup
+
+**Date**: 2026-07-03
+**Plan**: prompts/plan-20.9.2-Rev0.md
+**Tests**: 489 passed, 8 skipped (0 chronic)
+**Coverage**: 92%
+**Screenshots**: N/A (backend-only plan)
+**AR7 diff**: None
+**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+
+- Removed nvidia-ml-py>=12.535.133 from txt/requirements.txt
+- Deleted web/hardware_probe.py (web layer to use CapabilityAPI only per AR12 and AR27)
+- Added _detect_gpus() method to hardware_probe.py for GPU detection via nvidia-smi
+- Added GPU detection tests with mock nvidia-smi output for Windows and Linux
+- Added AdapterCapability enum to sovereignai/shared/types.py for future adapter capability declarations
+- Restored MEMORY_BANDWIDTH_GBPS to hardware_probe.py (required by tok_sampler.py)
+- Updated DEBT.md to mark 6 hardware-related DEBT items resolved
+- Removed plan immutability check from close skill (not useful)
+- All 59 tests passing
+
+---
+
 ## prompt-20.9.7 — TUI Memory Panel AR7 Compliance via CapabilityAPI
 
 **Date**: 2026-07-03
