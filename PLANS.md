@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-07-03 (prompt-20.9.6)
+**Last updated**: 2026-07-03 (prompt-20.9.7)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -132,12 +132,13 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 | prompt-20.9.3 | `prompt-20.9.3` | Typed Memory Queries — Add typed query dataclasses to memory backends per AR6 | 464 | 0 | 0 | 2026-07-03 |
 | prompt-20.9.4 | `prompt-20.9.4` | Performance Improvements — health_check caching, generate() timeout | 468 | 0 | 0 | 2026-07-03 |
 | prompt-20.9.5 | `prompt-20.9.5` | AR6 Context Bag Cleanup + AR-Check Caching | 471 | 0 | 0 | 2026-07-03 |
+| prompt-20.9.6 | `prompt-20.9.6` | BoundedTraceQueue Implementation | 480 | 0 | 0 | 2026-07-03 |
 
 ---
 
 ## Active Plan
 
-Plan 20.9.5 — AR6 Context Bag Cleanup + AR-Check Caching
+Plan 20.9.7 — TUI Memory Panel AR7 Compliance via CapabilityAPI
 
 ---
 
@@ -145,11 +146,11 @@ Plan 20.9.5 — AR6 Context Bag Cleanup + AR-Check Caching
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 21 | UI overhaul — 10 panels (deferred per user request) | Plan 20 | ⏳ Pending |
-| 2 | Plan 22 | Future plan | Plan 21 | ⏳ Pending |
-| 3 | Plan 23 | Future plan | Plan 22 | ⏳ Pending |
-| 4 | Plan 24 | Future plan | Plan 23 | ⏳ Pending |
-| 5 | Plan 25 | Future plan | Plan 24 | ⏳ Pending |
+| 1 | Plan 20.9.7 | TUI Memory Panel AR7 Compliance via CapabilityAPI | none | 🔄 Active |
+| 2 | Plan 21 | UI overhaul — 10 panels (deferred per user request) | Plan 20 | ⏳ Pending |
+| 3 | Plan 22 | Future plan | Plan 21 | ⏳ Pending |
+| 4 | Plan 23 | Future plan | Plan 22 | ⏳ Pending |
+| 5 | Plan 24 | Future plan | Plan 23 | ⏳ Pending |
 
 ---
 
