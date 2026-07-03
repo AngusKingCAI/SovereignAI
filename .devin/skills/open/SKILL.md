@@ -29,6 +29,7 @@ Run the /open workflow for the current plan. Follow all steps in order. Don't sk
 ## Setup
 
 8. Add new rules to `AGENTS.md` and new landmines to `LANDMINES.md`. If either changed: `git add -A && git status -s && git commit -m "docs: add rules and landmines for prompt-{N}"`. Else: log "N/A".
+8.5. `git add prompts/*.md` — ensure ALL plan files in prompts/ are added to git (tracked or untracked). This prevents treating untracked plan files as cleanup artifacts per L69.
 9. Update `PLANS.md` with new plan entry.
 10. Begin Phase 1.
 
