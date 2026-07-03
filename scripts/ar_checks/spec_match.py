@@ -123,6 +123,7 @@ ALLOWLIST = {
     "documents/session-context-plans-16-19.md",
     "documents/sovereignai_rescan1.md",
     "sovereignai/shared/trace_emitter.py",
+    "prompts/completed/plan-20.9.6.md"
 }
 
 
