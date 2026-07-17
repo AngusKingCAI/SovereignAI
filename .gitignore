@@ -47,5 +47,7 @@ Thumbs.db
 app/logs/
 app/settings/
 
-# Application log files
-app/logs/*.log
+# Execution logs (tracked in logs/)
+# logs/
+logs/
+logs/
