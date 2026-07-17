@@ -1,5 +1,4 @@
 import pytest
-
 from sovereignai.shared.dag_validator import validate_dag
 from sovereignai.shared.types import DAGValidationError
 

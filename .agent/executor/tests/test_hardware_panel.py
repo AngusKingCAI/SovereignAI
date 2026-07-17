@@ -7,7 +7,6 @@ from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
-
 from sovereignai.main import build_container
 from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.types import HardwareSnapshot

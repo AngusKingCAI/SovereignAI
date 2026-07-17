@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-
 from sovereignai.skills.observation import ToolCall, ToolCallErrorObservation
 from sovereignai.skills.parser import ToolCallParser
 

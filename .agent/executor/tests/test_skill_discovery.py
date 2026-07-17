@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 
 import pytest
-
 from sovereignai.shared.capability_graph import CapabilityGraph
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import CapabilityCategory

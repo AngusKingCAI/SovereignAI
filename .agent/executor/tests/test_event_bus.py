@@ -3,7 +3,6 @@ from __future__ import annotations
 from uuid import uuid4
 
 import pytest
-
 from sovereignai.shared.event_bus import EventBus
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import Channel, Event, TraceLevel, now_utc

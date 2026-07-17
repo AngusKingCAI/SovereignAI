@@ -3,7 +3,7 @@
 **Reference rules** — read when AGENTS.md is ambiguous or when a specific
 technical detail is needed. Not loaded at session start. Consult on-demand.
 
-Authority: `.agent/architect/PRINCIPLES.md` · Ambiguous → read `.agent/executor/LANDMINES.md`
+Authority: `.agent/architect/PRINCIPLES.md` · Ambiguous → read `.agent/shared/LANDMINES.md`
 
 ---
 

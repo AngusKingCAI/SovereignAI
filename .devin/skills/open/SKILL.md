@@ -21,7 +21,7 @@ Run the /open workflow for the current plan. Follow all steps in order. Don't sk
 
 □ Step 2: Read `prompts/plan-{N}-Rev{X}.md` in full.
 
-□ Step 3: Read `.agent/executor/CHANGELOG.md`'s most recent `## prompt-{N-1}` entry.
+□ Step 3: Read `.agent/shared/CHANGELOG.md`'s most recent `## prompt-{N-1}` entry.
 
 ## Pre-execution clarification
 
@@ -35,7 +35,7 @@ Run the /open workflow for the current plan. Follow all steps in order. Don't sk
 
 ## Setup
 
-□ Step 8: Add new rules to `AGENTS.md` and new landmines to `.agent/executor/LANDMINES.md`. If either changed: `git add -A && git status -s && git commit -m "docs: add rules and landmines for prompt-{N}"`. Else: log "N/A".
+□ Step 8: Add new rules to `AGENTS.md` and new landmines to `.agent/shared/LANDMINES.md`. If either changed: `git add -A && git status -s && git commit -m "docs: add rules and landmines for prompt-{N}"`. Else: log "N/A".
 
 □ Step 8.5: `git add prompts/*.md` — ensure ALL plan files in prompts/ are added to git.
 

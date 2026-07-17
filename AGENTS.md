@@ -1,7 +1,7 @@
 # AGENTS.md
 
 **AR** = Architecture Rules · **OR** = Operational Rules.
-Ambiguous → read `.agent/executor/LANDMINES.md`. Extended rules → `AGENTS_EXTENDED.md`.
+Ambiguous → read `.agent/shared/LANDMINES.md`. Extended rules → `AGENTS_EXTENDED.md`.
 Authority: `.agent/architect/PRINCIPLES.md`.
 
 ---
@@ -104,4 +104,4 @@ OR30. Follow instructions literally. Restrictive terms ('only', 'never', 'must',
 
 ---
 
-See `.agent/executor/LANDMINES.md` for failure patterns. See `AGENTS_EXTENDED.md` for AR16–AR30 and OR31–OR63.
+See `.agent/shared/LANDMINES.md` for failure patterns. See `AGENTS_EXTENDED.md` for AR16–AR30 and OR31–OR63.

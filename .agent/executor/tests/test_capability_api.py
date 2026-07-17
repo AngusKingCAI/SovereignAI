@@ -3,7 +3,6 @@ from __future__ import annotations
 from uuid import UUID, uuid4
 
 import pytest
-
 from sovereignai.shared.auth import AuthMiddleware
 from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.capability_graph import CapabilityGraph, ICapabilityIndex

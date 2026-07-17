@@ -38,7 +38,7 @@ Prerequisite: `.venv/` exists.
 
 □ Step 5: `.venv/Scripts/pip-audit.exe --strict --requirement app/txt/requirements.txt` — STOP on CVEs.
 
-□ Step 5.5: Snyk MCP scan. CRITICAL/HIGH = STOP. Document in .agent/executor/DEBT.md with target plan.
+□ Step 5.5: Snyk MCP scan. CRITICAL/HIGH = STOP. Document in .agent/shared/DEBT.md with target plan.
 
 □ Step 6: `.venv/Scripts/vulture.exe . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,.agent/executor/htmlcov` — STOP on new findings.
 
@@ -64,7 +64,7 @@ Prerequisite: `.venv/` exists.
 
 ## Documentation
 
-□ Step 12: CHANGELOG — PREPEND (not append) new entry at top:
+□ Step 12: CHANGELOG — PREPEND (not append) new entry at top to `.agent/shared/CHANGELOG.md`:
   ```
   ## prompt-{N} — {title}
   **Date**: {YYYY-MM-DD}
@@ -79,11 +79,11 @@ Prerequisite: `.venv/` exists.
 
 □ Step 13: Update `.agent/executor/PLANS.md` baseline.
 
-□ Step 14: Add deferred items to `.agent/executor/DEBT.md` with target plan.
+□ Step 14: Add deferred items to `.agent/shared/DEBT.md` with target plan.
 
-□ Step 14.1: `grep -c "prompt-{N}" .agent/executor/DEBT.md` — compare to count added. STOP if mismatch.
+□ Step 14.1: `grep -c "prompt-{N}" .agent/shared/DEBT.md` — compare to count added. STOP if mismatch.
 
-□ Step 14.6: Append to `.agent/executor/LANDMINES.md` if plan STOPped, new OR added, or AR check failed for novel reason. Else: log "N/A — no new patterns".
+□ Step 14.6: Append to `.agent/shared/LANDMINES.md` if plan STOPped, new OR added, or AR check failed for novel reason. Else: log "N/A — no new patterns".
 
 ## Verification (before commit/tag)
 

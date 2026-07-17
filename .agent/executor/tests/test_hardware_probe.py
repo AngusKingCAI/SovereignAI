@@ -3,7 +3,6 @@ from __future__ import annotations
 from unittest.mock import Mock, patch
 
 import pytest
-
 from sovereignai.shared.hardware_probe import HardwareProbe
 from sovereignai.shared.types import HardwareSnapshot
 

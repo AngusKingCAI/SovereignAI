@@ -6,7 +6,6 @@ from collections.abc import Generator
 from datetime import timedelta
 
 import pytest
-
 from sovereignai.memory.episodic_backend import EpisodicMemoryBackend
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import EpisodicQuery, now_utc

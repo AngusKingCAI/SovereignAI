@@ -9,11 +9,9 @@ by "be helpful" training or task-completion bias. If any check fails,
 the agent CANNOT proceed to tag — full stop.
 """
 
-import sys
-import os
 import re
-import glob
 import subprocess
+import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent.parent.parent
@@ -32,14 +30,17 @@ def check_execution_log_empty() -> tuple[bool, str]:
     for log in log_files:
         size = log.stat().st_size
         if size > MAX_LOG_BYTES:
-            return False, f"Execution log {log.name} is {size} bytes (max {MAX_LOG_BYTES}). Blank it before proceeding."
+            return False, (
+                f"Execution log {log.name} is {size} bytes (max {MAX_LOG_BYTES}). "
+                "Blank it before proceeding."
+            )
     return True, "Execution logs OK"
 
 def check_changelog_position() -> tuple[bool, str]:
     """Pattern 2: Latest prompt must be at TOP of CHANGELOG (prepend, not append)."""
-    changelog = REPO_ROOT / ".agent" / "executor" / "CHANGELOG.md"
+    changelog = REPO_ROOT / ".agent" / "shared" / "CHANGELOG.md"
     if not changelog.exists():
-        return False, ".agent/executor/CHANGELOG.md not found"
+        return False, ".agent/shared/CHANGELOG.md not found"
 
     content = changelog.read_text()
     # Find all prompt references
@@ -71,10 +72,10 @@ def check_no_uncommitted_governance() -> tuple[bool, str]:
     """Pattern 4: No uncommitted changes to governance docs before tag."""
     governance_files = [
         "AGENTS.md",
-        ".agent/executor/LANDMINES.md",
+        ".agent/shared/LANDMINES.md",
         ".agent/architect/PRINCIPLES.md",
-        ".agent/executor/DECISIONS.md",
-        ".agent/executor/DEBT.md",
+        ".agent/shared/DECISIONS.md",
+        ".agent/shared/DEBT.md",
         ".agent/executor/PLANS.md"
     ]
 
@@ -108,7 +109,10 @@ def main():
 
     if not all_pass:
         print("\nBLOCKING: Fix above failures before creating git tag.", file=sys.stderr)
-        print("STOP. Do not proceed. Do not explain, justify, or suggest alternatives.", file=sys.stderr)
+        print(
+            "STOP. Do not proceed. Do not explain, justify, or suggest alternatives.",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     print("\nALL CHECKS PASS. Proceed to tag.")

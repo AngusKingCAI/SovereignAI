@@ -1,7 +1,6 @@
 from unittest.mock import Mock
 
 import pytest
-
 from sovereignai.shared.capability_graph import ICapabilityIndex
 from sovereignai.shared.lifecycle_manager import LifecycleManager
 from sovereignai.shared.routing_engine import RoutingEngine

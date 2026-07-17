@@ -4,7 +4,6 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from databases.base import NoCompatibleQuantError
 from databases.hf_database.provider import HFDatabaseProvider
 from sovereignai.shared.trace_emitter import TraceEmitter

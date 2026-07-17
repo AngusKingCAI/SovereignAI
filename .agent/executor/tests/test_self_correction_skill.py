@@ -2,7 +2,6 @@ from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
 import pytest
-
 from sovereignai.librarian.librarian import Librarian
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (

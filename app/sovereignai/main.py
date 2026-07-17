@@ -249,6 +249,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     # 17. Register adapter instances after manifest loading (Plan 19 S3.1)
     # Order-dependent: adapters need model_path_resolver and database_registry
     from adapters.external.ollama_adapter.adapter import OllamaAdapter
+
     from sovereignai.shared.types import ComponentId
 
     if ComponentId("ollama_adapter") in graph._manifests:

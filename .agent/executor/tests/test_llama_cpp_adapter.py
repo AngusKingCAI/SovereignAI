@@ -4,7 +4,6 @@ import time
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from adapters.external.llama_cpp_adapter.adapter import GenerationTimeoutError, LlamaCppAdapter
 from databases.base import ModelNotFoundError
 from sovereignai.shared.types import AdapterHealth

@@ -1,6 +1,6 @@
 # PLANS.md — SovereignAI Project State
 
-**Last updated**: 2026-07-03 (prompt-20.9.9)
+**Last updated**: 2026-07-18 (executor-instruction: shared documents)
 
 Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts, static analysis baselines, and active prompt. Executor updates at every `/close`. Architect reads at every session start. Do not duplicate into other documents.
 
@@ -8,7 +8,9 @@ Dynamic state: baselines, completed prompts, next-5-queue. SSOT for test counts,
 
 ## Baseline Reconciliation Notes
 
-Full explanations live in `.agent/executor/CHANGELOG.md` (one entry per plan) — this section tracks only the running delta, per OR17. Going forward, write one line per plan (`**Plan N**: Baseline → X tests. Delta: ±Y — see .agent/executor/CHANGELOG prompt-N.`); do not restate the per-test reasoning here.
+Full explanations live in `.agent/shared/CHANGELOG.md` (one entry per plan) — this section tracks only the running delta, per OR17. Going forward, write one line per plan (`**Plan N**: Baseline → X tests. Delta: ±Y — see .agent/shared/CHANGELOG prompt-N.`); do not restate the per-test reasoning here.
+
+**executor-instruction**: Baseline → 531 tests. Delta: 0 — documentation-only change, moved shared documents to .agent/shared/.
 
 **Plan 1**: Baseline → 22 tests. Delta: 0.
 **Plan 2**: Baseline → 40 tests. Delta: +3 — see CHANGELOG prompt-2.

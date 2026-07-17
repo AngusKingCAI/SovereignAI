@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from sovereignai.shared.manifest_parser import ManifestParseError, parse_manifest
 from sovereignai.shared.types import CapabilityCategory
 

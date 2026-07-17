@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## executor-instruction — Create .agent/shared/ and Move Shared Documents
+
+**Date**: 2026-07-18
+**Plan**: Executor instruction
+**Tests**: N/A (documentation-only change)
+**Coverage**: N/A (no code changes)
+**Screenshots**: N/A
+**AR7 diff**: None
+**OR63**: None
+
+- Created .agent/shared/ directory for shared governance documents
+- Moved LANDMINES.md, DECISIONS.md, DEBT.md, CHANGELOG.md from .agent/executor/ to .agent/shared/
+- Updated all internal references in AI_HANDOFF.md, AGENTS.md, AGENTS_EXTENDED.md, and all skill files
+- Updated verify_close.py and spec_match.py to reference new shared document paths
+- Updated workflow redesign proposal documents to reference new shared document paths
+
+---
+
 ## prompt-21 — Skills Infrastructure (ISkillRunner, SkillManifest, SkillSession, ToolCallParser, ToolErrorObservation, SkillDiscovery, initial skills, web endpoints, TUI panel)
 
 **Date**: 2026-07-17

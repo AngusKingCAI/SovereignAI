@@ -5,7 +5,6 @@ import tempfile
 from collections.abc import Generator
 
 import pytest
-
 from sovereignai.memory.trace_backend import TraceMemoryBackend
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import new_correlation_id

@@ -3,7 +3,6 @@ from __future__ import annotations
 import contextlib
 
 import pytest
-
 from sovereignai.shared.relay_placeholder import RelayPlaceholder
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import RelayNotSupportedError, TraceLevel

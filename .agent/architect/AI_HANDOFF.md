@@ -31,7 +31,7 @@ This ensures the Architect always reviews current state, not a stale clone.
 
 1. **Read execution logs end-to-end.** Extract test counts, scan results, STOPs, deviations.
 2. **Verify repo state.** Tag on origin, CHANGELOG matches, PLANS.md updated, no scope creep.
-3. **Re-read** `.agent/executor/LANDMINES.md` + `.agent/architect/PRINCIPLES.md`.
+3. **Re-read** `.agent/shared/LANDMINES.md` + `.agent/architect/PRINCIPLES.md`.
 4. **Review C9 proposals + scan for patterns.** Propose new rules or reject. Include in next plan's S0.
 5. **Best practices research (web search).** For technical implementation plans (especially new tech stacks or frameworks), search for official docs, best practices, and common pitfalls. Document findings in plan header. Example: Textual ContentSwitcher import path, CSS patterns, async worker patterns. Use Context7 MCP for library-specific API questions (import paths, method signatures, version-specific behavior). Use web search for broader patterns (multi-panel layouts, testing strategies). Context7 prevents hallucinated APIs (P20.4 ContentSwitcher ImportError); web search catches framework-level best practices.
 6. **Make plan files + context brief + Round Table prompt.** N plan files + 1 brief (per Brief Format) + 1 prompt (per Round Table Prompt, full or diff-summary per GR14). Design documents in .agent/architect/documents/.
@@ -98,18 +98,18 @@ Open questions resolved: <which Q1-Q34, or "none">
 | `.agent/architect/PRINCIPLES.md` | Living principles (14 core + workflow) | User + Architect |
 | `.agent/architect/documents/` | Design documents | Architect |
 | `.agent/executor/PLANS.md` | Dynamic state, baselines, queue | Executor |
-| `.agent/executor/LANDMINES.md` | Failure patterns | Executor |
-| `.agent/executor/CHANGELOG.md` | Per-plan change log | Executor |
+| `.agent/shared/LANDMINES.md` | Failure patterns | Executor |
+| `.agent/shared/CHANGELOG.md` | Per-plan change log | Executor |
 | `AGENTS.md` | Rules (AR + OR) | Executor |
-| `.agent/executor/DECISIONS.md` | Architectural decisions | Executor |
-| `.agent/executor/DEBT.md` | Deferred items | Executor |
+| `.agent/shared/DECISIONS.md` | Architectural decisions | Executor |
+| `.agent/shared/DEBT.md` | Deferred items | Executor |
 | `.devin/skills/*/SKILL.md` | Workflow skills | Architect |
 
 **SSOT**: Each fact in one document only.
 
 **Read order**:
-- Architect (new chat): .agent/architect/AI_HANDOFF → .agent/architect/PRINCIPLES.md → .agent/executor/PLANS.md → .agent/executor/LANDMINES.md → .agent/executor/DECISIONS.md → .agent/executor/DEBT.md
-- Executor (S0.2): AGENTS.md (consult .agent/executor/LANDMINES.md if ambiguous)
+- Architect (new chat): .agent/architect/AI_HANDOFF → .agent/architect/PRINCIPLES.md → .agent/executor/PLANS.md → .agent/shared/LANDMINES.md → .agent/shared/DECISIONS.md → .agent/shared/DEBT.md
+- Executor (S0.2): AGENTS.md (consult .agent/shared/LANDMINES.md if ambiguous)
 
 Note: All design documents are in .agent/architect/documents/
 

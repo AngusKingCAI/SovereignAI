@@ -7,7 +7,6 @@ from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-
 from sovereignai.shared.types import (
     CapabilityCategory,
     CapabilityDeclaration,

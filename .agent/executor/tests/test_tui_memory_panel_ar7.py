@@ -3,7 +3,6 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 import pytest
-
 from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.types import (
     EpisodicQuery,

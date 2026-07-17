@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-
 from sovereignai.shared.capability_graph import CapabilityGraph
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.skills.concrete_runner import ConcreteSkillRunner, SkillNotFoundError

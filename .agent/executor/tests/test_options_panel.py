@@ -3,9 +3,8 @@ from __future__ import annotations
 from collections.abc import Generator
 
 import pytest
-from fastapi.testclient import TestClient
-
 from databases.hf_database.provider import HFDatabaseProvider
+from fastapi.testclient import TestClient
 from sovereignai.shared.types import ModelEntry
 from web.main import app
 

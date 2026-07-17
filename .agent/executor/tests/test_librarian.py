@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-
 from sovereignai.librarian.librarian import Librarian
 from sovereignai.shared.capability_graph import CapabilityGraph
 from sovereignai.shared.trace_emitter import TraceEmitter

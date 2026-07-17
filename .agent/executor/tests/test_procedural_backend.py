@@ -5,7 +5,6 @@ import tempfile
 from collections.abc import Generator
 
 import pytest
-
 from sovereignai.memory.procedural_backend import (
     ProceduralMemoryBackend,
     ProceduralMemoryLockTimeoutError,

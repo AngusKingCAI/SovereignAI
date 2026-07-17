@@ -2,7 +2,6 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 import pytest
-
 from sovereignai.shared.event_bus import EventBus
 from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
 from sovereignai.shared.trace_emitter import TraceEmitter

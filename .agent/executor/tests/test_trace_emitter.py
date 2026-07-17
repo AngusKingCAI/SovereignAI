@@ -4,7 +4,6 @@ import threading
 from uuid import UUID
 
 import pytest
-
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import TraceLevel
 

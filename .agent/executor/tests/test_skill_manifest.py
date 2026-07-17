@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 
 import pytest
-
 from sovereignai.shared.types import CapabilityCategory
 from sovereignai.skills.manifest import SkillManifest
 

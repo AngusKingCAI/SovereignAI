@@ -4,7 +4,6 @@ import time
 from unittest.mock import patch
 
 import pytest
-
 from adapters.external.ollama_adapter.adapter import GenerationTimeoutError, OllamaAdapter
 from sovereignai.shared.trace_emitter import TraceEmitter
 

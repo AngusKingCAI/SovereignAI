@@ -4,7 +4,6 @@ from unittest.mock import Mock, patch
 from uuid import uuid4
 
 import pytest
-
 from sovereignai.orchestrator.dispatcher import MessageDispatcher
 from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.capability_graph import CapabilityGraph

@@ -1,6 +1,5 @@
 from hypothesis import HealthCheck, Phase, given, settings
 from hypothesis import strategies as st
-
 from sovereignai.shared.task_state_machine import _VALID_TRANSITIONS
 from sovereignai.shared.types import TaskState, TraceLevel
 

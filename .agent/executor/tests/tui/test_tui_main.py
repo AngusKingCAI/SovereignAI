@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from textual.widgets import Button, ContentSwitcher, Footer, Header, Static
-
 from tui.main import SovereignTUI
 
 

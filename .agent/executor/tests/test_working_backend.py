@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-
 from sovereignai.memory.working_backend import WorkingMemoryBackend
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import TaskState, WorkingQuery

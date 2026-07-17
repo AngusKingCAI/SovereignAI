@@ -4,7 +4,6 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import httpx
 import pytest
-
 from skills.user.websearch_skill.skill import WebSearchSkill
 from sovereignai.shared.trace_emitter import TraceEmitter
 

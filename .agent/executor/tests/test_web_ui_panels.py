@@ -4,7 +4,6 @@ from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
-
 from sovereignai.shared.types import (
     CapabilityCategory,
     CapabilityDeclaration,

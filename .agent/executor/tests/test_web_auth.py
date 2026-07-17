@@ -4,7 +4,6 @@ from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
-
 from sovereignai.main import build_container
 
 

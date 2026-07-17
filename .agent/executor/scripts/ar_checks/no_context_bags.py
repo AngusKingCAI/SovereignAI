@@ -67,7 +67,7 @@ def check_function(fn: ast.FunctionDef | ast.AsyncFunctionDef, path: Path) -> li
     for arg in all_args:
         if arg.arg in ("self", "cls", "instance", "pattern", "metadata", "data"):
             continue
-        
+
         # Check for wide unions (4+ members)
         if isinstance(arg.annotation, ast.BinOp) and isinstance(arg.annotation.op, ast.BitOr):
             member_count = _union_member_count(arg.annotation)
@@ -76,14 +76,14 @@ def check_function(fn: ast.FunctionDef | ast.AsyncFunctionDef, path: Path) -> li
                     f"{path}:{fn.lineno}: '{fn.name}' parameter '{arg.arg}' "
                     f"uses wide union ({member_count} members) — AR6 violation"
                 )
-        
+
         # Check for nested Any (e.g., dict[str, Any])
         if _contains_bare_any(arg.annotation):
             violations.append(
                 f"{path}:{fn.lineno}: '{fn.name}' parameter '{arg.arg}' "
                 f"contains nested Any — AR6 violation"
             )
-        
+
         name, parameterized = annotation_name(arg.annotation)
         if name not in UNTYPED_DICT_NAMES or arg.arg == "trace":
             continue

@@ -4,9 +4,8 @@ from collections.abc import Generator
 from typing import Any
 
 import pytest
-from fastapi.testclient import TestClient
-
 from databases.hf_database.provider import HFDatabaseProvider
+from fastapi.testclient import TestClient
 from sovereignai.main import build_container
 from sovereignai.shared.types import ModelEntry
 

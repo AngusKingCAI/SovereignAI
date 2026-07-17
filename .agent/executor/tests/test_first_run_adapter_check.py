@@ -4,7 +4,6 @@ from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
-
 from sovereignai.main import build_container
 from web.main import app
 

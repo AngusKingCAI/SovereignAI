@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 
 import pytest
-
 from sovereignai.shared.auth import AuthMiddleware
 from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.capability_graph import CapabilityGraph

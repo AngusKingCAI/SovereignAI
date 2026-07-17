@@ -5,7 +5,6 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest  # noqa: F401
-
 from sovereignai.shared.file_trace_subscriber import FileTraceSubscriber
 from sovereignai.shared.types import TraceEvent, TraceLevel
 

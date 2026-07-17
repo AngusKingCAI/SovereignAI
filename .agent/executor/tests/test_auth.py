@@ -4,7 +4,6 @@ from datetime import timedelta
 from unittest.mock import patch
 
 import pytest
-
 from sovereignai.shared.auth import AuthMiddleware
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import AuthError, SessionToken, now_utc

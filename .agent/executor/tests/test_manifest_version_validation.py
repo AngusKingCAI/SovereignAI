@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-
 from sovereignai.shared.manifest_parser import ManifestParseError, parse_manifest
 
 

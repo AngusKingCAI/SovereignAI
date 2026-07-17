@@ -1,7 +1,6 @@
 from unittest.mock import Mock
 
 from fastapi.testclient import TestClient
-
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import TraceEvent, TraceLevel, new_correlation_id, now_utc
 from web.main import app

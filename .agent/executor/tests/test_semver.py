@@ -1,5 +1,4 @@
 import pytest
-
 from sovereignai.versioning.semver import SemVer
 
 

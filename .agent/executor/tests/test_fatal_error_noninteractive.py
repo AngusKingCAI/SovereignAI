@@ -2,7 +2,6 @@ import sys
 from unittest.mock import patch
 
 import pytest
-
 from sovereignai.shared.types import ComponentId
 from sovereignai.versioning.negotiator import FatalIncompatibilityError, Incompatibility
 
