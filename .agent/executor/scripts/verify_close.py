@@ -14,7 +14,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).parent.parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 MAX_LOG_BYTES = 500
 
 def check_execution_log_empty() -> tuple[bool, str]:
@@ -43,15 +43,15 @@ def check_changelog_position() -> tuple[bool, str]:
         return False, ".agent/shared/CHANGELOG.md not found"
 
     content = changelog.read_text()
-    # Find all prompt references
-    prompts = re.findall(r'prompt-[\d.]+', content)
+    # Find all prompt references (strict pattern to avoid trailing dots)
+    prompts = re.findall(r'prompt-[\d]+(?:\.[\d]+)*', content)
     if not prompts:
         return True, "No prompts in CHANGELOG yet"
 
     # Extract numeric values for proper sorting (handles 20.9.9, 21, etc.)
     def prompt_key(p):
         parts = p.replace("prompt-", "").split(".")
-        return tuple(int(x) for x in parts)
+        return tuple(int(x) for x in parts if x)
 
     latest = max(prompts, key=prompt_key)
     first_prompt = re.search(r'prompt-[\d.]+', content)
