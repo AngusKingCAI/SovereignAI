@@ -46,8 +46,3 @@ Thumbs.db
 # Application runtime (logs, settings)
 app/logs/
 app/settings/
-
-# Execution logs (tracked in logs/)
-# logs/
-logs/
-logs/
