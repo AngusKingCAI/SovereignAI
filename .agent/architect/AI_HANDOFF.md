@@ -79,7 +79,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 **S0 — Opening**:
 - S0.1: Run `/open`
 - S0.2: Read `AGENTS.md` in full
-- S0.3: Add new rules from this plan's S0 to `AGENTS.md`, commit before coding
+- S0.3: Propose new rules from this plan's S0 — add to `.agent/shared/DEBT.md` with target plan, run Round Table, then commit. AR rules → ARCHITECTURE.md, OR rules → edit skill.
 - S0.4: If new tech stack, add research findings to plan header (per Architect Workflow step 5).
 
 **Plan body (S1-Sn)**: Execute steps. Run `/verify` after each edit. HTML/CSS/JS plans: include "WILL edit" UI element list.
@@ -118,7 +118,7 @@ Missing/reordered sections block delivery (GR7).
 | `PLANS.md` | Dynamic state, baselines, queue | Executor |
 | `.agent/shared/LANDMINES.md` | Failure patterns | Executor |
 | `.agent/shared/CHANGELOG.md` | Per-plan change log | Executor |
-| `AGENTS.md` | Rules (AR + OR) | Executor |
+| `AGENTS.md` | Universal Invariants | Executor |
 | `.agent/shared/DECISIONS.md` | Architectural decisions | Executor |
 | `.agent/shared/DEBT.md` | Deferred items | Executor |
 | `.devin/skills/*/SKILL.md` | Workflow skills | Architect |
@@ -126,7 +126,7 @@ Missing/reordered sections block delivery (GR7).
 **SSOT**: Each fact in one document only.
 
 **Read order**:
-- Architect (new chat): AI_HANDOFF → PRINCIPLES → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DECISIONS.md` → `.agent/shared/DEBT.md`
+- Architect (new chat): AI_HANDOFF → PRINCIPLES → `.agent/shared/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DECISIONS.md` → `.agent/shared/DEBT.md`
 - Executor (S0.2): AGENTS.md (consult `.agent/shared/LANDMINES.md` if ambiguous)
 
 *Pending: Document structure will be revised as part of workflow optimisation.*

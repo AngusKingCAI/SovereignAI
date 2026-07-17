@@ -1,6 +1,7 @@
----
+﻿---
 name: scan
-description: Run at scan prompts (5, 10, 15...). Whole-repo scan. No new features. Fixes only. More thorough than /close.
+authority: AGENTS.md
+description: Run at scan prompts (5, 10, 15...). Whole-repo scan. No new features. Fixes only. More thorough than /close. Self-contained - does not invoke /close.
 argument-hint: "[plan-number]"
 triggers: ["user"]
 allowed-tools:
@@ -22,7 +23,7 @@ Run `/scan` workflow. Whole-repo scan. No new features. Fixes only. STOP on fail
 7. Dependency check: `check_dependencies.py`. STOP on failure.
 8. Rule conciseness: `check_rule_conciseness.py`. STOP on failure.
 9. Changelog: `check_changelog.py`. STOP on failure.
-10. Spec match: `spec_match.py`. STOP if exit≠0. No new features.
-11. HARD GATE — `verify_close.py`. If exit≠0: STOP. Do not commit.
+10. Spec match: `spec_match.py`. STOP if exit!=0. No new features.
+11. HARD GATE - `verify_close.py`. If exit!=0: STOP. Do not commit.
 12. Documentation: prepend CHANGELOG, update PLANS.md, add to DEBT.md.
 13. Git: commit, tag `prompt-{N}`, push.

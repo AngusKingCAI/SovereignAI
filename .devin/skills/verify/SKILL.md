@@ -1,5 +1,6 @@
 ---
 name: verify
+authority: AGENTS.md
 description: Run after every file edit during plan execution. Python files only.
 argument-hint: "[file-path]"
 triggers: ["user"]
