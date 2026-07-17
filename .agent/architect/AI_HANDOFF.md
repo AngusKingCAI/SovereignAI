@@ -15,7 +15,8 @@ Local-first modular AI assistant for one user. Strong modular core. Wire as you 
 - **Executor tree**: `C:/SovereignAI/`
 - **Architect review clone**: `/tmp/SovereignAI/` (read-only)
 - **Plan files**: `C:/SovereignAI/prompts/plan-{N}-Rev{n}.md`
-- **Skills**: `.agent/skills/`
+- **Skills**: `.devin/skills/`
+- **Design documents**: `.agent/architect/documents/`
 - **All paths use `/`**
 
 **Clone instructions**: When the User says "log uploaded" or "check the repo", clone the latest state:
@@ -33,7 +34,7 @@ This ensures the Architect always reviews current state, not a stale clone.
 3. **Re-read** `.agent/executor/LANDMINES.md` + `.agent/architect/PRINCIPLES.md`.
 4. **Review C9 proposals + scan for patterns.** Propose new rules or reject. Include in next plan's S0.
 5. **Best practices research (web search).** For technical implementation plans (especially new tech stacks or frameworks), search for official docs, best practices, and common pitfalls. Document findings in plan header. Example: Textual ContentSwitcher import path, CSS patterns, async worker patterns. Use Context7 MCP for library-specific API questions (import paths, method signatures, version-specific behavior). Use web search for broader patterns (multi-panel layouts, testing strategies). Context7 prevents hallucinated APIs (P20.4 ContentSwitcher ImportError); web search catches framework-level best practices.
-6. **Make plan files + context brief + Round Table prompt.** N plan files + 1 brief (per Brief Format) + 1 prompt (per Round Table Prompt, full or diff-summary per GR14).
+6. **Make plan files + context brief + Round Table prompt.** N plan files + 1 brief (per Brief Format) + 1 prompt (per Round Table Prompt, full or diff-summary per GR14). Design documents in .agent/architect/documents/.
 7. **Pause for Round Table.** Runs until clean pass. Apply findings at discretion.
 8. **Score panelists (GR16).** Posted inline in chat.
 9. **Deliver.** Tell User to copy to `C:/SovereignAI/prompts/plan-{N}.md`.
@@ -95,6 +96,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 |---|---|---|
 | `.agent/architect/AI_HANDOFF.md` | Process guide | Architect |
 | `.agent/architect/PRINCIPLES.md` | Living principles (14 core + workflow) | User + Architect |
+| `.agent/architect/documents/` | Design documents | Architect |
 | `.agent/executor/PLANS.md` | Dynamic state, baselines, queue | Executor |
 | `.agent/executor/LANDMINES.md` | Failure patterns | Executor |
 | `.agent/executor/CHANGELOG.md` | Per-plan change log | Executor |
@@ -108,6 +110,8 @@ Open questions resolved: <which Q1-Q34, or "none">
 **Read order**:
 - Architect (new chat): .agent/architect/AI_HANDOFF → .agent/architect/PRINCIPLES.md → .agent/executor/PLANS.md → .agent/executor/LANDMINES.md → .agent/executor/DECISIONS.md → .agent/executor/DEBT.md
 - Executor (S0.2): AGENTS.md (consult .agent/executor/LANDMINES.md if ambiguous)
+
+Note: All design documents are in .agent/architect/documents/
 
 ---
 
