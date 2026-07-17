@@ -63,7 +63,7 @@ No host paths inside prompts (GR4).
 
 ## Plan Template
 
-Plans ≤120 lines. Executable steps only.
+Plans ≤120 lines. Executable steps only. See `PRINCIPLES.md` Workflow principles for full guidance.
 
 **Header**:
 ```
@@ -112,11 +112,11 @@ Missing/reordered sections block delivery (GR7).
 | `AI_HANDOFF.md` | Process guide | Architect |
 | `PRINCIPLES.md` | Living principles | User + Architect |
 | `PLANS.md` | Dynamic state, baselines, queue | Executor |
-| `LANDMINES.md` | Failure patterns | Executor |
-| `CHANGELOG.md` | Per-plan change log | Executor |
+| `.agent/shared/LANDMINES.md` | Failure patterns | Executor |
+| `.agent/shared/CHANGELOG.md` | Per-plan change log | Executor |
 | `AGENTS.md` | Rules (AR + OR) | Executor |
-| `DECISIONS.md` | Architectural decisions | Executor |
-| `DEBT.md` | Deferred items | Executor |
+| `.agent/shared/DECISIONS.md` | Architectural decisions | Executor |
+| `.agent/shared/DEBT.md` | Deferred items | Executor |
 | `.devin/skills/*/SKILL.md` | Workflow skills | Architect |
 
 **SSOT**: Each fact in one document only.
@@ -143,4 +143,9 @@ GR9. Majority of panelists must return verdict before delivery. Conditional/bloc
 GR10. First pass per rev: full prompt. Re-checks: diff summary only. Round Table questions get Q-IDs. Answers become DD-IDs or stay open.
 GR11. Clean pass: post panelist scorecard inline (1-100, weighted toward accepted findings).
 GR12. UI-change plans: check precedent first. ≤6 unresolved questions per plan, 2-4 options each. Overflow → Proposed DD-IDs.
-GR13. When user asks for a file download, provide the download link immediately without asking follow-up questions. Do not ask "Do you want me to..." — just deliver the file.
+
+---
+
+## UR Rules (User Interaction)
+
+UR1. When user asks for a file download, provide the download link immediately without asking follow-up questions. Do not ask "Do you want me to..." — just deliver the file.

@@ -8,12 +8,12 @@ Naming: C{n} = Critical, H{n} = High, M{n} = Medium, L{n} = Low.
 
 ## Active Patterns
 
-### Critical — Blocks delivery. Fix before Round Table (GR12).
+### Critical — Blocks delivery. Fix before Round Table (GR8).
 
 | ID | Pattern | Detection | Mitigation |
 |----|---------|-----------|------------|
 
-### High — Blocks delivery. Fix before Round Table (GR12).
+### High — Blocks delivery. Fix before Round Table (GR8).
 
 | ID | Pattern | Detection | Mitigation |
 |----|---------|-----------|------------|

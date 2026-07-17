@@ -8,9 +8,8 @@ Open items only. Resolved items → CHANGELOG.md.
 
 | ID | Item | Severity | Priority | Status | Target | Trigger |
 |----|------|----------|----------|--------|--------|---------|
-| DEBT-1 | diskcache CVE-2025-69872 | High | Medium | Identified | TBD | diskcache PR #361 merged to PyPI |
-| DEBT-2 | setuptools CVE-2024-6345 ×5 | High | Medium | Identified | 20.11 | Dependency upgrade scheduled |
-| DEBT-3 | First-run experience UI | Medium | Low | Identified | TBD | UI implementation prioritised |
+| DEBT-1 | diskcache CVE-2025-69872 | Critical | High | Identified | TBD | diskcache PR #361 merged to PyPI |
+| DEBT-2 | First-run experience UI | Medium | Low | Identified | TBD | UI implementation prioritised |
 
 ## Resolved Items → See CHANGELOG.md
 
@@ -18,27 +17,16 @@ Open items only. Resolved items → CHANGELOG.md.
 
 ## DEBT-1 — diskcache CVE-2025-69872
 
-**Severity**: High
-**Priority**: Medium
+**Severity**: Critical
+**Priority**: High
 **Status**: Identified
 **Target**: TBD
 **Trigger**: When diskcache PR #361 is merged and released to PyPI.
-**Reason**: pip-audit reports CVE-2025-69872 in diskcache 5.6.3 (transitive from huggingface_hub). Path traversal vulnerability. Fix in PR #361, not yet merged to PyPI as of 2026-07-03.
+**Reason**: pip-audit reports CVE-2025-69872 in diskcache 5.6.3 (transitive from huggingface_hub). Insecure pickle deserialization (CWE-94) — attacker with write access to cache directory achieves arbitrary code execution when victim application reads from cache. CVSS 9.8. Fix in PR #361 (HMAC-verified pickle envelope), not yet merged to PyPI as of 2026-07-03.
 
 ---
 
-## DEBT-2 — setuptools CVE-2024-6345 ×5
-
-**Severity**: High
-**Priority**: Medium
-**Status**: Identified
-**Target**: 20.11
-**Trigger**: When dependency upgrade plan is scheduled.
-**Reason**: pip-audit reports 5 CVEs in setuptools (CVE-2024-6345). Transitive dependencies. Upgrade may break other packages.
-
----
-
-## DEBT-3 — First-run experience UI
+## DEBT-2 — First-run experience UI
 
 **Severity**: Medium
 **Priority**: Low
