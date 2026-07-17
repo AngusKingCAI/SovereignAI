@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class FileTraceSubscriber:
 
-    def __init__(self, log_dir: str = "sailogs") -> None:
+    def __init__(self, log_dir: str = "app/logs") -> None:
         self._log_dir = Path(log_dir)
         self._log_dir.mkdir(parents=True, exist_ok=True)
         filename = datetime.now(UTC).strftime("%Y-%m-%d_%H-%M-%S.log")
