@@ -21,7 +21,11 @@ Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Wind
 1. Read logs end-to-end. Extract test counts, STOPs, deviations.
 2. Verify repo state. Spot-check `.agent/shared/CHANGELOG.md` latest entry (first 10 lines). PLANS.md updated. No scope creep.
 3. Re-read `.agent/shared/LANDMINES.md` + `PRINCIPLES.md`.
-4. Review patterns. Propose new rules or reject. Include in next plan's S0.
+4. Review patterns. Propose new rules or reject.
+   - New AR → add to `.agent/shared/DEBT.md` with target plan → Round Table → ARCHITECTURE.md
+   - New OR → add to `.agent/shared/DEBT.md` with target plan → edit skill
+   - New landmine → note for Executor (they log during execution)
+   Include in next plan's S0.
 5. Research. Web search for new tech. Document findings in plan header.
 6. Draft. N plan files + 1 brief (Rev 1 only) + 1 Round Table prompt per rev.
 7. Round Table. Runs until clean pass. Apply findings at discretion.
