@@ -3,7 +3,7 @@
 **Reference rules** — read when AGENTS.md is ambiguous or when a specific
 technical detail is needed. Not loaded at session start. Consult on-demand.
 
-Authority: `PRINCIPLES.md` · Ambiguous → read `LANDMINES.md`
+Authority: `.agent/architect/PRINCIPLES.md` · Ambiguous → read `.agent/executor/LANDMINES.md`
 
 ---
 
@@ -59,11 +59,11 @@ OR37. Test timeouts: 30s default via pytest-timeout. Per-test override via `@pyt
 
 OR38. Snyk MCP scan on requirements + changed files. CRITICAL/HIGH = STOP.
 
-OR39. Vulture whitelist in `txt/vulture-whitelist.txt`. New findings = STOP.
+OR39. Vulture whitelist in `.agent/executor/txt/vulture-whitelist.txt`. New findings = STOP.
 
-OR40. Detect-secrets baseline in `txt/.secrets.baseline`. New secrets = STOP.
+OR40. Detect-secrets baseline in `.agent/executor/txt/.secrets.baseline`. New secrets = STOP.
 
-OR41. Bandit baseline in `bandit/baseline.json`. New findings = STOP.
+OR41. Bandit baseline in `.agent/executor/bandit/baseline.json`. New findings = STOP.
 
 OR42. Pip-audit strict mode. CVE in requirements = STOP.
 
@@ -87,7 +87,7 @@ OR51. Changelog check validates position and format. Exit≠0 = STOP.
 
 OR52. Test mode hooks checked. Exit≠0 = STOP.
 
-OR53. No globals in `sovereignai/`. Script-enforced.
+OR53. No globals in `app/sovereignai/`. Script-enforced.
 
 OR54. Constructor arg cap ≤15. Script-enforced.
 
@@ -103,8 +103,8 @@ OR59. P4 compliance check. Script-enforced.
 
 OR60. Component manifest kwargs check. Script-enforced.
 
-OR61. Scoped test resolution via `scripts/get_scoped_tests.py`. Empty scope + .py changes = STOP.
+OR61. Scoped test resolution via `.agent/executor/scripts/get_scoped_tests.py`. Empty scope + .py changes = STOP.
 
-OR62. Scan plan detection via `scripts/is_scan_plan.py`. Drives test scope per OR29.
+OR62. Scan plan detection via `.agent/executor/scripts/is_scan_plan.py`. Drives test scope per OR29.
 
 OR63. Security findings documented in DEBT.md with target plan. "TBD" = STOP.

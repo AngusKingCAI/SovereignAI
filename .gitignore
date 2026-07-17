@@ -20,11 +20,11 @@ dist/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-htmlcov/
+.agent/executor/htmlcov/
 .coverage
 .coverage.*
 .tox/
-scripts/ar_checks/.cache/
+.agent/executor/scripts/ar_checks/.cache/
 
 # IDE
 .vscode/
@@ -41,7 +41,11 @@ Thumbs.db
 .env.local
 
 # Bandit reports
-bandit/
+.agent/executor/bandit/
 
-# sailogs trace logs
-sailogs/*.log
+# Application runtime (logs, settings)
+app/logs/
+app/settings/
+
+# sailogs trace logs (now in app/logs/)
+app/logs/*.log

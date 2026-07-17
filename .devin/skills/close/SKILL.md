@@ -17,50 +17,50 @@ Prerequisite: `.venv/` exists.
 
 ## Resolve current plan file
 
-□ Step 0: `CURRENT_PLAN=$(.venv/Scripts/python.exe scripts/get_current_plan.py)` — STOP if empty.
+□ Step 0: `CURRENT_PLAN=$(.venv/Scripts/python.exe .agent/executor/scripts/get_current_plan.py)` — STOP if empty.
 
-□ Step 0.5: `IS_SCAN=$(.venv/Scripts/python.exe scripts/is_scan_plan.py $CURRENT_PLAN)` — "true" if plan % 5 == 0.
+□ Step 0.5: `IS_SCAN=$(.venv/Scripts/python.exe .agent/executor/scripts/is_scan_plan.py $CURRENT_PLAN)` — "true" if plan % 5 == 0.
 
 ## Static analysis
 
 □ Step 1: Tests per OR29
-  - If `IS_SCAN=true`: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no` (300s timeout). STOP on failure.
+  - If `IS_SCAN=true`: `.venv/Scripts/python.exe -m pytest .agent/executor/tests/ -q --tb=no` (300s timeout). STOP on failure.
   - Else: `CHANGED_PY=$(git diff --name-only prompt-{N-1}..HEAD | grep '\.py$')`
     - If empty: echo "N/A"
-    - Else: `SCOPED_TESTS=$(.venv/Scripts/python.exe scripts/get_scoped_tests.py $CHANGED_PY)` — STOP if empty.
+    - Else: `SCOPED_TESTS=$(.venv/Scripts/python.exe .agent/executor/scripts/get_scoped_tests.py $CHANGED_PY)` — STOP if empty.
     - Then: `pytest $SCOPED_TESTS -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%.
 
 □ Step 2: `.venv/Scripts/ruff.exe check .` — STOP on errors.
 
 □ Step 3: Mypy on changed files (or full suite at scan). STOP on errors.
 
-□ Step 4: `.venv/Scripts/bandit.exe -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache --baseline bandit/baseline.json` — STOP.
+□ Step 4: `.venv/Scripts/bandit.exe -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache --baseline .agent/executor/bandit/baseline.json` — STOP.
 
-□ Step 5: `.venv/Scripts/pip-audit.exe --strict --requirement txt/requirements.txt` — STOP on CVEs.
+□ Step 5: `.venv/Scripts/pip-audit.exe --strict --requirement app/txt/requirements.txt` — STOP on CVEs.
 
-□ Step 5.5: Snyk MCP scan. CRITICAL/HIGH = STOP. Document in DEBT.md with target plan.
+□ Step 5.5: Snyk MCP scan. CRITICAL/HIGH = STOP. Document in .agent/executor/DEBT.md with target plan.
 
-□ Step 6: `.venv/Scripts/vulture.exe . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,htmlcov` — STOP on new findings.
+□ Step 6: `.venv/Scripts/vulture.exe . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,.agent/executor/htmlcov` — STOP on new findings.
 
-□ Step 7: `.venv/Scripts/detect-secrets.exe scan --baseline txt/.secrets.baseline` — STOP if exit≠0.
+□ Step 7: `.venv/Scripts/detect-secrets.exe scan --baseline .agent/executor/txt/.secrets.baseline` — STOP if exit≠0.
 
 □ Step 8: AR checks — run each, STOP on any violation:
   ```
-  .venv/Scripts/python.exe scripts/ar_checks/no_globals.py sovereignai/
-  .venv/Scripts/python.exe scripts/ar_checks/constructor_arg_cap.py sovereignai/ --max-args 15
-  .venv/Scripts/python.exe scripts/ar_checks/no_context_bags.py sovereignai/
-  .venv/Scripts/python.exe scripts/ar_checks/no_hardcoded_component_names.py web/ cli/ tui/ phone/
-  .venv/Scripts/python.exe scripts/ar_checks/ui_does_not_touch_core.py
-  .venv/Scripts/python.exe scripts/ar_checks/check_tracing.py
-  .venv/Scripts/python.exe scripts/ar_checks/check_placeholders.py
-  .venv/Scripts/python.exe scripts/ar_checks/check_p4_compliance.py
+  .venv/Scripts/python.exe .agent/executor/scripts/ar_checks/no_globals.py app/sovereignai/
+  .venv/Scripts/python.exe .agent/executor/scripts/ar_checks/constructor_arg_cap.py app/sovereignai/ --max-args 15
+  .venv/Scripts/python.exe .agent/executor/scripts/ar_checks/no_context_bags.py app/sovereignai/
+  .venv/Scripts/python.exe .agent/executor/scripts/ar_checks/no_hardcoded_component_names.py app/web/ app/cli/ app/tui/ app/phone/
+  .venv/Scripts/python.exe .agent/executor/scripts/ar_checks/ui_does_not_touch_core.py
+  .venv/Scripts/python.exe .agent/executor/scripts/ar_checks/check_tracing.py
+  .venv/Scripts/python.exe .agent/executor/scripts/ar_checks/check_placeholders.py
+  .venv/Scripts/python.exe .agent/executor/scripts/ar_checks/check_p4_compliance.py
   ```
 
-□ Step 9: Placeholders — `.venv/Scripts/python.exe scripts/ar_checks/check_placeholders.py sovereignai/ shared/ web/ cli/ tui/ phone/ adapters/ databases/ services/ skills/` — STOP on hit.
+□ Step 9: Placeholders — `.venv/Scripts/python.exe .agent/executor/scripts/ar_checks/check_placeholders.py app/sovereignai/ app/web/ app/cli/ app/tui/ app/phone/ app/adapters/ app/databases/ app/services/ app/skills/` — STOP on hit.
 
-□ Step 10: Tracing — `.venv/Scripts/python.exe scripts/ar_checks/check_tracing.py` — STOP if exit≠0.
+□ Step 10: Tracing — `.venv/Scripts/python.exe .agent/executor/scripts/ar_checks/check_tracing.py` — STOP if exit≠0.
 
-□ Step 11: AR7 allowlist — `.venv/Scripts/python.exe scripts/check_ar7_allowlist.py prompt-{N-1} tests/test_ar7_no_core_imports_in_ui.py` — STOP on unapproved addition.
+□ Step 11: AR7 allowlist — `.venv/Scripts/python.exe .agent/executor/scripts/check_ar7_allowlist.py prompt-{N-1} .agent/executor/tests/test_ar7_no_core_imports_in_ui.py` — STOP on unapproved addition.
 
 ## Documentation
 
@@ -77,29 +77,29 @@ Prerequisite: `.venv/` exists.
   {≤3 bullets summarizing work}
   ```
 
-□ Step 13: Update `PLANS.md` baseline.
+□ Step 13: Update `.agent/executor/PLANS.md` baseline.
 
-□ Step 14: Add deferred items to `DEBT.md` with target plan.
+□ Step 14: Add deferred items to `.agent/executor/DEBT.md` with target plan.
 
-□ Step 14.1: `grep -c "prompt-{N}" DEBT.md` — compare to count added. STOP if mismatch.
+□ Step 14.1: `grep -c "prompt-{N}" .agent/executor/DEBT.md` — compare to count added. STOP if mismatch.
 
-□ Step 14.6: Append to `LANDMINES.md` if plan STOPped, new OR added, or AR check failed for novel reason. Else: log "N/A — no new patterns".
+□ Step 14.6: Append to `.agent/executor/LANDMINES.md` if plan STOPped, new OR added, or AR check failed for novel reason. Else: log "N/A — no new patterns".
 
 ## Verification (before commit/tag)
 
-□ Step 15: Dev server + UI verification. Screenshots to `logs/screenshots/prompt-{N}/`. STOP if not done.
+□ Step 15: Dev server + UI verification. Screenshots to `app/logs/screenshots/prompt-{N}/`. STOP if not done.
 
-□ Step 16: Spec match — `.venv/Scripts/python.exe scripts/ar_checks/spec_match.py $CURRENT_PLAN` — STOP if exit≠0. Blocks steps 17-22 until pass.
+□ Step 16: Spec match — `.venv/Scripts/python.exe .agent/executor/scripts/ar_checks/spec_match.py $CURRENT_PLAN` — STOP if exit≠0. Blocks steps 17-22 until pass.
 
 ## Git
 
 □ Step 17: `git add -A && git status -s` — verify no unintended files.
 
-□ Step 17.5: `python scripts/ar_checks/check_changelog.py <plan_number>` — STOP if exit≠0.
+□ Step 17.5: `python .agent/executor/scripts/ar_checks/check_changelog.py <plan_number>` — STOP if exit≠0.
 
-□ Step 17.6: `python scripts/ar_checks/check_dependencies.py` — STOP if exit≠0.
+□ Step 17.6: `python .agent/executor/scripts/ar_checks/check_dependencies.py` — STOP if exit≠0.
 
-□ Step 17.7: `python scripts/ar_checks/check_rule_conciseness.py` — STOP if exit≠0.
+□ Step 17.7: `python .agent/executor/scripts/ar_checks/check_rule_conciseness.py` — STOP if exit≠0.
 
 □ Step 17.8: `rm .open_hash`.
 
@@ -111,7 +111,7 @@ Prerequisite: `.venv/` exists.
 
 ## HARD GATE — Step 19.5 (BEFORE tag)
 
-□ Step 19.5: RUN `python scripts/verify_close.py`
+□ Step 19.5: RUN `python .agent/executor/scripts/verify_close.py`
   - If exit 0: ☑ proceed to Step 20
   - If exit 1: ⛔ STOP. Do not create tag. Do not proceed. Do not explain or justify. Fix failures and re-run.
 

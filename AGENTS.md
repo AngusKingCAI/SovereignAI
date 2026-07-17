@@ -1,8 +1,8 @@
 # AGENTS.md
 
 **AR** = Architecture Rules · **OR** = Operational Rules.
-Ambiguous → read `LANDMINES.md`. Extended rules → `AGENTS_EXTENDED.md`.
-Authority: `PRINCIPLES.md`.
+Ambiguous → read `.agent/executor/LANDMINES.md`. Extended rules → `AGENTS_EXTENDED.md`.
+Authority: `.agent/architect/PRINCIPLES.md`.
 
 ---
 
@@ -14,7 +14,7 @@ AR2. Workers query Librarian directly for memory. No component queries a memory 
 
 AR3. All model inference routes through Adapters. No component loads weights or calls inference endpoints directly.
 
-AR4. No component references another by hard-coded name. Discovery via capability graph. Exemptions: `main.py`, tests, manifests.
+AR4. No component references another by hard-coded name. Discovery via capability graph. Exemptions: `app/sovereignai/main.py`, tests, manifests.
 
 AR5. External MCP servers wrapped as adapters before use. No direct MCP calls.
 
@@ -30,11 +30,11 @@ AR10. External components copied to local disk before use. No runtime remote-onl
 
 AR11. No docstrings (D103 disabled). Self-documenting names required.
 
-AR12. FastAPI web app runs as separate process. Imports from `sovereignai/` only via public API surface.
+AR12. FastAPI web app runs as separate process. Imports from `app/sovereignai/` only via public API surface.
 
 AR13. SSE auth via HTTP session cookie. No query-param tokens.
 
-AR14. Web-layer DTOs in `web/schemas.py`. Core types never returned directly from HTTP.
+AR14. Web-layer DTOs in `app/web/schemas.py`. Core types never returned directly from HTTP.
 
 AR15. Adapters declare `health_check()`. Failed check = DEGRADED status, not skipped.
 
@@ -50,7 +50,7 @@ OR3. STOP on any failure. No "helpful" workarounds. No arguing with user instruc
 
 OR4. `/close` is atomic: verify → commit → tag → push. Verification happens BEFORE tag. No exceptions.
 
-OR5. Before git tag: RUN `scripts/verify_close.py`. Exit 0 = proceed. Exit 1 = STOP. Do not explain, justify, or suggest alternatives. STOP is the only valid response.
+OR5. Before git tag: RUN `.agent/executor/scripts/verify_close.py`. Exit 0 = proceed. Exit 1 = STOP. Do not explain, justify, or suggest alternatives. STOP is the only valid response.
 
 OR6. CHANGELOG prepend only. Latest prompt at top. Never append. Script-enforced via verify_close.py.
 
@@ -64,11 +64,11 @@ OR10. Never delete prompt files (execution logs, plan files). Permanent history.
 
 OR11. Never delete content from governance documents. Only add. Historical context preserved.
 
-OR12. Non-scan plans: scoped tests via `scripts/get_scoped_tests.py`. Scan plans (5,10,15…): full suite.
+OR12. Non-scan plans: scoped tests via `.agent/executor/scripts/get_scoped_tests.py`. Scan plans (5,10,15…): full suite.
 
 OR13. Coverage ≥90% at `/close`. No exemptions.
 
-OR14. All AR check scripts run in `/close`. Any failure = STOP.
+OR14. All AR check scripts run in `/close`. Any failure = STOP. Scripts are in `.agent/executor/scripts/ar_checks/`.
 
 OR15. Pre-commit hooks run before every commit. No `--no-verify`.
 
@@ -92,16 +92,16 @@ OR24. User-authorized exceptions need target plan documentation. "Deferred to ne
 
 OR25. All tests have 30s timeout via pytest-timeout. Stalled test = FAILED.
 
-OR26. Follow skill workflows systematically. Never skip steps or pick-and-choose.
+OR26. Follow skill workflows systematically. Never skip steps or pick-and-choose. Skills in `.agent/skills/`.
 
 OR27. Untracked plan files are valid plans awaiting commit. Treat same as tracked. Never delete as "cleanup."
 
 OR28. Governance docs: only add, never edit/remove. Prepend-only for LANDMINES.md.
 
-OR29. Scoped test resolution via `scripts/get_scoped_tests.py`. Empty scope + .py changes = STOP.
+OR29. Scoped test resolution via `.agent/executor/scripts/get_scoped_tests.py`. Empty scope + .py changes = STOP.
 
 OR30. Follow instructions literally. Restrictive terms ('only', 'never', 'must', 'no content') = exact compliance. If instruction seems incorrect, STOP and ask. Do not argue. Do not "be helpful" by overriding.
 
 ---
 
-See `LANDMINES.md` for failure patterns. See `AGENTS_EXTENDED.md` for AR16–AR30 and OR31–OR63.
+See `.agent/executor/LANDMINES.md` for failure patterns. See `AGENTS_EXTENDED.md` for AR16–AR30 and OR31–OR63.

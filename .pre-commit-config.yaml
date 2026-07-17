@@ -18,18 +18,18 @@ repos:
       - id: bandit
         # Explicit exclusions rather than relying on [tool.bandit] auto-discovery
         # (version-dependent). Per Kimi M3 Round Table finding.
-        args: ["-r", ".", "-ll", "-x", ".venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,htmlcov"]
+        args: ["-r", ".", "-ll", "-x", ".venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,.agent/executor/htmlcov,.agent"]
 
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
       - id: detect-secrets
-        args: ['--baseline', 'txt/.secrets.baseline']
+        args: ['--baseline', '.agent/executor/txt/.secrets.baseline']
 
   - repo: local
     hooks:
       - id: component-manifest-kwargs
         name: ComponentManifest keyword arguments check
-        entry: python scripts/check_component_manifest_kwargs.py
+        entry: python .agent/executor/scripts/check_component_manifest_kwargs.py
         language: system
         types: [python]

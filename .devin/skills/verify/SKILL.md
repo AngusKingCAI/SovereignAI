@@ -15,7 +15,7 @@ Run the /verify workflow after every file edit during plan execution.
 
 ## Steps
 
-1. Syntax check edited file: `.venv/Scripts/python.exe scripts/verify_syntax.py <file>`. STOP on syntax error. Error format: `FAIL: <file>:<line>: <error>`. Fix before proceeding.
+1. Syntax check edited file: `.venv/Scripts/python.exe .agent/executor/scripts/verify_syntax.py <file>`. STOP on syntax error. Error format: `FAIL: <file>:<line>: <error>`. Fix before proceeding.
 
 2. Ruff on edited file (Python only): `.venv/Scripts/ruff.exe check <file>` — if auto-fixable: `ruff check --fix <file>` and re-verify. If not: STOP.
 

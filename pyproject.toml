@@ -10,18 +10,19 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [{name = "AngusKingCAI"}]
-# Runtime deps live in txt/requirements.txt (SSOT).
+# Runtime deps live in app/txt/requirements.txt (SSOT).
 # Do NOT add [project.dependencies] — that would duplicate and drift.
 dynamic = ["dependencies"]
 
 [tool.setuptools.dynamic]
-dependencies = {file = ["txt/requirements.txt"]}
+dependencies = {file = ["app/txt/requirements.txt"]}
 
 [tool.setuptools.packages.find]
-# sovereignai/, databases/, services/, adapters/, and tui/ are installable packages.
-# UIs (web/, cli/, phone/) are separate processes — NOT installable as part of the core.
+# app/sovereignai/, app/databases/, app/services/, app/adapters/, and app/tui/ are installable packages.
+# UIs (app/web/, app/cli/, app/phone/) are separate processes — NOT installable as part of the core.
+where = ["app"]
 include = ["sovereignai*", "databases*", "services*", "adapters*", "tui*"]
-exclude = ["tests*", "web*", "cli*", "phone*", "documents*", "prompts*", "logs*", "txt*"]
+exclude = ["*.tests*", "web*", "cli*", "phone*", "documents*", "prompts*", "logs*", "txt*"]
 
 [project.optional-dependencies]
 # Dev-only tools — never installed in production.
@@ -49,7 +50,7 @@ dev = [
 # ============================================================================
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = [".agent/executor/tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
@@ -76,8 +77,8 @@ disallow_untyped_defs = true
 ignore_missing_imports = true
 
 [tool.bandit]
-exclude_dirs = [".venv", "venv", "env", ".git", "node_modules", "__pycache__", "build", "dist", ".tox", ".eggs", ".pytest_cache"]
+exclude_dirs = [".venv", "venv", "env", ".git", "node_modules", "__pycache__", "build", "dist", ".tox", ".eggs", ".pytest_cache", ".agent"]
 
 [tool.vulture]
 min_confidence = 80
-exclude = [".venv", "venv", "env", ".git", "node_modules", "__pycache__", "build", "dist", ".tox", ".eggs", ".pytest_cache", ".mypy_cache", ".ruff_cache", "htmlcov"]
+exclude = [".venv", "venv", "env", ".git", "node_modules", "__pycache__", "build", "dist", ".tox", ".eggs", ".pytest_cache", ".mypy_cache", ".ruff_cache", ".agent/executor/htmlcov"]
