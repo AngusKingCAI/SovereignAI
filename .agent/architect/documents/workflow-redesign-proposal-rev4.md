@@ -317,7 +317,7 @@ Run the /open workflow for the current plan. Follow all steps in order. Don't sk
 10. Add new landmines to `.agent/shared/LANDMINES.md`.
 11. If LANDMINES.md changed: `git add -A && git status -s && git commit -m "docs: add landmines for prompt-{N}"`. Else: log "N/A".
 12. `git add prompts/*.md` -- ensure ALL plan files in prompts/ are added to git.
-13. Update `.agent/executor/PLANS.md` with new plan entry.
+13. Update `.agent/shared/PLANS.md` with new plan entry.
 14. Begin Phase 1.
 
 ## scope-expansion-protocol

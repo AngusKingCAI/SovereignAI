@@ -10,7 +10,7 @@ Pre-Plan 1 (bootstrap). No code yet — governance docs and infrastructure only.
 
 - `.agent/architect/AI_HANDOFF.md` — Architect process guide
 - `AGENTS.md` — Executor always-on rules
-- `.agent/executor/PLANS.md` — current project state
+- `.agent/shared/PLANS.md` — current project state
 - `.agent/architect/documents/project-vision-Rev5.md` — canonical vision (locked)
 - `.agent/architect/documents/SovereignAI_Architecture_Decisions.md` — architecture sketch
 

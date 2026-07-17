@@ -39,7 +39,7 @@ Run the /open workflow for the current plan. Follow all steps in order. Don't sk
 
 □ Step 8.5: `git add prompts/*.md` — ensure ALL plan files in prompts/ are added to git.
 
-□ Step 9: Update `.agent/executor/PLANS.md` with new plan entry.
+□ Step 9: Update `.agent/shared/PLANS.md` with new plan entry.
 
 □ Step 10: Begin Phase 1.
 

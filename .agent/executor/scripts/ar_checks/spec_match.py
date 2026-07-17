@@ -85,7 +85,7 @@ def get_all_plan_will_paths() -> set[str]:
 ALLOWLIST = {
     "AGENTS.md",
     ".agent/shared/LANDMINES.md",
-    ".agent/executor/PLANS.md",
+    ".agent/shared/PLANS.md",
     ".agent/shared/DEBT.md",
     ".agent/shared/DECISIONS.md",
     ".agent/shared/CHANGELOG.md",

@@ -97,7 +97,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 | `.agent/architect/AI_HANDOFF.md` | Process guide | Architect |
 | `.agent/architect/PRINCIPLES.md` | Living principles (14 core + workflow) | User + Architect |
 | `.agent/architect/documents/` | Design documents | Architect |
-| `.agent/executor/PLANS.md` | Dynamic state, baselines, queue | Executor |
+| `.agent/shared/PLANS.md` | Dynamic state, baselines, queue | Executor |
 | `.agent/shared/LANDMINES.md` | Failure patterns | Executor |
 | `.agent/shared/CHANGELOG.md` | Per-plan change log | Executor |
 | `AGENTS.md` | Rules (AR + OR) | Executor |
@@ -108,7 +108,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 **SSOT**: Each fact in one document only.
 
 **Read order**:
-- Architect (new chat): .agent/architect/AI_HANDOFF → .agent/architect/PRINCIPLES.md → .agent/executor/PLANS.md → .agent/shared/LANDMINES.md → .agent/shared/DECISIONS.md → .agent/shared/DEBT.md
+- Architect (new chat): .agent/architect/AI_HANDOFF → .agent/architect/PRINCIPLES.md → .agent/shared/PLANS.md → .agent/shared/LANDMINES.md → .agent/shared/DECISIONS.md → .agent/shared/DEBT.md
 - Executor (S0.2): AGENTS.md (consult .agent/shared/LANDMINES.md if ambiguous)
 
 Note: All design documents are in .agent/architect/documents/

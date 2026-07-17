@@ -21,11 +21,11 @@ Run the /scan workflow for the current plan. Whole-repo scan. No new features. F
 
 3. Scan `.agent/shared/CHANGELOG.md` — verify every plan in completed batch has entry.
 
-4. Scan `.agent/executor/PLANS.md` — verify baselines current, queue reflects state. Update if stale.
+4. Scan `.agent/shared/PLANS.md` — verify baselines current, queue reflects state. Update if stale.
 
 5. Scan all source for references to removed/renamed modules. Fix mechanically. Search patterns: `grep -r 'from removed_module' --include='*.py' .` for each known removed module.
 
-5.5. **Cross-reference check**: `.venv/Scripts/python.exe .agent/executor/scripts/check_rule_crossrefs.py` — STOP if exit≠0. Checks .agent/executor/PLANS.md, .agent/shared/DEBT.md, .agent/shared/DECISIONS.md, .agent/architect/AI_HANDOFF.md for undefined OR/AR citations. Excludes historical sections automatically.
+5.5. **Cross-reference check**: `.venv/Scripts/python.exe .agent/executor/scripts/check_rule_crossrefs.py` — STOP if exit≠0. Checks .agent/shared/PLANS.md, .agent/shared/DEBT.md, .agent/shared/DECISIONS.md, .agent/architect/AI_HANDOFF.md for undefined OR/AR citations. Excludes historical sections automatically.
 
 6. Full test suite with 5-minute timeout: `.venv/Scripts/python.exe -m pytest .agent/executor/tests/ -q --tb=no 2>&1 | tail -20` — STOP on failure. Use 300000ms timeout (suite runtime ~183s, needs headroom). Per OR29, scan plans run full suite with summary-line isolation. Next read call: timeout 300000.
 

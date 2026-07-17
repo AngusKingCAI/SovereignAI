@@ -76,7 +76,7 @@ def check_no_uncommitted_governance() -> tuple[bool, str]:
         ".agent/architect/PRINCIPLES.md",
         ".agent/shared/DECISIONS.md",
         ".agent/shared/DEBT.md",
-        ".agent/executor/PLANS.md"
+        ".agent/shared/PLANS.md"
     ]
 
     for gf in governance_files:

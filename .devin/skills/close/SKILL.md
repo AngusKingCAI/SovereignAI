@@ -77,7 +77,7 @@ Prerequisite: `.venv/` exists.
   {≤3 bullets summarizing work}
   ```
 
-□ Step 13: Update `.agent/executor/PLANS.md` baseline.
+□ Step 13: Update `.agent/shared/PLANS.md` baseline.
 
 □ Step 14: Add deferred items to `.agent/shared/DEBT.md` with target plan.
 
