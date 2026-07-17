@@ -17,116 +17,114 @@ Prerequisite: `.venv/` exists.
 
 ## Resolve current plan file
 
-0. `CURRENT_PLAN=$(.venv/Scripts/python.exe scripts/get_current_plan.py)` — this is the ONE plan file for the remainder of `/close`. Every later step referencing a plan filename uses `$CURRENT_PLAN`. STOP if empty.
+□ Step 0: `CURRENT_PLAN=$(.venv/Scripts/python.exe scripts/get_current_plan.py)` — STOP if empty.
 
-0.5. Determine if scan plan: `IS_SCAN=$(.venv/Scripts/python.exe scripts/is_scan_plan.py $CURRENT_PLAN)` — returns "true" if plan number % 5 == 0, else "false". This drives test scope per OR29.
+□ Step 0.5: `IS_SCAN=$(.venv/Scripts/python.exe scripts/is_scan_plan.py $CURRENT_PLAN)` — "true" if plan % 5 == 0.
 
 ## Static analysis
 
-1. Determine test scope per OR29:
-   - If `IS_SCAN=true`: Run full suite with 5-minute timeout: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no 2>&1 | tail -20` — STOP on failure. Capture summary line (passed/failed/skipped) for CHANGELOG. Use 300000ms timeout (suite runtime ~183s, needs headroom). Next read call: timeout 300000.
-   - Else:
-     a. `CHANGED_PY=$(git diff --name-only prompt-{N-1}..HEAD | grep '\.py$')`
-     b. If no `.py` files changed: echo "N/A — no Python files modified"
-     c. Else: Run scoped tests using module reference matching: `SCOPED_TESTS=$(.venv/Scripts/python.exe scripts/get_scoped_tests.py $CHANGED_PY)` — this finds test files that import or reference changed modules. If `SCOPED_TESTS` is empty but `.py` files changed, STOP per OR9/OR19 (coverage gap). Then: `pytest $SCOPED_TESTS -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%. Next read call: timeout 300000.
+□ Step 1: Tests per OR29
+  - If `IS_SCAN=true`: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no` (300s timeout). STOP on failure.
+  - Else: `CHANGED_PY=$(git diff --name-only prompt-{N-1}..HEAD | grep '\.py$')`
+    - If empty: echo "N/A"
+    - Else: `SCOPED_TESTS=$(.venv/Scripts/python.exe scripts/get_scoped_tests.py $CHANGED_PY)` — STOP if empty.
+    - Then: `pytest $SCOPED_TESTS -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%.
 
-2. `.venv/Scripts/ruff.exe check .` — STOP on errors.
+□ Step 2: `.venv/Scripts/ruff.exe check .` — STOP on errors.
 
-3. `FILES=$(git diff --name-only prompt-{N-1}..HEAD | grep '\.py$'); if [ -n "$FILES" ]; then echo $FILES | xargs -r .venv/Scripts/mypy.exe --ignore-missing-imports; else echo "N/A"; fi` — STOP on errors. At scan prompts: `.venv/Scripts/mypy.exe . --ignore-missing-imports`.
+□ Step 3: Mypy on changed files (or full suite at scan). STOP on errors.
 
-4. `.venv/Scripts/bandit.exe -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache --baseline bandit/baseline.json` — STOP on findings.
+□ Step 4: `.venv/Scripts/bandit.exe -r . -ll --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache --baseline bandit/baseline.json` — STOP.
 
-5. `.venv/Scripts/pip-audit.exe --strict --requirement txt/requirements.txt` — STOP on CVEs.
+□ Step 5: `.venv/Scripts/pip-audit.exe --strict --requirement txt/requirements.txt` — STOP on CVEs.
 
-5.5. Invoke Snyk MCP scan on txt/requirements.txt + changed Python files. Document any new findings in DEBT.md with explicit target plan (not TBD — per OR64). Exit≠0 on CRITICAL/HIGH Snyk findings = STOP per OR81/L66.
+□ Step 5.5: Snyk MCP scan. CRITICAL/HIGH = STOP. Document in DEBT.md with target plan.
 
-6. `.venv/Scripts/vulture.exe . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,htmlcov` — STOP on new findings vs `txt/vulture-whitelist.txt`.
+□ Step 6: `.venv/Scripts/vulture.exe . --min-confidence 80 --exclude .venv,venv,env,.git,node_modules,__pycache__,build,dist,.tox,.eggs,.pytest_cache,.mypy_cache,.ruff_cache,htmlcov` — STOP on new findings.
 
-7. `.venv/Scripts/detect-secrets.exe scan --baseline txt/.secrets.baseline` — STOP if exit≠0. False positive: `detect-secrets audit txt/.secrets.baseline`.
+□ Step 7: `.venv/Scripts/detect-secrets.exe scan --baseline txt/.secrets.baseline` — STOP if exit≠0.
 
-8. Run each — STOP on violation:
-   ```
-   .venv/Scripts/python.exe scripts/ar_checks/no_globals.py sovereignai/
-   .venv/Scripts/python.exe scripts/ar_checks/constructor_arg_cap.py sovereignai/ --max-args 15
-   .venv/Scripts/python.exe scripts/ar_checks/no_context_bags.py sovereignai/
-   .venv/Scripts/python.exe scripts/ar_checks/no_hardcoded_component_names.py web/ cli/ tui/ phone/
-   .venv/Scripts/python.exe scripts/ar_checks/ui_does_not_touch_core.py
-   .venv/Scripts/python.exe scripts/ar_checks/check_tracing.py
-   .venv/Scripts/python.exe scripts/ar_checks/check_placeholders.py
-   .venv/Scripts/python.exe scripts/ar_checks/check_p4_compliance.py
-   ```
+□ Step 8: AR checks — run each, STOP on any violation:
+  ```
+  .venv/Scripts/python.exe scripts/ar_checks/no_globals.py sovereignai/
+  .venv/Scripts/python.exe scripts/ar_checks/constructor_arg_cap.py sovereignai/ --max-args 15
+  .venv/Scripts/python.exe scripts/ar_checks/no_context_bags.py sovereignai/
+  .venv/Scripts/python.exe scripts/ar_checks/no_hardcoded_component_names.py web/ cli/ tui/ phone/
+  .venv/Scripts/python.exe scripts/ar_checks/ui_does_not_touch_core.py
+  .venv/Scripts/python.exe scripts/ar_checks/check_tracing.py
+  .venv/Scripts/python.exe scripts/ar_checks/check_placeholders.py
+  .venv/Scripts/python.exe scripts/ar_checks/check_p4_compliance.py
+  ```
 
-## Mechanical enforcement
+□ Step 9: Placeholders — `.venv/Scripts/python.exe scripts/ar_checks/check_placeholders.py sovereignai/ shared/ web/ cli/ tui/ phone/ adapters/ databases/ services/ skills/` — STOP on hit.
 
-9. `.venv/Scripts/python.exe scripts/ar_checks/check_placeholders.py sovereignai/ shared/ web/ cli/ tui/ phone/ adapters/ databases/ services/ skills/` — STOP on any hit.
+□ Step 10: Tracing — `.venv/Scripts/python.exe scripts/ar_checks/check_tracing.py` — STOP if exit≠0.
 
-10. `.venv/Scripts/python.exe scripts/ar_checks/check_tracing.py` — STOP if exit≠0.
-
-11. `.venv/Scripts/python.exe scripts/check_ar7_allowlist.py prompt-{N-1} tests/test_ar7_no_core_imports_in_ui.py` — STOP on any unapproved addition.
+□ Step 11: AR7 allowlist — `.venv/Scripts/python.exe scripts/check_ar7_allowlist.py prompt-{N-1} tests/test_ar7_no_core_imports_in_ui.py` — STOP on unapproved addition.
 
 ## Documentation
 
-12. Prepend to CHANGELOG.md:
-   ```
-   ## prompt-{N} — {title}
-   **Date**: {YYYY-MM-DD}
-   **Plan**: $CURRENT_PLAN
-   **Tests**: {passed} passed, {skipped} skipped ({chronic} chronic)
-   **Coverage**: {%}
-   **Screenshots**: {paths or "N/A"}
-   **AR7 diff**: {entries or "None"}
-   **OR63**: {result}
-   {≤3 bullets summarizing work}
-   ```
+□ Step 12: CHANGELOG — PREPEND (not append) new entry at top:
+  ```
+  ## prompt-{N} — {title}
+  **Date**: {YYYY-MM-DD}
+  **Plan**: $CURRENT_PLAN
+  **Tests**: {passed} passed, {skipped} skipped ({chronic} chronic)
+  **Coverage**: {%}
+  **Screenshots**: {paths or "N/A"}
+  **AR7 diff**: {entries or "None"}
+  **OR63**: {result}
+  {≤3 bullets summarizing work}
+  ```
 
-13. Update `PLANS.md` baseline: test count, coverage, bandit count.
+□ Step 13: Update `PLANS.md` baseline.
 
-14. Add deferred items to `DEBT.md` with target plan.
+□ Step 14: Add deferred items to `DEBT.md` with target plan.
 
-14.1. `grep -c "prompt-{N}" DEBT.md` — compare to count added in step 14. STOP if mismatch.
+□ Step 14.1: `grep -c "prompt-{N}" DEBT.md` — compare to count added. STOP if mismatch.
 
-14.6. Append to `LANDMINES.md` if: plan STOPped, new OR added, or AR check failed for novel reason. Else: log "N/A — no new patterns".
+□ Step 14.6: Append to `LANDMINES.md` if plan STOPped, new OR added, or AR check failed for novel reason. Else: log "N/A — no new patterns".
 
 ## Verification (before commit/tag)
 
-15. Start dev server, load page. For each new UI element in plan's "WILL edit" scope: verify present in DOM, click + observe state change, capture screenshot `<element-id>.png` to `logs/screenshots/prompt-{N}/`. Verify each screenshot >1KB. STOP if not done. STOP if dev server won't start.
+□ Step 15: Dev server + UI verification. Screenshots to `logs/screenshots/prompt-{N}/`. STOP if not done.
 
-16. `DIFF_LINES=$(git diff prompt-{N-1}..HEAD | wc -l)`. `.venv/Scripts/python.exe scripts/ar_checks/spec_match.py $CURRENT_PLAN` — STOP if exit≠0. No exceptions. Blocks steps 17-22 until it passes.
+□ Step 16: Spec match — `.venv/Scripts/python.exe scripts/ar_checks/spec_match.py $CURRENT_PLAN` — STOP if exit≠0. Blocks steps 17-22 until pass.
 
 ## Git
 
-17. `git add -A && git status -s` — verify no unintended files.
+□ Step 17: `git add -A && git status -s` — verify no unintended files.
 
-17.5. Run `python scripts/ar_checks/check_changelog.py <plan_number>`. Exit≠0 = STOP per OR73.
+□ Step 17.5: `python scripts/ar_checks/check_changelog.py <plan_number>` — STOP if exit≠0.
 
-17.6. Run python scripts/ar_checks/check_dependencies.py. Exit≠0 = STOP per OR77.
+□ Step 17.6: `python scripts/ar_checks/check_dependencies.py` — STOP if exit≠0.
 
-17.7. Run python scripts/ar_checks/check_rule_conciseness.py. Exit≠0 = STOP per OR80.
+□ Step 17.7: `python scripts/ar_checks/check_rule_conciseness.py` — STOP if exit≠0.
 
-17.8. rm .open_hash.
+□ Step 17.8: `rm .open_hash`.
 
-18. Move ALL plan-{N} revision files, not a single named revision:
-   ```
-   BEFORE_COUNT=$(ls prompts/plan-{N}-Rev*.md 2>/dev/null | wc -l)
-   mv prompts/plan-{N}-Rev*.md prompts/completed/
-   AFTER_COUNT=$(ls prompts/completed/plan-{N}-Rev*.md 2>/dev/null | wc -l)
-   ls prompts/plan-{N}* 2>/dev/null
-   ```
-   Must be empty AND `AFTER_COUNT` = `BEFORE_COUNT` — STOP if not. Never substitute a specific filename for the glob.
-   Note: If git mv fails with "bad source", use plain mv then git add -A. Per L23, mv + git add -A is safe (git add -A catches the rename).
+□ Step 18: Move plan files — BEFORE_COUNT, mv, AFTER_COUNT, verify empty. STOP if mismatch.
 
-18.5. `git add prompts/*.md && git status -s` — ensure ALL plan files in prompts/ are added to git (tracked or untracked). This prevents treating untracked plan files as cleanup artifacts per L69.
+□ Step 18.5: `git add prompts/*.md && git status -s` — ensure ALL plan files added.
 
-19. `git add -A && git status -s && git commit -m "prompt-{N}: {title}" -m "{note 1}" -m "{note 2}" -m "{note 3}"` — one `-m` per CHANGELOG Notes bullet.
+□ Step 19: `git add -A && git status -s && git commit -m "prompt-{N}: {title}" -m "{note 1}" -m "{note 2}" -m "{note 3}"`
 
-20. `git tag --list prompt-{N}` — STOP if not empty. Then `git tag prompt-{N}`.
+## HARD GATE — Step 19.5 (BEFORE tag)
 
-21. `git push origin main --tags`
+□ Step 19.5: RUN `python scripts/verify_close.py`
+  - If exit 0: ☑ proceed to Step 20
+  - If exit 1: ⛔ STOP. Do not create tag. Do not proceed. Do not explain or justify. Fix failures and re-run.
 
-22. `git ls-remote --tags origin | grep prompt-{N}` — STOP if missing.
+## Tag and push
+
+□ Step 20: `git tag --list prompt-{N}` — STOP if not empty. Then `git tag prompt-{N}`.
+
+□ Step 21: `git push origin main --tags`
+
+□ Step 22: `git ls-remote --tags origin | grep prompt-{N}` — STOP if missing.
 
 ## Finalize
 
-23. Create `logs/execution-log-prompt-{N}.md` if missing (blank template only, no content).
+□ Step 23: Create `logs/execution-log-prompt-{N}.md` — BLANK TEMPLATE ONLY. VERIFY `wc -c < 500`.
 
-24. `taskkill //F //IM bash.exe 2>&1 || true`
+□ Step 24: `taskkill //F //IM bash.exe 2>&1 || true`

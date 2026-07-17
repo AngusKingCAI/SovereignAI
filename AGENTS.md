@@ -1,12 +1,14 @@
 # AGENTS.md
 
-**AR** = Architecture Rules (30 rules) · **OR** = Operational Rules (30 rules). Ambiguous → read `LANDMINES.md`. Authority: `PRINCIPLES.md`.
+**AR** = Architecture Rules · **OR** = Operational Rules.
+Ambiguous → read `LANDMINES.md`. Extended rules → `AGENTS_EXTENDED.md`.
+Authority: `PRINCIPLES.md`.
 
 ---
 
-## Architecture Rules
+## Hard Architecture Rules (AR1–AR15)
 
-AR1. Owner ↔ Orchestrator only. Chain: Orchestrator → Manager → Worker. Bypass allowed for single-Worker, single-capability, no-state tasks. All Owner-facing output routes through Orchestrator.
+AR1. Owner ↔ Orchestrator only. Chain: Orchestrator → Manager → Worker. Bypass allowed for single-Worker, single-capability, no-state tasks.
 
 AR2. Workers query Librarian directly for memory. No component queries a memory backend directly.
 
@@ -36,100 +38,70 @@ AR14. Web-layer DTOs in `web/schemas.py`. Core types never returned directly fro
 
 AR15. Adapters declare `health_check()`. Failed check = DEGRADED status, not skipped.
 
-AR16. Capability classes have conformance tests. Fail-closed for first-party, fail-open for third-party. <100ms each, cached per `(component_id, content_hash)`.
-
-AR17. Contract tests verify backward compatibility. Failure blocks build.
-
-AR18. Property-based tests run every commit. CI gate blocker.
-
-AR19. Memory backends pluggable via CapabilityGraph. Not hardcoded.
-
-AR20. Crash recovery: check `~/.sovereignai/.shutdown_marker`. Skip if exists. Mark non-terminal tasks FAILED. Wrapped in try/except.
-
-AR21. Durable backends use atomic writes. SQLite = WAL + transactions. JSON = temp + `os.replace()`. Locks never force-acquired.
-
-AR22. Every function with side effects emits ≥1 trace event. Mechanical classification via check_tracing.py; no self-exemptions.
-
-AR23. Correlation IDs propagate from entry point through all downstream calls via context var.
-
-AR24. Logs panel must consume /api/traces SSE only — no direct TraceEmitter import from web/.
-
-AR25. databases/ and services/ are root-level packages, never nested in sovereignai/.
-
-AR26. ServiceProvider/DatabaseProvider: health_check() returns typed dataclass; __init__ no I/O — lazy in start()/list_models().
-
-AR27. Models panel and Hardware panel must consume capability API only — no direct DatabaseRegistry/ServiceRegistry/HardwareProbe imports from web/.
-
-AR28. Adapter manifests declare `routing_priority` int. Routes ascending (lower = higher priority). Default 1000. Reserved 0-999.
-
-AR29. Diagnostic harness: load → use → unload per stage. Mocks verify paths; harness verifies system.
-
-AR30. TUI is a first-class UI consuming the same capability API as the WebUI. TUI panels must display real backend state, not placeholder text.
-
 ---
 
-## Operational Rules
+## Hard Operational Rules (OR1–OR30)
 
-OR1. File-scoped mypy only. Never `mypy .` except at scan prompts.
+OR1. Read `AGENTS.md` at session start. Read `AGENTS_EXTENDED.md` on-demand when ambiguous.
 
-OR2. Run scan tools ONE AT A TIME. Parallel execution corrupts output.
+OR2. Every plan: `/open` → execute → `/close`. No skipping, no partial runs.
 
-OR3. Never use `replace_all`. Edit each occurrence individually.
+OR3. STOP on any failure. No "helpful" workarounds. No arguing with user instructions.
 
-OR4. Structured-markdown edits (AGENTS.md, AI_HANDOFF.md, plans, CHANGELOG, workflow files) use Edit tool only. Never `sed` or redirection.
+OR4. `/close` is atomic: verify → commit → tag → push. Verification happens BEFORE tag. No exceptions.
 
-OR5. CHANGELOG.md and LANDMINES.md prepend-only (newest entries at top). Never append to end or edit existing entries.
+OR5. Before git tag: RUN `scripts/verify_close.py`. Exit 0 = proceed. Exit 1 = STOP. Do not explain, justify, or suggest alternatives. STOP is the only valid response.
 
-OR6. Pre-declare scope before editing. List files WILL edit and will NOT edit.
+OR6. CHANGELOG prepend only. Latest prompt at top. Never append. Script-enforced via verify_close.py.
 
-OR7. Never mix naive/aware datetime. Use `datetime.now(timezone.utc)`.
+OR7. Plan files moved to `prompts/completed/` before tag. Glob: `plan-{N}-Rev*.md`. Script-enforced via verify_close.py.
 
-OR8. Temp files in dedicated temp dir, not repo root. Delete after consuming. Check for strays before `git add`.
+OR8. Execution log blank template only, <500 bytes. Script-enforced via verify_close.py.
 
-OR9. Every new implementation has corresponding test file with passing tests.
+OR9. Execute plan steps in strict numerical order. No reordering. No marking complete based on work done elsewhere.
 
-OR10. Test deletion is scope deviation. STOP if specified test can't pass.
+OR10. Never delete prompt files (execution logs, plan files). Permanent history.
 
-OR11. Never re-run failing test without fixing root cause.
+OR11. Never delete content from governance documents. Only add. Historical context preserved.
 
-OR12. Never `git commit --no-verify`. Fix hook issues.
+OR12. Non-scan plans: scoped tests via `scripts/get_scoped_tests.py`. Scan plans (5,10,15…): full suite.
 
-OR13. Never exclude files from hooks to bypass errors. STOP if out-of-scope.
+OR13. Coverage ≥90% at `/close`. No exemptions.
 
-OR14. Runtime deps in `txt/requirements.txt` only. Dev/test tools in `pyproject.toml` only.
+OR14. All AR check scripts run in `/close`. Any failure = STOP.
 
-OR15. Never edit AR check scripts or tests to make failure pass.
+OR15. Pre-commit hooks run before every commit. No `--no-verify`.
 
-OR16. Backend + UI in same plan. No backend without UI surface (unless explicitly deferred).
+OR16. Ruff, mypy, bandit, pip-audit, vulture, detect-secrets run in `/close`. Any failure = STOP.
 
-OR17. Deliverables ship in full or defer per item. Deferred items in exec log + close report + DEBT.md with target plan. Silent drop = STOP.
+OR17. Snyk MCP scan on requirements + changed files. CRITICAL/HIGH = STOP.
 
-OR18. "Already done" claims require executed verification — a logged command + exit code. Reading code is NOT verification.
+OR18. UI changes: DOM verification + screenshot capture before commit.
 
-OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption. Fix, DEBT with target plan, or User authorization. "Coverage: N/A" = STOP.
+OR19. Spec match script validates plan vs implementation. Exit≠0 = STOP.
 
 OR20. Skipped tests carry `# TODO(prompt-N): reason`. ≥3 consecutive skipped prompts = fix, delete, or escalate.
 
 OR21. HTML/CSS/JS syntax validation before tests. Failure = STOP.
 
-OR22. Tests use real-shape fixtures. No simplified shapes that hide production bugs.
+OR22. Tests use real-shape fixtures. No simplified shapes.
 
 OR23. Stray-file pre-commit scan: `git status -s` after `git add -A`.
 
 OR24. User-authorized exceptions need target plan documentation. "Deferred to next prompt" without plan number = STOP.
 
-OR25. All tests have a 30s timeout via pytest-timeout (pyproject.toml addopts = --timeout=30 --timeout-method=thread). Per-test override via @pytest.mark.timeout(N). Stalled test = FAILED (not hung).
+OR25. All tests have 30s timeout via pytest-timeout. Stalled test = FAILED.
 
-OR26. Follow skill workflows systematically. Never skip steps or pick-and-choose based on perceived relevance. Execute all steps in sequence as designed.
+OR26. Follow skill workflows systematically. Never skip steps or pick-and-choose.
 
-OR27. Never delete prompt files (execution logs in `logs/`, plan files in `prompts/` and `prompts/completed/`). These are permanent history records. Applies to ALL plan files regardless of git status (tracked or untracked). Untracked plan files are valid plans awaiting commit; treat them the same as tracked files.
+OR27. Untracked plan files are valid plans awaiting commit. Treat same as tracked. Never delete as "cleanup."
 
-OR28. Never delete content from governance documents (AGENTS.md, LANDMINES.md, PLANS.md, CHANGELOG.md) or files in the /documents folder. Only add new content. Historical context must be preserved.
+OR28. Governance docs: only add, never edit/remove. Prepend-only for LANDMINES.md.
 
-OR29. Non-scan plan steps: pytest scoped to files under test matching changed source files + their direct test counterparts. Scan plans (5, 10, 15, 20, 25, 30…, per AI_HANDOFF.md scan cadence): full suite via 'pytest tests/ -q --tb=no'. Scoped-run failures still governed by OR19 — no exemption.
+OR29. Scoped test resolution via `scripts/get_scoped_tests.py`. Empty scope + .py changes = STOP.
 
-OR30. Follow instructions literally. When instructions use restrictive terms like 'only', 'never', 'must', or 'no content', follow them exactly without interpretation. If an instruction seems incorrect, STOP and ask.
+OR30. Follow instructions literally. Restrictive terms ('only', 'never', 'must', 'no content') = exact compliance. If instruction seems incorrect, STOP and ask. Do not argue. Do not "be helpful" by overriding.
 
 ---
 
-See `LANDMINES.md` for failure patterns linked to rules.
+See `LANDMINES.md` for failure patterns. See `AGENTS_EXTENDED.md` for AR16–AR30 and OR31–OR63.

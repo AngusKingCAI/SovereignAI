@@ -8,6 +8,51 @@ Prepend-only (newest entries at top). Never edit or remove entries. Format:
 **Graduated to**: <OR{n} or workflow fix}
 `
 
+
+---
+
+N/A — no new patterns (plan completed without STOP, no new ORs added, AR checks passed)
+
+---
+
+## L75 — User correction resistance: "be helpful" > follow literally
+
+**Trigger**: OR30 — "follow instructions literally... STOP and ask". Executor argued with user instead of complying.
+**Impact**: User time wasted. Rule authority undermined. Pattern reinforces non-compliance.
+**Graduated to**: OR5 — "Exit 1 = STOP. Do not explain, justify, or suggest alternatives. STOP is the only valid response." OR30 retired. Mechanical enforcement replaces soft instruction.
+
+---
+
+## L74 — Step order violation: tag before verification
+
+**Trigger**: /close Step 23 (blank log) executed AFTER Step 20 (tag). Tag created before log verified.
+**Impact**: Tagged commit may have bloated log. Irreversible if pushed.
+**Graduated to**: Step 19.5 — verify_close.py runs BEFORE tag. OR4 — "/close is atomic: verify before commit/tag/push."
+
+---
+
+## L73 — Plan files left in prompts/ root
+
+**Trigger**: /close Step 18 — move ALL plan-{N}-Rev*.md to completed/. Executor left files in both locations.
+**Impact**: Duplicate plan files. prompts/ root clutter. Completed/ may be incomplete.
+**Graduated to**: scripts/verify_close.py — hard gate checks prompts/ is empty. Step 18 checklist format with BEFORE/AFTER count verification.
+
+---
+
+## L72 — CHANGELOG append vs prepend convention drift
+
+**Trigger**: OR12 stated "append to END only" but user convention changed to prepend. Executor followed old rule, creating wrong order.
+**Impact**: CHANGELOG chronology inverted. Latest prompt not findable at top.
+**Graduated to**: OR6 — "prepend only, latest at top". scripts/verify_close.py enforces position. AGENTS.md + AGENTS_EXTENDED.md split clarifies active vs reference rules.
+
+---
+
+## L71 — Execution log bloat: "helpful" transcript override
+
+**Trigger**: /close Step 23 — "blank template only, no content". Executor writes 366KB detailed transcript.
+**Impact**: Violates OR8. Creates misleading history. Next plan reads bloated log as reference.
+**Graduated to**: scripts/verify_close.py — hard gate, exit 1 if log >500 bytes. OR8 rewritten as mechanical rule.
+
 ---
 
 ## L70 — Governance doc drift: stale OR references in LANDMINES.md
@@ -15,11 +60,6 @@ Prepend-only (newest entries at top). Never edit or remove entries. Format:
 **Trigger**: LANDMINES.md entries L29-L45 reference OR29-33 and OR22 meanings that don't match current AGENTS.md (which stops at OR28). L48 references OR22 as "governance tool self-modified" but current OR22 is "Tests use real-shape fixtures". L45/L43/L42/L40 reference OR33/OR32/OR31/OR30 which don't exist. L39/L38/L37 reference OR29/OR28/OR27 with outdated meanings.
 **Impact**: Historical context corrupted; references point to non-existent or incorrectly-numbered rules.
 **Graduated to**: This correction entry. Stale references: L48→OR22 (no current equivalent, retired), L45→OR33 (no current equivalent, retired), L43→OR32 (no current equivalent, retired), L42→OR31 (no current equivalent, retired), L40→OR30 (no current equivalent, retired), L39→OR29 (no current equivalent, retired), L38→OR28 (meaning drifted: current OR28 is "Never delete content from governance documents", not "Already done" claims), L37→OR27 (meaning drifted: current OR27 is "Never delete prompt files", not placeholder implementations). AGENTS.md OR1-28 stand as-is; do not renumber.
-
----
-
-N/A — no new patterns (plan completed without STOP, no new ORs added, AR checks passed)
-
 ---
 
 ## L69 — Untracked plan files deleted as cleanup artifacts
