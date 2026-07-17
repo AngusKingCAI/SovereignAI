@@ -19,7 +19,7 @@ Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Wind
 ## Architect Workflow
 
 1. Read logs end-to-end. Extract test counts, STOPs, deviations.
-2. Verify repo state. Spot-check CHANGELOG.md latest entry (first 10 lines). PLANS.md updated. No scope creep.
+2. Verify repo state. Spot-check `.agent/shared/CHANGELOG.md` latest entry (first 10 lines). PLANS.md updated. No scope creep.
 3. Re-read `.agent/shared/LANDMINES.md` + `PRINCIPLES.md`.
 4. Review patterns. Propose new rules or reject. Include in next plan's S0.
 5. Research. Web search for new tech. Document findings in plan header.
@@ -32,7 +32,7 @@ Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Wind
 
 ## Round Table
 
-Runs until clean pass (no unaddressed CRITICAL/HIGH). Each rev brings new evidence — no re-litigating settled findings.
+See `PRINCIPLES.md` Workflow principles for clean-pass protocol. Severity levels:
 
 **Severity**:
 - **CRITICAL**: Data loss, security, irreversible damage. Blocks.
