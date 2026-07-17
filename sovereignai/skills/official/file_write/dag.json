@@ -1,0 +1,10 @@
+{
+  "nodes": [
+    {
+      "id": "root",
+      "type": "tool",
+      "name": "file_write"
+    }
+  ],
+  "edges": []
+}

@@ -100,6 +100,18 @@ Append-only. Each entry: context, options considered, decision, rationale, trade
 
 ---
 
+## D8 — Scoped test execution during iteration, full suite on scan plans
+
+**Context**: Full pytest suite runs (~183s) cause output-truncation thrashing when invoked mid-plan. The agent repeatedly fails to find the final summary line because output is truncated/paginated in the content.txt buffer, leading to blind guessing at line offsets (#L350, #L415, #L280, #L395, #L420...). This wastes time and obscures actual test results.
+**Options considered**: A) Full suite always; B) Scoped execution during iteration + full suite on scan cadence; C) Scoped always + fixed-interval full runs.
+**Decision**: Option B — Scoped execution during non-scan plans, full suite on scan plans (plan numbers divisible by 5, per AI_HANDOFF.md scan cadence).
+**Rationale**: Scoped tests (matching changed source files) provide fast feedback during iteration while catching regressions in touched areas. Full suite runs every 5 plans ensure broad coverage without the thrashing overhead of running it mid-plan. This aligns with the existing scan cadence used for Round Table reviews, avoiding two counters drifting apart.
+**Trade-offs**: Regressions in untouched areas may go undetected for up to 4 plans between scans. This is explicitly accepted as a trade-off for faster iteration time. The 5-plan cadence balances coverage with velocity. Full suite timeout increased to 300000ms (5 minutes) to accommodate current ~183s runtime with headroom.
+**Status**: Active. Implemented via OR29 (new), is_scan_plan.py script, updated /close and /scan skills. Scoped-run failures still governed by OR19 — no exemption.
+**Source**: User-authorized direct implementation, 2026-07-17.
+
+---
+
 ## How to add a new decision
 
 At `/close` step (when a decision is codified), append an entry in the format above. Do not edit or remove existing entries — DECISIONS.md is append-only.

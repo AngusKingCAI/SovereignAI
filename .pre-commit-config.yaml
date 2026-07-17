@@ -25,3 +25,11 @@ repos:
     hooks:
       - id: detect-secrets
         args: ['--baseline', 'txt/.secrets.baseline']
+
+  - repo: local
+    hooks:
+      - id: component-manifest-kwargs
+        name: ComponentManifest keyword arguments check
+        entry: python scripts/check_component_manifest_kwargs.py
+        language: system
+        types: [python]

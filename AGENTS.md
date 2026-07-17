@@ -126,6 +126,8 @@ OR27. Never delete prompt files (execution logs in `logs/`, plan files in `promp
 
 OR28. Never delete content from governance documents (AGENTS.md, LANDMINES.md, PLANS.md, CHANGELOG.md) or files in the /documents folder. Only add new content. Historical context must be preserved.
 
+OR29. Non-scan plan steps: pytest scoped to files under test matching changed source files + their direct test counterparts. Scan plans (5, 10, 15, 20, 25, 30…, per AI_HANDOFF.md scan cadence): full suite via 'pytest tests/ -q --tb=no'. Scoped-run failures still governed by OR19 — no exemption.
+
 ---
 
 See `LANDMINES.md` for failure patterns linked to rules.

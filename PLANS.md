@@ -147,7 +147,11 @@ If a per-suite count is needed for debugging, generate it on demand rather than 
 
 ## Active Plan
 
-None — awaiting next prompt
+**Plan 21** — Skills Infrastructure (ISkillRunner, SkillManifest, SkillSession, ToolCallParser, ToolErrorObservation, SkillDiscovery, initial skills, web endpoints, TUI panel)
+- Depends on: prompt-20.9.9
+- Vision principles: P1 (core sacred), P2 (pluggable), P5 (wire as you go), P11 (DI only)
+- Open questions resolved: Q-21.1 (CapabilityCategory.SKILL enum), Q-21.2 (skill_id vs capability name lookup), Q-21.3 (ComponentManifest metadata backward compat)
+- Plan file: prompts/plan-21-rev11.md
 
 ---
 
@@ -155,11 +159,11 @@ None — awaiting next prompt
 
 | Slot | Plan | Description | Depends on | Status |
 |---|---|---|---|---|
-| 1 | Plan 21 | UI overhaul — 10 panels (deferred per user request) | Plan 20 | ⏳ Pending |
-| 2 | Plan 22 | Future plan | Plan 21 | ⏳ Pending |
-| 3 | Plan 23 | Future plan | Plan 22 | ⏳ Pending |
-| 4 | Plan 24 | Future plan | Plan 23 | ⏳ Pending |
-| 5 | Plan 25 | Future plan | Plan 24 | ⏳ Pending |
+| 1 | Plan 22 | Future plan | Plan 21 | ⏳ Pending |
+| 2 | Plan 23 | Future plan | Plan 22 | ⏳ Pending |
+| 3 | Plan 24 | Future plan | Plan 23 | ⏳ Pending |
+| 4 | Plan 25 | Future plan | Plan 24 | ⏳ Pending |
+| 5 | Plan 26 | Future plan | Plan 25 | ⏳ Pending |
 
 ---
 

@@ -211,6 +211,25 @@ class CapabilityAPI:
         catalog = ModelCatalog(self._database_registry, self._trace)
         return catalog.list_models()
 
+    def query_skills(self, token: str) -> list[dict]:
+        self._auth.validate(token)
+        results = []
+        manifests = self._index.list_all_components()
+
+        for manifest in manifests:
+            for cap in manifest.provides:
+                if cap.category.value == "skill":
+                    results.append(
+                        {
+                            "id": str(manifest.component_id),
+                            "name": cap.name,
+                            "version": manifest.version,
+                            "description": f"{manifest.component_id} v{manifest.version}",
+                        }
+                    )
+
+        return results
+
     def query_task_states(self, token: str) -> list[TaskStateSummary]:
         self._auth.validate(token)
         results = []

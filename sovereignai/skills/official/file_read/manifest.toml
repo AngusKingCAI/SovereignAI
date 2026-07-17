@@ -1,0 +1,19 @@
+id = "file_read"
+name = "File Read"
+version = "1.0.0"
+
+[[capabilities]]
+category = "skill"
+name = "file_read"
+version = "1.0.0"
+priority = 0
+
+[execution]
+runner = "default"
+timeout = 30
+
+dependencies = []
+memory_integration_hints = []
+
+[dag]
+dag_dependencies = []

@@ -120,9 +120,37 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     )
     container.register_singleton(MessageDispatcher, dispatcher)
 
-    # 11. Load skill and adapter manifests and register in CapabilityGraph (Plan 7)
+    # 11.5. Register skills infrastructure (Plan 21)
     from pathlib import Path
 
+    from sovereignai.skills.concrete_runner import ConcreteSkillRunner
+    from sovereignai.skills.discovery import SkillDiscovery
+    from sovereignai.skills.runner import ISkillRunner
+    from sovereignai.skills.session import SkillSession
+
+    skill_runner = ConcreteSkillRunner(
+        capability_graph=container.retrieve(CapabilityGraph),
+        trace=trace,
+    )
+    container.register_singleton(ISkillRunner, skill_runner)  # type: ignore[type-abstract]
+    container.register_singleton(ConcreteSkillRunner, skill_runner)
+
+    skill_session = SkillSession()
+    container.register_singleton(SkillSession, skill_session)
+
+    skill_discovery = SkillDiscovery(trace=trace, capability_graph=graph)
+    container.register_singleton(SkillDiscovery, skill_discovery)
+
+    # Scan skills/ and adapters/ for skill manifests
+    skill_dirs = [
+        Path("skills/official"),
+        Path("skills/user"),
+        Path("skills/external"),
+        Path("adapters"),
+    ]
+    skill_discovery.scan(skill_dirs)
+
+    # 11. Load skill and adapter manifests and register in CapabilityGraph (Plan 7)
     from sovereignai.shared.manifest_parser import parse_manifest
 
     # Scan skills/user/, skills/external/, skills/official/, adapters/external/, and adapters/internal/  # noqa: E501

@@ -19,13 +19,16 @@ Prerequisite: `.venv/` exists.
 
 0. `CURRENT_PLAN=$(.venv/Scripts/python.exe scripts/get_current_plan.py)` — this is the ONE plan file for the remainder of `/close`. Every later step referencing a plan filename uses `$CURRENT_PLAN`. STOP if empty.
 
+0.5. Determine if scan plan: `IS_SCAN=$(.venv/Scripts/python.exe scripts/is_scan_plan.py $CURRENT_PLAN)` — returns "true" if plan number % 5 == 0, else "false". This drives test scope per OR29.
+
 ## Static analysis
 
-1. Determine test scope:
-   - `CHANGED_PY=$(git diff --name-only prompt-{N-1}..HEAD | grep '\.py$')`
-   - If no `.py` files changed: echo "N/A — no Python files modified"
+1. Determine test scope per OR29:
+   - If `IS_SCAN=true`: Run full suite with 5-minute timeout: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no 2>&1 | tail -20` — STOP on failure. Capture summary line (passed/failed/skipped) for CHANGELOG. Use 300000ms timeout (suite runtime ~183s, needs headroom). Next read call: timeout 300000.
    - Else:
-     a. Run scoped tests first: `pytest tests/ -k "$(echo $CHANGED_PY | sed 's|/|.|g; s|\.py||g; s| | or |g')" -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%. STOP if N/A for `.py`-editing plan.
+     a. `CHANGED_PY=$(git diff --name-only prompt-{N-1}..HEAD | grep '\.py$')`
+     b. If no `.py` files changed: echo "N/A — no Python files modified"
+     c. Else: Run scoped tests using module reference matching: `SCOPED_TESTS=$(.venv/Scripts/python.exe scripts/get_scoped_tests.py $CHANGED_PY)` — this finds test files that import or reference changed modules. If `SCOPED_TESTS` is empty but `.py` files changed, STOP per OR9/OR19 (coverage gap). Then: `pytest $SCOPED_TESTS -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%. Next read call: timeout 300000.
 
 2. `.venv/Scripts/ruff.exe check .` — STOP on errors.
 

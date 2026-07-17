@@ -10,6 +10,14 @@ Prepend-only (newest entries at top). Never edit or remove entries. Format:
 
 ---
 
+## L70 — Governance doc drift: stale OR references in LANDMINES.md
+
+**Trigger**: LANDMINES.md entries L29-L45 reference OR29-33 and OR22 meanings that don't match current AGENTS.md (which stops at OR28). L48 references OR22 as "governance tool self-modified" but current OR22 is "Tests use real-shape fixtures". L45/L43/L42/L40 reference OR33/OR32/OR31/OR30 which don't exist. L39/L38/L37 reference OR29/OR28/OR27 with outdated meanings.
+**Impact**: Historical context corrupted; references point to non-existent or incorrectly-numbered rules.
+**Graduated to**: This correction entry. Stale references: L48→OR22 (no current equivalent, retired), L45→OR33 (no current equivalent, retired), L43→OR32 (no current equivalent, retired), L42→OR31 (no current equivalent, retired), L40→OR30 (no current equivalent, retired), L39→OR29 (no current equivalent, retired), L38→OR28 (meaning drifted: current OR28 is "Never delete content from governance documents", not "Already done" claims), L37→OR27 (meaning drifted: current OR27 is "Never delete prompt files", not placeholder implementations). AGENTS.md OR1-28 stand as-is; do not renumber.
+
+---
+
 N/A — no new patterns (plan completed without STOP, no new ORs added, AR checks passed)
 
 ---

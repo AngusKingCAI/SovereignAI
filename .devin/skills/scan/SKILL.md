@@ -27,7 +27,7 @@ Run the /scan workflow for the current plan. Whole-repo scan. No new features. F
 
 5.5. **Cross-reference check**: `.venv/Scripts/python.exe scripts/check_rule_crossrefs.py` — STOP if exit≠0. Checks PLANS.md, DEBT.md, DECISIONS.md, AI_HANDOFF.md for undefined OR/AR citations. Excludes historical sections automatically.
 
-6. Full test suite: `.venv/Scripts/python.exe -m pytest tests/ -vvv`
+6. Full test suite with 5-minute timeout: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no 2>&1 | tail -20` — STOP on failure. Use 300000ms timeout (suite runtime ~183s, needs headroom). Per OR29, scan plans run full suite with summary-line isolation. Next read call: timeout 300000.
 
 7. Verify coverage: `.venv/Scripts/python.exe -m pytest tests/ --cov=. --cov-report=term 2>&1 | tail -n 10` — STOP if dropped >5% from baseline.
 

@@ -105,3 +105,21 @@ class FirstRunStatusDTO(BaseModel):
     healthy_adapters: list[str]
     instructions: str
 
+
+class SkillListDTO(BaseModel):
+
+    skills: list[dict]
+
+
+class SkillExecuteDTO(BaseModel):
+
+    skill_id: str
+    args: dict
+
+
+class SkillResultDTO(BaseModel):
+
+    output: str
+    error: str | None
+    execution_time_ms: int
+

@@ -31,6 +31,9 @@ from web.schemas import (
     HardwareSnapshotDTO,
     ModelEntryDTO,
     ServiceResponseDTO,
+    SkillExecuteDTO,
+    SkillListDTO,
+    SkillResultDTO,
     TaskResponseDTO,
     TaskSubmitDTO,
     TraceEventDTO,
@@ -628,6 +631,57 @@ async def get_traces_stream(request: Request) -> StreamingResponse:
             "X-Accel-Buffering": "no",
         },
     )
+
+
+@app.get("/api/skills", dependencies=[Depends(get_current_user)])
+async def get_skills(request: Request) -> SkillListDTO:
+    from sovereignai.shared.capability_graph import ICapabilityIndex
+
+    container: Any = request.app.state.container
+    capability_index: Any = container.retrieve(ICapabilityIndex)  # type: ignore[type-abstract]
+
+    skills = []
+    for manifest in capability_index.list_all_components():
+        for cap in manifest.provides:
+            if cap.category.value == "skill":
+                skills.append(
+                    {
+                        "id": str(manifest.component_id),
+                        "name": cap.name,
+                        "version": manifest.version,
+                        "description": f"{manifest.component_id} v{manifest.version}",
+                    }
+                )
+
+    return SkillListDTO(skills=skills)
+
+
+@app.post("/api/skills/{skill_id}/execute", dependencies=[Depends(get_current_user)])
+async def execute_skill(
+    request: Request,
+    skill_id: str,
+    skill_dto: SkillExecuteDTO,
+) -> SkillResultDTO:
+    from sovereignai.skills.runner import ISkillRunner
+    from sovereignai.skills.session import SkillSession
+
+    container: Any = request.app.state.container
+    skill_runner: Any = container.retrieve(ISkillRunner)  # type: ignore[type-abstract]
+    skill_session: Any = container.retrieve(SkillSession)
+
+    try:
+        result = skill_runner.run(skill_id, skill_dto.args, skill_session)
+        return SkillResultDTO(
+            output=result.output,
+            error=result.error,
+            execution_time_ms=result.execution_time_ms,
+        )
+    except Exception as exc:
+        return SkillResultDTO(
+            output="",
+            error=str(exc),
+            execution_time_ms=0,
+        )
 
 
 @app.get("/api/first-run-check", dependencies=[Depends(get_current_user)])

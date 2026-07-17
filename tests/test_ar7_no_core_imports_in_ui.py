@@ -34,7 +34,11 @@ WEB_MAIN_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.types.TaskStateChanged',
     'sovereignai.shared.types.TraceLevel',
     'sovereignai.shared.task_state_machine',
-    'sovereignai.shared.task_state_machine.ITaskStateQuery'
+    'sovereignai.shared.task_state_machine.ITaskStateQuery',
+    'sovereignai.skills.runner',
+    'sovereignai.skills.runner.ISkillRunner',
+    'sovereignai.skills.session',
+    'sovereignai.skills.session.SkillSession',
 }
 TUI_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.container',
@@ -66,7 +70,7 @@ UI_PACKAGE_DENYLIST = {  # noqa: E501
     'sovereignai.workers',
     'sovereignai.librarian',
     'sovereignai.adapters',
-    'sovereignai.skills'
+    'sovereignai.skills',
 }
 UI_DIRECTORIES = ['web', 'cli', 'tui', 'phone']
 CAPABILITY_API_FILE = 'sovereignai/shared/capability_api.py'
@@ -127,6 +131,14 @@ def test_ui_directories_do_not_import_core_internals(ui_dir: str) -> None:
         if is_web_main:
             forbidden_concrete -= WEB_MAIN_ALLOWED_IMPORTS
             forbidden_package -= {'sovereignai.main'}
+            # Allow specific sovereignai.skills imports for web/main.py
+            allowed_skills = {  # noqa: E501
+                'sovereignai.skills.runner',
+                'sovereignai.skills.runner.ISkillRunner',
+                'sovereignai.skills.session',
+                'sovereignai.skills.session.SkillSession',
+            }
+            forbidden_package -= allowed_skills
             forbidden_package -= {  # noqa: E501
                 imp for imp in forbidden_package
                 if imp.startswith('sovereignai.shared')

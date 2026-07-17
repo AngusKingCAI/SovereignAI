@@ -7,7 +7,6 @@ from textual.containers import Vertical
 from textual.widgets import Button, DataTable, Static
 
 from sovereignai.shared.capability_api import CapabilityAPI
-from sovereignai.shared.types import CapabilityCategory
 
 
 class SkillsPanel(Vertical):
@@ -44,20 +43,18 @@ class SkillsPanel(Vertical):
         table.add_column("Actions")
 
         from sovereignai.shared.auth import AuthMiddleware
-        from sovereignai.shared.types import CapabilityQuery
 
         try:
             auth = self._container.retrieve(AuthMiddleware)
             token = auth.generate_token("test-user")
 
-            query = CapabilityQuery(category=CapabilityCategory.TOOL, name="")
-            response = self._api.query_capabilities(token, query)
+            skills = self._api.query_skills(token)
 
-            for component_id in response.providers:
+            for skill in skills:
                 table.add_row(
-                    str(component_id),
-                    "unknown",
-                    "Tool",
+                    skill["name"],
+                    skill["version"],
+                    "Skill",
                     "[Invoke]"
                 )
         except Exception:

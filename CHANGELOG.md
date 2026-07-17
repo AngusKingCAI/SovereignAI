@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## prompt-21 — Skills Infrastructure (ISkillRunner, SkillManifest, SkillSession, ToolCallParser, ToolErrorObservation, SkillDiscovery, initial skills, web endpoints, TUI panel)
+
+**Date**: 2026-07-17
+**Plan**: prompts/plan-21-rev11.md
+**Tests**: 531 passed, 3 skipped (0 chronic)
+**Coverage**: N/A (backend + UI plan)
+**Screenshots**: N/A (deferred FastAPI container setup for skills API tests)
+**AR7 diff**: None
+**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+
+- S0.4: Verified all ComponentManifest instantiations use keyword arguments, added AST check script, updated pre-commit config
+- S1: Created ISkillRunner protocol with @runtime_checkable decorator for type checking
+- S1.1: Created ConcreteSkillRunner with module caching, path resolution from manifest metadata, idempotent close()
+- S2: Created SkillManifest dataclass with TOML parsing, DAG dependencies support, metadata mapping to ComponentManifest
+- S3: Created SkillSession with correlation_id-based state isolation and history tracking
+- S4: Created ToolCallParser with hybrid JSON/XML parsing, pluggable format registration, defusedxml for safe XML parsing
+- S5: Created ToolErrorObservation with prompt formatting for LLM continuation
+- S6: Created initial skills: file_read, file_write, file_search with manifest + code + DAG structure
+- S7: Created SkillDiscovery with no-import guarantee, sys.modules validation, dangling dependency warnings
+- S8: Wired skills infrastructure into main.py build_container() (ISkillRunner, SkillDiscovery, SkillSession, CapabilityGraph)
+- S9: Created web endpoints /api/skills (GET list, POST execute) with SkillListDTO, SkillExecuteDTO, SkillResultDTO
+- S10: Updated TUI skills panel to use CapabilityAPI.query_skills() for skill listing
+- S11: Created comprehensive test suite for skills infrastructure (27 tests, 3 skipped due to FastAPI container requirement)
+- S12: Added CapabilityCategory.SKILL enum member, ComponentManifest metadata field for skill attributes
+- Bug fixes: Fixed OR29 scoped test matching (replaced keyword matching with module reference matching), added scripts/get_scoped_tests.py, updated .devin/skills/close/SKILL.md and .devin/skills/scan/SKILL.md with 300000ms timeout specifications
+- Governance updates: Updated AGENTS.md, DECISIONS.md, LANDMINES.md, PLANS.md, PRINCIPLES.md, and design documents to fix governance document drift and incorrect OR references
+
+---
+
 ## prompt-20.9.9 — Documentation Hygiene + Document Hygiene Tests
 
 **Date**: 2026-07-03

@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from contextvars import ContextVar, Token
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import NewType
+from typing import Any, NewType
 from uuid import UUID, uuid4
 
 from sovereignai.shared.types_base import CorrelationId
@@ -100,6 +100,7 @@ class CapabilityCategory(StrEnum):
     TOOL = "tool"                            # skills: websearch, calculator
     MEMORY = "memory"                        # backends: Postgres, Qdrant
     COMMUNICATION = "communication"          # gateways: voice, IM
+    SKILL = "skill"                          # user-authored skills
 
 
 class AdapterCapability(StrEnum):
@@ -128,6 +129,7 @@ class ComponentManifest:
     core: bool = False
     _source_path: str = ""  # Rev8: source path for first-party detection
     routing_priority: int = 1000  # lower = higher priority; default 1000
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 # ============================================================================
