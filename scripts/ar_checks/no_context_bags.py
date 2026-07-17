@@ -15,6 +15,29 @@ from pathlib import Path
 UNTYPED_DICT_NAMES = {"dict", "Dict", "Any"}
 
 
+def _union_member_count(annotation: ast.expr) -> int:
+    """Count union members in a | annotation (BinOp with BitOr operator)."""
+    if not isinstance(annotation, ast.BinOp) or not isinstance(annotation.op, ast.BitOr):
+        return 1
+    # Recursive count: left side + right side (right is always 1 for left-associative trees)
+    return _union_member_count(annotation.left) + 1
+
+
+def _contains_bare_any(annotation: ast.expr) -> bool:
+    """Check if annotation contains bare Any (not inside a parameterized container)."""
+    if isinstance(annotation, ast.Name) and annotation.id == "Any":
+        return True
+    # For subscripts like dict[str, Any], check the subscript contents
+    if isinstance(annotation, ast.Subscript):
+        if isinstance(annotation.slice, ast.Tuple):
+            for elt in annotation.slice.elts:
+                if isinstance(elt, ast.Name) and elt.id == "Any":
+                    return True
+        elif isinstance(annotation.slice, ast.Name) and annotation.slice.id == "Any":
+            return True
+    return False
+
+
 def annotation_name(annotation: ast.expr | None) -> tuple[str | None, bool]:
     """Return the simple name of a type annotation and whether it is parameterized."""
     if annotation is None:
@@ -44,6 +67,23 @@ def check_function(fn: ast.FunctionDef | ast.AsyncFunctionDef, path: Path) -> li
     for arg in all_args:
         if arg.arg in ("self", "cls", "instance", "pattern", "metadata", "data"):
             continue
+        
+        # Check for wide unions (4+ members)
+        if isinstance(arg.annotation, ast.BinOp) and isinstance(arg.annotation.op, ast.BitOr):
+            member_count = _union_member_count(arg.annotation)
+            if member_count >= 4:
+                violations.append(
+                    f"{path}:{fn.lineno}: '{fn.name}' parameter '{arg.arg}' "
+                    f"uses wide union ({member_count} members) — AR6 violation"
+                )
+        
+        # Check for nested Any (e.g., dict[str, Any])
+        if _contains_bare_any(arg.annotation):
+            violations.append(
+                f"{path}:{fn.lineno}: '{fn.name}' parameter '{arg.arg}' "
+                f"contains nested Any — AR6 violation"
+            )
+        
         name, parameterized = annotation_name(arg.annotation)
         if name not in UNTYPED_DICT_NAMES or arg.arg == "trace":
             continue

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**AR** = Architecture Rules (30 rules) · **OR** = Operational Rules (28 rules). Ambiguous → read `LANDMINES.md`. Authority: `PRINCIPLES.md`.
+**AR** = Architecture Rules (30 rules) · **OR** = Operational Rules (30 rules). Ambiguous → read `LANDMINES.md`. Authority: `PRINCIPLES.md`.
 
 ---
 
@@ -127,6 +127,8 @@ OR27. Never delete prompt files (execution logs in `logs/`, plan files in `promp
 OR28. Never delete content from governance documents (AGENTS.md, LANDMINES.md, PLANS.md, CHANGELOG.md) or files in the /documents folder. Only add new content. Historical context must be preserved.
 
 OR29. Non-scan plan steps: pytest scoped to files under test matching changed source files + their direct test counterparts. Scan plans (5, 10, 15, 20, 25, 30…, per AI_HANDOFF.md scan cadence): full suite via 'pytest tests/ -q --tb=no'. Scoped-run failures still governed by OR19 — no exemption.
+
+OR30. Follow instructions literally. When instructions use restrictive terms like 'only', 'never', 'must', or 'no content', follow them exactly without interpretation. If an instruction seems incorrect, STOP and ask.
 
 ---
 
