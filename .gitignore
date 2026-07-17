@@ -47,5 +47,5 @@ Thumbs.db
 app/logs/
 app/settings/
 
-# sailogs trace logs (now in app/logs/)
+# Application log files
 app/logs/*.log
