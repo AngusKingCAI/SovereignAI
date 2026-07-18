@@ -24,12 +24,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 ## Active Plan
 
-| Field | Value |
-|-------|-------|
-| File | prompts/plan-workflow-fix-6.md |
-| Depends on | workflow-fix-5 |
-| Vision principles | P1, P5, P11 |
-| Open questions | None |
+None.
 
 ## Next in Queue
 
@@ -45,6 +40,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Prompt | Description | Tests | Date |
 |--------|-------------|-------|------|
+| prompt-workflow-fix-6 | Workflow Fix 6 - Test path mismatches, AR check script paths, OR rules, timeout fix | 531 | 2026-07-18 |
 | prompt-workflow-fix-5 | Workflow Fix 5 - STOP definition, get_current_plan.py fix, verify_close.py Rev suffix handling | N/A | 2026-07-18 |
 | prompt-workflow-fix-3 | Workflow Fix 3 - AR check script paths and verify_close.py logic | N/A | 2026-07-18 |
 | workflow-fix-2 | Workflow Fix 2 - OR rules, AR21, execution log handling | N/A | 2026-07-18 |

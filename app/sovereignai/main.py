@@ -13,7 +13,7 @@ from app.sovereignai.shared.types import (
 from app.sovereignai.versioning.negotiator import FatalIncompatibilityError
 
 if TYPE_CHECKING:
-    from sovereignai.versioning.negotiator import NegotiationResult
+    from app.sovereignai.versioning.negotiator import NegotiationResult
 
 
 def build_container(dev_mode: bool = False, config: Config | None = None) -> DIContainer:
@@ -46,7 +46,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     # API can depend on the protocol, not the concrete class (per A5).
     # Rev2: graph now accepts TraceEmitter per Finding 3 (P9 compliance).
     # Plan 13: graph accepts dev_mode flag for conformance gate bypass
-    from sovereignai.shared.capability_graph import (
+    from app.sovereignai.shared.capability_graph import (
         CapabilityGraph,
         ICapabilityIndex,
     )
@@ -56,12 +56,12 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
 
     # 4. LifecycleManager — depends on TraceEmitter, singleton (Plan 3)
     # Rev2 per Finding 4: accepts TraceEmitter to emit on circuit-breaker trips.
-    from sovereignai.shared.lifecycle_manager import LifecycleManager
+    from app.sovereignai.shared.lifecycle_manager import LifecycleManager
     lifecycle = LifecycleManager(trace=trace)
     container.register_singleton(LifecycleManager, lifecycle)
 
     # 5. RoutingEngine — depends on ICapabilityIndex + LifecycleManager + TraceEmitter
-    from sovereignai.shared.routing_engine import RoutingEngine
+    from app.sovereignai.shared.routing_engine import RoutingEngine
     router = RoutingEngine(
         capability_index=container.retrieve(ICapabilityIndex),  # type: ignore[type-abstract]
         lifecycle_manager=lifecycle,
@@ -70,7 +70,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     container.register_singleton(RoutingEngine, router)
 
     # 6. TaskStateMachine — depends on EventBus + TraceEmitter
-    from sovereignai.shared.task_state_machine import (
+    from app.sovereignai.shared.task_state_machine import (
         ITaskStateQuery,
         TaskStateMachine,
     )
@@ -79,7 +79,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     container.register_singleton(ITaskStateQuery, state_machine)  # type: ignore[type-abstract]
 
     # 7. AuthMiddleware — depends on TraceEmitter, singleton (Plan 4)
-    from sovereignai.shared.auth import AuthMiddleware
+    from app.sovereignai.shared.auth import AuthMiddleware
     auth = AuthMiddleware(trace=trace)
     container.register_singleton(AuthMiddleware, auth)
 
@@ -89,10 +89,10 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     # can call submit() (the ITaskStateQuery protocol is query-only).
     # Plan 18: added HardwareProbe dependency for sample_hardware() and stream_hardware()
     # Plan 20.9.1: registries, memory backends, lifecycle added after registration
-    from sovereignai.shared.capability_api import CapabilityAPI
-    from sovereignai.shared.capability_graph import ICapabilityIndex
-    from sovereignai.shared.hardware_probe import HardwareProbe
-    from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
+    from app.sovereignai.shared.capability_api import CapabilityAPI
+    from app.sovereignai.shared.capability_graph import ICapabilityIndex
+    from app.sovereignai.shared.hardware_probe import HardwareProbe
+    from app.sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
     api = CapabilityAPI(
         auth=auth,
         capability_index=container.retrieve(ICapabilityIndex),  # type: ignore[type-abstract]
@@ -105,13 +105,13 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
 
     # 9. RelayPlaceholder — depends on TraceEmitter, singleton (Plan 4)
     # Real relay server deferred to a post-batch plan per A4.
-    from sovereignai.shared.relay_placeholder import RelayPlaceholder
+    from app.sovereignai.shared.relay_placeholder import RelayPlaceholder
     relay = RelayPlaceholder(trace=trace)
     container.register_singleton(RelayPlaceholder, relay)
 
     # 10. MessageDispatcher — depends on CapabilityAPI + CapabilityGraph +
     #     TaskStateMachine + TraceEmitter (Plan 7)
-    from sovereignai.orchestrator.dispatcher import MessageDispatcher
+    from app.sovereignai.orchestrator.dispatcher import MessageDispatcher
     dispatcher = MessageDispatcher(
         capability_api=container.retrieve(CapabilityAPI),
         capability_graph=container.retrieve(CapabilityGraph),
@@ -123,10 +123,10 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     # 11.5. Register skills infrastructure (Plan 21)
     from pathlib import Path
 
-    from sovereignai.skills.concrete_runner import ConcreteSkillRunner
-    from sovereignai.skills.discovery import SkillDiscovery
-    from sovereignai.skills.runner import ISkillRunner
-    from sovereignai.skills.session import SkillSession
+    from app.sovereignai.skills.concrete_runner import ConcreteSkillRunner
+    from app.sovereignai.skills.discovery import SkillDiscovery
+    from app.sovereignai.skills.runner import ISkillRunner
+    from app.sovereignai.skills.session import SkillSession
 
     skill_runner = ConcreteSkillRunner(
         capability_graph=container.retrieve(CapabilityGraph),
@@ -151,7 +151,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     skill_discovery.scan(skill_dirs)
 
     # 11. Load skill and adapter manifests and register in CapabilityGraph (Plan 7)
-    from sovereignai.shared.manifest_parser import parse_manifest
+    from app.sovereignai.shared.manifest_parser import parse_manifest
 
     # Scan skills/user/, skills/external/, skills/official/, adapters/external/, and adapters/internal/  # noqa: E501
     # for manifest.toml files
@@ -183,11 +183,11 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
 
     # 12. Register memory backends + Librarian (Plan 11)
     # Per L41 fix: ALL backends registered. Test mode uses :memory: SQLite.
-    from sovereignai.librarian.librarian import Librarian
-    from sovereignai.memory.episodic_backend import EpisodicMemoryBackend
-    from sovereignai.memory.procedural_backend import ProceduralMemoryBackend
-    from sovereignai.memory.trace_backend import TraceMemoryBackend
-    from sovereignai.memory.working_backend import WorkingMemoryBackend
+    from app.sovereignai.librarian.librarian import Librarian
+    from app.sovereignai.memory.episodic_backend import EpisodicMemoryBackend
+    from app.sovereignai.memory.procedural_backend import ProceduralMemoryBackend
+    from app.sovereignai.memory.trace_backend import TraceMemoryBackend
+    from app.sovereignai.memory.working_backend import WorkingMemoryBackend
 
     episodic_backend = EpisodicMemoryBackend(trace=trace, db_path=None)
     container.register_singleton(EpisodicMemoryBackend, episodic_backend)
@@ -206,12 +206,12 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
 
     # 13. Register default_model_path_resolver (Plan 19 S2.1)
     # Note: Registered as a singleton since it's a pure function
-    from sovereignai.shared.model_path_resolver import default_model_path_resolver
+    from app.sovereignai.shared.model_path_resolver import default_model_path_resolver
     container.register_singleton(default_model_path_resolver, default_model_path_resolver)  # type: ignore[arg-type]
 
     # 14. DatabaseRegistry and ServiceRegistry (Plan 17)
-    from sovereignai.shared.database_registry import DatabaseRegistry
-    from sovereignai.shared.service_registry import ServiceRegistry
+    from app.sovereignai.shared.database_registry import DatabaseRegistry
+    from app.sovereignai.shared.service_registry import ServiceRegistry
 
     db_registry = DatabaseRegistry(trace=trace)
     container.register_singleton(DatabaseRegistry, db_registry)
@@ -220,7 +220,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     container.register_singleton(ServiceRegistry, service_registry)
 
     # 14.5. Update CapabilityAPI with registries and memory backends (Plan 20.9.1)
-    from sovereignai.shared.capability_api import CapabilityAPI
+    from app.sovereignai.shared.capability_api import CapabilityAPI
     api_instance = container.retrieve(CapabilityAPI)
     api_instance._database_registry = db_registry
     api_instance._service_registry = service_registry
@@ -250,7 +250,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     # Order-dependent: adapters need model_path_resolver and database_registry
     from adapters.external.ollama_adapter.adapter import OllamaAdapter
 
-    from sovereignai.shared.types import ComponentId
+    from app.sovereignai.shared.types import ComponentId
 
     if ComponentId("ollama_adapter") in graph._manifests:
         ollama_adapter = OllamaAdapter(trace=trace)
@@ -281,7 +281,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     # Per Rev3 N7: non-interactive detection; per Rev3 N11: remove from DI container
     result: NegotiationResult | None = None
     if config.version_negotiation_enabled:
-        from sovereignai.versioning.negotiator import VersionNegotiator
+        from app.sovereignai.versioning.negotiator import VersionNegotiator
         negotiator = VersionNegotiator(
             capability_graph=container.retrieve(ICapabilityIndex),  # type: ignore[type-abstract]
             trace=trace,
@@ -329,13 +329,13 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
         )
 
     # 16. HardwareProbe — no dependencies, singleton (Plan 14)
-    from sovereignai.shared.hardware_probe import HardwareProbe
+    from app.sovereignai.shared.hardware_probe import HardwareProbe
     hardware_probe = HardwareProbe()
     container.register_singleton(HardwareProbe, hardware_probe)
 
     # 18. Self-correction skill — depends on Librarian + TraceEmitter (Plan 14)
     # NOTE: Self-correction skill subscribes to TaskStateChanged events
-    from sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
+    from app.sovereignai.skills.official.self_correction.skill import SelfCorrectionSkill
     self_correction = SelfCorrectionSkill(
         librarian=container.retrieve(Librarian),
         trace=trace,
@@ -344,7 +344,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
 
     # 19. Wire self-correction skill to TaskStateChanged events (Plan 14)
     # Subscribe to the EventBus to receive task state change notifications
-    from sovereignai.shared.types import Channel, Event
+    from app.sovereignai.shared.types import Channel, Event
     def _wrap_task_state_changed(event: Event) -> None:
         if (
             hasattr(event, "task_id")
@@ -355,8 +355,8 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     bus.subscribe(Channel("TaskStateChanged"), _wrap_task_state_changed)
 
     # 21. Register Test Manager and Worker for TUI (Plan 20.4 S8)
-    from sovereignai.workers.test_manager import TestManager
-    from sovereignai.workers.test_worker import TestWorker
+    from app.sovereignai.workers.test_manager import TestManager
+    from app.sovereignai.workers.test_worker import TestWorker
 
     test_manager = TestManager(
         working_memory=container.retrieve(WorkingMemoryBackend),
@@ -389,7 +389,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
             except Exception:
                 pass
 
-        from sovereignai.memory.trace_backend import TraceMemoryBackend
+        from app.sovereignai.memory.trace_backend import TraceMemoryBackend
         tb = container.retrieve(TraceMemoryBackend)
         last_task_states = tb.get_last_task_states()
         for task_id_str, state in last_task_states.items():
@@ -438,7 +438,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
         _writer_thread.start()
         trace.subscribe_callback(_on_trace_emitted)
 
-    from sovereignai.shared.types import TASK_STATE_CHANNEL, TaskState
+    from app.sovereignai.shared.types import TASK_STATE_CHANNEL, TaskState
 
     def _on_task_state_persist(event: TaskState) -> None:
         try:

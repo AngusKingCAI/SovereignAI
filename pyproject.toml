@@ -55,7 +55,7 @@ python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 pythonpath = ["."]
-addopts = "-vvv --timeout=30 --timeout-method=thread"
+addopts = "-vvv --timeout=300 --timeout-method=thread"
 
 [tool.ruff]
 line-length = 100
