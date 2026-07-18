@@ -18,47 +18,43 @@ def main() -> None:
         print(f"ERROR: {plans_md} not found", file=sys.stderr)
         sys.exit(1)
 
-    # Read PLANS.md to get the active plan from the "Active Plan" section
+    # Read PLANS.md to get the most recently completed plan
     with open(plans_md, 'r', encoding='utf-8', errors='ignore') as f:
         content = f.read()
 
-    # Find the "Active Plan" section - handle both table format and plain text format
-    active_plan_match = re.search(
-        r'## Active Plan\s*\n+(.+?)(?:\n+##|\Z)',
+    # Find the "Recent Completed" section and extract the first (most recent) plan
+    # Look for the table header, separator, then first data row
+    recent_completed_match = re.search(
+        r'## Recent Completed.*?\n\|.*?\n\|[-|\s]+\n\|\s*(.+?)\s*\|',
         content,
         re.DOTALL,
     )
 
-    if not active_plan_match:
-        print("ERROR: Could not find Active Plan section in PLANS.md", file=sys.stderr)
+    if not recent_completed_match:
+        print("ERROR: Could not find Recent Completed section in PLANS.md", file=sys.stderr)
         sys.exit(1)
 
-    active_plan = active_plan_match.group(1).strip()
-    if active_plan == 'None' or active_plan == '':
-        print("No active plan set in PLANS.md", file=sys.stderr)
+    recent_plan = recent_completed_match.group(1).strip()
+    if not recent_plan:
+        print("No recent plan found in PLANS.md", file=sys.stderr)
         sys.exit(1)
 
-    # If it's a table row, extract the plan name
-    if '|' in active_plan:
-        # Try to extract from table format
-        parts = active_plan.split('|')
-        for part in parts:
-            if 'plan-' in part:
-                active_plan = part.strip()
-                break
+    # Remove "prompt-" prefix if present (PLANS.md uses prompt- but files don't)
+    if recent_plan.startswith('prompt-'):
+        recent_plan = recent_plan[7:]  # Remove "prompt-" prefix
 
     # Convert to full path
-    if not active_plan.startswith('prompts/'):
-        active_plan = f"prompts/{active_plan}"
+    if not recent_plan.startswith('prompts/completed/'):
+        recent_plan = f"prompts/completed/{recent_plan}"
     # Add .md extension if not present
-    if not active_plan.endswith('.md'):
-        active_plan = f"{active_plan}.md"
-    active_plan_path = repo_root / active_plan
-    if active_plan_path.exists():
-        print(active_plan_path)
+    if not recent_plan.endswith('.md'):
+        recent_plan = f"{recent_plan}.md"
+    recent_plan_path = repo_root / recent_plan
+    if recent_plan_path.exists():
+        print(recent_plan_path)
         sys.exit(0)
     else:
-        print(f"ERROR: Active plan file not found: {active_plan_path}", file=sys.stderr)
+        print(f"ERROR: Recent plan file not found: {recent_plan_path}", file=sys.stderr)
         sys.exit(1)
 
 
