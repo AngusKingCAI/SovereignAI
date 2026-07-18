@@ -104,13 +104,13 @@ def check_changelog_position() -> tuple[bool, str]:
 def check_plan_files_moved() -> tuple[bool, str]:
     """Pattern 3: Only check plans executed in current session.
     Handle Rev suffixes (CHANGELOG or PLANS.md)."""
-    # Find current plan from CHANGELOG or PLANS.md
+    # Find current plan from CHANGELOG (source of truth for what was just executed)
     changelog = REPO_ROOT / ".agent" / "shared" / "CHANGELOG.md"
     plans_md = REPO_ROOT / ".agent" / "shared" / "PLANS.md"
 
     current_plan = None
 
-    # Try CHANGELOG first - look at the most recent entry
+    # Use CHANGELOG as source of truth - it's updated during execution with the current plan
     if changelog.exists():
         content = changelog.read_text()
         # Extract the first (most recent) plan reference from the first header
@@ -118,7 +118,7 @@ def check_plan_files_moved() -> tuple[bool, str]:
         if first_header_match:
             current_plan = first_header_match.group(1).replace("prompt-", "")
 
-    # If not found, try PLANS.md
+    # Fallback to PLANS.md only if CHANGELOG doesn't have the plan
     if not current_plan and plans_md.exists():
         content = plans_md.read_text()
         # Look for active plan marker (both patterns)
@@ -127,7 +127,7 @@ def check_plan_files_moved() -> tuple[bool, str]:
             current_plan = match.group().split(": ")[1]
 
     if not current_plan:
-        return True, "No current plan identified"
+        return True, "No current plan identified from CHANGELOG or PLANS.md"
 
     # Check if ANY variant of this plan file has been moved to completed/
     # Look for {current_plan}.md OR {current_plan}-Rev*.md (historical: {current_plan}-rev*.md)
