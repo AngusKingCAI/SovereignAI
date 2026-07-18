@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "Exec(git)",
+      "Exec(py)",
+      "Exec(ruff)",
+      "Exec(mypy)",
+      "Exec(bandit)",
+      "Exec(pip-audit)",
+      "Exec(vulture)",
+      "Exec(detect-secrets)"
+    ]
+  }
+}
