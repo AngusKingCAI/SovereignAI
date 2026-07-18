@@ -108,19 +108,19 @@ def check_plan_files_moved() -> tuple[bool, str]:
 
     current_plan = None
 
-    # Try CHANGELOG first
+    # Try CHANGELOG first - look at the most recent entry
     if changelog.exists():
         content = changelog.read_text()
-        # Look for plan-workflow-fix-{N} pattern in latest entry
-        match = re.search(r'plan-workflow-fix-[\d]+', content)
-        if match:
-            current_plan = match.group()
+        # Extract the first (most recent) plan reference from the first header
+        first_header_match = re.search(r'^## (prompt-[\w-]+)', content, re.MULTILINE)
+        if first_header_match:
+            current_plan = first_header_match.group(1).replace("prompt-", "")
 
     # If not found, try PLANS.md
     if not current_plan and plans_md.exists():
         content = plans_md.read_text()
-        # Look for active plan marker
-        match = re.search(r'\*\*ACTIVE\*\*: plan-workflow-fix-[\d]+', content)
+        # Look for active plan marker (both patterns)
+        match = re.search(r'\*\*ACTIVE\*\*: plan-(?:workflow-)?fix-[\d]+', content)
         if match:
             current_plan = match.group().split(": ")[1]
 
