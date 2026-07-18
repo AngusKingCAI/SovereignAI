@@ -25,6 +25,6 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/shared/ARCH
 
 1. Read plan file → invoke `/open` slash command → STOP on failure
 2. Execute steps → invoke `/verify` slash command after each edit → STOP on failure
-3. Invoke `/close` slash command → STOP on failure
+3. → Invoke `/close` slash command STOP on failure
 
 Ambiguous → read `.agent/shared/LANDMINES.md`.
