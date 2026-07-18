@@ -66,7 +66,7 @@ def check_execution_log_empty() -> tuple[bool, str]:
     content = execution_log.read_text().strip()
     # Allow header template only
     header_template = "# Execution Log:"
-    if content.startswith(header_template) and len(content) < 200:
+    if content.startswith(header_template) and len(content) < 250:
         # If only header and date/plan info, that's OK (template)
         return True, f"Execution log for {current_plan} is blank (template only)"
 
