@@ -16,6 +16,7 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/shared/ARCH
 7. No architect file edits. AGENTS.md, PRINCIPLES.md, AI_HANDOFF.md are read-only unless explicitly authorized by Architect plan or user instruction.
 8. Scripts are SSOT. Skills reference scripts by path; no inline commands.
 9. Coverage ≥90% at `/close`. No exemptions.
+10. Never execute workflow steps manually unless explicitly requested by user. Use skills/workflows as intended.
 
 ---
 
