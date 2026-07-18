@@ -24,9 +24,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 ## Active Plan
 
-| Plan | Description | Status |
-|------|-------------|--------|
-| plan-fix-3-Rev1 | Plan Fix 3 - ToolCallParser isinstance Module Identity Fix | 🔄 In Progress |
+None.
 
 ## Next in Queue
 
@@ -42,6 +40,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Prompt | Description | Tests | Date |
 |--------|-------------|-------|------|
+| prompt-plan-fix-3-Rev1 | Plan Fix 3 - ToolCallParser isinstance Module Identity Fix and Governance Cleanup | 531 | 2026-07-18 |
 | prompt-plan-fix-2-Rev1 | Plan Fix 2 - Namespace Package Collision Fix and ToolCallParser Error Type Fixes | 531 | 2026-07-18 |
 | prompt-plan-fix-1-Rev1 | Plan Fix 1 - Import Path Standardization, ToolCallParser Error Types, SkillManifest Fixes, Test Reorganization | 531 | 2026-07-18 |
 | prompt-workflow-fix-6 | Workflow Fix 6 - Test path mismatches, AR check script paths, OR rules, timeout fix | 531 | 2026-07-18 |
@@ -51,7 +50,6 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 | workflow-fix | Fix Governance Workflow Inconsistencies | N/A | 2026-07-18 |
 | 20.9.9 | Documentation Hygiene + Document Hygiene Tests | 497 | 2026-07-03 |
 | 20.9.8 | Correlation ID Typing + VersionNegotiator Disable | 492 | 2026-07-03 |
-| 20.9.7 | TUI Memory Panel AR7 Compliance via CapabilityAPI | 485 | 2026-07-03 |
 
 ## Scan History
 

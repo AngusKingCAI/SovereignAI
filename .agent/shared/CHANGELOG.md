@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## prompt-plan-fix-3-Rev1 — Plan Fix 3 - ToolCallParser isinstance Module Identity Fix and Governance Cleanup
+
+**Date**: 2026-07-18
+**Plan**: prompts/plan-fix-3-Rev1.md
+**Tests**: pytest .agent/executor/tests (531 tests, 479 passed, 52 skipped, 0 failed)
+**Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
+**Coverage**: N/A (no new code added)
+**Screenshots**: N/A
+**AR7 diff**: None
+**UOR-2**: Test failures: no "pre-existing" exemption
+**COR-1**: Test-fix plans run full suite
+
+- Fixed ToolCallParser to use duck-typing instead of isinstance for cross-module safety
+- Removed suggestion-based rule creation workflow (suggest_rule.py, suggestions/ directory)
+- Updated governance docs to reflect Architect-driven rule creation
+- Updated AGENTS.md invariant 7 to allow architect file edits when authorized
+- Updated verify/SKILL.md to remove suggest_rule.py reference
+- Updated close/SKILL.md to remove DEBT.md scope note
+- Updated LANDMINES.md to clarify prepend within severity bucket
+- Updated RULE_LIFECYCLE.md to remove SUGGEST stage and update directory tree
+- Updated AI_HANDOFF.md to reflect Architect-driven rule detection flow
+- Added landmine detection scripts (detect_m1.py, detect_m4.py)
+- Updated landmine_checks/run_all.py to discover detect_*.py scripts
+- Updated or_checks/run_all.py to report "no OR checks defined"
+- Updated PLANS.md baseline to 531 tests, plan-fix-2-Rev1
+- Updated README.md status and documentation links
+- Moved plan-fix-3-Rev1.md to prompts/
+
 ## prompt-plan-fix-2-Rev1 — Plan Fix 2 - Namespace Package Collision Fix and ToolCallParser Error Type Fixes
 
 **Date**: 2026-07-18
