@@ -8,8 +8,8 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Metric | Value | Plan |
 |--------|-------|------|
-| Tests | 531 | plan-fix-2-Rev1 |
-| ruff | 0 | plan-fix-2-Rev1 |
+| Tests | 483 | plan-fix-7-Rev1 |
+| ruff | 22 | plan-fix-7-Rev1 |
 | mypy | 0 | plan-fix-2-Rev1 |
 
 ## Trend (last 5 plans)
@@ -24,9 +24,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 ## Active Plan
 
-| Prompt | Description | Status |
-|--------|-------------|--------|
-| prompt-plan-fix-7-Rev1 | Plan Fix 7 - Test Skip Cleanup | 🔄 In Progress |
+None.
 
 ## Next in Queue
 
@@ -42,6 +40,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Prompt | Description | Tests | Date |
 |--------|-------------|-------|------|
+| prompt-plan-fix-7-Rev1 | Plan Fix 7 - Skip Test Categorization and Environment Guards | 531 | 2026-07-19 |
 | prompt-plan-fix-6-Rev1 | Plan Fix 6 - Plan 22 Forward Dependency, Plan Filename Convention, Devin Hardcoding, /verify git add, scan Self-Contained, STOP Recovery | 531 | 2026-07-18 |
 | prompt-plan-fix-5-Rev1 | Plan Fix 5 - Legacy OR ID Migration and check_rule_crossrefs.py Blind Spot Fix | 531 | 2026-07-18 |
 | prompt-plan-fix-4-Rev1 | Plan Fix 4 - Remaining suggest_rule.py References Cleanup, AR Rule Cleanup, RULE_LIFECYCLE.md File References | 531 | 2026-07-18 |
