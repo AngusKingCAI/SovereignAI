@@ -26,5 +26,6 @@ Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothin
 8. Placeholders: `check_placeholders.py`. STOP on hit.
 9. Spec match: `spec_match.py`. STOP if exit≠0.
 10. HARD GATE — `verify_close.py`. If exit≠0: STOP. Do not commit. Do not tag.
-11. Documentation: prepend CHANGELOG, update PLANS.md, add to DEBT.md.
-12. Git: `git status` → identify session files only → `git add` specific files → commit → tag `prompt-{N}` → push.
+11. Execution log: create blank `logs/execution-log-{plan-name}.md` for user to populate with chat transcript.
+12. Documentation: prepend CHANGELOG, update PLANS.md, add to DEBT.md.
+13. Git: `git status` → identify session files only → `git add` specific files → commit → tag `prompt-{N}` → push.

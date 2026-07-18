@@ -20,18 +20,19 @@ Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Wind
 
 1. Read logs end-to-end. Extract test counts, STOPs, deviations.
 2. Verify repo state. Spot-check `.agent/shared/CHANGELOG.md` latest entry (first 10 lines). PLANS.md updated. No scope creep.
-3. Re-read `.agent/shared/LANDMINES.md` + `PRINCIPLES.md`.
+3. Re-read `.agent/shared/LANDMINES.md` + `PRINCIPLES.md` + `.agent/shared/RULE_LIFECYCLE.md`.
 4. Review execution patterns. Check `.agent/executor/suggestions/` for new rule proposals.
-   - New AR → add to `.agent/shared/DEBT.md` with target plan → Round Table → ARCHITECTURE.md
-   - New OR → add to `.agent/shared/DEBT.md` with target plan → edit skill
-   - New landmine → add to `.agent/shared/DEBT.md` with target plan → LANDMINES.md
+   - New AR → assign ID, implement directly: add to ARCHITECTURE.md with verification script
+   - New OR → assign ID, implement directly: edit relevant skill with OR reference
+   - New landmine → assign ID, implement directly: add to LANDMINES.md with detection script
    - Reject → document reason in suggestion file, archive
-   Include accepted rules in next plan's S0.
-5. Research. Web search for new tech. Document findings in plan header.
-6. Draft. N plan files + 1 brief (Rev 1 only) + 1 Round Table prompt per rev.
-7. Round Table. Runs until clean pass. Apply findings at discretion.
-8. Score panelists. Post inline (GR11).
-9. Deliver. User copies to `prompts/plan-{N}.md`.
+   Implementation per RULE_LIFECYCLE.md IMPLEMENT stage.
+5. Check `.agent/shared/DEBT.md` for non-rule deferred items (features, tech debt, security fixes).
+6. Research. Web search for new tech. Document findings in plan header.
+7. Draft. N plan files + 1 brief (Rev 1 only) + 1 Round Table prompt per rev.
+8. Round Table. Runs until clean pass. Apply findings at discretion.
+9. Score panelists. Post inline (GR11).
+10. Deliver. User copies to `prompts/plan-{N}.md`.
 
 ---
 
@@ -80,8 +81,9 @@ Open questions resolved: <which Q1-Q34, or "none">
 **S0 — Opening**:
 - S0.1: Run `/open`
 - S0.2: Read `AGENTS.md` in full
-- S0.3: Propose new rules from this plan's S0 — add to `.agent/shared/DEBT.md` with target plan, run Round Table, then commit. AR rules → ARCHITECTURE.md, OR rules → edit skill.
-- S0.4: If new tech stack, add research findings to plan header (per Architect Workflow step 5).
+- S0.3: Check `.agent/executor/suggestions/` for new rule proposals from Executor. Include accepted rules in this plan. Implementation per RULE_LIFECYCLE.md IMPLEMENT stage.
+- S0.4: Check `.agent/shared/DEBT.md` for other deferred items (non-rule items).
+- S0.5: If new tech stack, add research findings to plan header (per Architect Workflow step 7).
 
 **Plan body (S1-Sn)**: Execute steps. Run `/verify` after each edit. HTML/CSS/JS plans: include "WILL edit" UI element list.
 
@@ -122,7 +124,7 @@ Missing/reordered sections block delivery (GR7).
 | `.agent/shared/CHANGELOG.md` | Per-plan change log | Executor |
 | `AGENTS.md` | Universal Invariants | Executor |
 | `.agent/shared/DECISIONS.md` | Architectural decisions | Executor |
-| `.agent/shared/DEBT.md` | Deferred items | Executor |
+| `.agent/shared/DEBT.md` | Non-rule deferred items (features, tech debt, security) | Executor |
 | `.devin/skills/*/SKILL.md` | Workflow skills | Architect |
 | `.agent/executor/suggestions/` | Rule proposals | Executor |
 

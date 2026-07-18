@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## workflow-consistency — Fix Governance Workflow Inconsistencies
+
+**Date**: 2026-07-18
+**Plan**: Direct execution (no plan file)
+**Tests**: N/A (documentation-only change)
+**Coverage**: N/A (no code changes)
+**Screenshots**: N/A
+**AR7 diff**: None
+**OR63**: None
+
+- Fixed dual rule proposal workflows: unified to use suggestions/ directory (AI_HANDOFF.md Architect Workflow step 4, Plan Template S0.3)
+- Removed DEBT.md from rule proposal workflow (now only for non-rule deferred items)
+- Added execution log creation step to close/SKILL.md (step 11): create blank execution log for user to populate
+- Updated AI_HANDOFF.md Architect Workflow step 3 to include RULE_LIFECYCLE.md
+- Updated AI_HANDOFF.md Architect Workflow step 4 to implement rules directly (no DEBT.md for rules)
+- Updated AI_HANDOFF.md Architect Workflow step 5 to check DEBT.md for non-rule items only
+- Updated AI_HANDOFF.md Document Relationships table to clarify DEBT.md scope (non-rule items)
+- Updated AI_HANDOFF.md Plan Template S0.3 to reference suggestions/ and RULE_LIFECYCLE.md
+- Updated AI_HANDOFF.md Plan Template S0.4 to check DEBT.md for non-rule items
+- Updated AI_HANDOFF.md Plan Template step references to match new workflow numbering
+- Created blank execution log for user to populate with chat transcript
+- Governance workflows now consistent between Architect and Executor
+
+---
+
 ## governance-execution-gap-b — Rule Suggestion Pipeline
 
 **Date**: 2026-07-18
@@ -21,7 +46,9 @@
 - S5: Updated verify/SKILL.md to include rule suggestion step (step 7)
 - S5: Updated open/SKILL.md to mention suggest_rule.py for recurring patterns (step 5)
 - Created blank execution logs for user to populate with chat transcripts
+- Added execution log creation step to close/SKILL.md (step 11)
 - Rule suggestion pipeline complete with full workflow integration
+- Fixed workflow inconsistencies: unified rule proposal workflow via suggestions/, clarified DEBT.md scope (non-rule items only), aligned Architect and Executor workflows, updated AI_HANDOFF.md Architect Workflow and Plan Template
 
 ---
 
@@ -46,6 +73,7 @@
 - Both runners gracefully handle empty script sets (report "not yet implemented" and exit 0)
 - Created blank execution log for user to populate with chat transcript
 - Infrastructure ready for individual OR check scripts (check_or*.py) and landmine detection scripts (detect_*.py)
+- Workflow consistency fixes unified rule proposal and execution log processes
 
 ---
 
