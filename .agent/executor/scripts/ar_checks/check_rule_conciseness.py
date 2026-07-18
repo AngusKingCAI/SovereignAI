@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 import re
+import subprocess
 import sys
 from pathlib import Path
 
 
 def main():
-    agents_md = Path(__file__).parent.parent.parent / "AGENTS.md"
+    # Get repo root from git to handle different script locations
+    result = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        capture_output=True, text=True, cwd=Path(__file__).parent
+    )
+    repo_root = Path(result.stdout.strip()) if result.returncode == 0 else Path(__file__).parent.parent.parent.parent.parent
+    agents_md = repo_root / "AGENTS.md"
 
     if not agents_md.exists():
         print(f"Error: {agents_md} not found", file=sys.stderr)

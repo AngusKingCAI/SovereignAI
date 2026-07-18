@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import subprocess
 import sys
 from pathlib import Path
 
@@ -8,8 +9,15 @@ from pathlib import Path
 def check_p4_compliance() -> int:
     exit_code = 0
 
+    # Get repo root from git to handle different script locations
+    result = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        capture_output=True, text=True, cwd=Path(__file__).parent
+    )
+    repo_root = Path(result.stdout.strip()) if result.returncode == 0 else Path(__file__).parent.parent.parent.parent.parent
+
     # (a) Count adapters with model.inference capability
-    adapters_dir = Path("adapters/external")
+    adapters_dir = repo_root / "app" / "adapters" / "external"
     model_inference_adapters = []
 
     for manifest_path in adapters_dir.glob("*/manifest.toml"):
@@ -29,7 +37,7 @@ def check_p4_compliance() -> int:
 
     if len(model_inference_adapters) < 2:
         # Check DEBT.md for P4-EXCEPTION
-        debt_path = Path("DEBT.md")
+        debt_path = repo_root / ".agent" / "shared" / "DEBT.md"
         if debt_path.exists():
             with debt_path.open() as f:
                 debt_content = f.read()
@@ -65,7 +73,7 @@ def check_p4_compliance() -> int:
         print(f"OK: {len(model_inference_adapters)} model.inference adapter(s) found")
 
     # (b) Verify RoutingEngine tests coverage
-    test_routing_path = Path("tests/test_routing_engine.py")
+    test_routing_path = repo_root / "app" / "tests" / "test_routing_engine.py"
     if test_routing_path.exists():
         with test_routing_path.open() as f:
             test_content = f.read()
@@ -94,7 +102,7 @@ def check_p4_compliance() -> int:
         print("WARNING: tests/test_routing_engine.py does not exist")
 
     # (c) AST scan for unprotected Raise nodes in main.py
-    main_path = Path("sovereignai/main.py")
+    main_path = repo_root / "app" / "sovereignai" / "main.py"
     if main_path.exists():
         with main_path.open() as f:
             main_content = f.read()

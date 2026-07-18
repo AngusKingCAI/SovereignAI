@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## workflow-fix-3 — Workflow Fix 3 - AR Check Script Paths and verify_close.py Logic
+
+**Date**: 2026-07-18
+**Plan**: prompts/plan-workflow-fix-3.md
+**Tests**: N/A (documentation-only change)
+**Coverage**: N/A (no code changes)
+**Screenshots**: N/A
+**AR7 diff**: None
+**OR63**: None
+
+- Fixed AR21 reference in ARCHITECTURE.md constraint verification table: removed check_ar21.py reference (retired rule needs no check script)
+- Fixed AR check script paths for robust cross-platform execution:
+  - check_dependencies.py: added tomllib import with tomli fallback for Python 3.11+ compatibility
+  - check_p4_compliance.py: corrected DEBT.md path to .agent/shared/DEBT.md
+  - check_rule_conciseness.py: corrected AGENTS.md path to AGENTS.md (repo root)
+  - check_tracing.py: corrected sovereignai directory path to app/sovereignai
+- Re-enabled and fixed verify_close.py checks with proper session-scoped logic:
+  - Execution log check: now checks only logs for current session plan (identified from CHANGELOG or PLANS.md)
+  - Plan file check: now checks only plans executed in current session (not all pending plans)
+  - Added git rev-parse for robust repo root detection across different script locations
+- Updated all AR check scripts to use git rev-parse for repo root detection instead of relative paths
+- Verified full workflow consistency: check_rule_crossrefs.py passes, ar_checks/run_all.py passes with 0 failures
+- No disabled checks remain in verify_close.py (grep confirms no "disabled" references)
+- All scripts use git rev-parse for reliable repo root resolution on Windows and Unix systems
+
+---
+
 ## workflow-fix-2 — Workflow Fix 2 - OR Rules, AR21, Execution Log Handling
 
 **Date**: 2026-07-18

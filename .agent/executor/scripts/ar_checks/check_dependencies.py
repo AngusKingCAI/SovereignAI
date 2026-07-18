@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 import ast
+import subprocess
 import sys
 from pathlib import Path
 
-import tomli
+try:
+    import tomllib
+except ImportError:
+    import tomli as tomllib
 
 STDLIB_MODULES = {
     "os", "sys", "json", "pathlib", "threading", "datetime", "typing", "dataclasses",
@@ -13,10 +17,11 @@ STDLIB_MODULES = {
     "secrets", "hashlib", "subprocess", "shutil", "platform", "enum", "contextvars",
     "tempfile", "ctypes", "traceback", "gc", "ast", "io", "logging", "warnings",
     "inspect", "textwrap", "copy", "decimal", "fractions", "string", "types",
-    "sysctl",
+    "sysctl", "mimetypes",
 }
 
 LOCAL_PACKAGES = {
+    "app",
     "app.sovereignai",
     "app.databases",
     "app.services",
@@ -24,6 +29,13 @@ LOCAL_PACKAGES = {
     "app.tui",
     "app.adapters",
     "app.skills",
+    "sovereignai",
+    "databases",
+    "services",
+    "web",
+    "tui",
+    "adapters",
+    "skills",
 }
 
 
@@ -74,7 +86,7 @@ def parse_pyproject_dev_deps(pyproject_path: Path) -> set[str]:
         return deps
 
     with open(pyproject_path, "rb") as f:
-        data = tomli.load(f)
+        data = tomllib.load(f)
 
     dev_deps = data.get("project", {}).get("optional-dependencies", {}).get("dev", [])
     for dep in dev_deps:
@@ -107,28 +119,38 @@ def extract_imports(file_path: Path) -> set[str]:
 
 
 def check_local_package_exists(package: str, repo_root: Path) -> bool:
-    package_path = repo_root / package
+    if package == "app":
+        package_path = repo_root / "app"
+    elif package.startswith("app."):
+        package_path = repo_root / "app" / package.replace("app.", "")
+    else:
+        package_path = repo_root / "app" / package
     return package_path.exists() and package_path.is_dir()
 
 
 def main():
-    repo_root = Path(__file__).parent.parent.parent
-    requirements_txt = repo_root / "txt" / "requirements.txt"
+    # Get repo root from git to handle different script locations
+    result = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        capture_output=True, text=True, cwd=Path(__file__).parent
+    )
+    repo_root = Path(result.stdout.strip()) if result.returncode == 0 else Path(__file__).parent.parent.parent.parent.parent
+    requirements_txt = repo_root / "app" / "txt" / "requirements.txt"
     pyproject_toml = repo_root / "pyproject.toml"
 
     requirements_deps = parse_requirements(requirements_txt)
     dev_deps = parse_pyproject_dev_deps(pyproject_toml)
 
     production_dirs = [
-        repo_root / "sovereignai",
-        repo_root / "databases",
-        repo_root / "services",
-        repo_root / "web",
-        repo_root / "tui",
-        repo_root / "adapters",
+        repo_root / "app" / "sovereignai",
+        repo_root / "app" / "databases",
+        repo_root / "app" / "services",
+        repo_root / "app" / "web",
+        repo_root / "app" / "tui",
+        repo_root / "app" / "adapters",
     ]
 
-    test_dirs = [repo_root / "tests"]
+    test_dirs = [repo_root / "app" / "tests"]
 
     all_imports = {}
     missing_deps = []

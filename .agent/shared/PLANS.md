@@ -26,8 +26,8 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Field | Value |
 |-------|-------|
-| File | `prompts/plan-workflow-fix-2.md` |
-| Depends on | workflow-fix |
+| File | `prompts/plan-workflow-fix-3.md` |
+| Depends on | workflow-fix-2 |
 | Vision principles | P1, P5, P11 |
 | Open questions | none |
 
@@ -45,6 +45,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Prompt | Description | Tests | Date |
 |--------|-------------|-------|------|
+| workflow-fix-3 | Workflow Fix 3 - AR check script paths and verify_close.py logic | N/A | 2026-07-18 |
 | workflow-fix-2 | Workflow Fix 2 - OR rules, AR21, execution log handling | N/A | 2026-07-18 |
 | workflow-fix | Fix Governance Workflow Inconsistencies | N/A | 2026-07-18 |
 | 20.9.9 | Documentation Hygiene + Document Hygiene Tests | 497 | 2026-07-03 |

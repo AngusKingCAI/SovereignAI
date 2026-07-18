@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import ast
+import subprocess
 import sys
 from pathlib import Path
 
@@ -74,12 +75,19 @@ def check_function(  # noqa: E501
 
 
 def main():
-    root = Path("app/sovereignai")
+    # Get repo root from git to handle different script locations
+    result = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        capture_output=True, text=True, cwd=Path(__file__).parent
+    )
+    repo_root = Path(result.stdout.strip()) if result.returncode == 0 else Path(__file__).parent.parent.parent.parent.parent
+
+    root = repo_root / "app" / "sovereignai"
     if not root.exists():
         print("app/sovereignai/ directory not found")
         sys.exit(1)
 
-    allowlist_path = Path(".agent/executor/scripts/ar_checks/check_tracing_allowlist.txt")
+    allowlist_path = repo_root / ".agent" / "executor" / "scripts" / "ar_checks" / "check_tracing_allowlist.txt"
     try:
         allowlist = set(allowlist_path.read_text().strip().splitlines())
     except FileNotFoundError:
