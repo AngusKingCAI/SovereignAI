@@ -33,7 +33,9 @@ def test_on_task_state_changed_filters_own_events(self_correction_skill, mock_tr
         timestamp=now_utc(),
         task_id='test-123',
         old_state=TaskState.EXECUTING,
-        new_state=TaskState.COMPLETE
+        new_state=TaskState.COMPLETE,
+        version=1,
+        trace_level=TraceLevel.INFO
     )
     self_correction_skill.on_task_state_changed(event)
 
@@ -44,7 +46,9 @@ def test_on_task_state_changed_emits_debug_on_duplicate(self_correction_skill, m
         timestamp=now_utc(),
         task_id='test-123',
         old_state=TaskState.EXECUTING,
-        new_state=TaskState.COMPLETE
+        new_state=TaskState.COMPLETE,
+        version=1,
+        trace_level=TraceLevel.INFO
     )
     with patch.object(self_correction_skill, 'analyze_task') as mock_analyze:
         self_correction_skill.on_task_state_changed(event)
@@ -91,7 +95,9 @@ def test_on_task_state_changed_ignores_non_terminal_states(self_correction_skill
         timestamp=now_utc(),
         task_id='test-123',
         old_state=TaskState.RECEIVED,
-        new_state=TaskState.QUEUED
+        new_state=TaskState.QUEUED,
+        version=1,
+        trace_level=TraceLevel.INFO
     )
     with patch.object(self_correction_skill, 'analyze_task') as mock_analyze:
         self_correction_skill.on_task_state_changed(event)

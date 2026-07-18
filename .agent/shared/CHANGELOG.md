@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## prompt-plan-22-rev16 — Event Bus System: Async Delivery, Per-Handler FIFO Queues, Circuit Breakers, Critical Overflow Handling
+
+**Date**: 2026-07-19
+**Plan**: prompts/plan-22-rev16.md
+**Tests**: TBD
+**Previous Baseline**: TBD
+**Coverage**: TBD
+**Screenshots**: N/A
+**AR7 diff**: TBD
+**UOR-2**: TBD
+**COR-1**: TBD
+
+- Extended EventBus with registry and overflow_dir parameters
+- Created EventRegistry for event handler registration with wildcard support
+- Added event payload classes (TaskCreated, TaskUpdated, AgentStep, HardwareStatus)
+- Implemented async delivery with per-handler FIFO queues
+- Added circuit breakers for error handling (error_counter only, not drop_counter)
+- Implemented critical overflow handling with SQLite persistence
+- Added event versioning in types.py
+- Created web endpoints for /api/events/types and /api/events/subscriptions
+- Hardened /api/hardware/stream SSE with retry fields and session cookie auth
+- Created comprehensive test suite for event bus functionality
+- Added AR checks for event frozen status and registration validation
+- Deferred Librarian.handle_event implementation (DEBT-6)
+
 ## prompt-plan-fix-7-Rev1 — Skip Test Categorization and Environment Guards
 
 **Date**: 2026-07-19

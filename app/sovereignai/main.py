@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from sovereignai.shared.config import Config
 from sovereignai.shared.container import DIContainer
 from sovereignai.shared.event_bus import EventBus
+from sovereignai.shared.event_registry import EventRegistry
 from sovereignai.shared.file_trace_subscriber import FileTraceSubscriber
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
@@ -34,8 +35,10 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     container.register_singleton(FileTraceSubscriber, file_subscriber)
 
     # 2. EventBus — depends on TraceEmitter, singleton
-    bus = EventBus(trace=trace)
+    registry = EventRegistry()
+    bus = EventBus(trace=trace, registry=registry)
     container.register_singleton(EventBus, bus)
+    container.register_singleton(EventRegistry, registry)
 
     # Set event_bus and trace on container for remove() support (per Rev9)
     container._event_bus = bus

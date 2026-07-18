@@ -42,9 +42,43 @@ Channel = NewType("Channel", str)
 
 @dataclass(frozen=True)
 class Event:
-    channel: Channel
-    correlation_id: CorrelationId
-    timestamp: datetime     # UTC, timezone-aware
+    channel: Channel = field(default_factory=lambda: Channel("default"))
+    correlation_id: CorrelationId = field(default_factory=lambda: CorrelationId(uuid4()))
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
+    version: int = 1
+    trace_level: TraceLevel = TraceLevel.INFO
+
+    @property
+    def event_type(self) -> str:
+        return self.channel
+
+
+# Event versioning
+_deprecated_events: dict[str, str] = {}
+_logged_deprecations: set[str] = set()
+
+
+def register_deprecated_event(old_type: str, new_type: str) -> None:
+    """Register a deprecated event type mapping."""
+    _deprecated_events[old_type] = new_type
+
+
+def check_event_version(event: Event) -> Event:
+    """Check event version and emit deprecation warning if needed."""
+    if (
+        event.channel in _deprecated_events
+        and event.channel not in _logged_deprecations
+    ):
+        _logged_deprecations.add(event.channel)
+        import warnings
+
+        warnings.warn(
+            f"Event type '{event.channel}' is deprecated. "
+            f"Use '{_deprecated_events[event.channel]}' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+    return event
 
 
 # ============================================================================
@@ -192,10 +226,15 @@ TASK_STATE_CHANNEL = Channel("task_state")
 
 
 @dataclass(frozen=True)
-class TaskStateChanged(Event):
-    task_id: UUID
-    old_state: TaskState
-    new_state: TaskState
+class TaskStateChanged:
+    channel: Channel = field(default_factory=lambda: TASK_STATE_CHANNEL)
+    correlation_id: CorrelationId = field(default_factory=lambda: CorrelationId(uuid4()))
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
+    task_id: UUID = field(default_factory=uuid4)
+    old_state: TaskState = field(default_factory=lambda: TaskState.RECEIVED)
+    new_state: TaskState = field(default_factory=lambda: TaskState.RECEIVED)
+    version: int = 1
+    trace_level: TraceLevel = TraceLevel.INFO
 
 
 @dataclass(frozen=True)

@@ -7,6 +7,7 @@ from sovereignai.shared.auth import AuthMiddleware
 from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.capability_graph import CapabilityGraph, ICapabilityIndex
 from sovereignai.shared.event_bus import EventBus
+from sovereignai.shared.event_registry import EventRegistry
 from sovereignai.shared.hardware_probe import HardwareProbe
 from sovereignai.shared.task_state_machine import TaskStateMachine
 from sovereignai.shared.trace_emitter import TraceEmitter
@@ -31,7 +32,8 @@ def auth(trace: TraceEmitter) -> AuthMiddleware:
 
 @pytest.fixture
 def bus(trace: TraceEmitter) -> EventBus:
-    return EventBus(trace=trace)
+    registry = EventRegistry()
+    return EventBus(trace=trace, registry=registry)
 
 @pytest.fixture
 def capability_index(trace: TraceEmitter) -> CapabilityGraph:

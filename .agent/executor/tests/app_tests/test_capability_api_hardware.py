@@ -7,6 +7,7 @@ from sovereignai.shared.auth import AuthMiddleware
 from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.capability_graph import CapabilityGraph
 from sovereignai.shared.event_bus import EventBus
+from sovereignai.shared.event_registry import EventRegistry
 from sovereignai.shared.hardware_probe import HardwareProbe
 from sovereignai.shared.task_state_machine import TaskStateMachine
 from sovereignai.shared.trace_emitter import TraceEmitter
@@ -17,7 +18,8 @@ def test_sample_hardware_returns_snapshot() -> None:
     trace = TraceEmitter()
     auth = AuthMiddleware(trace=trace)
     graph = CapabilityGraph(trace=trace, dev_mode=True)
-    bus = EventBus(trace=trace)
+    registry = EventRegistry()
+    bus = EventBus(trace=trace, registry=registry)
     state_machine = TaskStateMachine(bus=bus, trace=trace)
     hardware_probe = HardwareProbe()
 
@@ -43,7 +45,8 @@ async def test_stream_hardware_yields_at_1hz() -> None:
     trace = TraceEmitter()
     auth = AuthMiddleware(trace=trace)
     graph = CapabilityGraph(trace=trace, dev_mode=True)
-    bus = EventBus(trace=trace)
+    registry = EventRegistry()
+    bus = EventBus(trace=trace, registry=registry)
     state_machine = TaskStateMachine(bus=bus, trace=trace)
     hardware_probe = HardwareProbe()
 

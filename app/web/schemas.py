@@ -123,3 +123,27 @@ class SkillResultDTO(BaseModel):
     error: str | None
     execution_time_ms: int
 
+
+class EventTypeDTO(BaseModel):
+
+    event_type: str
+    version: int
+    description: str
+
+
+class EventTypeListDTO(BaseModel):
+
+    event_types: list[EventTypeDTO]
+
+
+class SubscriptionDTO(BaseModel):
+
+    event_type: str
+    handler_id: str
+    queue_maxsize: int
+
+
+class SubscriptionListDTO(BaseModel):
+
+    subscriptions: list[SubscriptionDTO]
+

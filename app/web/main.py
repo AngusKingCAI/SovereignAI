@@ -15,6 +15,8 @@ from sovereignai.main import build_container
 from sovereignai.shared.auth import AuthMiddleware
 from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.capability_graph import ICapabilityIndex
+from sovereignai.shared.event_bus import EventBus
+from sovereignai.shared.event_registry import EventRegistry
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
     CapabilityCategory,
@@ -26,6 +28,7 @@ from app.web.schemas import (
     CapabilityResponseDTO,
     DatabaseResponseDTO,
     DiskUsageDTO,
+    EventTypeListDTO,
     FirstRunStatusDTO,
     GpuInfoDTO,
     HardwareSnapshotDTO,
@@ -34,6 +37,7 @@ from app.web.schemas import (
     SkillExecuteDTO,
     SkillListDTO,
     SkillResultDTO,
+    SubscriptionListDTO,
     TaskResponseDTO,
     TaskSubmitDTO,
     TraceEventDTO,
@@ -49,8 +53,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Startup
     container = build_container()
     app.state.container = container
+
+    event_bus: EventBus = container.retrieve(EventBus)
+    await event_bus.start()
     yield
-    # Shutdown (no-op for now)
+
+    # Shutdown
+    await event_bus.stop()
 
 
 app = FastAPI(lifespan=lifespan)
@@ -390,54 +399,58 @@ async def get_hardware_stream(request: Request) -> StreamingResponse:
 
         last_keepalive = time.time()
 
-        async for snapshot in api.stream_hardware():
-            if await request.is_disconnected():
-                break
+        try:
+            async for snapshot in api.stream_hardware():
+                if await request.is_disconnected():
+                    break
 
-            disks_dto = [
-                DiskUsageDTO(
-                    path=d.path,
-                    total_gb=d.total_gb,
-                    used_gb=d.used_gb,
-                    free_gb=d.free_gb,
-                    percent=d.percent,
+                disks_dto = [
+                    DiskUsageDTO(
+                        path=d.path,
+                        total_gb=d.total_gb,
+                        used_gb=d.used_gb,
+                        free_gb=d.free_gb,
+                        percent=d.percent,
+                    )
+                    for d in snapshot.disks
+                ]
+
+                gpus_dto = [
+                    GpuInfoDTO(
+                        name=g.name,
+                        vram_total_mb=g.vram_total_mb,
+                        vram_used_mb=g.vram_used_mb,
+                        utilization_percent=g.utilization_percent,
+                        memory_type=g.memory_type,
+                    )
+                    for g in snapshot.gpus
+                ]
+
+                dto = HardwareSnapshotDTO(
+                    cpu_percent=snapshot.cpu_percent,
+                    ram_percent=snapshot.ram_percent,
+                    ram_used_gb=snapshot.ram_used_gb,
+                    ram_total_gb=snapshot.ram_total_gb,
+                    ram_available_gb=snapshot.ram_available_gb,
+                    memory_bandwidth_gbps=snapshot.memory_bandwidth_gbps,
+                    disks=disks_dto,
+                    gpus=gpus_dto,
                 )
-                for d in snapshot.disks
-            ]
 
-            gpus_dto = [
-                GpuInfoDTO(
-                    name=g.name,
-                    vram_total_mb=g.vram_total_mb,
-                    vram_used_mb=g.vram_used_mb,
-                    utilization_percent=g.utilization_percent,
-                    memory_type=g.memory_type,
-                )
-                for g in snapshot.gpus
-            ]
+                data = json.dumps(dto.model_dump(mode="json"))
+                yield f"retry: 3000\nevent: hardware\ndata: {data}\n\n"
+                last_keepalive = time.time()
 
-            dto = HardwareSnapshotDTO(
-                cpu_percent=snapshot.cpu_percent,
-                ram_percent=snapshot.ram_percent,
-                ram_used_gb=snapshot.ram_used_gb,
-                ram_total_gb=snapshot.ram_total_gb,
-                ram_available_gb=snapshot.ram_available_gb,
-                memory_bandwidth_gbps=snapshot.memory_bandwidth_gbps,
-                disks=disks_dto,
-                gpus=gpus_dto,
-            )
+                with contextlib.suppress(TimeoutError):
+                    await asyncio.wait_for(asyncio.sleep(0.1), timeout=0.5)
 
-            data = json.dumps(dto.model_dump(mode='json'))
-            yield f"event: hardware\ndata: {data}\n\n"
-            last_keepalive = time.time()
-
-            with contextlib.suppress(TimeoutError):
-                await asyncio.wait_for(asyncio.sleep(0.1), timeout=0.5)
-
-            current_time = time.time()
-            if current_time - last_keepalive > 15:
-                yield ": keep-alive\n\n"
-                last_keepalive = current_time
+                current_time = time.time()
+                if current_time - last_keepalive > 15:
+                    yield ": keep-alive\n\n"
+                    last_keepalive = current_time
+        except asyncio.CancelledError:
+            yield ": connection-closed\n\n"
+            raise
 
     return StreamingResponse(
         hardware_event_generator(),
@@ -682,6 +695,57 @@ async def execute_skill(
             error=str(exc),
             execution_time_ms=0,
         )
+
+
+@app.get("/api/events/types", dependencies=[Depends(get_current_user)])
+async def get_event_types(request: Request) -> EventTypeListDTO:
+    from app.web.schemas import EventTypeDTO
+
+    event_types = [
+        EventTypeDTO(
+            event_type="task.created",
+            version=1,
+            description="Emitted when a new task is submitted to the system",
+        ),
+        EventTypeDTO(
+            event_type="task.updated",
+            version=1,
+            description="Emitted when a task state changes",
+        ),
+        EventTypeDTO(
+            event_type="agent.step",
+            version=1,
+            description="Emitted when an agent completes a step",
+        ),
+        EventTypeDTO(
+            event_type="hardware.status",
+            version=1,
+            description="Emitted periodically with hardware metrics",
+        ),
+    ]
+    return EventTypeListDTO(event_types=event_types)
+
+
+@app.get("/api/events/subscriptions", dependencies=[Depends(get_current_user)])
+async def get_event_subscriptions(request: Request) -> SubscriptionListDTO:
+    from sovereignai.shared.event_registry import EventRegistry
+
+    from app.web.schemas import SubscriptionDTO
+
+    container: Any = request.app.state.container
+    event_registry: EventRegistry = container.retrieve(EventRegistry)
+
+    subscriptions = []
+    for event_type, handlers in event_registry._handlers.items():
+        for handler in handlers:
+            subscriptions.append(
+                SubscriptionDTO(
+                    event_type=event_type,
+                    handler_id=str(id(handler.handler)),
+                    queue_maxsize=handler.queue_maxsize,
+                )
+            )
+    return SubscriptionListDTO(subscriptions=subscriptions)
 
 
 @app.get("/api/first-run-check", dependencies=[Depends(get_current_user)])

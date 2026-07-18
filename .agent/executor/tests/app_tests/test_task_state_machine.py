@@ -3,6 +3,7 @@ from uuid import uuid4
 
 import pytest
 from sovereignai.shared.event_bus import EventBus
+from sovereignai.shared.event_registry import EventRegistry
 from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
@@ -20,7 +21,8 @@ from sovereignai.shared.types import (
 
 @pytest.fixture
 def bus(trace: TraceEmitter) -> EventBus:
-    return EventBus(trace=trace)
+    registry = EventRegistry()
+    return EventBus(trace=trace, registry=registry)
 
 @pytest.fixture
 def trace() -> TraceEmitter:

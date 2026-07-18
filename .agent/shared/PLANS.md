@@ -24,7 +24,9 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 ## Active Plan
 
-None.
+| Plan | Rev | Description | Start Date |
+|------|-----|-------------|------------|
+| Plan 22 | Rev 16 | Typed Event Bus with Async Delivery and Per-Handler FIFO | 2026-07-19 |
 
 ## Next in Queue
 

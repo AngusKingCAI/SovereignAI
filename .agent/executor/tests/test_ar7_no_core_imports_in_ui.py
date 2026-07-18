@@ -19,6 +19,8 @@ WEB_MAIN_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.container.DIContainer',
     'sovereignai.shared.event_bus',
     'sovereignai.shared.event_bus.EventBus',
+    'sovereignai.shared.event_registry',
+    'sovereignai.shared.event_registry.EventRegistry',
     'sovereignai.shared.capability_api',
     'sovereignai.shared.capability_api.CapabilityAPI',
     'sovereignai.shared.capability_graph',

@@ -4,6 +4,7 @@ from uuid import uuid4
 
 import pytest
 from sovereignai.shared.event_bus import EventBus
+from sovereignai.shared.event_registry import EventRegistry
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import Channel, Event, TraceLevel, now_utc
 
@@ -14,7 +15,8 @@ def trace_emitter() -> TraceEmitter:
 
 @pytest.fixture
 def event_bus(trace_emitter: TraceEmitter) -> EventBus:
-    return EventBus(trace=trace_emitter)
+    registry = EventRegistry()
+    return EventBus(trace=trace_emitter, registry=registry)
 
 @pytest.fixture
 def sample_event() -> Event:

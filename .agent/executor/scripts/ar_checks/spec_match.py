@@ -135,6 +135,21 @@ ALLOWLIST = {
     "prompts/plan-fix-2-Rev1.md",
     "prompts/plan-fix-3-Rev1.md",
     "prompts/plan-fix-4-Rev1.md",
+    "prompts/plan-fix-5-Rev1.md",
+    "prompts/plan-fix-6-Rev1.md",
+    "prompts/plan-fix-7-Rev1.md",
+    "app/sovereignai/shared/event_registry.py",
+    "app/sovereignai/shared/events.py",
+    ".agent/executor/scripts/ar_checks/check_event_registration.py",
+    ".agent/executor/scripts/ar_checks/check_event_frozen.py",
+    ".agent/executor/tests/app_tests/test_typed_event_bus.py",
+    ".agent/executor/tests/app_tests/test_event_registry.py",
+    ".agent/executor/tests/app_tests/test_async_delivery.py",
+    ".agent/executor/tests/app_tests/test_hardware_stream_requires_cookie.py",
+    ".agent/executor/tests/app_tests/test_events_api.py",
+    ".agent/executor/tests/app_tests/test_check_event_registration.py",
+    ".agent/executor/tests/app_tests/test_check_event_frozen.py",
+    "app/web/schemas.py",
 }
 
 

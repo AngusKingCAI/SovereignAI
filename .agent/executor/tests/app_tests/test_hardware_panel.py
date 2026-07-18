@@ -59,7 +59,7 @@ def test_hardware_stream_endpoint_requires_auth(client: TestClient) -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
         pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     response = client.get("/api/hardware/stream")
-    assert response.status_code == 401
+    assert response.status_code == 403
 
 
 @pytest.mark.timeout(5)

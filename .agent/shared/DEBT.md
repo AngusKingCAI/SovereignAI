@@ -13,6 +13,7 @@ Open items only. Resolved items → CHANGELOG.md.
 | DEBT-3 | First-run experience UI | Medium | Low | Identified | TBD | UI implementation prioritised |
 | DEBT-4 | UI implementations (web, tui) | Low | Low | Identified | TBD | UI implementation prioritised |
 | DEBT-5 | P4 compliance test isolation | Low | Low | Identified | TBD | Test infrastructure improvement |
+| DEBT-6 | Librarian.handle_event method + episodic event consumer | Medium | Medium | Identified | TBD | Event system prioritised |
 
 ## Resolved Items → See CHANGELOG.md
 
@@ -65,3 +66,14 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Target**: TBD
 **Trigger**: When test infrastructure improves to support isolated file modifications.
 **Reason**: P4 compliance tests (test_p4_compliance.py) require temporary modifications to manifest files and DEBT.md to test edge cases (1 adapter vs 2 adapters, exception handling). Current test infrastructure cannot safely isolate these modifications without risking impact on real files. Tests deferred until better isolation mechanisms available.
+
+---
+
+## DEBT-6 — Librarian.handle_event method + episodic event consumer
+
+**Severity**: Medium
+**Priority**: Medium
+**Status**: Identified
+**Target**: TBD
+**Trigger**: When event system prioritised.
+**Reason**: Plan 22 S5 deferred — Librarian has no handle_event method. Need to implement episodic event consumer pattern for librarian to subscribe to task events (created, updated, completed) for knowledge graph updates.
