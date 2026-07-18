@@ -15,6 +15,7 @@ allowed-tools:
 OR17. Deliverables ship in full or defer — no partial implementations
 OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
 OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
+OR64. Error pattern detection — if same error appears 2+ times in execution, run suggest_rule.py. Define "same error" as: same error message substring OR same script failure OR same command syntax error.
 
 Run `/verify` workflow after every file edit. STOP on any failure.
 
@@ -24,5 +25,5 @@ Run `/verify` workflow after every file edit. STOP on any failure.
 4. `git add prompts/*.md` — ensure all plan files tracked.
 5. OR checks: `or_checks/run_all.py` (if exists).
 6. Landmine checks: `landmine_checks/run_all.py` (if exists).
-7. If new error pattern detected: run suggest_rule.py, STOP for Architect review.
+7. If new error pattern detected (same error message substring, same script failure, or same command syntax error appearing 2+ times): run suggest_rule.py, STOP for Architect review.
 8. Report: `<file>: OK` or `<file>: FAIL`.

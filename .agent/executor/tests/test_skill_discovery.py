@@ -4,10 +4,11 @@ import sys
 from pathlib import Path
 
 import pytest
-from sovereignai.shared.capability_graph import CapabilityGraph
-from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import CapabilityCategory
-from sovereignai.skills.discovery import SkillDiscovery
+
+from app.sovereignai.shared.capability_graph import CapabilityGraph
+from app.sovereignai.shared.trace_emitter import TraceEmitter
+from app.sovereignai.shared.types import CapabilityCategory
+from app.sovereignai.skills.discovery import SkillDiscovery
 
 
 def test_auto_discovery() -> None:
@@ -15,7 +16,7 @@ def test_auto_discovery() -> None:
     graph = CapabilityGraph(trace=trace)
     discovery = SkillDiscovery(trace=trace, capability_graph=graph)
 
-    skills_path = Path("sovereignai/skills/official")
+    skills_path = Path("app/sovereignai/skills/official")
     if not skills_path.exists():
         pytest.skip(f"Skills directory not found: {skills_path}")
 
@@ -30,6 +31,11 @@ def test_auto_discovery() -> None:
     allowlist.add("sovereignai.conformance")
     allowlist.add("sovereignai.conformance.runner")
     allowlist.add("sovereignai.conformance.registry")
+    allowlist.add("app.sovereignai.conformance")
+    allowlist.add("app.sovereignai.conformance.runner")
+    allowlist.add("app.sovereignai.conformance.registry")
+    allowlist.add("sovereignai")
+    allowlist.add("app.sovereignai")
 
     unexpected_modules = new_modules - allowlist
     assert not unexpected_modules, f"Unexpected modules loaded: {unexpected_modules}"
@@ -40,7 +46,7 @@ def test_capability_graph_registration() -> None:
     graph = CapabilityGraph(trace=trace, dev_mode=True)
     discovery = SkillDiscovery(trace=trace, capability_graph=graph)
 
-    skills_path = Path("sovereignai/skills/official")
+    skills_path = Path("app/sovereignai/skills/official")
     if not skills_path.exists():
         pytest.skip(f"Skills directory not found: {skills_path}")
 
@@ -73,7 +79,7 @@ def test_dangling_dependency_warning() -> None:
     graph = CapabilityGraph(trace=trace)
     discovery = SkillDiscovery(trace=trace, capability_graph=graph)
 
-    skills_path = Path("sovereignai/skills/official")
+    skills_path = Path("app/sovereignai/skills/official")
     if not skills_path.exists():
         pytest.skip(f"Skills directory not found: {skills_path}")
 

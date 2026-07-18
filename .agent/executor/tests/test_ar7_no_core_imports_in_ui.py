@@ -72,8 +72,8 @@ UI_PACKAGE_DENYLIST = {  # noqa: E501
     'sovereignai.adapters',
     'sovereignai.skills',
 }
-UI_DIRECTORIES = ['web', 'cli', 'tui', 'phone']
-CAPABILITY_API_FILE = 'sovereignai/shared/capability_api.py'
+UI_DIRECTORIES = ['app/web', 'app/cli', 'app/tui', 'app/phone']
+CAPABILITY_API_FILE = 'app/sovereignai/shared/capability_api.py'
 
 def _scan_imports(file_path: Path) -> set[str]:
     tree = ast.parse(file_path.read_text())

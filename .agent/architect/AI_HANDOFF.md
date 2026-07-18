@@ -22,7 +22,7 @@ Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Wind
 1.5. If user states execution log has been pushed: clone latest repo, read execution log, diff-check against plan expectations.
 2. Verify repo state. Spot-check `.agent/shared/CHANGELOG.md` latest entry (first 10 lines). PLANS.md updated. No scope creep.
 3. Re-read `.agent/shared/LANDMINES.md` + `PRINCIPLES.md` + `.agent/shared/RULE_LIFECYCLE.md`.
-4. Review execution patterns. Check `.agent/executor/suggestions/` for new rule proposals.
+4. Review execution patterns. Check `.agent/executor/suggestions/` for new rule proposals (per OR65). If suggestions exist, evaluate per RULE_LIFECYCLE.md TRIAGE before creating plan.
    - New AR → assign ID, implement directly: add to ARCHITECTURE.md with verification script
    - New OR → assign ID, implement directly: edit relevant skill with OR reference
    - New landmine → assign ID, implement directly: add to LANDMINES.md with detection script
@@ -83,7 +83,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 - S0.0: If resuming from prior execution, clone latest repo and verify execution log state.
 - S0.1: Run `/open`
 - S0.2: Read `AGENTS.md` in full
-- S0.3: Check `.agent/executor/suggestions/` for new rule proposals from Executor. Include accepted rules in this plan. Implementation per RULE_LIFECYCLE.md IMPLEMENT stage.
+- S0.3: Check `.agent/executor/suggestions/` for new rule proposals from Executor. If suggestions exist, evaluate per RULE_LIFECYCLE.md TRIAGE before proceeding (per OR65). Include accepted rules in this plan. Implementation per RULE_LIFECYCLE.md IMPLEMENT stage.
 - S0.4: Check `.agent/shared/DEBT.md` for other deferred items (non-rule items).
 - S0.5: If new tech stack, add research findings to plan header (per Architect Workflow step 7).
 

@@ -57,7 +57,7 @@ def test_main_smoke_test() -> None:
     env = {**_os.environ, 'SOVEREIGNAI_TEST_MODE': '1'}
     project_root = Path(__file__).resolve().parents[1]
     result = subprocess.run(  # noqa: E501
-        [sys.executable, '-m', 'sovereignai.main'],
+        [sys.executable, '-m', 'app.sovereignai.main'],
         cwd=str(project_root),
         capture_output=True,
         text=True,
@@ -151,7 +151,7 @@ def test_capability_api_has_task_state_query_wired() -> None:
 
 def test_q26_all_components_instantiated_in_main() -> None:
     import ast
-    main_path = 'sovereignai/main.py'
+    main_path = 'app/sovereignai/main.py'
     with open(main_path) as f:
         tree = ast.parse(f.read())
     build_container_func = None
