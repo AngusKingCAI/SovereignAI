@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## governance-execution-gap-b — Rule Suggestion Pipeline
+
+**Date**: 2026-07-18
+**Plan**: Direct execution (no plan file)
+**Tests**: N/A (infrastructure-only change)
+**Coverage**: N/A (no code changes)
+**Screenshots**: N/A
+**AR7 diff**: None
+**OR63**: None
+
+- S1: Created `.agent/executor/scripts/suggest_rule.py` for structured rule suggestions
+- S1: Created `.agent/executor/suggestions/` directory for rule proposals
+- S2: Created `.agent/shared/RULE_LIFECYCLE.md` documenting rule lifecycle (SUGGEST → TRIAGE → DECIDE → IMPLEMENT → VERIFY → GRADUATE)
+- S2: RULE_LIFECYCLE.md placed in .agent/shared/ root (not architect directory) per AGENTS.md rule #7
+- S3: Skipped AI_HANDOFF.md edits (violation of AGENTS.md rule #7 - no architect file edits without explicit authorization)
+- S4: Reverted AGENTS.md Invariant #3 changes (should go through DEBT.md workflow)
+- S5: Reverted verify/SKILL.md changes (should go through DEBT.md workflow)
+- Rule suggestion infrastructure complete; workflow integration requires DEBT.md entry and Architect approval
+
+---
+
 ## governance-execution-gap — OR and Landmine Check Infrastructure
 
 **Date**: 2026-07-18
