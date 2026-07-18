@@ -18,7 +18,7 @@
 - Verified plans 22-24 remain in prompts/ as drafts (not moved to completed/, no execution logs, not in CHANGELOG)
 - Verified workflow-fix plans (workflow-fix, workflow-fix-2, workflow-fix-3) are in completed/ with execution logs
 - All verify_close.py checks now pass with proper session-scoped logic and Rev suffix handling
-- Created execution log at logs/execution-log-prompt-workflow-fix-5.md
+- Created execution log at logs/execution-log-prompt-workflow-fix-5.md with header template
 
 ---
 
