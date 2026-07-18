@@ -12,42 +12,34 @@ def main():
         sys.exit(1)
 
     repo_root = Path(__file__).parent.parent.parent.parent
-    prompts_dir = repo_root / 'prompts'
+    plans_md = repo_root / '.agent' / 'shared' / 'PLANS.md'
 
-    if not prompts_dir.exists():
-        print(f"ERROR: {prompts_dir} not found", file=sys.stderr)
+    if not plans_md.exists():
+        print(f"ERROR: {plans_md} not found", file=sys.stderr)
         sys.exit(1)
 
-    # Find all plan-{N}-Rev*.md files in prompts/ (active plans only)
-    plan_files = list(prompts_dir.glob('plan-*-Rev*.md'))
-
-    if not plan_files:
-        print(
-            "ERROR: No active plan files found in prompts/ "
-            "matching pattern plan-*-Rev*.md",
-            file=sys.stderr,
-        )
+    # Read PLANS.md to get the active plan from the "Active Plan" section
+    content = plans_md.read_text(encoding='utf-8')
+    
+    # Find the "Active Plan" section
+    active_plan_match = re.search(r'## Active Plan.*?\| File \| ([^\n]+) \|', content, re.DOTALL)
+    if active_plan_match:
+        active_plan = active_plan_match.group(1).strip()
+        if active_plan == 'None':
+            print("No active plan set in PLANS.md", file=sys.stderr)
+            sys.exit(1)
+        
+        # Convert to full path
+        active_plan_path = repo_root / active_plan
+        if active_plan_path.exists():
+            print(active_plan_path)
+            sys.exit(0)
+        else:
+            print(f"ERROR: Active plan file not found: {active_plan_path}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        print("ERROR: Could not find Active Plan section in PLANS.md", file=sys.stderr)
         sys.exit(1)
-
-    # Sort by plan number numerically (lowest first), then by revision number (highest first)
-    def extract_plan_info(filepath):
-        """Extract plan number and revision from filename for proper sorting."""
-        match = re.search(r'plan-(\d+(?:\.\d+)*)-rev(\d+)', filepath.name, re.IGNORECASE)
-        if match:
-            # Convert to tuple for proper numeric comparison (plan_parts, revision)
-            plan_parts = match.group(1).split('.')
-            plan_tuple = tuple(int(p) for p in plan_parts)
-            revision = int(match.group(2))
-            # Negate revision so higher revisions sort first
-            return (plan_tuple, -revision)
-        return ((0, 0), 0)
-
-    plan_files.sort(key=extract_plan_info)
-
-    # Return the first one (lowest plan number, then highest revision)
-    current_plan = plan_files[0]
-    print(current_plan)
-    sys.exit(0)
 
 
 if __name__ == '__main__':
