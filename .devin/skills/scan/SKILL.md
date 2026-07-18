@@ -12,6 +12,10 @@ allowed-tools:
   - write
 ---
 
+OR17. Deliverables ship in full or defer — no partial implementations
+OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
+OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
+
 Run `/scan` workflow. Whole-repo scan. No new features. Fixes only. STOP on failure.
 
 1. Resolve plan: `get_current_plan.py`.

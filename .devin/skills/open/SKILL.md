@@ -11,6 +11,10 @@ allowed-tools:
   - write
 ---
 
+OR17. Deliverables ship in full or defer — no partial implementations
+OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
+OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
+
 Run `/open` workflow. STOP on any failure.
 
 1. Read `AGENTS.md`.

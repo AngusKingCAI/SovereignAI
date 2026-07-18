@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## workflow-fix-2 — Workflow Fix 2 - OR Rules, AR21, Execution Log Handling
+
+**Date**: 2026-07-18
+**Plan**: prompts/plan-workflow-fix-2.md
+**Tests**: N/A (documentation-only change)
+**Coverage**: N/A (no code changes)
+**Screenshots**: N/A
+**AR7 diff**: None
+**OR63**: None
+
+- Added Clone-on-Log-Pushed step to AI_HANDOFF.md Architect Workflow (step 1.5): clone latest repo, read execution log, diff-check against plan expectations
+- Updated AI_HANDOFF.md Plan Template S0 to include S0.0: clone latest repo and verify execution log state if resuming from prior execution
+- Defined OR rules (OR17, OR19, OR63) in all skill files (open, close, verify, scan) with formal definitions at top of each SKILL.md
+- Resolved AR21 undefined citation by adding retired AR21 rule definition to ARCHITECTURE.md with retirement note
+- Clarified execution log handling in close/SKILL.md step 11: create BLANK execution log with header template only, user will populate with chat transcript
+- Verified workflow consistency: check_rule_crossrefs.py passes with 0 undefined citations (OR17, OR19, OR63 now defined, AR21 marked as retired)
+- OR and Landmine check runners gracefully handle empty script sets (exit 0 with message)
+- Governance workflows now consistent: AI_HANDOFF.md, skill files, ARCHITECTURE.md all aligned
+- Note: AR21 is retired in ARCHITECTURE.md (docstring discipline) - no check script needed
+
+---
+
 ## workflow-fix — Fix Governance Workflow Inconsistencies
 
 **Date**: 2026-07-18

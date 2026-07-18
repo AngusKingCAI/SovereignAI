@@ -19,6 +19,7 @@ Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Wind
 ## Architect Workflow
 
 1. Read logs end-to-end. Extract test counts, STOPs, deviations.
+1.5. If user states execution log has been pushed: clone latest repo, read execution log, diff-check against plan expectations.
 2. Verify repo state. Spot-check `.agent/shared/CHANGELOG.md` latest entry (first 10 lines). PLANS.md updated. No scope creep.
 3. Re-read `.agent/shared/LANDMINES.md` + `PRINCIPLES.md` + `.agent/shared/RULE_LIFECYCLE.md`.
 4. Review execution patterns. Check `.agent/executor/suggestions/` for new rule proposals.
@@ -79,6 +80,7 @@ Open questions resolved: <which Q1-Q34, or "none">
 ```
 
 **S0 — Opening**:
+- S0.0: If resuming from prior execution, clone latest repo and verify execution log state.
 - S0.1: Run `/open`
 - S0.2: Read `AGENTS.md` in full
 - S0.3: Check `.agent/executor/suggestions/` for new rule proposals from Executor. Include accepted rules in this plan. Implementation per RULE_LIFECYCLE.md IMPLEMENT stage.

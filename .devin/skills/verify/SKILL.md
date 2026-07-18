@@ -12,6 +12,10 @@ allowed-tools:
   - write
 ---
 
+OR17. Deliverables ship in full or defer — no partial implementations
+OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
+OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
+
 Run `/verify` workflow after every file edit. STOP on any failure.
 
 1. If <file> is not `.py`: report "N/A — not Python" and exit.

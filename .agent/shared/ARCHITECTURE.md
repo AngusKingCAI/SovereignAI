@@ -30,6 +30,8 @@ AR6. Adapters register tools in capability graph at startup. Failed health check
 
 AR12. FastAPI web app runs as separate process. Imports from `app/sovereignai/` only via public API surface.
 
+AR21. [RETIRED] Docstring discipline — required docstrings with specific formatting (≥10 words, verb-first, no jargon). Retired in workflow rev 12; docstrings now prohibited per AR11.
+
 ---
 
 ## Resilience & Health
@@ -75,6 +77,7 @@ AR14. Web-layer DTOs in `app/web/schemas.py`. Core types never returned directly
 | AR13 | `check_tracing.py` | Per-close | SSE auth audit |
 | AR14 | `check_p4_compliance.py` | Per-close | Web DTO compliance |
 | AR15 | `check_component_manifest_kwargs.py` | Per-close | Adapter manifest validation |
+| AR21 | `check_ar21.py` | Per-close | Retired rule - check for stale references |
 | P11 | `no_context_bags.py` | Per-close | No context bags (PRINCIPLES.md) |
 
 *Extend `check_rule_crossrefs.py` to auto-populate this table from script metadata.*

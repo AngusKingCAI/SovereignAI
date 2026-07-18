@@ -12,6 +12,10 @@ allowed-tools:
   - write
 ---
 
+OR17. Deliverables ship in full or defer — no partial implementations
+OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
+OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
+
 Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothing commits.
 
 1. Resolve plan: `get_current_plan.py`.
@@ -26,6 +30,17 @@ Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothin
 8. Placeholders: `check_placeholders.py`. STOP on hit.
 9. Spec match: `spec_match.py`. STOP if exit≠0.
 10. HARD GATE — `verify_close.py`. If exit≠0: STOP. Do not commit. Do not tag.
-11. Execution log: create blank `logs/execution-log-{plan-name}.md` for user to populate with chat transcript.
+11. Execution log: create BLANK execution log file at `logs/execution-log-{plan-name}.md` with ONLY the header template. Do NOT populate with chat transcript — user will populate after execution. Template:
+   ```
+   # Execution Log: {plan-name}
+
+   **Date**: YYYY-MM-DD
+   **Plan**: {plan-file}
+   **Executor**: Devin
+
+   ---
+
+   *Populate this file with the chat transcript from the {plan-name} plan execution.*
+   ```
 12. Documentation: prepend CHANGELOG, update PLANS.md, add to DEBT.md.
 13. Git: `git status` → identify session files only → `git add` specific files → commit → tag `prompt-{N}` → push.
