@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## prompt-plan-fix-5-Rev1 — Plan Fix 5 - Legacy OR ID Migration and check_rule_crossrefs.py Blind Spot Fix
+
+**Date**: 2026-07-18
+**Plan**: prompts/plan-fix-5-Rev1.md
+**Tests**: pytest .agent/executor/tests (531 tests, 479 passed, 52 skipped, 0 failed)
+**Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
+**Coverage**: N/A (no new code added)
+**Screenshots**: N/A
+**AR7 diff**: None
+**UOR-2**: Test failures: no "pre-existing" exemption
+**COR-1**: Test-fix plans run full suite
+
+- Added Retired Rules section to OR_RULES.md with mapping table for legacy OR IDs
+- Added OOR-1 (Architect Suggestion Review) to OR_RULES.md
+- Added COR-1 (Test-Fix Plans Run Full Suite) to OR_RULES.md
+- Created migrate_or_ids.py script to migrate legacy OR IDs to new naming scheme
+- Migrated OR17→UOR-1, OR19→UOR-2, OR29→COR-1, OR63→UOR-3 across 17 files
+- Documented OR48, OR61, OR65 as retired in OR_RULES.md
+- Expanded check_rule_crossrefs.py to scan AGENTS.md, skills, scripts, plans
+- Removed blanket CHANGELOG.md exemption from check_rule_crossrefs.py
+- Added historical log file exemption to check_rule_crossrefs.py
+- Fixed get_current_plan.py to detect active plans from PLANS.md
+- Updated scan/SKILL.md to remove SOR section reference
+- Updated AI_HANDOFF.md to remove SOR from operational rules list
+- Updated DECISIONS.md to use UOR-2 instead of OR19
+- Updated CHANGELOG.md to document retired OR check scripts
+- Updated PLANS.md with active plan entry for plan-fix-5-Rev1
+
 ## prompt-plan-fix-4-Rev1 — Plan Fix 4 - Remaining suggest_rule.py References Cleanup, AR Rule Cleanup, RULE_LIFECYCLE.md File References
 
 **Date**: 2026-07-18

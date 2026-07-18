@@ -24,7 +24,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 ## Active Plan
 
-prompt-plan-fix-5-Rev1 — Plan Fix 5 - Legacy OR ID Migration and check_rule_crossrefs.py Blind Spot Fix
+None.
 
 ## Next in Queue
 
@@ -40,6 +40,7 @@ prompt-plan-fix-5-Rev1 — Plan Fix 5 - Legacy OR ID Migration and check_rule_cr
 
 | Prompt | Description | Tests | Date |
 |--------|-------------|-------|------|
+| prompt-plan-fix-5-Rev1 | Plan Fix 5 - Legacy OR ID Migration and check_rule_crossrefs.py Blind Spot Fix | 531 | 2026-07-18 |
 | prompt-plan-fix-4-Rev1 | Plan Fix 4 - Remaining suggest_rule.py References Cleanup, AR Rule Cleanup, RULE_LIFECYCLE.md File References | 531 | 2026-07-18 |
 | prompt-plan-fix-3-Rev1 | Plan Fix 3 - ToolCallParser isinstance Module Identity Fix and Governance Cleanup | 531 | 2026-07-18 |
 | prompt-plan-fix-2-Rev1 | Plan Fix 2 - Namespace Package Collision Fix and ToolCallParser Error Type Fixes | 531 | 2026-07-18 |
