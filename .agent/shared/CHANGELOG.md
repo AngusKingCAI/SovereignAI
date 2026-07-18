@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## prompt-plan-fix-4-Rev1 — Plan Fix 4 - Remaining suggest_rule.py References Cleanup, AR Rule Cleanup, RULE_LIFECYCLE.md File References
+
+**Date**: 2026-07-18
+**Plan**: prompts/plan-fix-4-Rev1.md
+**Tests**: pytest .agent/executor/tests (531 tests, 479 passed, 52 skipped, 0 failed)
+**Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
+**Coverage**: N/A (no new code added)
+**Screenshots**: N/A
+**AR7 diff**: None
+**UOR-2**: Test failures: no "pre-existing" exemption
+**COR-1**: Test-fix plans run full suite
+
+- Replaced remaining suggest_rule.py references with "document in execution log for Architect review"
+- Updated OR_RULES.md VOR-1 to replace suggest_rule.py reference
+- Updated AGENTS.md invariant 3 to replace suggest_rule.py reference
+- Updated open/SKILL.md step 6 to replace suggest_rule.py reference
+- Reconciled ar_checks/README.md with ARCHITECTURE.md as index pointing to ARCHITECTURE.md
+- Fixed AR16-AR20 numbering gap in ARCHITECTURE.md with "Reserved. Never assigned."
+- Re-scoped AR11 to "Docstrings not required (D-rules disabled in ruff). Self-documenting names preferred."
+- Removed dead [tool.ruff.lint.pydocstyle] block from pyproject.toml
+- Fixed ARCHITECTURE.md verification table to remove no_globals.py and constructor_arg_cap.py from AR11 row
+- Updated RULE_LIFECYCLE.md directory structure to reflect actual files (semantic names, not check_ar{n}.py pattern)
+- Updated spec_match.py to handle plan-fix-N-RevX format for baseline parsing
+- Added plan-fix files to spec_match.py ALLOWLIST
+- Fixed get_current_plan.py to handle encoding issues and return correct plan path
+- Updated PLANS.md with plan-fix-4-Rev1 active plan entry
+
 ## prompt-plan-fix-3-Rev1 — Plan Fix 3 - ToolCallParser isinstance Module Identity Fix and Governance Cleanup
 
 **Date**: 2026-07-18
