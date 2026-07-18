@@ -16,6 +16,7 @@ Open items only. Resolved items → CHANGELOG.md.
 | DEBT-6 | Librarian.handle_event method + episodic event consumer | Medium | Medium | Identified | TBD | Event system prioritised |
 | DEBT-7 | TUI cookie auth for agent SSE stream | Low | Low | Identified | TBD | TUI framework investigation |
 | DEBT-8 | Web UI consumer for agent SSE stream | Low | Low | Identified | TBD | Web UI implementation prioritised |
+| DEBT-9 | Cross-task persistent graph memory | Medium | Medium | Identified | TBD | Graph memory prioritised |
 
 ## Resolved Items → See CHANGELOG.md
 
@@ -101,3 +102,14 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Target**: TBD
 **Trigger**: When event system prioritised.
 **Reason**: Plan 22 S5 deferred — Librarian has no handle_event method. Need to implement episodic event consumer pattern for librarian to subscribe to task events (created, updated, completed) for knowledge graph updates.
+
+---
+
+## DEBT-9 — Cross-task persistent graph memory
+
+**Severity**: Medium
+**Priority**: Medium
+**Status**: Identified
+**Target**: TBD
+**Trigger**: When graph memory prioritised.
+**Reason**: Plan 24 S5 implemented TaskGraphCache as per-task ephemeral memory using SQLite :memory: database. Cross-task persistent graph memory was deferred to avoid scope creep. Future implementation would use file-backed SQLite to maintain graph state across task boundaries for persistent knowledge accumulation.

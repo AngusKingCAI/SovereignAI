@@ -171,3 +171,29 @@ class AgentStepDTO(BaseModel):
     action: str | None = None
     observation: str | None = None
 
+
+class DepartmentListDTO(BaseModel):
+
+    departments: list[dict]
+
+
+class DepartmentTaskSubmitDTO(BaseModel):
+
+    task_description: str
+
+
+class DepartmentTaskResponseDTO(BaseModel):
+
+    task_id: str
+    status: str
+    output: str | None = None
+    error: str | None = None
+
+
+class SymbolMapResponseDTO(BaseModel):
+
+    status: str
+    health: str
+    symbols: list[dict] = []
+    error: str | None = None
+

@@ -114,3 +114,39 @@ Append-only. Status: `Proposed | Accepted | Superseded`.
 **Context**: Plan 23 S2.3 requires GraphMemory as @runtime_checkable Protocol for duck-typed satisfaction without concrete class.
 **Decision**: GraphMemory defined as Protocol with @runtime_checkable decorator. Plan 24 TaskGraphCache must satisfy this protocol (locked contract).
 **Consequences**: Runtime type checking overhead (minimal). No concrete GraphMemory class exists — any class with matching method signature satisfies protocol. Enables flexible memory implementations.
+
+---
+
+## DD-24.11.1 — DepartmentManager bounded pipeline pattern
+
+**Status**: Proposed
+**Context**: Plan 24 S1-S2 requires department managers to implement bounded pipeline: deterministic build_context → non-deterministic worker spawn → deterministic validate.
+**Decision**: DepartmentManager base class defines abstract execute_task() with try/finally pattern ensuring graph_memory.close() fires even if worker retrieval throws (P24-B). All state scoped per execute_task() call for task isolation.
+**Consequences**: Predictable error handling and resource cleanup. Concurrent tasks do not share manager state. Requires manual resource management via finally blocks.
+
+---
+
+## DD-24.11.2 — TaskGraphCache idempotent close
+
+**Status**: Proposed
+**Context**: Plan 24 S5 requires TaskGraphCache.close() to be safe for multiple calls during error scenarios.
+**Decision**: TaskGraphCache implements _closed flag; close() checks flag and returns early if already closed. Called in finally block of CodingManager.execute_task().
+**Consequences**: Safe double-close patterns. No exceptions on redundant cleanup calls. Simple implementation with boolean flag.
+
+---
+
+## DD-24.11.3 — SkillDiscovery over SkillManifestRegistry
+
+**Status**: Proposed
+**Context**: Plan 24 S2 requires skill discovery via existing SkillDiscovery class, not non-existent SkillManifestRegistry.
+**Decision**: CodingManager.execute_task() uses container.retrieve(SkillDiscovery) and skill_discovery.get_skill_index() to retrieve available skills. SkillDiscovery provides scan(paths) and get_skill_index() -> dict[str, tuple[CapabilityCategory, str]].
+**Consequences**: Consistent with existing architecture. No new skill registry class needed. Leverages existing skill scanning infrastructure.
+
+---
+
+## DD-24.11.4 — SymbolMap latency budget enforcement
+
+**Status**: Proposed
+**Context**: Plan 24 S4 requires SymbolMap indexing to meet 2000ms median latency budget to avoid blocking event loop.
+**Decision**: test_symbol_map_latency_budget.py enforces warmup + 5-run median ≤2000ms. Test skipped via RUN_SLOW_TESTS environment variable per landmine M5. All timings included in failure output for debugging.
+**Consequences**: CI/CD can enforce performance regression detection. Slow tests opt-in via environment variable. Performance regression visibility through test failures.

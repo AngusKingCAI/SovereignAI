@@ -217,6 +217,38 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     librarian = Librarian(capability_graph=graph, trace=trace)
     container.register_singleton(Librarian, librarian)
 
+    # 12.5. Register TaskGraphCache as FACTORY (Plan 24 S5)
+    from sovereignai.memory.graph_backend import TaskGraphCache
+    container.register_factory(TaskGraphCache, lambda: TaskGraphCache())
+
+    # 12.6. Register SymbolMap as FACTORY (Plan 24 S4)
+    from sovereignai.indexing.symbol_map import SymbolMap
+    container.register_factory(SymbolMap, lambda: SymbolMap())
+
+    # 12.7. Register CodingManager (Plan 24 S2)
+    from sovereignai.managers.coding import CodingManager
+    coding_manager = CodingManager(container=container, project_root=Path.cwd())
+    container.register_singleton(CodingManager, coding_manager)
+
+    # 12.8. Register ReActLoop as FACTORY (Plan 23 S10, Plan 24 S2 dependency)
+    from sovereignai.agent.config import ReActConfig
+    from sovereignai.agent.factory import ReActLoopFactory
+    from sovereignai.agent.react import ReActLoop
+    from sovereignai.observability.trace_emitter import TraceEmitterWrapper
+
+    react_config = ReActConfig()
+
+    def create_react_loop():
+        return ReActLoop(
+            config=react_config,
+            skill_runner=container.retrieve(ISkillRunner),  # type: ignore
+            session_registry=container.retrieve(ToolSessionRegistry),
+            emitter=container.retrieve(TraceEmitterWrapper)
+        )
+
+    container.register_factory(ReActLoopFactory, create_react_loop)
+    container.register_factory(ReActLoop, create_react_loop)
+
     # 13. Register default_model_path_resolver (Plan 19 S2.1)
     # Note: Registered as a singleton since it's a pure function
     from sovereignai.shared.model_path_resolver import default_model_path_resolver

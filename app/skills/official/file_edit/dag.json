@@ -1,0 +1,11 @@
+{
+  "nodes": [
+    {
+      "id": "file_edit",
+      "type": "skill",
+      "name": "file_edit",
+      "version": "1.0.0"
+    }
+  ],
+  "edges": []
+}

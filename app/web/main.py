@@ -25,11 +25,13 @@ from sovereignai.shared.types import (
 from starlette.responses import JSONResponse, RedirectResponse, StreamingResponse
 
 from app.web.schemas import (
-    AgentStepDTO,
     AgentTaskResponseDTO,
     AgentTaskSubmitDTO,
     CapabilityResponseDTO,
     DatabaseResponseDTO,
+    DepartmentListDTO,
+    DepartmentTaskResponseDTO,
+    DepartmentTaskSubmitDTO,
     DiskUsageDTO,
     EventTypeListDTO,
     FirstRunStatusDTO,
@@ -41,6 +43,7 @@ from app.web.schemas import (
     SkillListDTO,
     SkillResultDTO,
     SubscriptionListDTO,
+    SymbolMapResponseDTO,
     TaskResponseDTO,
     TaskSubmitDTO,
     TraceEventDTO,
@@ -313,6 +316,116 @@ async def get_task(request: Request, task_id: str) -> TaskResponseDTO:
         result=None,
         error=None,
     )
+
+
+@app.get("/api/departments", dependencies=[Depends(get_current_user)])
+async def get_departments(request: Request) -> DepartmentListDTO:
+    """List available department managers (Plan 24 S7)."""
+    container: Any = request.app.state.container
+
+    departments = []
+    try:
+        from sovereignai.managers.coding import CodingManager
+        container.retrieve(CodingManager)
+        departments.append({
+            "id": "coding",
+            "name": "Coding Manager",
+            "description": "Department manager for coding tasks using ReAct Worker"
+        })
+    except Exception:
+        pass  # Manager not registered
+
+    return DepartmentListDTO(departments=departments)
+
+
+@app.post("/api/departments/{dept}/tasks", dependencies=[Depends(get_current_user)])
+async def submit_department_task(
+    request: Request,
+    dept: str,
+    task_dto: DepartmentTaskSubmitDTO
+) -> DepartmentTaskResponseDTO:
+    """Submit task to specific department manager (Plan 24 S7)."""
+    container: Any = request.app.state.container
+
+    if dept == "coding":
+        try:
+            from sovereignai.managers.coding import CodingManager
+
+            manager = container.retrieve(CodingManager)
+
+            # Create simple task object (just use description string)
+            task = task_dto.task_description
+
+            # Execute task
+            deliverable = await manager.execute_task(task)
+
+            from uuid import UUID
+            return DepartmentTaskResponseDTO(
+                task_id=str(UUID()),  # Generate placeholder task ID
+                status="success" if deliverable.success else "failed",
+                output=str(deliverable.output) if deliverable.output else None,
+                error=(
+                    str(deliverable.validation_failure.reason)
+                    if deliverable.validation_failure
+                    else None
+                ),
+            )
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=str(exc)) from exc
+    else:
+        raise HTTPException(status_code=404, detail=f"Department {dept} not found")
+
+
+@app.get("/api/indexing/symbols", dependencies=[Depends(get_current_user)])
+async def get_symbol_map(request: Request, query: str = "") -> SymbolMapResponseDTO:
+    """Query symbol map for relevant symbols (Plan 24 S7)."""
+    container: Any = request.app.state.container
+
+    try:
+        from sovereignai.indexing.symbol_map import SymbolMap, SymbolMapUnavailableError
+
+        symbol_map = container.retrieve(SymbolMap)
+
+        # Check health first
+        health = symbol_map.health_check()
+        if health.value == "degraded":
+            return SymbolMapResponseDTO(
+                status="error",
+                health="degraded",
+                symbols=[],
+                error="SymbolMap operating in degraded mode (tree-sitter unavailable)"
+            )
+
+        # Query symbols if query string provided
+        if query:
+            try:
+                symbols = symbol_map.query(query, budget=1024)
+                return SymbolMapResponseDTO(
+                    status="success",
+                    health="healthy",
+                    symbols=symbols
+                )
+            except SymbolMapUnavailableError as exc:
+                return SymbolMapResponseDTO(
+                    status="error",
+                    health="unavailable",
+                    symbols=[],
+                    error=str(exc)
+                )
+        else:
+            return SymbolMapResponseDTO(
+                status="success",
+                health="healthy",
+                symbols=[]
+            )
+
+    except Exception as exc:
+        return SymbolMapResponseDTO(
+            status="error",
+            health="unavailable",
+            symbols=[],
+            error=str(exc)
+        )
 
 
 @app.post("/api/dispatch", dependencies=[Depends(get_current_user)])
@@ -867,7 +980,7 @@ async def stream_agent_task(request: Request, task_id: str):
     try:
         auth.validate(session_id)
     except Exception:
-        raise HTTPException(status_code=403, detail="Invalid session")
+        raise HTTPException(status_code=403, detail="Invalid session") from None
 
     # SSE streaming placeholder
     async def event_stream():

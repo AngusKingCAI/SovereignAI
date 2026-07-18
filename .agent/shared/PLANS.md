@@ -8,7 +8,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Metric | Value | Plan |
 |--------|-------|------|
-| Tests | 62 (sovereignai) | plan-23-rev16 |
+| Tests | N/A (deferred) | plan-24-rev16 |
 | ruff | 22 | plan-fix-7-Rev1 |
 | mypy | 0 | plan-fix-2-Rev1 |
 
@@ -16,22 +16,23 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Plan | Tests | Delta | Note |
 |------|-------|-------|------|
+| 24-rev16 | N/A (deferred) | N/A | Department Managers, File Edit Skill, Symbol Map, Graph Memory |
 | 23-rev16 | 62 (sovereignai) | -421 | ReAct Agent Loop |
 | 22-rev16 | 483 | +0 | Event bus system |
 | 20.9.9 | 497 | +5 | Documentation hygiene |
 | 20.9.8 | 492 | +7 | Correlation ID typing |
-| 20.9.7 | 485 | +8 | TUI Memory Panel AR7 |
 
 ## Active Plan
 
 | Plan | Rev | Description | Start Date |
 |------|-----|-------------|------------|
-| Plan 24 | Rev 4 | Task Graph Cache and Diff-Based Editing | 2026-07-19 |
+| None | — | — | — |
 
 ## Recent Completed
 
 | Plan | Rev | Completion Date |
 |------|-----|-----------------|
+| Plan 24 | Rev 16 | 2026-07-19 |
 | Plan 23 | Rev 16 | 2026-07-19 |
 | Plan 22 | Rev 16 | 2026-07-19 |
 
@@ -39,11 +40,11 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Slot | Plan | Status |
 |------|------|--------|
-| 1 | Plan 23 | ⏳ Pending |
-| 2 | Plan 24 | ⏳ Pending |
-| 3 | Plan 25 | ⏳ Pending |
-| 4 | Plan 26 | ⏳ Pending |
-| 5 | Plan 27 | ⏳ Pending |
+| 1 | Plan 25 | ⏳ Pending |
+| 2 | Plan 26 | ⏳ Pending |
+| 3 | Plan 27 | ⏳ Pending |
+| 4 | Plan 28 | ⏳ Pending |
+| 5 | Plan 29 | ⏳ Pending |
 
 ## Recent Completed (last 10)
 

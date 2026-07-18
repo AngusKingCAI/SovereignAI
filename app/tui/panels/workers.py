@@ -53,6 +53,22 @@ class WorkersPanel(Vertical):
             return results
 
         components = fetch_components()
+
+        # Show department managers (Plan 24 S8)
+        try:
+            from sovereignai.managers.coding import CodingManager
+            self._container.retrieve(CodingManager)
+            table.add_row(
+                "CodingManager",
+                "Coding",
+                "ReAct Worker",
+                "[green]Active[/green]",
+                "[View]"
+            )
+        except Exception:
+            pass  # Manager not registered
+
+        # Show other lifecycle components
         for component_id, status in components:
             status_text = (
                 "[green]Active[/green]"

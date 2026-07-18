@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## prompt-24-rev16 — Department Managers, File Edit Skill, Symbol Map, and Graph Memory
+
+**Date**: 2026-07-19
+**Plan**: prompts/plan-24-rev16.md
+**Tests**: N/A (test infrastructure deferred per plan execution)
+**Previous Baseline**: 62 tests (plan-23-rev16)
+**Coverage**: N/A (coverage tool not available)
+**Screenshots**: N/A
+**AR7 diff**: spec_match.py updated for new files
+**UOR-2**: N/A (not a fix plan)
+**COR-1**: N/A (not a fix plan)
+
+- Created DepartmentManager base class in app/sovereignai/managers/base.py with bounded pipeline pattern
+- Created CodingManager in app/sovereignai/managers/coding.py with async context building
+- Created file_edit skill in app/skills/official/file_edit/ with search/replace and line-range hints
+- Created SymbolMap in app/sovereignai/indexing/symbol_map.py with tree-sitter and PageRank
+- Created TaskGraphCache in app/sovereignai/memory/graph_backend.py with SQLite adjacency tables
+- Integrated components in app/sovereignai/main.py build_container()
+- Created web endpoints in app/web/main.py for departments and symbol map queries
+- Updated TUI workers panel in app/tui/panels/workers.py to display department managers
+- Created comprehensive test suite in .agent/executor/tests/sovereignai/
+- Added tree-sitter-python to app/txt/requirements.txt
+- Updated spec_match.py ALLOWLIST for all Plan 24 files
+- Added DECISIONS.md entries for bounded pipeline (DD-24.11.1), idempotent close (DD-24.11.2), SkillDiscovery (DD-24.11.3), and latency budget (DD-24.11.4)
+- Added DEBT.md entry for cross-task persistent graph memory (DEBT-9)
+
 ## prompt-23-rev16 — ReAct Agent Loop with Structured Output and Session Management
 
 **Date**: 2026-07-19
