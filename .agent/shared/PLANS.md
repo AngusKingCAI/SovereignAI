@@ -26,10 +26,10 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Field | Value |
 |-------|-------|
-| File | `prompts/plan-workflow-fix-5.md` |
-| Depends on | workflow-fix-4 |
-| Vision principles | P1, P5, P11 |
-| Open questions | none |
+| File | None |
+| Depends on | None |
+| Vision principles | None |
+| Open questions | None |
 
 ## Next in Queue
 
