@@ -24,7 +24,11 @@ def main():
             except Exception:
                 continue
 
-    # No tests directory at root level in this project structure
+    if violations:
+        for v in violations:
+            print(v)
+        sys.exit(1)
+
     print("discovery clean")
     sys.exit(0)
 
