@@ -7,6 +7,7 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/shared/ARCH
 ## Universal Invariants
 
 1. STOP on any failure. Tests, lint, security, AR checks — any exit≠0 = STOP.
+   STOP means: halt current step execution, report failure reason, do not proceed to next step. Executor may fix the failure and retry the same step, but must not skip to subsequent steps without passing the current step. Only verify_close.py HARD GATE is fatal: do not commit or tag if it fails.
 2. Execute plan steps in strict order. No reordering, no skipping.
 3. Never delete or edit governance docs. Prepend-only for LANDMINES.md. Executor may suggest new rules via suggest_rule.py for Architect review.
 4. `/open` → execute → `/verify` per edit → `/close`. No shortcuts.
