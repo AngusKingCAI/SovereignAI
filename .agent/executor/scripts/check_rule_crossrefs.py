@@ -14,22 +14,24 @@ def extract_rule_numbers(file_path: Path) -> set[str]:
     with open(file_path, encoding='utf-8') as f:
         content = f.read()
 
-    # Find all OR\d+ and AR\d+ patterns
-    matches = re.findall(r'\b(OR|AR)\d+\b', content)
+    # Find all OR\d+ and AR\d+ patterns (uppercase only, followed by digits)
+    matches = re.findall(r'\b(?:OR|AR)\d+\b', content)
     return set(matches)
 
 
 def extract_defined_rules(agents_path: Path) -> set[str]:
-    """Extract rule numbers defined in AGENTS.md (must be at start of line)."""
-    if not agents_path.exists():
-        print(f"ERROR: {agents_path} not found", file=sys.stderr)
-        sys.exit(1)
+    """Extract rule numbers defined in ARCHITECTURE.md (must be at start of line)."""
+    architecture_path = agents_path.parent / '.agent' / 'shared' / 'ARCHITECTURE.md'
+    
+    if not architecture_path.exists():
+        print(f"WARNING: {architecture_path} not found, no AR rules defined", file=sys.stderr)
+        return set()
 
-    with open(agents_path, encoding='utf-8') as f:
+    with open(architecture_path, encoding='utf-8') as f:
         content = f.read()
 
     # Only match rules at start of line (e.g., "AR1. Owner ↔ Orchestrator")
-    matches = re.findall(r'^(OR|AR)\d+\.', content, re.MULTILINE)
+    matches = re.findall(r'^((?:OR|AR)\d+)\.', content, re.MULTILINE)
     return set(matches)
 
 
@@ -67,27 +69,37 @@ def extract_cited_rules_with_exemptions(file_path: Path) -> set[str]:
         if is_historical_section(content, line_num, file_path.name):
             continue
 
-        matches = re.findall(r'\b(OR|AR)\d+\b', line)
+        matches = re.findall(r'\b(?:OR|AR)\d+\b', line)
         cited_rules.update(matches)
 
     return cited_rules
 
 
 def main():
-    repo_root = Path(__file__).parent.parent
+    repo_root = Path(__file__).parent.parent.parent.parent
 
     agents_path = repo_root / 'AGENTS.md'
 
     # Files to check for citations
     check_files = [
-        repo_root / 'PLANS.md',
-        repo_root / 'DEBT.md',
-        repo_root / 'DECISIONS.md',
-        repo_root / 'AI_HANDOFF.md',
+        repo_root / '.agent' / 'shared' / 'PLANS.md',
+        repo_root / '.agent' / 'shared' / 'DEBT.md',
+        repo_root / '.agent' / 'shared' / 'DECISIONS.md',
+        repo_root / '.agent' / 'architect' / 'AI_HANDOFF.md',
     ]
 
-    # Extract defined rules from AGENTS.md
+    # Extract defined AR rules from ARCHITECTURE.md
     defined_rules = extract_defined_rules(agents_path)
+    
+    # Extract defined OR rules from skills
+    skills_dir = repo_root / '.devin' / 'skills'
+    if skills_dir.exists():
+        for skill_file in skills_dir.glob('*/SKILL.md'):
+            with open(skill_file, encoding='utf-8') as f:
+                content = f.read()
+            # Match OR rules at start of line in skill files
+            or_matches = re.findall(r'^(OR\d+)\.', content, re.MULTILINE)
+            defined_rules.update(or_matches)
 
     # Extract cited rules from all files
     cited_rules = set()
@@ -99,7 +111,7 @@ def main():
 
     if undefined:
         print(f"ERROR: Undefined rule citations found: {sorted(undefined)}", file=sys.stderr)
-        print(f"Defined: {len(defined_rules)}, Cited: {len(cited_rules)}", file=sys.stderr)
+        print(f"Defined: {sorted(defined_rules)}, Cited: {sorted(cited_rules)}", file=sys.stderr)
         sys.exit(1)
     else:
         print(f"OK: All {len(cited_rules)} cited rules are defined in AGENTS.md")

@@ -26,10 +26,10 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Field | Value |
 |-------|-------|
-| File | `prompts/plan-21-rev11.md` |
-| Depends on | prompt-20.9.9 |
-| Vision principles | P1, P2, P5, P11 |
-| Open questions | Q-21.1, Q-21.2, Q-21.3 |
+| File | `prompts/plan-workflow-fix.md` |
+| Depends on | none |
+| Vision principles | P1, P5, P11 |
+| Open questions | none |
 
 ## Next in Queue
 
@@ -45,6 +45,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Prompt | Description | Tests | Date |
 |--------|-------------|-------|------|
+| workflow-fix | Fix Governance Workflow Inconsistencies | N/A | 2026-07-18 |
 | 20.9.9 | Documentation Hygiene + Document Hygiene Tests | 497 | 2026-07-03 |
 | 20.9.8 | Correlation ID Typing + VersionNegotiator Disable | 492 | 2026-07-03 |
 | 20.9.7 | TUI Memory Panel AR7 Compliance via CapabilityAPI | 485 | 2026-07-03 |

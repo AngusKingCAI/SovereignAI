@@ -2,7 +2,7 @@
 
 Process guide for rule suggestion, review, implementation, and graduation.
 
-Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `suggest_rule.py`; Architect implements via `.agent/shared/DEBT.md` workflow.
+Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `suggest_rule.py`; Architect implements directly per AI_HANDOFF.md step 4.
 
 ---
 
@@ -22,7 +22,7 @@ Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `sug
 
 **Output**: Structured suggestion file written to `.agent/executor/suggestions/suggestion_{type}_{timestamp}.md`
 
-**Authority**: Executor may suggest; Architect implements via DEBT.md workflow per AI_HANDOFF.md step 4.
+**Authority**: Executor may suggest; Architect implements directly per AI_HANDOFF.md step 4.
 
 **No Executor Implementation**: Executor does NOT write check scripts or edit governance docs. Suggestion only.
 
@@ -36,10 +36,11 @@ Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `sug
 
 **Decision**: Accept / Reject / Defer
 
+**Note**: Accepted rules are included in next plan's S0; rejected rules are archived; deferred rules are added to DEBT.md only if they are non-rule items.
+
 **If Accept**:
 - Assign rule ID (OR{n}, AR{n}, {C|H|M|L}{n})
-- Add to `.agent/shared/DEBT.md` with target plan number per AI_HANDOFF.md step 4
-- Include in next plan's S0
+- Include in next plan's S0 per AI_HANDOFF.md step 4
 
 **If Reject**:
 - Document reason in suggestion file
@@ -47,7 +48,7 @@ Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `sug
 - Note pattern in LANDMINES.md as "rejected pattern"
 
 **If Defer**:
-- Add to `.agent/shared/DEBT.md` with target plan
+- Include in next plan's S0
 - Keep suggestion in pending state
 
 ---
@@ -56,7 +57,7 @@ Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `sug
 
 **Trigger**: Round Table acceptance + target plan reached.
 
-**Action**: Rule assigned ID, implementation via DEBT.md workflow per AI_HANDOFF.md step 4.
+**Action**: Rule assigned ID, implementation directly per AI_HANDOFF.md step 4.
 
 **Output**:
 - AR rules: Added to `.agent/shared/ARCHITECTURE.md` with verification script requirement

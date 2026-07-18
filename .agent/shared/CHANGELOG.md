@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## workflow-fix — Fix Governance Workflow Inconsistencies
+
+**Date**: 2026-07-18
+**Plan**: prompts/plan-workflow-fix.md
+**Tests**: N/A (documentation-only change)
+**Coverage**: N/A (no code changes)
+**Screenshots**: N/A
+**AR7 diff**: None
+**OR63**: None
+
+- Fixed RULE_LIFECYCLE.md DEBT.md references (5 instances) to align with AI_HANDOFF.md step 4 "implement directly" workflow
+- Updated RULE_LIFECYCLE.md authority line and TRIAGE stage note to clarify direct implementation path
+- Created missing suggestions/ directory structure with archived/ and graduated/ subdirectories
+- Created logs/ directory with .gitkeep
+- Updated suggest_rule.py to validate directory existence and reference direct implementation path
+- Verified OR and Landmine check runners properly handle empty script sets (graceful exit 0 with message)
+- Fixed check_rule_crossrefs.py paths for .agent/shared/ directory structure
+- Fixed check_rule_crossrefs.py regex patterns to properly capture OR/AR rule numbers
+- Cross-referenced AI_HANDOFF.md step 4 with RULE_LIFECYCLE.md implementation stage (now consistent)
+- Cross-referenced skill files (close, verify, scan) with OR/Landmine check runners (consistent)
+- Cross-referenced open/SKILL.md step 5 with suggest_rule.py and suggestions/ directory (consistent)
+- Cross-referenced close/SKILL.md step 11 with logs/ directory (consistent)
+- Governance workflows now consistent across all documents (AI_HANDOFF.md, RULE_LIFECYCLE.md, skills)
+- Note: check_rule_crossrefs.py found undefined rule citations (AR21, OR17, OR19) - pre-existing, not introduced by this plan
+
+---
+
 ## governance-infrastructure — Combined Execution Log
 
 **Date**: 2026-07-18

@@ -72,12 +72,12 @@ def generate_suggestion(
 ## Lifecycle
 
 This suggestion will be reviewed by the Architect during the next Round Table
-or dedicated rule review. Implementation follows DEBT.md workflow per
+or dedicated rule review. Implementation follows the direct implementation path per
 .agent/shared/RULE_LIFECYCLE.md.
 Possible outcomes:
 - **ACCEPT**: Rule assigned ID, check script written, integrated into workflow
 - **REJECT**: Reason documented, suggestion archived
-- **DEFER**: Added to DEBT.md with target plan
+- **DEFER**: Included in next plan's S0
 """
 
     output_path.write_text(suggestion_content, encoding="utf-8")
@@ -130,8 +130,10 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    # Ensure suggestions directory exists
-    args.suggestions_dir.mkdir(parents=True, exist_ok=True)
+    # Validate and ensure suggestions directory exists
+    if not args.suggestions_dir.exists():
+        args.suggestions_dir.mkdir(parents=True, exist_ok=True)
+        print(f"Created suggestions directory: {args.suggestions_dir}")
 
     # Generate suggestion
     output_path = generate_suggestion(
