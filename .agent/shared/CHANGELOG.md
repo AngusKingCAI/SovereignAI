@@ -4,13 +4,13 @@
 
 **Date**: 2026-07-19
 **Plan**: prompts/plan-22-rev16.md
-**Tests**: TBD
-**Previous Baseline**: TBD
-**Coverage**: TBD
+**Tests**: Tests created but not run (deferred per plan S5 DEFERRED)
+**Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
+**Coverage**: N/A (test infrastructure not run)
 **Screenshots**: N/A
-**AR7 diff**: TBD
-**UOR-2**: TBD
-**COR-1**: TBD
+**AR7 diff**: spec_match.py updated for new files
+**UOR-2**: N/A (tests not run)
+**COR-1**: N/A (not a fix plan)
 
 - Extended EventBus with registry and overflow_dir parameters
 - Created EventRegistry for event handler registration with wildcard support
