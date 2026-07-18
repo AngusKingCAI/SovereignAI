@@ -1,4 +1,4 @@
-# Execution Log: workflow-fix-5
+# Execution Log: prompt-workflow-fix-5
 
 **Date**: 2026-07-18
 **Plan**: prompts/plan-workflow-fix-5.md
