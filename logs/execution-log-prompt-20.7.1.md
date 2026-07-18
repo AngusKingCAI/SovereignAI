@@ -604,7 +604,7 @@ AGENTS.md
 +1
 -1
  
-OR14. [Mandatory] Read `AGENTS.md` in full once per session before first edit. All rules are mandatory by default. Always-on mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57, OR58, OR59, OR60, OR61, OR63, OR64, OR65, OR66.
+OR14. [Mandatory] Read `AGENTS.md` in full once per session before first edit. All rules are mandatory by default. Always-on mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57, OR58, OR59, OR60, OR61, UOR-3, OR64, OR65, OR66.
 OR14. [Mandatory] Read AGENTS.md in full once per session before first edit. All rules mandatory. Mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57-OR66.
  
 Thoughts

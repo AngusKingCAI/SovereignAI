@@ -119,7 +119,7 @@ Missing/reordered sections block delivery (GR7).
 | `AI_HANDOFF.md` | Process guide | Architect |
 | `PRINCIPLES.md` | Living principles | User + Architect |
 | `.agent/shared/RULE_LIFECYCLE.md` | Rule lifecycle process | Architect |
-| `.agent/shared/OR_RULES.md` | Operational rules (UOR/VOR/OOR/COR/SOR) | Architect |
+| `.agent/shared/OR_RULES.md` | Operational rules (UOR/VOR/OOR/COR) | Architect |
 | `PLANS.md` | Dynamic state, baselines, queue | Executor |
 | `.agent/shared/LANDMINES.md` | Failure patterns | Executor |
 | `.agent/shared/CHANGELOG.md` | Per-plan change log | Executor |

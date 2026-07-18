@@ -803,11 +803,11 @@ You're right to question this. The current approach has significant problems:
 
 Problems with embedding OR rules in skill files:
 
-Duplication: Universal rules (OR17, OR19, OR63) are repeated in open, close, scan, verify - same text 4 times
+Duplication: Universal rules (UOR-1, UOR-2, UOR-3) are repeated in open, close, scan, verify - same text 4 times
 Maintenance: If a universal rule changes, must update multiple files manually
 Consistency: Easy for rules to drift out of sync across skills
 Discovery: No single place to see all OR rules and their current state
-Numbering chaos: OR17, OR19, OR63, OR64, OR65, OR66 suggests historical growth without organization
+Numbering chaos: UOR-1, UOR-2, UOR-3, OR64, OR65, OR66 suggests historical growth without organization
 Better approach - centralized OR rules:
 
 Create OR_RULES.md with all OR rules in one place
@@ -905,8 +905,8 @@ Thoughts
 SKILL.md
 +2
 -3
-OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
-OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
+UOR-2. Test/mypy/static-analysis failures: no "pre-existing" exemption
+UOR-3. diskcache CVE monitoring — check DEBT.md for CVE status before close
 Operational Rules: See .agent/shared/OR_RULES.md
 - Universal: OR01, OR02, OR03
  
@@ -985,8 +985,8 @@ Thoughts
 SKILL.md
 +2
 -3
-OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
-OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
+UOR-2. Test/mypy/static-analysis failures: no "pre-existing" exemption
+UOR-3. diskcache CVE monitoring — check DEBT.md for CVE status before close
 Operational Rules: See .agent/shared/OR_RULES.md
 - Read UOR section (Universal) + SOR section (scan-specific)
  
@@ -1045,7 +1045,7 @@ S0.2 Baseline: 531 tests, 67 failed, 2 errors, 11 skipped
 This matches the Plan 21 execution log baseline. Key failures observed:
 
 test_tool_call_parser.py (import path issue - target of S1/S2)
-test_check_rule_crossrefs.py (old OR17/OR19 references - from our reorganization)
+test_check_rule_crossrefs.py (old UOR-1/UOR-2 references - from our reorganization)
 Various other failures targeted in later steps
 Now proceeding with S1 — Import Path Standardization:
 
@@ -1074,7 +1074,7 @@ cd c:/SovereignAI; .venv/Scripts/python.exe .agent/executor/scripts/fix_import_p
 Canceled due to user interrupt (tool_call_id: call_73ef0f59fa1b43eea94d915f)
 
 Canceled background terminal command
-test_check_rule_crossrefs.py (old OR17/OR19 references - from our reorganization) this refers to rules by old names. We need to amend this across the project so its using the new name formating for relevant rules.
+test_check_rule_crossrefs.py (old UOR-1/UOR-2 references - from our reorganization) this refers to rules by old names. We need to amend this across the project so its using the new name formating for relevant rules.
 
 
 Thoughts

@@ -113,7 +113,7 @@
 
 ## Issues Encountered
 
-1. **Mypy broken**: mypy module corrupted (librt.internal missing), skipped per OR19 (documented in DEBT.md as pre-existing)
+1. **Mypy broken**: mypy module corrupted (librt.internal missing), skipped per UOR-2 (documented in DEBT.md as pre-existing)
 2. **Procedural backend test failures**: Tests were using dict instead of ProceduralQuery, fixed by updating to use typed query
 3. **Async callback test timing**: test_faulty_callback_does_not_block_emit needed longer sleep and unsubscribe for bounded queue delivery
 4. **Unused UUID import**: Removed unused UUID import from trace_emitter.py after CorrelationId extraction

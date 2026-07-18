@@ -40,4 +40,4 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Status**: Identified
 **Target**: TBD
 **Trigger**: When first-run experience UI implementation is prioritised.
-**Reason**: Plan S4 deferred per OR17 (deliverables ship in full or defer). 5-step wizard with HTML/JS/web endpoints not implemented. Existing auth system has /api/auth/register; first-run UI would be a frontend wrapper.
+**Reason**: Plan S4 deferred per UOR-1 (deliverables ship in full or defer). 5-step wizard with HTML/JS/web endpoints not implemented. Existing auth system has /api/auth/register; first-run UI would be a frontend wrapper.

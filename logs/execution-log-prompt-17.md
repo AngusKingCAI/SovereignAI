@@ -4722,7 +4722,7 @@ pip-audit - DONE (no vulnerabilities)
 Vulture - DONE (removed unused variables)
 detect-secrets - DONE
 AR checks - DONE (AR7 violation is expected per OR47)
-OR63 placeholder check - DONE (clean)
+UOR-3 placeholder check - DONE (clean)
 OR61 tracing check - DONE (clean)
 AR7 allowlist diff - DONE (added new imports)
 CHANGELOG - DONE

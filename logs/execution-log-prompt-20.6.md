@@ -468,7 +468,7 @@ Thought for 2s
 Command git in /C:/SovereignAI
 
 
-git -C c:/SovereignAI commit -m "docs: governance cleanup per Plan 20.6 S0.3-S0.15" -m "Fix OR75 to match [PASTE DEVIN CHAT HERE] marker spec" -m "Add S0.4 to AI_HANDOFF.md Plan Template" -m "Add untagged status note to prompt-20.4.1 CHANGELOG entry" -m "Add OR51 exception note to prompt-20.5 CHANGELOG entry" -m "Document P20.3 log deletion in DEBT.md" -m "Fix P18 execution log header" -m "Add landmines L55-L58 (tag force-push, log stub, OR19 waiver, todo counter)"
+git -C c:/SovereignAI commit -m "docs: governance cleanup per Plan 20.6 S0.3-S0.15" -m "Fix OR75 to match [PASTE DEVIN CHAT HERE] marker spec" -m "Add S0.4 to AI_HANDOFF.md Plan Template" -m "Add untagged status note to prompt-20.4.1 CHANGELOG entry" -m "Add OR51 exception note to prompt-20.5 CHANGELOG entry" -m "Document P20.3 log deletion in DEBT.md" -m "Fix P18 execution log header" -m "Add landmines L55-L58 (tag force-push, log stub, UOR-2 waiver, todo counter)"
 [main 9fa827d] docs: governance cleanup per Plan 20.6 S0.3-S0.15
  6 files changed, 42 insertions(+), 3 deletions(-)
 

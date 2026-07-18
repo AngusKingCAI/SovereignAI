@@ -146,7 +146,7 @@
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
 **AR7 diff**: None
-**OR63**: None
+**UOR-3**: None
 
 - Added formal STOP definition to AGENTS.md invariant 1: STOP means halt current step execution, report failure reason, do not proceed to next step. Executor may fix and retry same step, but must not skip to subsequent steps without passing current step. Only verify_close.py HARD GATE is fatal: do not commit or tag if it fails.
 - Fixed get_current_plan.py path bug: corrected repo_root calculation from 2 levels up to 4 levels up (scripts/ → executor/ → .agent/ → repo root)
@@ -168,7 +168,7 @@
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
 **AR7 diff**: None
-**OR63**: None
+**UOR-3**: None
 
 - Fixed AR21 reference in ARCHITECTURE.md constraint verification table: removed check_ar21.py reference (retired rule needs no check script)
 - Fixed AR check script paths for robust cross-platform execution:
@@ -195,14 +195,14 @@
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
 **AR7 diff**: None
-**OR63**: None
+**UOR-3**: None
 
 - Added Clone-on-Log-Pushed step to AI_HANDOFF.md Architect Workflow (step 1.5): clone latest repo, read execution log, diff-check against plan expectations
 - Updated AI_HANDOFF.md Plan Template S0 to include S0.0: clone latest repo and verify execution log state if resuming from prior execution
-- Defined OR rules (OR17, OR19, OR63) in all skill files (open, close, verify, scan) with formal definitions at top of each SKILL.md
+- Defined OR rules (UOR-1, UOR-2, UOR-3) in all skill files (open, close, verify, scan) with formal definitions at top of each SKILL.md
 - Resolved AR21 undefined citation by adding retired AR21 rule definition to ARCHITECTURE.md with retirement note
 - Clarified execution log handling in close/SKILL.md step 11: create BLANK execution log with header template only, user will populate with chat transcript
-- Verified workflow consistency: check_rule_crossrefs.py passes with 0 undefined citations (OR17, OR19, OR63 now defined, AR21 marked as retired)
+- Verified workflow consistency: check_rule_crossrefs.py passes with 0 undefined citations (UOR-1, UOR-2, UOR-3 now defined, AR21 marked as retired)
 - OR and Landmine check runners gracefully handle empty script sets (exit 0 with message)
 - Governance workflows now consistent: AI_HANDOFF.md, skill files, ARCHITECTURE.md all aligned
 - Note: AR21 is retired in ARCHITECTURE.md (docstring discipline) - no check script needed
@@ -217,7 +217,7 @@
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
 **AR7 diff**: None
-**OR63**: None
+**UOR-3**: None
 
 - Fixed RULE_LIFECYCLE.md DEBT.md references (5 instances) to align with AI_HANDOFF.md step 4 "implement directly" workflow
 - Updated RULE_LIFECYCLE.md authority line and TRIAGE stage note to clarify direct implementation path
@@ -232,7 +232,7 @@
 - Cross-referenced open/SKILL.md step 5 with suggest_rule.py and suggestions/ directory (consistent)
 - Cross-referenced close/SKILL.md step 11 with logs/ directory (consistent)
 - Governance workflows now consistent across all documents (AI_HANDOFF.md, RULE_LIFECYCLE.md, skills)
-- Note: check_rule_crossrefs.py found undefined rule citations (AR21, OR17, OR19) - pre-existing, not introduced by this plan
+- Note: check_rule_crossrefs.py found undefined rule citations (AR21, UOR-1, UOR-2) - pre-existing, not introduced by this plan
 
 ---
 
@@ -244,7 +244,7 @@
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
 **AR7 diff**: None
-**OR63**: None
+**UOR-3**: None
 
 - Combined 3 execution logs into single file (execution-log-governance-infrastructure.md)
 - Removed execution-log-workflow-consistency.md, execution-log-governance-execution-gap-b.md, execution-log-governance-execution-gap.md
@@ -261,7 +261,7 @@
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
 **AR7 diff**: None
-**OR63**: None
+**UOR-3**: None
 
 - Fixed dual rule proposal workflows: unified to use suggestions/ directory (AI_HANDOFF.md Architect Workflow step 4, Plan Template S0.3)
 - Removed DEBT.md from rule proposal workflow (now only for non-rule deferred items)
@@ -287,7 +287,7 @@
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
 **AR7 diff**: None
-**OR63**: None
+**UOR-3**: None
 
 - S1: Created `.agent/executor/scripts/suggest_rule.py` for structured rule suggestions
 - S1: Created `.agent/executor/suggestions/` directory for rule proposals
@@ -315,7 +315,7 @@
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
 **AR7 diff**: None
-**OR63**: None
+**UOR-3**: None
 
 - S1: Created `.agent/executor/scripts/or_checks/` directory with `run_all.py` infrastructure
 - S1: OR check runner patterned after AR checks with caching, discovery, and summary reporting
@@ -341,7 +341,7 @@
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
 **AR7 diff**: None
-**OR63**: None
+**UOR-3**: None
 
 - Created .agent/shared/ directory for shared governance documents
 - Moved LANDMINES.md, DECISIONS.md, DEBT.md, CHANGELOG.md from .agent/executor/ to .agent/shared/
@@ -359,7 +359,7 @@
 **Coverage**: N/A (backend + UI plan)
 **Screenshots**: N/A (deferred FastAPI container setup for skills API tests)
 **AR7 diff**: None
-**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+**UOR-3**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
 
 - S0.4: Verified all ComponentManifest instantiations use keyword arguments, added AST check script, updated pre-commit config
 - S1: Created ISkillRunner protocol with @runtime_checkable decorator for type checking
@@ -375,7 +375,7 @@
 - S10: Updated TUI skills panel to use CapabilityAPI.query_skills() for skill listing
 - S11: Created comprehensive test suite for skills infrastructure (27 tests, 3 skipped due to FastAPI container requirement)
 - S12: Added CapabilityCategory.SKILL enum member, ComponentManifest metadata field for skill attributes
-- Bug fixes: Fixed OR29 scoped test matching (replaced keyword matching with module reference matching), added scripts/get_scoped_tests.py, updated .devin/skills/close/SKILL.md and .devin/skills/scan/SKILL.md with 300000ms timeout specifications
+- Bug fixes: Fixed COR-1 scoped test matching (replaced keyword matching with module reference matching), added scripts/get_scoped_tests.py, updated .devin/skills/close/SKILL.md and .devin/skills/scan/SKILL.md with 300000ms timeout specifications
 - Governance updates: Updated AGENTS.md, DECISIONS.md, LANDMINES.md, PLANS.md, PRINCIPLES.md, and design documents to fix governance document drift and incorrect OR references
 
 ---
@@ -388,7 +388,7 @@
 **Coverage**: 100% (test_document_hygiene.py only)
 **Screenshots**: N/A (backend-only plan)
 **AR7 diff**: None
-**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+**UOR-3**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
 
 - S1: Removed all "N/A -- no new patterns" stubs from LANDMINES.md above ## L{n} headers
 - S1: Ensured "---" separator appears only between entries, not before headers
@@ -410,7 +410,7 @@
 **Coverage**: N/A (typing + config changes)
 **Screenshots**: N/A (backend-only plan)
 **AR7 diff**: None
-**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+**UOR-3**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
 
 - S1: Extracted CorrelationId newtype to types_base.py to break circular import between types.py and trace_emitter.py
 - S1: Updated TraceEvent, Event, and all correlation_id usages to use CorrelationId type instead of UUID
@@ -437,7 +437,7 @@
 **Coverage**: 92%
 **Screenshots**: N/A (backend-only plan)
 **AR7 diff**: None
-**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+**UOR-3**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
 
 - Removed nvidia-ml-py>=12.535.133 from txt/requirements.txt
 - Deleted web/hardware_probe.py (web layer to use CapabilityAPI only per AR12 and AR27)
@@ -459,7 +459,7 @@
 **Coverage**: 92% (types.py scoped)
 **Screenshots**: N/A (backend-only plan)
 **AR7 diff**: None
-**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+**UOR-3**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
 
 - S1: Extended CapabilityAPI with query_memory() method accepting typed query union (EpisodicQuery | ProceduralQuery | WorkingQuery | TraceQuery)
 - S1: Added typed result dataclasses (EpisodicResult, ProceduralResult, WorkingResult, TraceResult) per AR6
@@ -480,7 +480,7 @@
 **Coverage**: 79% (trace_emitter.py scoped)
 **Screenshots**: N/A (backend-only plan)
 **AR7 diff**: None
-**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+**UOR-3**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
 
 - S1: Implemented BoundedTraceQueue class with circuit breaker pattern per DD-20.10.1 (high/low-water marks, aggregate metrics)
 - S1: Implemented dedicated sentinel class (DRAIN_SHUTDOWN) for drain thread exit per DD-20.10.2 with 5s join timeout
@@ -502,7 +502,7 @@
 **Coverage**: 89% (scoped tests only)
 **Screenshots**: N/A (backend-only plan)
 **AR7 diff**: None
-**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+**UOR-3**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
 
 - S1 skipped per user clarification - AR11 already governs docstrings (no docstrings allowed)
 - S2: Searched all sovereignai/ modules for **kwargs usage - no **kwargs found (AR6 violations already resolved in prompt-20.9.3)
@@ -525,7 +525,7 @@
 **Coverage**: 89% (scoped tests only)
 **Screenshots**: N/A (backend-only plan)
 **AR7 diff**: None
-**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+**UOR-3**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
 
 - Added health_check_cache with 30-second TTL to RoutingEngine to reduce health check overhead
 - Added invalidate_health_cache() method for cache invalidation on adapter state change
@@ -549,7 +549,7 @@
 **Coverage**: 93% (scoped tests only)
 **Screenshots**: N/A (backend-only plan)
 **AR7 diff**: None
-**OR63**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+**UOR-3**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
 
 - Added typed query dataclasses (EpisodicQuery, ProceduralQuery, WorkingQuery, TraceQuery) to sovereignai/shared/types.py
 - Refactored all memory backends (episodic, procedural, working, trace) to use typed queries instead of dict parameters per AR6
@@ -567,7 +567,7 @@
 **Coverage**: 94% (hardware_probe.py)
 **Screenshots**: N/A (backend-only plan)
 **AR7 allowlist diff**: None
-**OR63 check result**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
+**UOR-3 check result**: diskcache CVE-2025-69872 (pre-existing, documented in DEBT.md)
 
 - Removed nvidia-ml-py>=12.535.133 from txt/requirements.txt
 - Deleted web/hardware_probe.py (web layer to use CapabilityAPI only per AR12 and AR27)
@@ -588,7 +588,7 @@
 **Coverage**: 90% (scoped tests only per updated close skill)
 **Screenshots**: N/A (TUI-only plan)
 **AR7 allowlist diff**: Removed TUI_PANELS_ALLOWED_IMPORTS exception
-**OR63 check result**: N/A (no new dependencies)
+**UOR-3 check result**: N/A (no new dependencies)
 
 - Extended CapabilityAPI with 6 new query methods (query_memory_backends, query_hardware_status, query_model_catalog, query_task_states, query_service_registry, query_logs)
 - Added MemoryBackendInfo and TaskStateSummary dataclasses to sovereignai/shared/types.py
@@ -598,7 +598,7 @@
 - Updated sovereignai/main.py to wire DatabaseRegistry, ServiceRegistry, and memory backends into CapabilityAPI
 - Fixed ServiceStatus circular import using TYPE_CHECKING guard
 - Updated DEBT.md to mark resolved TUI AR7 compliance items
-- Deferred first-run experience UI per OR17 (documented in DEBT.md)
+- Deferred first-run experience UI per UOR-1 (documented in DEBT.md)
 
 ---
 
@@ -610,7 +610,7 @@
 **Coverage**: 93%
 **Screenshots**: N/A (workflow-only plan)
 **AR7 allowlist diff**: None
-**OR63 check result**: N/A (no new dependencies)
+**UOR-3 check result**: N/A (no new dependencies)
 
 - Created 4 Python scripts to replace complex shell pipelines (verify_syntax.py, check_rule_crossrefs.py, check_ar7_allowlist.py, get_current_plan.py)
 - Updated close/open/scan/verify workflow files to use new scripts and add concrete criteria
@@ -635,7 +635,7 @@
 **Coverage**: N/A (documentation-only plan)
 **Browser smoke test screenshots**: N/A (documentation-only plan)
 **AR7 allowlist diff**: None
-**OR63 check result**: N/A (documentation-only plan)
+**UOR-3 check result**: N/A (documentation-only plan)
 
 - Removed 38 redundant rules from AGENTS.md (mechanically enforced by scripts/skills/templates)
 - Reclassified 18 OR rules to AR rules (better organization of architectural constraints)
@@ -708,7 +708,7 @@
 **Coverage**: N/A (no code changes)
 **Browser smoke test screenshots**: N/A
 **AR7 allowlist diff**: None
-**OR63 check result**: N/A
+**UOR-3 check result**: N/A
 - Converted .devin/workflows/*.md to .devin/skills/*/SKILL.md (Devin skills format)
 - Created skills: close, open, scan, verify with proper YAML frontmatter
 - Updated PLANS.md workflow table to reference .devin/skills/*/SKILL.md
@@ -729,7 +729,7 @@
 **Coverage**: 93% (590 missing lines)
 **Browser smoke test screenshots**: N/A — TUI is terminal-based, not web UI
 **AR7 allowlist diff**: Added TUI_PANELS_ALLOWED_IMPORTS for TUI panels
-**OR63 check result**: discovery clean
+**UOR-3 check result**: discovery clean
 - Fixed TUI panel lazy loading by using ContentSwitcher with unique placeholder IDs
 - Fixed DuplicateIds error by removing placeholder Static widgets before mounting actual panels
 - Added Refresh buttons to all TUI panels (orchestrator, workers, tasks, skills, memory, models, adapters, hardware, options, logs)
@@ -753,7 +753,7 @@
 **Coverage**: 80% (excluded failing test files from coverage scan)
 **Browser smoke test screenshots**: N/A — no UI changes
 **AR7 allowlist diff**: Reverted tui/panels allowlist exception (deferred TUI AR7 compliance)
-**OR63 check result**: discovery clean
+**UOR-3 check result**: discovery clean
 - Changed OR73 from prepend to append discipline (CHANGELOG entries appended at end, oldest at top)
 - Added landmines L47-L53 to LANDMINES.md (governance tool integrity)
 - Replaced placeholder SHA-256 hash in llama_cpp_adapter manifest with real hash
@@ -784,7 +784,7 @@
 **Coverage**: N/A — no core code changes
 **Browser smoke test screenshots**: N/A — TUI is terminal-based, not web UI
 **AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
+**UOR-3 check result**: discovery clean
 - Fixed TUI visibility issue by deferring container building to on_mount instead of __init__
 - Fixed button clickability by adding proper type annotations and null checks in on_button_pressed
 - Fixed layout by using Header/Footer widgets with dock: left sidebar
@@ -804,7 +804,7 @@
 **Coverage**: 93% (no change — TUI is new UI surface, not core code)
 **Browser smoke test screenshots**: N/A — TUI is terminal-based, not web UI
 **AR7 allowlist diff**: Added tui/ and tui/test_workers/ to AR7 allowlist for sovereignai.shared imports
-**OR63 check result**: discovery clean
+**UOR-3 check result**: discovery clean
 - Added OR72 to AGENTS.md: "TUI is a first-class UI consuming the same capability API as the WebUI. TUI panels must display real backend state, not placeholder text."
 - Created TUI skeleton in tui/main.py with Textual App, sidebar with 10 buttons, and panel switching via CSS classes
 - Implemented 10 TUI panels with real backend integration:
@@ -837,7 +837,7 @@
 **Coverage**: 93% (no change — diagnostic scripts are tools, not core code)
 **Browser smoke test screenshots**: N/A — no UI changes
 **AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
+**UOR-3 check result**: discovery clean
 - Created diagnostic harness in scripts/diagnostics/ with 6 stages testing real AI workflow
 - Stage 1: Start AI Service — checks Ollama and LlamaCpp adapter health
 - Stage 2: Download Model — pulls tinyllama via Ollama or checks for GGUF models
@@ -862,7 +862,7 @@
 **Coverage**: 93% (increased from 90% — added test fixes, no new test files)
 **Browser smoke test screenshots**: N/A — no UI changes
 **AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
+**UOR-3 check result**: discovery clean
 - Fixed test_procedural_backend_lock_timeout by patching _acquire_lock to return False to simulate lock contention
 - Fixed mypy errors in llama_cpp_adapter/adapter.py (renamed variables to prevent shadowing, added type ignore for Any return)
 - Fixed detect-secrets CLI flag from --exclude to --exclude-files in scan workflow
@@ -883,7 +883,7 @@
 **Coverage**: 90% (increased from 83% — added comprehensive tests for procedural_backend, self_correction skill, librarian, conformance runner)
 **Browser smoke test screenshots**: N/A — no UI changes
 **AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
+**UOR-3 check result**: discovery clean
 - Removed TeacherWorker implementation and all related tests (test_teacher_worker.py, test_education_department.py, test_model_registry.py, test_qlora_integration.py, test_gpu_lock.py)
 - Removed sovereignai/workers/education/ directory
 - Added comprehensive test coverage for procedural_backend (file-based mode, query limit, delete not-found, prune no-removal)
@@ -907,7 +907,7 @@
 **Coverage**: 83% (hardware_probe.py GPU paths deferred to DEBT.md)
 **Browser smoke test screenshots**: N/A — no UI changes
 **AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
+**UOR-3 check result**: discovery clean
 - Replaced pynvml with nvidia-ml-py in dependencies (with backward compatibility fallback)
 - Removed deprecated `direction` parameter from HfApi.list_models() call
 - Documented hardware_probe.py coverage gap (GPU detection paths require hardware)
@@ -923,7 +923,7 @@
 **Coverage**: 90%
 **Browser smoke test screenshots**: N/A — UI edits deferred to DEBT.md
 **AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
+**UOR-3 check result**: discovery clean
 - Added llama.cpp adapter scaffold with health_check, load_model, generate methods
 - Implemented model path resolver for nested org/name model directory structure
 - Enhanced RoutingEngine with failover, health check filtering, and routing priority
@@ -945,7 +945,7 @@
 **Coverage**: 91%
 **Browser smoke test screenshots**: N/A — requires manual verification
 **AR7 allowlist diff**: None
-**OR63 check result**: discovery clean
+**UOR-3 check result**: discovery clean
 - Added HardwareProbe.sample() method returning HardwareSnapshot dataclass
 - Added CapabilityAPI.sample_hardware() and stream_hardware() methods
 - Implemented Hardware panel UI with SSE streaming endpoint
@@ -986,7 +986,7 @@ Chronological change log. Append-only. Oldest entry at top, newest at bottom.
 
 **Notes**:
 - Added OR66 rule: Logs panel must consume /api/traces SSE only, no direct TraceEmitter import
-- Created AR check scripts: check_tracing.py (OR61), check_placeholders.py (OR63), spec_match.py (OR65)
+- Created AR check scripts: check_tracing.py ([RETIRED]), check_placeholders.py (UOR-3), spec_match.py ([RETIRED])
 - Implemented correlation ID propagation via ContextVar in shared/types.py
 - Enhanced TraceEmitter with recent_events buffer and subscribe_callback for SSE streaming
 - Modified CapabilityAPI.submit_task() to bind/inherit correlation IDs

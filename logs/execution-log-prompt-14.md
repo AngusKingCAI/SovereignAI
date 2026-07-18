@@ -237,8 +237,8 @@ Thought for 1s
 Command git in /C:/SovereignAI
 
 
-git commit -m "docs: add OR63-OR65, OR69-OR70 for prompt-14"
-[main a5c6e7c] docs: add OR63-OR65, OR69-OR70 for prompt-14
+git commit -m "docs: add UOR-3-OR65, OR69-OR70 for prompt-14"
+[main a5c6e7c] docs: add UOR-3-OR65, OR69-OR70 for prompt-14
  1 file changed, 10 insertions(+)
 
 Thought for 1s
@@ -1902,7 +1902,7 @@ Tests:
 6 tests skipped (3 for missing transformers package, 3 for Windows os.replace permission issues)
 Governance:
 
-Added OR63, OR64, OR65, OR69, OR70 to AGENTS.md for Education department
+Added UOR-3, OR64, OR65, OR69, OR70 to AGENTS.md for Education department
 
 
 Feedback submitted

@@ -12,7 +12,7 @@ new
 - **AR6 (no context bags)**: Failed - pre-existing memory backend dict parameters (documented in DEBT.md)
 - **AR7 (UI imports)**: Failed - expected per OR47 (backend + UI in same plan)
 - **OR61 (tracing)**: Passed
-- **OR63 (placeholders)**: Passed
+- **UOR-3 (placeholders)**: Passed
  
 
 Thought for 1s
@@ -579,7 +579,7 @@ Completed steps:
 Tests + coverage: 90% passed (329 passed, 3 pre-existing failures)
 Ruff, Mypy, Bandit, pip-audit, Vulture, detect-secrets: all passed
 AR checks: AR6/AR7 violations are pre-existing and documented
-OR63 placeholder check: passed
+UOR-3 placeholder check: passed
 OR61 tracing check: passed
 AR7 allowlist diff: no changes
 CHANGELOG, PLANS.md, DEBT.md, LANDMINES.md: updated
@@ -626,7 +626,7 @@ Run /close step 5: pip-audit (passed)
 Run /close step 6: Vulture (passed)
 Run /close step 7: detect-secrets (passed)
 Run /close step 8: AR checks (AR6/AR7 pre-existing documented)
-Run /close step 9: OR63 placeholder check (passed)
+Run /close step 9: UOR-3 placeholder check (passed)
 Run /close step 10: OR61 tracing check (passed)
 Run /close step 11: AR7 allowlist diff (no changes)
 Run /close step 12: CHANGELOG

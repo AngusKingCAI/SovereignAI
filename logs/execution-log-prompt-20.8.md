@@ -68,7 +68,7 @@
 **Coverage**: N/A (documentation-only plan)
 **Browser smoke test screenshots**: N/A (documentation-only plan)
 **AR7 allowlist diff**: None
-**OR63 check result**: N/A (documentation-only plan)
+**UOR-3 check result**: N/A (documentation-only plan)
 
 - Removed 38 redundant rules from AGENTS.md (mechanically enforced by scripts/skills/templates)
 - Reclassified 18 OR rules to AR rules (better organization of architectural constraints)

@@ -1022,7 +1022,7 @@ The TUI panel imports sovereignai.shared.capability_api and sovereignai.shared.t
 
 However, the TUI needs to use the Capability API. The shared types are needed for the API. This is a fundamental architectural issue - the TUI needs access to the Capability API types to function.
 
-Per OR19, if the fix is non-trivial, I should STOP and request an Architect-issued Rev. The TUI panel would need a complete refactoring to avoid importing sovereignai.shared, which is non-trivial.
+Per UOR-2, if the fix is non-trivial, I should STOP and request an Architect-issued Rev. The TUI panel would need a complete refactoring to avoid importing sovereignai.shared, which is non-trivial.
 
 I'll document this in DEBT.md and skip the TUI AR7 test for now.
 
@@ -1782,7 +1782,7 @@ S2.1: "Do NOT re-introduce the exemption. At /close step 16, run spec_match; doc
 S2.5: "Do NOT attempt to fix in this plan — out of scope. Get User authorization at S5.2."
 S2.7: "Defer full pre-commit hook to plan 20.8"
 S3.6: "Out of scope (Architect decision). Document in DEBT.md"
-Fixing these items would be a significant scope expansion beyond Plan 20.5's governance cleanup focus. Per OR19, non-trivial fixes require an Architect-issued Rev.
+Fixing these items would be a significant scope expansion beyond Plan 20.5's governance cleanup focus. Per UOR-2, non-trivial fixes require an Architect-issued Rev.
 
 Do you want me to:
 
@@ -2376,8 +2376,8 @@ AGENTS.md
 +1
 -1
  
-OR14. [Mandatory] Read `AGENTS.md` in full once per session before first edit. Always-on mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57, OR58, OR59, OR60, OR61, OR63, OR64, OR65, OR66.
-OR14. [Mandatory] Read `AGENTS.md` in full once per session before first edit. All rules are mandatory by default. Always-on mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57, OR58, OR59, OR60, OR61, OR63, OR64, OR65, OR66.
+OR14. [Mandatory] Read `AGENTS.md` in full once per session before first edit. Always-on mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57, OR58, OR59, OR60, OR61, UOR-3, OR64, OR65, OR66.
+OR14. [Mandatory] Read `AGENTS.md` in full once per session before first edit. All rules are mandatory by default. Always-on mental subset: OR4, OR5, OR9, OR10, OR11, OR20, AR5, AR12, AR17, OR40, OR41, OR54, OR57, OR58, OR59, OR60, OR61, UOR-3, OR64, OR65, OR66.
  
 Command git in /C:/SovereignAI
 

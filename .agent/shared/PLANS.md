@@ -24,7 +24,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 ## Active Plan
 
-None.
+prompt-plan-fix-5-Rev1 — Plan Fix 5 - Legacy OR ID Migration and check_rule_crossrefs.py Blind Spot Fix
 
 ## Next in Queue
 

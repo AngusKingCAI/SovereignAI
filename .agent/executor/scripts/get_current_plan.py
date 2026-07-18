@@ -18,12 +18,30 @@ def main() -> None:
         print(f"ERROR: {plans_md} not found", file=sys.stderr)
         sys.exit(1)
 
-    # Read PLANS.md to get the most recently completed plan
-    with open(plans_md, 'r', encoding='utf-8', errors='ignore') as f:
+    # Read PLANS.md to get the current plan
+    with open(plans_md, encoding='utf-8', errors='ignore') as f:
         content = f.read()
 
-    # Find the "Recent Completed" section and extract the first (most recent) plan
-    # Look for the table header, separator, then first data row
+    # First, check for "Active Plan" section
+    active_plan_match = re.search(
+        r'## Active Plan.*?\n(.*?)(?=\n##|$)',
+        content,
+        re.DOTALL,
+    )
+
+    if active_plan_match:
+        active_plan = active_plan_match.group(1).strip()
+        if active_plan and active_plan != "None.":
+            # Extract plan name from active plan line
+            plan_match = re.search(r'prompt-([^\s—]+)', active_plan)
+            if plan_match:
+                plan_name = plan_match.group(1)
+                plan_path = repo_root / 'prompts' / f'{plan_name}.md'
+                if plan_path.exists():
+                    print(plan_path)
+                    sys.exit(0)
+
+    # Fall back to "Recent Completed" section if no active plan
     recent_completed_match = re.search(
         r'## Recent Completed.*?\n\|.*?\n\|[-|\s]+\n\|\s*(.+?)\s*\|',
         content,
@@ -43,6 +61,24 @@ def main() -> None:
     if recent_plan.startswith('prompt-'):
         recent_plan = recent_plan[7:]  # Remove "prompt-" prefix
 
+    # Convert to full path for completed plans
+    if not recent_plan.startswith('prompts/completed/'):
+        recent_plan = f"prompts/completed/{recent_plan}"
+    # Add .md extension if not present
+    if not recent_plan.endswith('.md'):
+        recent_plan = f"{recent_plan}.md"
+    recent_plan_path = repo_root / recent_plan
+    if recent_plan_path.exists():
+        print(recent_plan_path)
+        sys.exit(0)
+    else:
+        print(f"ERROR: Recent plan file not found: {recent_plan_path}", file=sys.stderr)
+        sys.exit(1)
+
+    # Remove "prompt-" prefix if present (PLANS.md uses prompt- but files don't)
+    if recent_plan.startswith('prompt-'):
+        recent_plan = recent_plan[7:]  # Remove "prompt-" prefix
+
     # Convert to full path
     if not recent_plan.startswith('prompts/completed/'):
         recent_plan = f"prompts/completed/{recent_plan}"
@@ -54,6 +90,11 @@ def main() -> None:
         print(recent_plan_path)
         sys.exit(0)
     else:
+        # Try looking in prompts/ directory (for active plans)
+        active_plan_path = repo_root / 'prompts' / recent_plan.replace('prompts/completed/', '')
+        if active_plan_path.exists():
+            print(active_plan_path)
+            sys.exit(0)
         print(f"ERROR: Recent plan file not found: {recent_plan_path}", file=sys.stderr)
         sys.exit(1)
 

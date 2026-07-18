@@ -93,4 +93,4 @@ Append-only. Status: `Proposed | Accepted | Superseded`.
 **Status**: Accepted
 **Context**: Full pytest suite (~183s) caused output-truncation thrashing mid-plan. Agent repeatedly failed to find final summary line.
 **Decision**: Scoped execution during non-scan plans. Full suite on scan plans (divisible by 5).
-**Consequences**: Untouched-area regressions may persist up to 4 plans. Full suite timeout increased to 300s. Scoped failures still governed by OR19 — no exemption.
+**Consequences**: Untouched-area regressions may persist up to 4 plans. Full suite timeout increased to 300s. Scoped failures still governed by UOR-2 — no exemption.

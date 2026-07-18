@@ -561,8 +561,8 @@ Thought for 2s
 Command cd in /C:/SovereignAI
 
 cd c:/SovereignAI/.agent/executor/scripts; python check_rule_crossrefs.py
-ERROR: Undefined rule citations found: ['AR21', 'OR17', 'OR19']
-Defined: ['AR1', 'AR10', 'AR11', 'AR12', 'AR13', 'AR14', 'AR15', 'AR2', 'AR3', 'AR4', 'AR5', 'AR6', 'AR7', 'AR8', 'AR9'], Cited: ['AR11', 'AR21', 'AR4', 'AR6', 'AR7', 'OR17', 'OR19']
+ERROR: Undefined rule citations found: ['AR21', 'UOR-1', 'UOR-2']
+Defined: ['AR1', 'AR10', 'AR11', 'AR12', 'AR13', 'AR14', 'AR15', 'AR2', 'AR3', 'AR4', 'AR5', 'AR6', 'AR7', 'AR8', 'AR9'], Cited: ['AR11', 'AR21', 'AR4', 'AR6', 'AR7', 'UOR-1', 'UOR-2']
 
 Thought for 1s
 5 / 7 tasks done
@@ -570,7 +570,7 @@ Thought for 2s
 CHANGELOG.md
 +27
 - Governance workflows now consistent across all documents (AI_HANDOFF.md, RULE_LIFECYCLE.md, skills)
-- Note: check_rule_crossrefs.py found undefined rule citations (AR21, OR17, OR19) - pre-existing, not introduced by this plan
+- Note: check_rule_crossrefs.py found undefined rule citations (AR21, UOR-1, UOR-2) - pre-existing, not introduced by this plan
  
 ---
  

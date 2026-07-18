@@ -13,7 +13,7 @@ allowed-tools:
 ---
 
 Operational Rules: See .agent/shared/OR_RULES.md
-- Read UOR section (Universal) + SOR section (scan-specific)
+- Read UOR section (Universal)
 
 Run `/scan` workflow. Whole-repo scan. No new features. Fixes only. STOP on failure.
 

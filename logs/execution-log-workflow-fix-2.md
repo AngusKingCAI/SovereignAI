@@ -98,41 +98,41 @@ Thought for 1s
 Read
 execution-log-workflow-fix.md
 Thought for 1s
-SearchedOR17|OR19|OR63 in /C:/SovereignAI (20)
+SearchedOR17|UOR-2|UOR-3 in /C:/SovereignAI (20)
 Thought for 1s
 SKILL.md
 +4
  
-OR17. Deliverables ship in full or defer — no partial implementations
-OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
-OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
+UOR-1. Deliverables ship in full or defer — no partial implementations
+UOR-2. Test/mypy/static-analysis failures: no "pre-existing" exemption
+UOR-3. diskcache CVE monitoring — check DEBT.md for CVE status before close
  
 
 Thought for 1s
 SKILL.md
 +4
  
-OR17. Deliverables ship in full or defer — no partial implementations
-OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
-OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
+UOR-1. Deliverables ship in full or defer — no partial implementations
+UOR-2. Test/mypy/static-analysis failures: no "pre-existing" exemption
+UOR-3. diskcache CVE monitoring — check DEBT.md for CVE status before close
  
 
 Thought for 1s
 SKILL.md
 +4
  
-OR17. Deliverables ship in full or defer — no partial implementations
-OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
-OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
+UOR-1. Deliverables ship in full or defer — no partial implementations
+UOR-2. Test/mypy/static-analysis failures: no "pre-existing" exemption
+UOR-3. diskcache CVE monitoring — check DEBT.md for CVE status before close
  
 
 Thought for 1s
 SKILL.md
 +4
  
-OR17. Deliverables ship in full or defer — no partial implementations
-OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
-OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
+UOR-1. Deliverables ship in full or defer — no partial implementations
+UOR-2. Test/mypy/static-analysis failures: no "pre-existing" exemption
+UOR-3. diskcache CVE monitoring — check DEBT.md for CVE status before close
  
 
 Thought for 1s
@@ -140,7 +140,7 @@ Command python in /C:/SovereignAI
 
 python c:/SovereignAI/.agent/executor/scripts/check_rule_crossrefs.py
 ERROR: Undefined rule citations found: ['AR21']
-Defined: ['AR1', 'AR10', 'AR11', 'AR12', 'AR13', 'AR14', 'AR15', 'AR2', 'AR3', 'AR4', 'AR5', 'AR6', 'AR7', 'AR8', 'AR9', 'OR17', 'OR19', 'OR63'], Cited: ['AR11', 'AR21', 'AR4', 'AR6', 'AR7', 'OR17', 'OR19']
+Defined: ['AR1', 'AR10', 'AR11', 'AR12', 'AR13', 'AR14', 'AR15', 'AR2', 'AR3', 'AR4', 'AR5', 'AR6', 'AR7', 'AR8', 'AR9', 'UOR-1', 'UOR-2', 'UOR-3'], Cited: ['AR11', 'AR21', 'AR4', 'AR6', 'AR7', 'UOR-1', 'UOR-2']
 
 Thought for 1s
 3 / 7 tasks done
@@ -576,7 +576,7 @@ workflow-fix-2: OR rules, AR21, execution log handling
  
 - Added Clone-on-Log-Pushed step to AI_HANDOFF.md Architect Workflow (step 1.5)
 - Updated AI_HANDOFF.md Plan Template S0 to include S0.0 for resuming execution
-- Defined OR rules (OR17, OR19, OR63) in all skill files (open, close, verify, scan)
+- Defined OR rules (UOR-1, UOR-2, UOR-3) in all skill files (open, close, verify, scan)
 - Resolved AR21 undefined citation by adding retired AR21 rule to ARCHITECTURE.md
 - Clarified execution log handling in close/SKILL.md step 11 with header template
 - Verified workflow consistency: check_rule_crossrefs.py passes with 0 undefined citations
@@ -854,7 +854,7 @@ Main Plan Execution:
 
 Added Clone-on-Log-Pushed step to AI_HANDOFF.md Architect Workflow (step 1.5)
 Updated AI_HANDOFF.md Plan Template S0 to include S0.0 for resuming execution
-Defined OR rules (OR17, OR19, OR63) in all skill files (open, close, verify, scan)
+Defined OR rules (UOR-1, UOR-2, UOR-3) in all skill files (open, close, verify, scan)
 Resolved AR21 undefined citation by adding retired AR21 rule to ARCHITECTURE.md
 Clarified execution log handling in close/SKILL.md step 11 with header template
 Verified workflow consistency: check_rule_crossrefs.py passes with 0 undefined citations

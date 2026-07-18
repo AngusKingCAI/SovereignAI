@@ -39,6 +39,11 @@ Rules specific to verify skill only.
 
 Rules specific to open skill only.
 
+### OOR-1: Architect Suggestion Review
+**Rule**: Architect must evaluate all suggestions before creating plan — if suggestions exist, read and evaluate per RULE_LIFECYCLE.md TRIAGE
+**Applies to**: open skill
+**Trigger**: Before creating plan
+
 ## COR — close Skill Rules
 
 Rules specific to close skill only.
@@ -48,9 +53,28 @@ Rules specific to close skill only.
 **Applies to**: close skill
 **Trigger**: Plan title contains "fix" or "test"
 
+### COR-1: Test-Fix Plans Run Full Suite
+**Rule**: Plans with "fix" or "test" in title MUST run full test suite via `pytest .agent/executor/tests`, not scoped tests.
+**Applies to**: close skill
+**Trigger**: Plan title contains "fix" or "test"
+
 ## SOR — scan Skill Rules
 
 Rules specific to scan skill only.
+
+## Retired Rules
+
+Legacy OR IDs that have been retired or replaced with new naming scheme.
+
+| Legacy ID | New ID | Status | Notes |
+|-----------|--------|--------|-------|
+| OR17 | UOR-1 | Replaced | Deliverables Ship in Full |
+| OR19 | UOR-2 | Replaced | Test/Static Analysis Failures |
+| OR29 | COR-1 | Replaced | Test-Fix Plans Run Full Suite |
+| OR48 | - | Retired | No equivalent found |
+| OR61 | - | Retired | No equivalent found |
+| OR63 | UOR-3 | Replaced | diskcache CVE Monitoring |
+| OR65 | - | Retired | No equivalent found |
 
 ## Rule Maintenance
 

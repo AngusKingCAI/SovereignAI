@@ -923,7 +923,7 @@ SKILL.md
 -6
    **Screenshots**: {paths or "N/A"}
    **AR7 diff**: {entries or "None"}
-   **OR63**: {result}
+   **UOR-3**: {result}
    {≤3 bullets summarizing work}
    ```
 
@@ -2914,7 +2914,7 @@ head -n 30 CHANGELOG.md
 **Coverage**: N/A (no new production code)
 **Screenshots**: N/A (no UI changes)
 **AR7 diff**: None
-**OR63**: N/A (no plan pre-cancellation)
+**UOR-3**: N/A (no plan pre-cancellation)
 
 - Created scripts/verify_syntax.py (consolidates 7 file type syntax checks)
 - Created scripts/check_rule_crossrefs.py (replaces complex shell pipeline)
@@ -3135,7 +3135,7 @@ index 42bdd7b..54769b1 100644
 -**Coverage**: N/A (documentation-only plan)
 -**Browser smoke test screenshots**: N/A (documentation-only plan)
 -**AR7 allowlist diff**: None
--**OR63 check result**: N/A (documentation-only plan)
+-**UOR-3 check result**: N/A (documentation-only plan)
 -
 -- Removed 38 redundant rules from AGENTS.md (mechanically enforced by scripts/skills/templates)
 -- Reclassified 18 OR rules to AR rules (better organization of architectural constraints)
@@ -3280,7 +3280,7 @@ index e36a633..42bdd7b 100644
 +**Coverage**: N/A (no new production code)
 +**Screenshots**: N/A (no UI changes)
 +**AR7 diff**: None
-+**OR63**: N/A (no plan pre-cancellation)
++**UOR-3**: N/A (no plan pre-cancellation)
 +
 +- Created scripts/verify_syntax.py (consolidates 7 file type syntax checks)
 +- Created scripts/check_rule_crossrefs.py (replaces complex shell pipeline)
@@ -3314,7 +3314,7 @@ git show HEAD:CHANGELOG.md | head -n 30
 **Coverage**: N/A (no new production code)
 **Screenshots**: N/A (no UI changes)
 **AR7 diff**: None
-**OR63**: N/A (no plan pre-cancellation)
+**UOR-3**: N/A (no plan pre-cancellation)
 
 - Created scripts/verify_syntax.py (consolidates 7 file type syntax checks)
 - Created scripts/check_rule_crossrefs.py (replaces complex shell pipeline)
@@ -3614,7 +3614,7 @@ SKILL.md
 -6
    **Screenshots**: {paths or "N/A"}
    **AR7 diff**: {entries or "None"}
-   **OR63**: {result}
+   **UOR-3**: {result}
    {≤3 bullets summarizing work}
    ```
 
@@ -5269,7 +5269,7 @@ eac2508 docs: add OR86 for prompt-15
 8771240 docs: add execution log for prompt-14
 66faf74 docs: prompt-14 governance updates
 e6f149a Education Department Implementation (prompt-14)
-a5c6e7c docs: add OR63-OR65, OR69-OR70 for prompt-14
+a5c6e7c docs: add UOR-3-OR65, OR69-OR70 for prompt-14
 96ee03a docs: add execution log for prompt-13
 5db5f60 docs: prompt-13 governance updates - archive plan files to completed/
 edc9aad Conformance and Property Testing (prompt-13) - Added conformance testing framework, contract tests, property-based tests with Hypothesis, conformance gate in CapabilityGraph.regis

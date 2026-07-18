@@ -5851,14 +5851,14 @@ User-authorized direct implementation — proceed without Round Table. Two tasks
 
 
 Fix governance doc drift
-LANDMINES.md references OR29–OR33 (in entries L40, L37, L38, L34/L39, L45, L42) and an OR22 meaning ("governance tool self-modified to pass its own check") that doesn't match current AGENTS.md's OR22 (tracing). Current AGENTS.md stops at OR28.
+LANDMINES.md references COR-1–OR33 (in entries L40, L37, L38, L34/L39, L45, L42) and an OR22 meaning ("governance tool self-modified to pass its own check") that doesn't match current AGENTS.md's OR22 (tracing). Current AGENTS.md stops at OR28.
 Read the actual current AGENTS.md at C:/SovereignAI/AGENTS.md directly from the repo. Confirm it stops at OR28. Since it does, correct the drift:
-Append a correction entry to LANDMINES.md (prepend-only per OR5 — do not edit the existing L29–L45 entries) noting the OR29–33 and OR22 references are stale and pointing to the rule/section that now actually covers each, or marking them as retired/unrecovered if no current equivalent exists.
+Append a correction entry to LANDMINES.md (prepend-only per OR5 — do not edit the existing L29–L45 entries) noting the COR-1–33 and OR22 references are stale and pointing to the rule/section that now actually covers each, or marking them as retired/unrecovered if no current equivalent exists.
 Do not touch AGENTS.md numbering to "fix" this — the existing OR1–28 stand as-is.
 
 Implement scoped test execution during iteration, full suite on scan plans
-Add new rule to AGENTS.md Operational Rules (next available OR number, i.e. OR29):
-OR29. Non-scan plan steps: pytest scoped to files under test matching changed source files + their direct test counterparts. Scan plans (5, 10, 15, 20, 25, 30…, per AI_HANDOFF.md scan cadence): full suite via 'pytest tests/ -q --tb=no'. Scoped-run failures still governed by OR19 — no exemption.
+Add new rule to AGENTS.md Operational Rules (next available OR number, i.e. COR-1):
+COR-1. Non-scan plan steps: pytest scoped to files under test matching changed source files + their direct test counterparts. Scan plans (5, 10, 15, 20, 25, 30…, per AI_HANDOFF.md scan cadence): full suite via 'pytest tests/ -q --tb=no'. Scoped-run failures still governed by UOR-2 — no exemption.
 Implement the actual behavior:
 Wherever plan-execution scripts/skills invoke pytest mid-plan (check .devin/skills/, /verify skill, any CI hook), change the invocation to scope to changed-file-derived test paths rather than tests/ in full.
 Wherever /close or scan-triggering logic lives, ensure the full-suite run fires on scan-numbered plans and pipes to isolate the summary line (2>&1 | tail -20 or equivalent grep/findstr for passed/failed/skipped) rather than dumping raw output.
@@ -5887,9 +5887,9 @@ Thoughts
 LANDMINES.md
 +8
  
-**Trigger**: LANDMINES.md entries L29-L45 reference OR29-33 and OR22 meanings that don't match current AGENTS.md (which stops at OR28). L48 references OR22 as "governance tool self-modified" but current OR22 is "Tests use real-shape fixtures". L45/L43/L42/L40 reference OR33/OR32/OR31/OR30 which don't exist. L39/L38/L37 reference OR29/OR28/OR27 with outdated meanings.
+**Trigger**: LANDMINES.md entries L29-L45 reference COR-1-33 and OR22 meanings that don't match current AGENTS.md (which stops at OR28). L48 references OR22 as "governance tool self-modified" but current OR22 is "Tests use real-shape fixtures". L45/L43/L42/L40 reference OR33/OR32/OR31/OR30 which don't exist. L39/L38/L37 reference COR-1/OR28/OR27 with outdated meanings.
 **Impact**: Historical context corrupted; references point to non-existent or incorrectly-numbered rules.
-**Graduated to**: This correction entry. Stale references: L48→OR22 (no current equivalent, retired), L45→OR33 (no current equivalent, retired), L43→OR32 (no current equivalent, retired), L42→OR31 (no current equivalent, retired), L40→OR30 (no current equivalent, retired), L39→OR29 (no current equivalent, retired), L38→OR28 (meaning drifted: current OR28 is "Never delete content from governance documents", not "Already done" claims), L37→OR27 (meaning drifted: current OR27 is "Never delete prompt files", not placeholder implementations). AGENTS.md OR1-28 stand as-is; do not renumber.
+**Graduated to**: This correction entry. Stale references: L48→OR22 (no current equivalent, retired), L45→OR33 (no current equivalent, retired), L43→OR32 (no current equivalent, retired), L42→OR31 (no current equivalent, retired), L40→OR30 (no current equivalent, retired), L39→COR-1 (no current equivalent, retired), L38→OR28 (meaning drifted: current OR28 is "Never delete content from governance documents", not "Already done" claims), L37→OR27 (meaning drifted: current OR27 is "Never delete prompt files", not placeholder implementations). AGENTS.md OR1-28 stand as-is; do not renumber.
  
 
 Thoughts
@@ -5897,7 +5897,7 @@ AGENTS.md
 +2
 OR28. Never delete content from governance documents (AGENTS.md, LANDMINES.md, PLANS.md, CHANGELOG.md) or files in the /documents folder. Only add new content. Historical context must be preserved.
  
-OR29. Non-scan plan steps: pytest scoped to files under test matching changed source files + their direct test counterparts. Scan plans (5, 10, 15, 20, 25, 30…, per AI_HANDOFF.md scan cadence): full suite via 'pytest tests/ -q --tb=no'. Scoped-run failures still governed by OR19 — no exemption.
+COR-1. Non-scan plan steps: pytest scoped to files under test matching changed source files + their direct test counterparts. Scan plans (5, 10, 15, 20, 25, 30…, per AI_HANDOFF.md scan cadence): full suite via 'pytest tests/ -q --tb=no'. Scoped-run failures still governed by UOR-2 — no exemption.
  
 Thoughts
 Searchedpytest in /C:/SovereignAI/.devin/skills
@@ -5924,7 +5924,7 @@ Thoughts
 SKILL.md
 +1
 -1
-1. Determine test scope per OR29:
+1. Determine test scope per COR-1:
    - If `IS_SCAN=true`: Run full suite: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no 2>&1 | tail -20` — STOP on failure. Capture summary line (passed/failed/skipped) for CHANGELOG.
    - If `IS_SCAN=true`: Run full suite with 5-minute timeout: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no 2>&1 | tail -20` — STOP on failure. Capture summary line (passed/failed/skipped) for CHANGELOG. Use 300000ms timeout (suite runtime ~183s, needs headroom).
    - Else:
@@ -5942,8 +5942,8 @@ SKILL.md
 +1
 -1
  
-0.5. Determine if scan plan: Extract plan number from `$CURRENT_PLAN` (e.g., "plan-21-rev11.md" → 21). If plan number % 5 == 0, set `IS_SCAN=true`. Else set `IS_SCAN=false`. This drives test scope per OR29.
-0.5. Determine if scan plan: `IS_SCAN=$(.venv/Scripts/python.exe scripts/is_scan_plan.py $CURRENT_PLAN)` — returns "true" if plan number % 5 == 0, else "false". This drives test scope per OR29.
+0.5. Determine if scan plan: Extract plan number from `$CURRENT_PLAN` (e.g., "plan-21-rev11.md" → 21). If plan number % 5 == 0, set `IS_SCAN=true`. Else set `IS_SCAN=false`. This drives test scope per COR-1.
+0.5. Determine if scan plan: `IS_SCAN=$(.venv/Scripts/python.exe scripts/is_scan_plan.py $CURRENT_PLAN)` — returns "true" if plan number % 5 == 0, else "false". This drives test scope per COR-1.
  
 Thoughts
 SKILL.md
@@ -5951,7 +5951,7 @@ SKILL.md
 -1
  
 6. Full test suite: `.venv/Scripts/python.exe -m pytest tests/ -vvv`
-6. Full test suite with 5-minute timeout: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no 2>&1 | tail -20` — STOP on failure. Use 300000ms timeout (suite runtime ~183s, needs headroom). Per OR29, scan plans run full suite with summary-line isolation.
+6. Full test suite with 5-minute timeout: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no 2>&1 | tail -20` — STOP on failure. Use 300000ms timeout (suite runtime ~183s, needs headroom). Per COR-1, scan plans run full suite with summary-line isolation.
  
 Thoughts
 Read
@@ -5965,7 +5965,7 @@ DECISIONS.md
 +12
 **Rationale**: Scoped tests (matching changed source files) provide fast feedback during iteration while catching regressions in touched areas. Full suite runs every 5 plans ensure broad coverage without the thrashing overhead of running it mid-plan. This aligns with the existing scan cadence used for Round Table reviews, avoiding two counters drifting apart.
 **Trade-offs**: Regressions in untouched areas may go undetected for up to 4 plans between scans. This is explicitly accepted as a trade-off for faster iteration time. The 5-plan cadence balances coverage with velocity. Full suite timeout increased to 300000ms (5 minutes) to accommodate current ~183s runtime with headroom.
-**Status**: Active. Implemented via OR29 (new), is_scan_plan.py script, updated /close and /scan skills. Scoped-run failures still governed by OR19 — no exemption.
+**Status**: Active. Implemented via COR-1 (new), is_scan_plan.py script, updated /close and /scan skills. Scoped-run failures still governed by UOR-2 — no exemption.
 **Source**: User-authorized direct implementation, 2026-07-17.
  
 
@@ -6122,7 +6122,7 @@ Read shellCanceled
 Prompt to send to SWE-1.6:
 
 
-Two bugs found in OR29 implementation, fix both.
+Two bugs found in COR-1 implementation, fix both.
 Bug 1 — scoped test matching is a false negative, not just empty
 pytest -k "" matches test names, not file/module paths. A changed file like scripts/ar_checks/spec_match.py produces zero keyword matches even though it's covered by tests/test_ar_checks.py::test_spec_match_missing_in_diff, because the test module and function names don't contain that string. The current /verify skill transform (sed 's|/|.|g; s|.py||g') only works when the changed file's own test file name mirrors the changed file's dotted path — which isn't true here and won't be true generally.
 Fix: change scoped test selection to use pytest --collect-only -q combined with a grep for test files that import or reference the changed module, not -k keyword matching on a derived string. Concretely:
@@ -6132,9 +6132,9 @@ MODULE=$(echo $f | sed 's|/|.|g; s|.py||g')
 grep -rl "$MODULE|$(basename $f .py)" tests/ --include=".py"
 done | sort -u > /tmp/scoped_test_files.txt
 pytest $(cat /tmp/scoped_test_files.txt) -vvv --cov=. --cov-report=term-missing
-If /tmp/scoped_test_files.txt ends up empty for a changed .py file that isn't itself a test file, that's a coverage gap — STOP per OR9/OR19, don't silently proceed. Update .devin/skills/verify/SKILL.md (or wherever this logic lives) accordingly, and re-verify against the plan-21 skills work (which had many test files) to confirm the new matching actually finds the right scoped subset, not just the zero-result case you already saw.
-Bug 2 — timeout/polling still inconsistent despite OR29's 300000ms spec
-The full-suite run was invoked correctly with piping, but the follow-up read shell call to retrieve output did not consistently use the 300000ms timeout OR29 specifies, leading to reads at partial offsets and a cancelled findstr retry. Fix: wherever the full-suite command is issued in /close or /scan, the paired read/poll call must hard-code timeout ≥300000ms — don't leave it to be re-derived per call. If the tooling can't guarantee the read call inherits the same timeout as the run call, add an explicit comment/step in the skill file stating "next read call: timeout 300000".
+If /tmp/scoped_test_files.txt ends up empty for a changed .py file that isn't itself a test file, that's a coverage gap — STOP per OR9/UOR-2, don't silently proceed. Update .devin/skills/verify/SKILL.md (or wherever this logic lives) accordingly, and re-verify against the plan-21 skills work (which had many test files) to confirm the new matching actually finds the right scoped subset, not just the zero-result case you already saw.
+Bug 2 — timeout/polling still inconsistent despite COR-1's 300000ms spec
+The full-suite run was invoked correctly with piping, but the follow-up read shell call to retrieve output did not consistently use the 300000ms timeout COR-1 specifies, leading to reads at partial offsets and a cancelled findstr retry. Fix: wherever the full-suite command is issued in /close or /scan, the paired read/poll call must hard-code timeout ≥300000ms — don't leave it to be re-derived per call. If the tooling can't guarantee the read call inherits the same timeout as the run call, add an explicit comment/step in the skill file stating "next read call: timeout 300000".
 Verify Bug 2 is fixed by actually running the full suite once end-to-end and confirming the summary line is retrieved on the first read, no retries.
 
 
@@ -6158,7 +6158,7 @@ SKILL.md
 1 hidden line
      b. If no `.py` files changed: echo "N/A — no Python files modified"
      c. Else: Run scoped tests: `pytest tests/ -k "$(echo $CHANGED_PY | sed 's|/|.|g; s|\.py||g; s| | or |g')" -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%. STOP if N/A for `.py`-editing plan.
-     c. Else: Run scoped tests using module reference matching: `SCOPED_TESTS=$(.venv/Scripts/python.exe scripts/get_scoped_tests.py $CHANGED_PY)` — this finds test files that import or reference changed modules. If `SCOPED_TESTS` is empty but `.py` files changed, STOP per OR9/OR19 (coverage gap). Then: `pytest $SCOPED_TESTS -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%.
+     c. Else: Run scoped tests using module reference matching: `SCOPED_TESTS=$(.venv/Scripts/python.exe scripts/get_scoped_tests.py $CHANGED_PY)` — this finds test files that import or reference changed modules. If `SCOPED_TESTS` is empty but `.py` files changed, STOP per OR9/UOR-2 (coverage gap). Then: `pytest $SCOPED_TESTS -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%.
  
 
 Thoughts
@@ -6166,8 +6166,8 @@ SKILL.md
 +1
 -1
  
-6. Full test suite with 5-minute timeout: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no 2>&1 | tail -20` — STOP on failure. Use 300000ms timeout (suite runtime ~183s, needs headroom). Per OR29, scan plans run full suite with summary-line isolation.
-6. Full test suite with 5-minute timeout: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no 2>&1 | tail -20` — STOP on failure. Use 300000ms timeout (suite runtime ~183s, needs headroom). Per OR29, scan plans run full suite with summary-line isolation. Next read call: timeout 300000.
+6. Full test suite with 5-minute timeout: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no 2>&1 | tail -20` — STOP on failure. Use 300000ms timeout (suite runtime ~183s, needs headroom). Per COR-1, scan plans run full suite with summary-line isolation.
+6. Full test suite with 5-minute timeout: `.venv/Scripts/python.exe -m pytest tests/ -q --tb=no 2>&1 | tail -20` — STOP on failure. Use 300000ms timeout (suite runtime ~183s, needs headroom). Per COR-1, scan plans run full suite with summary-line isolation. Next read call: timeout 300000.
  
 Thoughts
 Command .venv/Scripts/python.exe in /C:/SovereignAI
@@ -6647,8 +6647,8 @@ SKILL.md
 +1
 -1
      b. If no `.py` files changed: echo "N/A — no Python files modified"
-     c. Else: Run scoped tests using module reference matching: `SCOPED_TESTS=$(.venv/Scripts/python.exe scripts/get_scoped_tests.py $CHANGED_PY)` — this finds test files that import or reference changed modules. If `SCOPED_TESTS` is empty but `.py` files changed, STOP per OR9/OR19 (coverage gap). Then: `pytest $SCOPED_TESTS -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%.
-     c. Else: Run scoped tests using module reference matching: `SCOPED_TESTS=$(.venv/Scripts/python.exe scripts/get_scoped_tests.py $CHANGED_PY)` — this finds test files that import or reference changed modules. If `SCOPED_TESTS` is empty but `.py` files changed, STOP per OR9/OR19 (coverage gap). Then: `pytest $SCOPED_TESTS -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%. Next read call: timeout 300000.
+     c. Else: Run scoped tests using module reference matching: `SCOPED_TESTS=$(.venv/Scripts/python.exe scripts/get_scoped_tests.py $CHANGED_PY)` — this finds test files that import or reference changed modules. If `SCOPED_TESTS` is empty but `.py` files changed, STOP per OR9/UOR-2 (coverage gap). Then: `pytest $SCOPED_TESTS -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%.
+     c. Else: Run scoped tests using module reference matching: `SCOPED_TESTS=$(.venv/Scripts/python.exe scripts/get_scoped_tests.py $CHANGED_PY)` — this finds test files that import or reference changed modules. If `SCOPED_TESTS` is empty but `.py` files changed, STOP per OR9/UOR-2 (coverage gap). Then: `pytest $SCOPED_TESTS -vvv --cov=. --cov-report=term-missing` — STOP on failure. STOP if coverage <90%. Next read call: timeout 300000.
  
 Thoughts
 Command .venv/Scripts/python.exe in /C:/SovereignAI
@@ -6782,7 +6782,7 @@ tests\conformance\test_memory.py                             10     10
 Thoughts
 Updated todo list (4 items)
 Thoughts
-Both bugs in OR29 implementation have been fixed and verified:
+Both bugs in COR-1 implementation have been fixed and verified:
 
 Bug 1 - Scoped test matching false negative:
 
@@ -6790,14 +6790,14 @@ Created get_scoped_tests.py to replace keyword matching with module reference ma
 The script uses multiple matching strategies: module import matching, basename matching, and filename matching
 It correctly handles cases like spec_match.py → test_ar_checks.py (which the old approach missed)
 Updated SKILL.md to use the new script
-Added coverage gap detection: exits with error if no test files found for changed Python files (per OR9/OR19)
+Added coverage gap detection: exits with error if no test files found for changed Python files (per OR9/UOR-2)
 Verified against plan-21 skills work: correctly finds 9 test files for core skills components
 Bug 2 - Timeout/polling inconsistency:
 
 Added explicit "Next read call: timeout 300000" comments to both SKILL.md and SKILL.md
 Verified with full suite end-to-end run: summary line retrieved on first read with 300000ms timeout
 Both scan and close skills now have documented timeout specifications for consistency
-The fixes ensure OR29's scoped test execution actually finds relevant tests (not false negatives) and full suite runs use consistent 300000ms timeouts as specified.
+The fixes ensure COR-1's scoped test execution actually finds relevant tests (not false negatives) and full suite runs use consistent 300000ms timeouts as specified.
 
 okay now can you run close on the last plan as there is no execution log file
 
@@ -7969,7 +7969,7 @@ I changed the files, The diff is not a smart function to run because I can chang
 
 
 Thoughts
-I understand. The changes to governance documents (PRINCIPLES.md, documents/*.md, etc.) were intentional corrections made during our debugging of the OR29 bugs. The spec_match.py check is failing because it doesn't account for intentional user corrections.
+I understand. The changes to governance documents (PRINCIPLES.md, documents/*.md, etc.) were intentional corrections made during our debugging of the COR-1 bugs. The spec_match.py check is failing because it doesn't account for intentional user corrections.
 
 How would you like to proceed with plan-21 /close?
 
@@ -7985,7 +7985,7 @@ Thought for 1s
 CHANGELOG.md
 +2
 - S12: Added CapabilityCategory.SKILL enum member, ComponentManifest metadata field for skill attributes
-- Bug fixes: Fixed OR29 scoped test matching (replaced keyword matching with module reference matching), added scripts/get_scoped_tests.py, updated .devin/skills/close/SKILL.md and .devin/skills/scan/SKILL.md with 300000ms timeout specifications
+- Bug fixes: Fixed COR-1 scoped test matching (replaced keyword matching with module reference matching), added scripts/get_scoped_tests.py, updated .devin/skills/close/SKILL.md and .devin/skills/scan/SKILL.md with 300000ms timeout specifications
 - Governance updates: Updated AGENTS.md, DECISIONS.md, LANDMINES.md, PLANS.md, PRINCIPLES.md, and design documents to fix governance document drift and incorrect OR references
  
 Thought for 1s
@@ -8115,7 +8115,7 @@ Exited with code 0
 Thought for 1s
 Command git in /C:/SovereignAI
 
-git commit -m "prompt-21: Skills Infrastructure (ISkillRunner, SkillManifest, SkillSession, ToolCallParser, ToolErrorObservation, SkillDiscovery, initial skills, web endpoints, TUI panel)" -m "S0.4: Verified all ComponentManifest instantiations use keyword arguments, added AST check script, updated pre-commit config" -m "S1: Created ISkillRunner protocol with @runtime_checkable decorator for type checking" -m "S1.1: Created ConcreteSkillRunner with module caching, path resolution from manifest metadata, idempotent close()" -m "S2: Created SkillManifest dataclass with TOML parsing, DAG dependencies support, metadata mapping to ComponentManifest" -m "S3: Created SkillSession with correlation_id-based state isolation and history tracking" -m "S4: Created ToolCallParser with hybrid JSON/XML parsing, pluggable format registration, defusedxml for safe XML parsing" -m "S5: Created ToolErrorObservation with prompt formatting for LLM continuation" -m "S6: Created initial skills: file_read, file_write, file_search with manifest + code + DAG structure" -m "S7: Created SkillDiscovery with no-import guarantee, sys.modules validation, dangling dependency warnings" -m "S8: Wired skills infrastructure into main.py build_container() (ISkillRunner, SkillDiscovery, SkillSession, CapabilityGraph)" -m "S9: Created web endpoints /api/skills (GET list, POST execute) with SkillListDTO, SkillExecuteDTO, SkillResultDTO" -m "S10: Updated TUI skills panel to use CapabilityAPI.query_skills() for skill listing" -m "S11: Created comprehensive test suite for skills infrastructure (27 tests, 3 skipped due to FastAPI container requirement)" -m "S12: Added CapabilityCategory.SKILL enum member, ComponentManifest metadata field for skill attributes" -m "Bug fixes: Fixed OR29 scoped test matching (replaced keyword matching with module reference matching), added scripts/get_scoped_tests.py, updated .devin/skills/close/SKILL.md and .devin/skills/scan/SKILL.md with 300000ms timeout specifications" -m "Governance updates: Updated AGENTS.md, DECISIONS.md, LANDMINES.md, PLANS.md, PRINCIPLES.md, and design documents to fix governance document drift and incorrect OR references"
+git commit -m "prompt-21: Skills Infrastructure (ISkillRunner, SkillManifest, SkillSession, ToolCallParser, ToolErrorObservation, SkillDiscovery, initial skills, web endpoints, TUI panel)" -m "S0.4: Verified all ComponentManifest instantiations use keyword arguments, added AST check script, updated pre-commit config" -m "S1: Created ISkillRunner protocol with @runtime_checkable decorator for type checking" -m "S1.1: Created ConcreteSkillRunner with module caching, path resolution from manifest metadata, idempotent close()" -m "S2: Created SkillManifest dataclass with TOML parsing, DAG dependencies support, metadata mapping to ComponentManifest" -m "S3: Created SkillSession with correlation_id-based state isolation and history tracking" -m "S4: Created ToolCallParser with hybrid JSON/XML parsing, pluggable format registration, defusedxml for safe XML parsing" -m "S5: Created ToolErrorObservation with prompt formatting for LLM continuation" -m "S6: Created initial skills: file_read, file_write, file_search with manifest + code + DAG structure" -m "S7: Created SkillDiscovery with no-import guarantee, sys.modules validation, dangling dependency warnings" -m "S8: Wired skills infrastructure into main.py build_container() (ISkillRunner, SkillDiscovery, SkillSession, CapabilityGraph)" -m "S9: Created web endpoints /api/skills (GET list, POST execute) with SkillListDTO, SkillExecuteDTO, SkillResultDTO" -m "S10: Updated TUI skills panel to use CapabilityAPI.query_skills() for skill listing" -m "S11: Created comprehensive test suite for skills infrastructure (27 tests, 3 skipped due to FastAPI container requirement)" -m "S12: Added CapabilityCategory.SKILL enum member, ComponentManifest metadata field for skill attributes" -m "Bug fixes: Fixed COR-1 scoped test matching (replaced keyword matching with module reference matching), added scripts/get_scoped_tests.py, updated .devin/skills/close/SKILL.md and .devin/skills/scan/SKILL.md with 300000ms timeout specifications" -m "Governance updates: Updated AGENTS.md, DECISIONS.md, LANDMINES.md, PLANS.md, PRINCIPLES.md, and design documents to fix governance document drift and incorrect OR references"
 [main de1fb9d] prompt-21: Skills Infrastructure (ISkillRunner, SkillManifest, SkillSession, ToolCallParser, ToolErrorObservation, SkillDiscovery, initial skills, web endpoints, TUI panel)
  52 files changed, 3572 insertions(+), 692 deletions(-)
  create mode 100644 prompts/plan-21-rev10.md
@@ -8541,7 +8541,7 @@ Plan-21 /close has been completed successfully:
 Summary:
 
 ✅ Skills infrastructure fully implemented (ISkillRunner, SkillManifest, SkillSession, ToolCallParser, ToolErrorObservation, SkillDiscovery, initial skills, web endpoints, TUI panel)
-✅ OR29 bugs fixed (scoped test matching + timeout consistency)
+✅ COR-1 bugs fixed (scoped test matching + timeout consistency)
 ✅ All tests passing (531 passed, 11 skipped)
 ✅ Static analysis checks passing (ruff, bandit, vulture, detect-secrets)
 ✅ CHANGELOG updated with bug fixes and governance updates
