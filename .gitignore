@@ -25,6 +25,7 @@ dist/
 .coverage.*
 .tox/
 .agent/executor/scripts/ar_checks/.cache/
+.agent/executor/scripts/landmine_checks/.cache/
 
 # IDE
 .vscode/
