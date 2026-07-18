@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## governance-infrastructure — Combined Execution Log
+
+**Date**: 2026-07-18
+**Plan**: Direct execution (no plan file)
+**Tests**: N/A (documentation-only change)
+**Coverage**: N/A (no code changes)
+**Screenshots**: N/A
+**AR7 diff**: None
+**OR63**: None
+
+- Combined 3 execution logs into single file (execution-log-governance-infrastructure.md)
+- Removed execution-log-workflow-consistency.md, execution-log-governance-execution-gap-b.md, execution-log-governance-execution-gap.md
+- Created blank execution-log-governance-infrastructure.md for user to populate with combined chat history
+- Simplified execution log management for governance infrastructure work
+
+---
+
 ## workflow-consistency — Fix Governance Workflow Inconsistencies
 
 **Date**: 2026-07-18
@@ -22,6 +39,7 @@
 - Updated AI_HANDOFF.md Plan Template step references to match new workflow numbering
 - Created blank execution log for user to populate with chat transcript
 - Governance workflows now consistent between Architect and Executor
+- Note: Execution log combined with governance-infrastructure execution log
 
 ---
 
@@ -46,6 +64,7 @@
 - S5: Updated verify/SKILL.md to include rule suggestion step (step 7)
 - S5: Updated open/SKILL.md to mention suggest_rule.py for recurring patterns (step 5)
 - Created blank execution logs for user to populate with chat transcripts
+- Note: Execution log combined with governance-infrastructure execution log
 - Added execution log creation step to close/SKILL.md (step 11)
 - Rule suggestion pipeline complete with full workflow integration
 - Fixed workflow inconsistencies: unified rule proposal workflow via suggestions/, clarified DEBT.md scope (non-rule items only), aligned Architect and Executor workflows, updated AI_HANDOFF.md Architect Workflow and Plan Template
@@ -72,6 +91,7 @@
 - S4: Updated `.devin/skills/scan/SKILL.md` to include landmine checks (step 5) and OR checks (step 6)
 - Both runners gracefully handle empty script sets (report "not yet implemented" and exit 0)
 - Created blank execution log for user to populate with chat transcript
+- Note: Execution log combined with governance-infrastructure execution log
 - Infrastructure ready for individual OR check scripts (check_or*.py) and landmine detection scripts (detect_*.py)
 - Workflow consistency fixes unified rule proposal and execution log processes
 
