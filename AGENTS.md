@@ -17,6 +17,7 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/shared/ARCH
 8. Scripts are SSOT. Skills reference scripts by path; no inline commands.
 9. Coverage ≥90% at `/close`. No exemptions.
 10. Never execute workflow steps manually unless explicitly requested by user. Always use skills/workflows as intended.
+11. Skill invocation failure: If `/open`, `/verify`, or `/close` cannot be invoked (skill not found, permission denied, or other invocation error), STOP completely. Do not attempt manual fallback. This indicates broken environment configuration.
 
 ---
 
