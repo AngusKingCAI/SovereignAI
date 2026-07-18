@@ -40,8 +40,8 @@ Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Wind
    - New AR → assign ID, implement directly: add to ARCHITECTURE.md with verification script
    - New OR → assign ID, implement directly: edit relevant skill with OR reference
    - New landmine → assign ID, implement directly: add to LANDMINES.md with detection script
-   Implementation per RULE_LIFECYCLE.md IMPLEMENT stage.
-6. Check `.agent/executor/suggestions/` for new rule proposals. Evaluate per RULE_LIFECYCLE.md TRIAGE.
+   Implementation per AI_HANDOFF.md step 4 (direct implementation).
+6. Check `.agent/executor/suggestions/` for new rule proposals. Evaluate before implementation.
 7. Research. Web search for new tech. Document findings in plan header.
 8. Draft. N plan files + 1 brief (Rev 1 only) + 1 Round Table prompt per rev.
    - Include debt resolutions in plan body if any debts are being addressed.
@@ -134,8 +134,7 @@ Missing/reordered sections block delivery (GR7).
 |---|---|---|
 | `AI_HANDOFF.md` | Process guide | Architect |
 | `PRINCIPLES.md` | Living principles | User + Architect |
-| `.agent/shared/RULE_LIFECYCLE.md` | Rule lifecycle process | Architect |
-| `.agent/shared/OR_RULES.md` | Operational rules (UOR/VOR/OOR/COR) | Architect |
+| `.agent/executor/OR_RULES.md` | Operational rules (UOR/VOR/OOR/COR) | Architect |
 | `PLANS.md` | Dynamic state, baselines, queue | Executor |
 | `.agent/shared/LANDMINES.md` | Failure patterns | Executor |
 | `.agent/shared/CHANGELOG.md` | Per-plan change log | Executor |
@@ -147,7 +146,7 @@ Missing/reordered sections block delivery (GR7).
 **SSOT**: Each fact in one document only.
 
 **Read order**:
-- Architect (new chat): AI_HANDOFF → PRINCIPLES → `.agent/shared/RULE_LIFECYCLE.md` → `.agent/shared/OR_RULES.md` → `.agent/shared/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DECISIONS.md` → `.agent/shared/DEBT.md`
+- Architect (new chat): AI_HANDOFF → PRINCIPLES → `.agent/executor/OR_RULES.md` → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DECISIONS.md` → `.agent/shared/DEBT.md`
 - Executor (S0.2): AGENTS.md (consult `.agent/shared/LANDMINES.md` if ambiguous)
 
 **Rule References in Plans**:

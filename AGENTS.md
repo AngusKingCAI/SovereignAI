@@ -1,6 +1,6 @@
 # AGENTS.md — Executor Constitution
 
-Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/shared/ARCHITECTURE.md`
+Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/executor/ARCHITECTURE.md`
 
 ---
 

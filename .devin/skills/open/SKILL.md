@@ -21,7 +21,7 @@ Run `/open` workflow. STOP on any failure.
 1. Read `AGENTS.md`.
 2. Read plan file `prompts/plan-{N}-Rev{X}.md`.
 3. Read `.agent/shared/CHANGELOG.md` latest entry.
-4. Check `.agent/executor/suggestions/` for new rule proposals. If suggestions exist, evaluate per RULE_LIFECYCLE.md TRIAGE before proceeding.
+4. Check `.agent/executor/suggestions/` for new rule proposals. If suggestions exist, evaluate before proceeding.
 5. Identify ambiguities. Ask user. Wait for answers.
 6. Log new patterns to `.agent/shared/LANDMINES.md`. For recurring patterns, document in execution log for Architect review.
 7. Update `.agent/shared/PLANS.md` with new plan entry.

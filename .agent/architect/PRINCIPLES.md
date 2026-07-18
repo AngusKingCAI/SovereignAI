@@ -28,6 +28,6 @@ P14. Provenance enforcement for external components. (Deferred.)
 - Mechanical enforcement > judgment-based rules.
 - No governance rule references (OR/AR) in source code.
 - No external tool dependencies in governance files.
-- Architecture constraints: `.agent/shared/ARCHITECTURE.md`.
+- Architecture constraints: `.agent/executor/ARCHITECTURE.md`.
 - `/close` is atomic: verify before commit/tag/push.
 - Round table runs until clean pass. Each rev brings new evidence.

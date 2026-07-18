@@ -1,6 +1,6 @@
 # AR Static Analysis Checks
 
-Committed implementations of Architecture Rules (AR) from `.agent/shared/ARCHITECTURE.md`.
+Committed implementations of Architecture Rules (AR) from `.agent/executor/ARCHITECTURE.md`.
 
 See [ARCHITECTURE.md](../../../shared/ARCHITECTURE.md) for rule definitions and the constraint verification table.
 

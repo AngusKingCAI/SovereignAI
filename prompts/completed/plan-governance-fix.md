@@ -10,7 +10,7 @@ Open questions resolved: none
 
 1. Run `/open`.
 2. Read `AGENTS.md` in full.
-3. Read `.agent/shared/ARCHITECTURE.md` in full.
+3. Read `.agent/executor/ARCHITECTURE.md` in full.
 4. Read `.agent/architect/AI_HANDOFF.md` in full.
 5. Read `.devin/skills/verify/SKILL.md`, `.devin/skills/close/SKILL.md`, `.devin/skills/scan/SKILL.md` in full.
 
@@ -57,7 +57,7 @@ Open questions resolved: none
 
 **Replace with**:
 ```
-- Architect (new chat): AI_HANDOFF → PRINCIPLES → `.agent/shared/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DECISIONS.md` → `.agent/shared/DEBT.md`
+- Architect (new chat): AI_HANDOFF → PRINCIPLES → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DECISIONS.md` → `.agent/shared/DEBT.md`
 ```
 
 **Reason**: ARCHITECTURE.md is authority for AR rules. Architects must read it before drafting plans.
