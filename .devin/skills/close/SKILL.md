@@ -21,8 +21,10 @@ Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothin
 3. Tests: run scoped or full. STOP on failure. STOP if coverage <90%.
 4. Static analysis: `ruff check .`, `mypy`, `bandit`, `pip-audit`, `vulture`, `detect-secrets`. STOP on any failure.
 5. AR checks: `ar_checks/run_all.py`. STOP on any failure.
-6. Placeholders: `check_placeholders.py`. STOP on hit.
-7. Spec match: `spec_match.py`. STOP if exit≠0.
-8. HARD GATE — `verify_close.py`. If exit≠0: STOP. Do not commit. Do not tag.
-9. Documentation: prepend CHANGELOG, update PLANS.md, add to DEBT.md.
-10. Git: `git status` → identify session files only → `git add` specific files → commit → tag `prompt-{N}` → push.
+6. Landmine checks: `landmine_checks/run_all.py`. STOP if exit≠0.
+7. OR checks: `or_checks/run_all.py`. STOP if exit≠0.
+8. Placeholders: `check_placeholders.py`. STOP on hit.
+9. Spec match: `spec_match.py`. STOP if exit≠0.
+10. HARD GATE — `verify_close.py`. If exit≠0: STOP. Do not commit. Do not tag.
+11. Documentation: prepend CHANGELOG, update PLANS.md, add to DEBT.md.
+12. Git: `git status` → identify session files only → `git add` specific files → commit → tag `prompt-{N}` → push.

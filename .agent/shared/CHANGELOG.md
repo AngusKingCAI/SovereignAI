@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## governance-execution-gap — OR and Landmine Check Infrastructure
+
+**Date**: 2026-07-18
+**Plan**: Direct execution (no plan file)
+**Tests**: N/A (infrastructure-only change)
+**Coverage**: N/A (no code changes)
+**Screenshots**: N/A
+**AR7 diff**: None
+**OR63**: None
+
+- S1: Created `.agent/executor/scripts/or_checks/` directory with `run_all.py` infrastructure
+- S1: OR check runner patterned after AR checks with caching, discovery, and summary reporting
+- S2: Created `.agent/executor/scripts/landmine_checks/` directory with `run_all.py` infrastructure
+- S2: Landmine check runner patterned after AR checks with caching, discovery, and summary reporting
+- S3: Updated `.devin/skills/close/SKILL.md` to include landmine checks (step 6) and OR checks (step 7)
+- S3: Updated `.devin/workflows/close.md` hard gates to include landmine and OR check passes
+- S4: Updated `.devin/skills/verify/SKILL.md` to include OR checks (step 5) and landmine checks (step 6)
+- S4: Updated `.devin/skills/scan/SKILL.md` to include landmine checks (step 5) and OR checks (step 6)
+- Both runners gracefully handle empty script sets (report "not yet implemented" and exit 0)
+- Infrastructure ready for individual OR check scripts (check_or*.py) and landmine detection scripts (detect_*.py)
+
+---
+
 ## executor-instruction — Create .agent/shared/ and Move Shared Documents
 
 **Date**: 2026-07-18
