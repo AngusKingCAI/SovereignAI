@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import time
 from unittest.mock import MagicMock, patch
 
@@ -48,8 +49,9 @@ def adapter(mock_trace, mock_hardware_probe, mock_database_registry, mock_model_
     )
 
 
-@pytest.mark.skip(reason="LLaMA.cpp adapter test requires specific environment setup - skipped per S7.4")
 def test_model_not_found_error(adapter, mock_database_registry, mock_trace):
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     mock_database_registry.find_model.return_value = None
 
     with pytest.raises(ModelNotFoundError):

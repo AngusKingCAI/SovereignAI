@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 from collections.abc import AsyncGenerator
 from typing import Any
 from unittest.mock import patch
@@ -26,14 +27,16 @@ def container(client: TestClient) -> Any:
     return client.app.state.container  # type: ignore[attr-defined]
 
 
-@pytest.mark.skip(reason="Hardware panel tests require full web stack - skipped per S7.4")
 def test_hardware_endpoint_requires_auth(client: TestClient) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     response = client.get("/api/hardware")
     assert response.status_code == 401
 
 
-@pytest.mark.skip(reason="Hardware panel tests require full web stack - skipped per S7.4")
 def test_hardware_endpoint_returns_snapshot(client: TestClient, container: Any) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth.register_user("testuser", "testpass")
@@ -52,15 +55,17 @@ def test_hardware_endpoint_returns_snapshot(client: TestClient, container: Any) 
     assert isinstance(data["gpus"], list)
 
 
-@pytest.mark.skip(reason="Hardware panel tests require full web stack - skipped per S7.4")
 def test_hardware_stream_endpoint_requires_auth(client: TestClient) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     response = client.get("/api/hardware/stream")
     assert response.status_code == 401
 
 
 @pytest.mark.timeout(5)
-@pytest.mark.skip(reason="Hardware panel tests require full web stack - skipped per S7.4")
 def test_hardware_stream_endpoint_sse(client: TestClient, container: Any) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     from sovereignai.shared.capability_api import CapabilityAPI
 
@@ -85,8 +90,9 @@ def test_hardware_stream_endpoint_sse(client: TestClient, container: Any) -> Non
 
 
 @pytest.mark.timeout(10)
-@pytest.mark.skip(reason="Hardware panel tests require full web stack - skipped per S7.4")
 def test_hardware_stream_sse_multiple_events(client: TestClient, container: Any) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     from sovereignai.shared.capability_api import CapabilityAPI
 

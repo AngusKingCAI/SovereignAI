@@ -82,7 +82,8 @@ UI_PACKAGE_DENYLIST = {  # noqa: E501
     'sovereignai.adapters',
     'sovereignai.skills',
 }
-UI_DIRECTORIES = ['app/web', 'app/cli', 'app/tui', 'app/phone']
+UI_DIRECTORIES = ['app/cli', 'app/phone']
+WEB_TUI_DIRECTORIES = ['app/web', 'app/tui']
 CAPABILITY_API_FILE = 'app/sovereignai/shared/capability_api.py'
 
 # Update import paths after standardization
@@ -118,7 +119,35 @@ def test_capability_api_does_not_import_concrete_core_classes() -> None:
 
 @pytest.mark.parametrize('ui_dir', UI_DIRECTORIES)
 def test_ui_directories_do_not_import_core_internals(ui_dir: str) -> None:
-    ui_path = Path(__file__).resolve().parent.parent / ui_dir
+    ui_path = Path(__file__).resolve().parent.parent.parent.parent / ui_dir
+    if not ui_path.exists():
+        pytest.skip(f'UI directory {ui_dir}/ does not exist yet - deferred per DEBT-4')
+    py_files = list(ui_path.rglob('*.py'))
+    if not py_files:
+        pytest.skip(f'No .py files in {ui_dir}/ yet - deferred per DEBT-4')
+    for py_file in py_files:
+        imports = _scan_imports(py_file)
+        forbidden_concrete = {  # noqa: E501
+            imp for imp in imports
+            if any(imp.startswith(prefix) for prefix in CORE_INTERNALS_CONCRETE_DENYLIST)
+        }
+        forbidden_package = {  # noqa: E501
+            imp for imp in imports
+            if any(imp.startswith(prefix) for prefix in UI_PACKAGE_DENYLIST)
+        }
+        assert not forbidden_concrete, (  # noqa: E501
+            f'{py_file} imports forbidden concrete core modules: '
+            f'{forbidden_concrete}. Per AR7, UIs must consume the Capability API only.'
+        )
+        assert not forbidden_package, (  # noqa: E501
+            f'{py_file} imports forbidden package: {forbidden_package}. '
+            'Per AR7, UIs must not import sovereignai.* packages directly.'
+        )
+
+
+@pytest.mark.parametrize('ui_dir', WEB_TUI_DIRECTORIES)
+def test_web_tui_directories_do_not_import_core_internals(ui_dir: str) -> None:
+    ui_path = Path(__file__).resolve().parent.parent.parent.parent / ui_dir
     if not ui_path.exists():
         pytest.skip(f'UI directory {ui_dir}/ does not exist yet')
     py_files = list(ui_path.rglob('*.py'))

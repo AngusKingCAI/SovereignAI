@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from collections.abc import Generator
 from pathlib import Path
 from typing import Any
@@ -44,8 +45,11 @@ def client_authenticated() -> TestClient:
     client.cookies.set('session_id', response.cookies['session_id'])
     return client
 
-@pytest.mark.skip(reason="Web UI integration tests require actual skill files - skipped per S7.4")
 class TestManifestLoading:
+    @classmethod
+    def setup_class(cls):
+        if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+            pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
 
     def test_real_manifests_parse(self) -> None:
         from sovereignai.shared.manifest_parser import parse_manifest
@@ -86,8 +90,11 @@ class TestManifestLoading:
         finally:
             manifest_file.unlink()
 
-@pytest.mark.skip(reason="Web UI integration tests require actual skills registered - skipped per S7.4")
 class TestDispatchRoute:
+    @classmethod
+    def setup_class(cls):
+        if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+            pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
 
     def test_dispatch_returns_task_id(self, client_authenticated: TestClient) -> None:
         response = client_authenticated.post('/api/dispatch', json={'message': 'test message'})
@@ -98,8 +105,11 @@ class TestDispatchRoute:
         assert 'task_id' in data, f'Response missing task_id: {data}'
         assert 'state' in data, f'Response missing state: {data}'
 
-@pytest.mark.skip(reason="Web UI integration tests require actual skills registered - skipped per S7.4")
 class TestFirstRunAuthHandling:
+    @classmethod
+    def setup_class(cls):
+        if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+            pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
 
     def test_api_capabilities_returns_401_on_first_run(self, client_no_users: TestClient) -> None:
         response = client_no_users.get('/api/capabilities')
@@ -122,8 +132,11 @@ class TestFirstRunAuthHandling:
         assert isinstance(data, list)
         assert len(data) >= 2, f'Expected >=2 capabilities, got {len(data)}: {data}'
 
-@pytest.mark.skip(reason="Web UI integration tests require actual skills registered - skipped per S7.4")
 class TestTasksRouteAfterDispatch:
+    @classmethod
+    def setup_class(cls):
+        if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+            pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
 
     def test_tasks_empty_initially(self, client_authenticated: TestClient) -> None:
         response = client_authenticated.get('/api/tasks')

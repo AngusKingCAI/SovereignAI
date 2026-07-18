@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -17,8 +18,9 @@ def test_init_no_io() -> None:
 
 
 @patch("app.services.ollama_service.provider.shutil.which")
-@pytest.mark.skip(reason="Ollama service test requires external binary - skipped per S7.4")
 def test_start_ollama_not_found(mock_which: MagicMock) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     trace = TraceEmitter()
     provider = OllamaServiceProvider(trace)
     mock_which.return_value = None
@@ -56,8 +58,9 @@ def test_start_success(mock_which: MagicMock, mock_popen: MagicMock, mock_get: M
 @patch("services.ollama_service.provider.httpx.get")
 @patch("app.services.ollama_service.provider.subprocess.Popen")
 @patch("app.services.ollama_service.provider.shutil.which")
-@pytest.mark.skip(reason="Ollama service test requires external binary - skipped per S7.4")
 def test_start_timeout(mock_which: MagicMock, mock_popen: MagicMock, mock_get: MagicMock) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     trace = TraceEmitter()
     provider = OllamaServiceProvider(trace, port=8080)
 

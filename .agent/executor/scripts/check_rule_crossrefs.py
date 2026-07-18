@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Cross-reference check for OR/AR rule citations. Replaces scan/SKILL.md Step 5.5."""
 
+import os
 import re
 import sys
 from pathlib import Path
@@ -122,8 +123,14 @@ def extract_cited_rules_with_exemptions(file_path: Path) -> set[str]:
     return cited_rules
 
 
-def main():
-    repo_root = Path(__file__).parent.parent.parent.parent
+def main(repo_root: Path | None = None):
+    if repo_root is None:
+        # Check for REPO_ROOT environment variable first
+        env_root = os.environ.get('REPO_ROOT')
+        if env_root:
+            repo_root = Path(env_root)
+        else:
+            repo_root = Path(__file__).parent.parent.parent.parent
 
     agents_path = repo_root / 'AGENTS.md'
 
@@ -164,10 +171,10 @@ def main():
     if undefined:
         print(f"ERROR: Undefined rule citations found: {sorted(undefined)}", file=sys.stderr)
         print(f"Defined: {sorted(defined_rules)}, Cited: {sorted(cited_rules)}", file=sys.stderr)
-        sys.exit(1)
+        return 1
     else:
         print(f"OK: All {len(cited_rules)} cited rules are defined")
-        sys.exit(0)
+        return 0
 
 
 if __name__ == '__main__':

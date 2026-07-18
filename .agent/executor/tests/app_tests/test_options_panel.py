@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from collections.abc import Generator
 
 import pytest
@@ -42,22 +43,25 @@ def mock_hf_list_models() -> Generator[None, None, None]:
     HFDatabaseProvider.list_models = original_list_models
 
 
-@pytest.mark.skip(reason="Options panel tests require full web stack - skipped per S7.4")
 def test_get_databases_unauthorized() -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     with TestClient(app, raise_server_exceptions=False) as client:
         response = client.get("/api/databases")
         assert response.status_code == 401
 
 
-@pytest.mark.skip(reason="Options panel tests require full web stack - skipped per S7.4")
 def test_get_services_unauthorized() -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     with TestClient(app, raise_server_exceptions=False) as client:
         response = client.get("/api/services")
         assert response.status_code == 401
 
 
-@pytest.mark.skip(reason="Options panel tests require full web stack - skipped per S7.4")
 def test_get_databases_authorized() -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.main import build_container
 
     container = build_container()
@@ -84,8 +88,9 @@ def test_get_databases_authorized() -> None:
             assert isinstance(data, list)
 
 
-@pytest.mark.skip(reason="Options panel tests require full web stack - skipped per S7.4")
 def test_get_services_authorized() -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     with TestClient(app, raise_server_exceptions=False) as client:
         # Register first user
         client.post("/api/auth/register", json={"username": "test", "password": "test123"})

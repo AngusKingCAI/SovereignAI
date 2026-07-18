@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 """Get the current plan file. Replaces close/SKILL.md Step 0 ls -v | tail -n 1 pattern."""
 
+import os
 import re
 import sys
 from pathlib import Path
 
 
-def main() -> None:
+def main(repo_root: Path | None = None) -> None:
     if len(sys.argv) != 1:
         print("Usage: get_current_plan.py", file=sys.stderr)
         sys.exit(1)
 
-    repo_root = Path(__file__).parent.parent.parent.parent
+    if repo_root is None:
+        # Check for REPO_ROOT environment variable first
+        env_root = os.environ.get('REPO_ROOT')
+        if env_root:
+            repo_root = Path(env_root)
+        else:
+            repo_root = Path(__file__).parent.parent.parent.parent
     plans_md = repo_root / '.agent' / 'shared' / 'PLANS.md'
 
     if not plans_md.exists():
@@ -72,29 +79,6 @@ def main() -> None:
         print(recent_plan_path)
         sys.exit(0)
     else:
-        print(f"ERROR: Recent plan file not found: {recent_plan_path}", file=sys.stderr)
-        sys.exit(1)
-
-    # Remove "prompt-" prefix if present (PLANS.md uses prompt- but files don't)
-    if recent_plan.startswith('prompt-'):
-        recent_plan = recent_plan[7:]  # Remove "prompt-" prefix
-
-    # Convert to full path
-    if not recent_plan.startswith('prompts/completed/'):
-        recent_plan = f"prompts/completed/{recent_plan}"
-    # Add .md extension if not present
-    if not recent_plan.endswith('.md'):
-        recent_plan = f"{recent_plan}.md"
-    recent_plan_path = repo_root / recent_plan
-    if recent_plan_path.exists():
-        print(recent_plan_path)
-        sys.exit(0)
-    else:
-        # Try looking in prompts/ directory (for active plans)
-        active_plan_path = repo_root / 'prompts' / recent_plan.replace('prompts/completed/', '')
-        if active_plan_path.exists():
-            print(active_plan_path)
-            sys.exit(0)
         print(f"ERROR: Recent plan file not found: {recent_plan_path}", file=sys.stderr)
         sys.exit(1)
 

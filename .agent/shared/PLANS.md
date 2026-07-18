@@ -24,7 +24,9 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 ## Active Plan
 
-None.
+| Prompt | Description | Status |
+|--------|-------------|--------|
+| prompt-plan-fix-7-Rev1 | Plan Fix 7 - Test Skip Cleanup | 🔄 In Progress |
 
 ## Next in Queue
 

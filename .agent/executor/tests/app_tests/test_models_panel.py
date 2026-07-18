@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from collections.abc import Generator
 from typing import Any
 
@@ -57,14 +58,16 @@ def container(client: TestClient) -> Any:
     return client.app.state.container  # type: ignore[attr-defined]
 
 
-@pytest.mark.skip(reason="Models panel tests require full web stack - skipped per S7.4")
 def test_models_endpoint_requires_auth(client: TestClient) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     response = client.get("/api/models")
     assert response.status_code == 401
 
 
-@pytest.mark.skip(reason="Models panel tests require full web stack - skipped per S7.4")
 def test_models_endpoint_returns_list(client: TestClient, container: Any) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth.register_user("testuser", "testpass")
@@ -78,8 +81,9 @@ def test_models_endpoint_returns_list(client: TestClient, container: Any) -> Non
     assert isinstance(data, list)
 
 
-@pytest.mark.skip(reason="Models panel tests require full web stack - skipped per S7.4")
 def test_models_endpoint_with_filters(client: TestClient, container: Any) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth.register_user("testuser", "testpass")
@@ -93,8 +97,9 @@ def test_models_endpoint_with_filters(client: TestClient, container: Any) -> Non
     assert isinstance(data, list)
 
 
-@pytest.mark.skip(reason="Models panel tests require full web stack - skipped per S7.4")
 def test_models_endpoint_with_vram_filter(client: TestClient, container: Any) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth.register_user("testuser", "testpass")
@@ -108,8 +113,9 @@ def test_models_endpoint_with_vram_filter(client: TestClient, container: Any) ->
     assert isinstance(data, list)
 
 
-@pytest.mark.skip(reason="Models panel tests require full web stack - skipped per S7.4")
 def test_models_endpoint_with_quant_filter(client: TestClient, container: Any) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth.register_user("testuser", "testpass")

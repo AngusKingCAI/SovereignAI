@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from typing import Any
 
 import pytest
@@ -18,8 +19,9 @@ def client() -> TestClient:
 def container(client: TestClient) -> Any:
     return client.app.state.container
 
-@pytest.mark.skip(reason="First-run web UI tests require full web stack - skipped per S7.4")
 def test_no_users_redirects_to_register(client: TestClient, container: Any) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth._password_hashes.clear()
@@ -29,6 +31,8 @@ def test_no_users_redirects_to_register(client: TestClient, container: Any) -> N
 
 @pytest.mark.skip(reason="First-run web UI tests require full web stack - skipped per S7.4")
 def test_after_register_redirects_to_login(client: TestClient, container: Any) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth.register_user('testuser', 'password123')
@@ -36,16 +40,18 @@ def test_after_register_redirects_to_login(client: TestClient, container: Any) -
     assert response.status_code == 307
     assert response.headers['location'] == '/login'
 
-@pytest.mark.skip(reason="First-run web UI tests require full web stack - skipped per S7.4")
 def test_static_files_not_redirected(client: TestClient, container: Any) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth._password_hashes.clear()
     response = client.get('/static/styles.css')
     assert response.status_code == 200
 
-@pytest.mark.skip(reason="First-run web UI tests require full web stack - skipped per S7.4")
 def test_api_returns_401_on_first_run(client: TestClient, container: Any) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth._password_hashes.clear()
@@ -53,8 +59,9 @@ def test_api_returns_401_on_first_run(client: TestClient, container: Any) -> Non
     assert response.status_code == 401
     assert 'detail' in response.json()
 
-@pytest.mark.skip(reason="First-run web UI tests require full web stack - skipped per S7.4")
 def test_auth_endpoints_allowed_on_first_run(client: TestClient, container: Any) -> None:
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth._password_hashes.clear()

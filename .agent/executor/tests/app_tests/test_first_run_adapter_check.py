@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from unittest.mock import MagicMock
 
 import pytest
@@ -22,8 +23,9 @@ def test_client(test_container):
     return TestClient(app)
 
 
-@pytest.mark.skip(reason="First-run adapter check tests require full web stack - skipped per S7.4")
 def test_first_run_check_returns_200(test_client, test_container):
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
 
     # Set up a test user
@@ -44,8 +46,9 @@ def test_first_run_check_returns_200(test_client, test_container):
     assert response.status_code == 200
 
 
-@pytest.mark.skip(reason="First-run adapter check tests require full web stack - skipped per S7.4")
 def test_first_run_check_empty_healthy_when_both_fail(test_client, test_container):
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     from sovereignai.shared.capability_graph import ICapabilityIndex
     from sovereignai.shared.types import AdapterHealth
@@ -76,8 +79,9 @@ def test_first_run_check_empty_healthy_when_both_fail(test_client, test_containe
     assert "No inference adapter healthy" in data["instructions"]
 
 
-@pytest.mark.skip(reason="First-run adapter check tests require full web stack - skipped per S7.4")
 def test_first_run_check_non_empty_when_healthy(test_client, test_container):
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     from sovereignai.shared.capability_graph import ICapabilityIndex
     from sovereignai.shared.types import AdapterHealth
@@ -108,8 +112,9 @@ def test_first_run_check_non_empty_when_healthy(test_client, test_container):
     assert len(data["healthy_adapters"]) >= 1
 
 
-@pytest.mark.skip(reason="First-run adapter check tests require full web stack - skipped per S7.4")
 def test_cpu_only_llama_cpp_counts_as_healthy(test_client, test_container):
+    if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
     from sovereignai.shared.auth import AuthMiddleware
     from sovereignai.shared.capability_graph import ICapabilityIndex
     from sovereignai.shared.types import AdapterHealth
