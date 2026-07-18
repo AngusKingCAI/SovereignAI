@@ -34,7 +34,7 @@ def main(repo_root: Path | None = None) -> None:
     # Extract the first (most recent) plan from the first header
     first_header_match = re.search(r'^## (prompt-[\w-]+)', content, re.MULTILINE)
     if first_header_match:
-        current_plan = first_header_match.group(1).replace("prompt-", "")
+        current_plan = first_header_match.group(1)  # Keep the full "prompt-22-rev16" format
         # Look for the plan file in prompts/ first (active), then prompts/completed/
         plan_path = repo_root / 'prompts' / f'{current_plan}.md'
         if plan_path.exists():
@@ -43,6 +43,19 @@ def main(repo_root: Path | None = None) -> None:
         
         # Try completed/
         plan_path = repo_root / 'prompts' / 'completed' / f'{current_plan}.md'
+        if plan_path.exists():
+            print(plan_path)
+            sys.exit(0)
+        
+        # Try without "prompt-" prefix (backward compatibility)
+        current_plan_no_prefix = current_plan.replace("prompt-", "")
+        plan_path = repo_root / 'prompts' / f'{current_plan_no_prefix}.md'
+        if plan_path.exists():
+            print(plan_path)
+            sys.exit(0)
+        
+        # Try completed/ without "prompt-" prefix
+        plan_path = repo_root / 'prompts' / 'completed' / f'{current_plan_no_prefix}.md'
         if plan_path.exists():
             print(plan_path)
             sys.exit(0)
