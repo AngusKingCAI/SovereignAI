@@ -10,7 +10,7 @@
 **Screenshots**: N/A
 **AR7 diff**: None
 **UOR-2**: Test failures: no "pre-existing" exemption
-**COR-1**: Test-fix plans run full suite
+**COR-1**: Plans with "fix" or "test" in title run full suite
 
 - Added Retired Rules section to OR_RULES.md with mapping table for legacy OR IDs
 - Added OOR-1 (Architect Suggestion Review) to OR_RULES.md
@@ -38,7 +38,7 @@
 **Screenshots**: N/A
 **AR7 diff**: None
 **UOR-2**: Test failures: no "pre-existing" exemption
-**COR-1**: Test-fix plans run full suite
+**COR-1**: Plans with "fix" or "test" in title run full suite
 
 - Replaced remaining suggest_rule.py references with "document in execution log for Architect review"
 - Updated OR_RULES.md VOR-1 to replace suggest_rule.py reference
@@ -65,7 +65,7 @@
 **Screenshots**: N/A
 **AR7 diff**: None
 **UOR-2**: Test failures: no "pre-existing" exemption
-**COR-1**: Test-fix plans run full suite
+**COR-1**: Plans with "fix" or "test" in title run full suite
 
 - Fixed ToolCallParser to use duck-typing instead of isinstance for cross-module safety
 - Removed suggestion-based rule creation workflow (suggest_rule.py, suggestions/ directory)
@@ -93,7 +93,7 @@
 **Screenshots**: N/A
 **AR7 diff**: None
 **UOR-2**: Test failures: no "pre-existing" exemption
-**COR-1**: Test-fix plans run full suite
+**COR-1**: Plans with "fix" or "test" in title run full suite
 
 - Renamed .agent/executor/tests/sovereignai to .agent/executor/tests/app_tests to fix namespace package collision that was breaking isinstance() on all dataclasses/protocols
 - Updated pyproject.toml testpaths to include app_tests directory
@@ -117,7 +117,7 @@
 **Screenshots**: N/A
 **AR7 diff**: None
 **UOR-2**: Test failures: no "pre-existing" exemption
-**COR-1**: Test-fix plans run full suite
+**COR-1**: Plans with "fix" or "test" in title run full suite
 
 - Standardized import paths across codebase to use sovereignai.* format (no app. prefix)
 - Fixed ToolCallParser error_type values to match test expectations
