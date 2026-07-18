@@ -1,9 +1,9 @@
 # CHANGELOG
 
-## prompt-22-rev16 — Event Bus System: Async Delivery, Per-Handler FIFO Queues, Circuit Breakers, Critical Overflow Handling
+## prompt-plan-22-rev16 — Event Bus System: Async Delivery, Per-Handler FIFO Queues, Circuit Breakers, Critical Overflow Handling
 
 **Date**: 2026-07-19
-**Plan**: prompts/completed/plan-22-rev16.md
+**Plan**: prompts/plan-22-rev16.md
 **Tests**: Tests created but not run (deferred per plan S5 DEFERRED)
 **Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
 **Coverage**: N/A (test infrastructure not run)
