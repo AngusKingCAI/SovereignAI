@@ -17,22 +17,22 @@ def check_imports():
     if not sovereignai_dir.exists():
         print(f"Directory not found: {sovereignai_dir}")
         return 1
-    
+
     violations = []
     pattern = re.compile(r'(from app\.sovereignai|import app\.sovereignai)')
-    
+
     for py_file in sovereignai_dir.rglob('*.py'):
         content = py_file.read_text()
         if pattern.search(content):
             violations.append(str(py_file))
-    
+
     if violations:
         print("ERROR: Found app.sovereignai imports in sovereignai package:")
         for violation in violations:
             print(f"  - {violation}")
         print("\nAll files in app/sovereignai/ must use sovereignai.* imports (no app. prefix)")
         return 1
-    
+
     print("OK: No app.sovereignai imports found in sovereignai package")
     return 0
 

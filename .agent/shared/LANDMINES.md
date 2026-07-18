@@ -23,11 +23,12 @@ Naming: C{n} = Critical, H{n} = High, M{n} = Medium, L{n} = Low.
 
 | ID | Pattern | Detection | Mitigation |
 |----|---------|-----------|------------|
-| M1 | Dual import paths break protocol isinstance | Files in app/sovereignai/ using app.sovereignai.* imports instead of sovereignai.* imports | All source files in app/sovereignai/ must use sovereignai.* imports (matches installed package name). Use fix_import_paths.py script to standardize. Detection: check_import_paths.py script. |
+| M1 | Dual import paths break protocol isinstance | Files in app/sovereignai/ using app.sovereignai.* imports instead of sovereignai.* imports | All source files in app/sovereignai/ must use sovereignai.* imports (matches installed package name). Use .agent/executor/scripts/fix_import_paths.py script to standardize. Detection: .agent/executor/scripts/check_import_paths.py script. |
 | M2 | AR7/discovery allowlists must be updated when new sovereignai.* UI imports added | test_ar7_no_core_imports_in_ui.py failures for new imports in app/web, app/tui, etc. | When adding new sovereignai.* imports to UI files, update WEB_MAIN_ALLOWED_IMPORTS and TUI_ALLOWED_IMPORTS in test_ar7_no_core_imports_in_ui.py |
 | M3 | AR check ALLOWLIST must include all legitimate plan artifact paths | spec_match.py failures for valid plan files | Add new plan artifact paths (app/tui, app/web, pyproject.toml, etc.) to ALLOWLIST in scripts/ar_checks/spec_match.py |
-| M4 | Test scope confusion between architect/executor and sovereignai tests | Running wrong test suite for changes made | Tests are now separated: .agent/executor/tests/ for architect/executor, .agent/executor/tests/sovereignai/ for sovereignai. Use get_scoped_tests.py to auto-detect correct scope based on git changes. |
-| M5 | Environment-specific tests failing due to missing external dependencies | Tests requiring GPU, external services, or specific binaries failing | Per S7.4, use pytest.skip with clear condition descriptions for environment-specific tests, not pytest.mark.skip.
+| M4 | Test scope confusion between architect/executor and sovereignai tests | Running wrong test suite for changes made | Tests are now separated: .agent/executor/tests/ for architect/executor, .agent/executor/tests/app_tests/ for sovereignai. Use .agent/executor/scripts/get_scoped_tests.py to auto-detect correct scope based on git changes. |
+| M5 | Environment-specific tests failing due to missing external dependencies | Tests requiring GPU, external services, or specific binaries failing | Per S7.4, use pytest.skip with clear condition descriptions for environment-specific tests, not pytest.mark.skip. |
+| M6 | Namespace package collision — test directory shadows installed package | Test directory named after installed package (e.g., sovereignai/) creates namespace package that shadows app/sovereignai/, breaking isinstance() on all dataclasses/protocols | Never create test directory matching package name. Use non-conflicting names (e.g., app_tests instead of sovereignai). Update pyproject.toml testpaths accordingly. |
 
 ### Low — Architect discretion.
 

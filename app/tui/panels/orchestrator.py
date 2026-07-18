@@ -2,12 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
+from sovereignai.shared.capability_api import CapabilityAPI
+from sovereignai.shared.types import CapabilityCategory
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, Input, RichLog, Static
-
-from sovereignai.shared.capability_api import CapabilityAPI
-from sovereignai.shared.types import CapabilityCategory
 
 
 class OrchestratorPanel(Vertical):

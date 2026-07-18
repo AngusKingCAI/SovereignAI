@@ -51,7 +51,7 @@ def test_plans_table_completeness() -> None:
     """Verify PLANS.md exists and has recent plan entries."""
     plans_path = Path(".agent/shared/PLANS.md")
     assert plans_path.exists(), "PLANS.md not found"
-    
+
     plans_content = plans_path.read_text(encoding="utf-8")
     assert "## Recent Completed" in plans_content, "Recent Completed section missing"
     assert "workflow-fix-6" in plans_content, "Recent workflow fix not documented"
@@ -61,7 +61,7 @@ def test_plans_baseline_reconciliation_completeness() -> None:
     """Verify PLANS.md has baseline section with recent entries."""
     plans_path = Path(".agent/shared/PLANS.md")
     assert plans_path.exists(), "PLANS.md not found"
-    
+
     plans_content = plans_path.read_text(encoding="utf-8")
     assert "## Current Baseline" in plans_content, "Current Baseline section missing"
     assert "20.9.9" in plans_content, "Recent baseline plan not documented"

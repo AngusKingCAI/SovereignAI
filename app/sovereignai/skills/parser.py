@@ -28,12 +28,15 @@ class ToolCallParser:
         self._formats[name] = parser_func
 
     def parse(self, text: str) -> ToolCall | ToolCallErrorObservation:
+        first_error: ToolCallErrorObservation | None = None
         for _format_name, parser in self._formats.items():
             result = parser(text)
             if isinstance(result, ToolCall):
                 return result
+            if isinstance(result, ToolCallErrorObservation) and first_error is None:
+                first_error = result
 
-        return ToolCallErrorObservation(
+        return first_error or ToolCallErrorObservation(
             error_type="parse_error",
             message="Failed to parse tool call with any registered format",
             suggestion="Ensure tool call uses valid JSON or XML format",

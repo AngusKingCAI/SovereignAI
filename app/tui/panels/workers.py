@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from typing import Any
 
+from sovereignai.shared.lifecycle_manager import LifecycleManager
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, DataTable, Static
-
-from sovereignai.shared.lifecycle_manager import LifecycleManager
 
 
 class WorkersPanel(Vertical):

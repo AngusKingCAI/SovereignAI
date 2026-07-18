@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from typing import Any
 
+from sovereignai.shared.capability_api import CapabilityAPI
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, DataTable, Static
-
-from sovereignai.shared.capability_api import CapabilityAPI
 
 
 class HardwarePanel(Vertical):

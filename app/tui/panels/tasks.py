@@ -3,12 +3,11 @@ from __future__ import annotations
 from datetime import UTC
 from typing import Any
 
+from sovereignai.shared.capability_api import CapabilityAPI
+from sovereignai.shared.types import TaskState
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, DataTable, Static
-
-from sovereignai.shared.capability_api import CapabilityAPI
-from sovereignai.shared.types import TaskState
 
 
 class TasksPanel(Vertical):

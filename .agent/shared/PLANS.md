@@ -24,7 +24,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 ## Active Plan
 
-None.
+plan-fix-2-Rev1
 
 ## Next in Queue
 
@@ -40,6 +40,7 @@ None.
 
 | Prompt | Description | Tests | Date |
 |--------|-------------|-------|------|
+| prompt-plan-fix-1-Rev1 | Plan Fix 1 - Import Path Standardization, ToolCallParser Error Types, SkillManifest Fixes, Test Reorganization | 531 | 2026-07-18 |
 | prompt-workflow-fix-6 | Workflow Fix 6 - Test path mismatches, AR check script paths, OR rules, timeout fix | 531 | 2026-07-18 |
 | prompt-workflow-fix-5 | Workflow Fix 5 - STOP definition, get_current_plan.py fix, verify_close.py Rev suffix handling | N/A | 2026-07-18 |
 | prompt-workflow-fix-3 | Workflow Fix 3 - AR check script paths and verify_close.py logic | N/A | 2026-07-18 |
@@ -49,7 +50,11 @@ None.
 | 20.9.8 | Correlation ID Typing + VersionNegotiator Disable | 492 | 2026-07-03 |
 | 20.9.7 | TUI Memory Panel AR7 Compliance via CapabilityAPI | 485 | 2026-07-03 |
 | 20.9.6 | BoundedTraceQueue Implementation | 480 | 2026-07-03 |
-| 20.9.5 | AR6 Context Bag Cleanup + AR-Check Caching | 471 | 2026-07-03 |
+| 20.9.4 | Performance Improvements — health_check caching, generate() timeout | 468 | 2026-07-03 |
+| 20.9.3 | Typed Memory Queries — Add typed query dataclasses | 464 | 2026-07-03 |
+| 20.9.2 | Hardware Probe Refactoring - GPU Detection and Dependency Cleanup | 59 | 2026-07-03 |
+| 20.9.1 | TUI AR7 Compliance: Capability API Extension and Panel Refactoring | 480 | 2026-07-02 |
+| 20.8 | AGENTS.md + LANDMINES.md Cleanup and Restructure | N/A | 2026-07-02 |
 | 20.9.4 | Performance Improvements — health_check caching, generate() timeout | 468 | 2026-07-03 |
 | 20.9.3 | Typed Memory Queries — Add typed query dataclasses | 464 | 2026-07-03 |
 | 20.9.2 | Hardware probe cleanup | 59 | 2026-07-03 |

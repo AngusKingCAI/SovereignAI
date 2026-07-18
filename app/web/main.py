@@ -11,8 +11,6 @@ from typing import Any
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from starlette.responses import JSONResponse, RedirectResponse, StreamingResponse
-
 from sovereignai.main import build_container
 from sovereignai.shared.auth import AuthMiddleware
 from sovereignai.shared.capability_api import CapabilityAPI
@@ -22,6 +20,8 @@ from sovereignai.shared.types import (
     CapabilityCategory,
     TaskState,
 )
+from starlette.responses import JSONResponse, RedirectResponse, StreamingResponse
+
 from app.web.schemas import (
     CapabilityResponseDTO,
     DatabaseResponseDTO,

@@ -22,7 +22,7 @@ def extract_rule_numbers(file_path: Path) -> set[str]:
 def extract_defined_rules(agents_path: Path) -> set[str]:
     """Extract rule numbers defined in ARCHITECTURE.md and OR_RULES.md."""
     defined_rules = set()
-    
+
     # Extract AR rules from ARCHITECTURE.md
     architecture_path = agents_path.parent / '.agent' / 'shared' / 'ARCHITECTURE.md'
     if architecture_path.exists():
@@ -33,7 +33,7 @@ def extract_defined_rules(agents_path: Path) -> set[str]:
         defined_rules.update(ar_matches)
     else:
         print(f"WARNING: {architecture_path} not found, no AR rules defined", file=sys.stderr)
-    
+
     # Extract OR rules from OR_RULES.md (new naming convention)
     or_rules_path = agents_path.parent / '.agent' / 'shared' / 'OR_RULES.md'
     if or_rules_path.exists():
@@ -46,7 +46,7 @@ def extract_defined_rules(agents_path: Path) -> set[str]:
             defined_rules.add(f"{prefix}-{num}")
     else:
         print(f"WARNING: {or_rules_path} not found, no OR rules defined", file=sys.stderr)
-    
+
     return defined_rules
 
 
