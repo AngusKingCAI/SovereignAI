@@ -26,7 +26,7 @@ These rules apply to all skills universally. Skills MUST read UOR section first.
 Rules specific to verify skill only.
 
 ### VOR-1: Error Pattern Detection
-**Rule**: If same error appears 2+ times in execution, run suggest_rule.py. Define "same error" as: same error message substring OR same script failure OR same command syntax error.
+**Rule**: If same error appears 2+ times in execution, document in execution log for Architect review. Define "same error" as: same error message substring OR same script failure OR same command syntax error.
 **Applies to**: verify skill
 **Trigger**: Repeated error patterns during verification
 

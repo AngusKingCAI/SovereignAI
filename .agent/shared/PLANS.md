@@ -24,7 +24,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 ## Active Plan
 
-None.
+prompt-plan-fix-4-Rev1 — Plan Fix 4 - Remaining suggest_rule.py References Cleanup, AR Rule Cleanup, RULE_LIFECYCLE.md File References
 
 ## Next in Queue
 

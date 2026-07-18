@@ -29,13 +29,16 @@ def get_baseline_tag(plan_path: Path) -> str:
         depends = match.group(1).strip()
         if depends.lower() == "none":
             return "none"
-        # Plans write either "prompt-N[.M...]" or "Plan N[.M...]" — accept both.
+        # Plans write either "prompt-N[.M...]", "Plan N[.M...]", or "plan-fix-N-RevX" — accept all.
         tag_match = re.search(r'prompt-[\d.]+', depends)
         if tag_match:
             return tag_match.group(0)
         plan_match = re.search(r'Plan\s+([\d.]+)', depends, re.IGNORECASE)
         if plan_match:
             return f"prompt-{plan_match.group(1)}"
+        fix_match = re.search(r'plan-fix-\d+-Rev\d+', depends)
+        if fix_match:
+            return f"prompt-{fix_match.group(0)}"
         print(f"Could not parse baseline from 'Depends on: {depends}' in {plan_path}")
         sys.exit(1)
     print(f"No 'Depends on:' line found in {plan_path}")
@@ -128,6 +131,10 @@ ALLOWLIST = {
     "prompts/completed/plan-20.9.6.md",
     ".agent/executor/scripts/ar_checks/spec_match.py",
     "prompts/plan-20.9.9.md",
+    "prompts/plan-fix-1-Rev1.md",
+    "prompts/plan-fix-2-Rev1.md",
+    "prompts/plan-fix-3-Rev1.md",
+    "prompts/plan-fix-4-Rev1.md",
 }
 
 

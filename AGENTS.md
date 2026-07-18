@@ -9,7 +9,7 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/shared/ARCH
 1. STOP on any failure. Tests, lint, security, AR checks — any exit≠0 = STOP.
    STOP means: halt current step execution, report failure reason, do not proceed to next step. Executor may fix the failure and retry the same step, but must not skip to subsequent steps without passing the current step. Only verify_close.py HARD GATE is fatal: do not commit or tag if it fails.
 2. Execute plan steps in strict order. No reordering, no skipping.
-3. Never delete or edit governance docs. Prepend-only for LANDMINES.md. Executor may suggest new rules via suggest_rule.py for Architect review.
+3. Never delete or edit governance docs. Prepend-only for LANDMINES.md. Architect detects patterns from execution logs.
 4. `/open` → execute → `/verify` per edit → `/close`. No shortcuts.
 5. Follow skills literally. Reference AR IDs, not full text.
 6. Exceptions need plan number. "Deferred" without plan = STOP.

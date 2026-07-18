@@ -116,13 +116,24 @@ Authority: `.agent/architect/PRINCIPLES.md`. Architect implements rules directly
 ├── scripts/
 │   ├── ar_checks/
 │   │   ├── run_all.py
-│   │   └── check_ar{n}.py
+│   │   ├── check_changelog.py
+│   │   ├── check_dependencies.py
+│   │   ├── check_p4_compliance.py
+│   │   ├── check_placeholders.py
+│   │   ├── check_plan_immutability.py
+│   │   ├── check_rule_conciseness.py
+│   │   ├── check_test_mode_hooks.py
+│   │   ├── check_tracing.py
+│   │   ├── spec_match.py
+│   │   ├── no_context_bags.py
+│   │   ├── no_hardcoded_component_names.py
+│   │   └── ui_does_not_touch_core.py
 │   ├── or_checks/
-│   │   ├── run_all.py
-│   │   └── check_or{n}.py
+│   │   └── run_all.py
 │   └── landmine_checks/
 │       ├── run_all.py
-│       └── detect_{severity}{n}.py
+│       ├── detect_m1.py
+│       └── detect_m4.py
 
 .agent/shared/
 └── RULE_LIFECYCLE.md (this file)

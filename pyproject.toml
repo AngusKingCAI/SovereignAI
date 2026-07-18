@@ -66,9 +66,6 @@ select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM"]
 # Docstring rules (D*) are disabled because docstrings are prohibited per AR11.
 # Code must be self-documenting via naming.
 
-[tool.ruff.lint.pydocstyle]
-convention = "google"
-
 [tool.mypy]
 python_version = "3.11"
 warn_return_any = true

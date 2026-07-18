@@ -46,11 +46,13 @@ AR10. External components copied to local disk before use. No runtime remote-onl
 
 AR15. Adapters declare `health_check()`. Failed check = DEGRADED status, not skipped.
 
+AR16-AR20. Reserved. Never assigned.
+
 ---
 
 ## Data & Interface Contracts
 
-AR11. No docstrings (D103 disabled). Self-documenting names required.
+AR11. Docstrings not required (D-rules disabled in ruff). Self-documenting names preferred.
 
 AR13. SSE auth via HTTP session cookie. No query-param tokens.
 
@@ -72,7 +74,7 @@ AR14. Web-layer DTOs in `app/web/schemas.py`. Core types never returned directly
 | AR8 | `check_tracing.py` | Per-close | No external telemetry audit |
 | AR9 | — | Design-time | Enforced by skill authoring pattern |
 | AR10 | `check_p4_compliance.py` | Per-close | Local-first compliance |
-| AR11 | `no_globals.py`, `constructor_arg_cap.py` | Per-close | No globals, ≤15 args |
+| AR11 | — | Design-time | Enforced by ruff D-rules disabled |
 | AR12 | `ui_does_not_touch_core.py`, `check_ar7_allowlist.py` | Per-close | UI/core separation |
 | AR13 | `check_tracing.py` | Per-close | SSE auth audit |
 | AR14 | `check_p4_compliance.py` | Per-close | Web DTO compliance |
