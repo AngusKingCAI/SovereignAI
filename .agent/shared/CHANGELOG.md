@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## prompt-plan-fix-2-Rev1 — Plan Fix 2 - Namespace Package Collision Fix and ToolCallParser Error Type Fixes
+
+**Date**: 2026-07-18
+**Plan**: prompts/plan-fix-2-Rev1.md
+**Tests**: pytest .agent/executor/tests (531 tests, 479 passed, 52 skipped, 0 failed)
+**Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
+**Coverage**: N/A (no new code added)
+**Screenshots**: N/A
+**AR7 diff**: None
+**UOR-2**: Test failures: no "pre-existing" exemption
+**COR-1**: Test-fix plans run full suite
+
+- Renamed .agent/executor/tests/sovereignai to .agent/executor/tests/app_tests to fix namespace package collision that was breaking isinstance() on all dataclasses/protocols
+- Updated pyproject.toml testpaths to include app_tests directory
+- Fixed ToolCallParser to return specific error types (json_decode_error, xml_parse_error, missing_field) instead of generic parse_error
+- Updated test expectations to match parser's specific error types
+- Updated get_scoped_tests.py to use app_tests path and detect fix plans for full suite execution
+- Updated get_current_plan.py to handle plain text Active Plan format and add .md extension
+- Added M6 landmine for namespace package collision prevention
+- Updated LANDMINES.md M1 and M4 with correct script paths
+- Updated PLANS.md with plan-fix-1-Rev1 entry in Recent Completed table
+- Fixed ruff issues (imports, whitespace, formatting)
+- Moved plan-fix-1-Rev1.md to completed/
+
 ## prompt-plan-fix-1-Rev1 — Plan Fix 1 - Import Path Standardization, ToolCallParser Error Types, SkillManifest Fixes, Test Reorganization
 
 **Date**: 2026-07-18

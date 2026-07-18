@@ -24,7 +24,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 ## Active Plan
 
-plan-fix-2-Rev1
+None.
 
 ## Next in Queue
 
@@ -40,6 +40,7 @@ plan-fix-2-Rev1
 
 | Prompt | Description | Tests | Date |
 |--------|-------------|-------|------|
+| prompt-plan-fix-2-Rev1 | Plan Fix 2 - Namespace Package Collision Fix and ToolCallParser Error Type Fixes | 531 | 2026-07-18 |
 | prompt-plan-fix-1-Rev1 | Plan Fix 1 - Import Path Standardization, ToolCallParser Error Types, SkillManifest Fixes, Test Reorganization | 531 | 2026-07-18 |
 | prompt-workflow-fix-6 | Workflow Fix 6 - Test path mismatches, AR check script paths, OR rules, timeout fix | 531 | 2026-07-18 |
 | prompt-workflow-fix-5 | Workflow Fix 5 - STOP definition, get_current_plan.py fix, verify_close.py Rev suffix handling | N/A | 2026-07-18 |
