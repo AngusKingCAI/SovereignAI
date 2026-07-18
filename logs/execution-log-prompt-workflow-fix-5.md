@@ -1,7 +1,7 @@
 # Execution Log: prompt-workflow-fix-5
 
 **Date**: 2026-07-18
-**Plan**: prompts/plan-workflow-fix-5.md
+**Plan**: prompts/completed/plan-workflow-fix-5.md
 **Executor**: Devin
 
 ---
