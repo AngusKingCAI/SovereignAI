@@ -8,7 +8,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Metric | Value | Plan |
 |--------|-------|------|
-| Tests | 483 | plan-fix-7-Rev1 |
+| Tests | 483 | plan-22-rev16 |
 | ruff | 22 | plan-fix-7-Rev1 |
 | mypy | 0 | plan-fix-2-Rev1 |
 
@@ -16,27 +16,33 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Plan | Tests | Delta | Note |
 |------|-------|-------|------|
+| 22-rev16 | 483 | +0 | Event bus system |
 | 20.9.9 | 497 | +5 | Documentation hygiene |
 | 20.9.8 | 492 | +7 | Correlation ID typing |
 | 20.9.7 | 485 | +8 | TUI Memory Panel AR7 |
 | 20.9.6 | 480 | +8 | BoundedTraceQueue |
-| 20.9.5 | 471 | +9 | AR6 context bag cleanup |
 
 ## Active Plan
 
 | Plan | Rev | Description | Start Date |
 |------|-----|-------------|------------|
-| Plan 22 | Rev 16 | Typed Event Bus with Async Delivery and Per-Handler FIFO | 2026-07-19 |
+| None | — | — | — |
+
+## Recent Completed
+
+| Plan | Rev | Completion Date |
+|------|-----|-----------------|
+| Plan 22 | Rev 16 | 2026-07-19 |
 
 ## Next in Queue
 
 | Slot | Plan | Status |
 |------|------|--------|
-| 1 | Plan 22 | ⏳ Pending |
-| 2 | Plan 23 | ⏳ Pending |
-| 3 | Plan 24 | ⏳ Pending |
-| 4 | Plan 25 | ⏳ Pending |
-| 5 | Plan 26 | ⏳ Pending |
+| 1 | Plan 23 | ⏳ Pending |
+| 2 | Plan 24 | ⏳ Pending |
+| 3 | Plan 25 | ⏳ Pending |
+| 4 | Plan 26 | ⏳ Pending |
+| 5 | Plan 27 | ⏳ Pending |
 
 ## Recent Completed (last 10)
 
