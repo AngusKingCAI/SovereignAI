@@ -23,9 +23,8 @@ Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Wind
 2. Verify repo state. Read `.agent/shared/CHANGELOG.md` latest entry in full. Read `.agent/shared/PLANS.md` current baseline. No scope creep.
 3. Re-read governance documents in full:
    - `.agent/shared/PRINCIPLES.md`
-   - `.agent/shared/RULE_LIFECYCLE.md`
-   - `.agent/shared/OR_RULES.md`
-   - `.agent/shared/ARCHITECTURE.md`
+   - `.agent/executor/OR_RULES.md`
+   - `.agent/executor/ARCHITECTURE.md`
    - `.agent/shared/LANDMINES.md`
    - `.agent/shared/DECISIONS.md` (verify accepted decisions still valid; note any violations;
      review "Proposed" decisions from prior plans — if plan completed successfully, status → "Accepted")
