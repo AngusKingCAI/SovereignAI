@@ -16,6 +16,8 @@ Operational Rules: See .agent/shared/OR_RULES.md
 
 Run `/open` workflow. STOP on any failure.
 
+**FALLBACK**: If skill tool invocation fails, execute steps manually via read/exec tools.
+
 1. Read `AGENTS.md`.
 2. Read plan file `prompts/plan-{N}-Rev{X}.md`.
 3. Read `.agent/shared/CHANGELOG.md` latest entry.

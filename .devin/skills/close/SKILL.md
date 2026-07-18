@@ -18,6 +18,8 @@ Operational Rules: See .agent/shared/OR_RULES.md
 
 Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothing commits.
 
+**FALLBACK**: If skill tool invocation fails, execute steps manually via exec tool with scripts.
+
 Non-HARD-GATE STOP (steps 1–9): fix and retry. HARD-GATE STOP (step 10): abort, do not commit.
 
 1. Resolve plan: `get_current_plan.py`.

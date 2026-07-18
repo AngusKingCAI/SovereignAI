@@ -80,14 +80,14 @@ Open questions resolved: <which Q1-Q34, or "none">
 
 **S0 — Opening**:
 - S0.0: If resuming from prior execution, clone latest repo and verify execution log state.
-- S0.1: Run `/open`
+- S0.1: Run `/open` (if skill tool fails, execute via shell fallback per AGENTS.md Rule 11)
 - S0.2: Read `AGENTS.md` in full
 - S0.3: Check `.agent/shared/DEBT.md` for other deferred items (non-rule items).
 - S0.4: If new tech stack, add research findings to plan header (per Architect Workflow step 7).
 
-**Plan body (S1-Sn)**: Execute steps. Run `/verify` after each edit. HTML/CSS/JS plans: include "WILL edit" UI element list. Reference operational rules where pertinent (e.g., "Use VOR-2 for test suite execution").
+**Plan body (S1-Sn)**: Execute steps. Run `/verify` after each edit (if skill tool fails, execute via shell fallback per AGENTS.md Rule 11). HTML/CSS/JS plans: include "WILL edit" UI element list. Reference operational rules where pertinent (e.g., "Use VOR-2 for test suite execution").
 
-**Closing**: Run `/close`.
+**Closing**: Run `/close` (if skill tool fails, execute via shell fallback per AGENTS.md Rule 11).
 
 **Token budget**: This Handoff + PRINCIPLES.md + plan file = context.
 

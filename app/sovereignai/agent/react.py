@@ -40,6 +40,10 @@ class ReActLoop:
         # Register session
         self._session_registry.register(self._session_key, skill_runner)
 
+    def __call__(self) -> "ReActLoop":
+        """Return self to satisfy ReActLoopFactory protocol."""
+        return self
+
     async def run(
         self,
         task_description: str,

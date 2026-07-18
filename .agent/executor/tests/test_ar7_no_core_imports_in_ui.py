@@ -43,6 +43,13 @@ WEB_MAIN_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.skills.runner.ISkillRunner',
     'sovereignai.skills.session',
     'sovereignai.skills.session.SkillSession',
+    'sovereignai.managers.coding',
+    'sovereignai.managers.coding.CodingManager',
+    'sovereignai.indexing.symbol_map',
+    'sovereignai.indexing.symbol_map.SymbolMap',
+    'sovereignai.indexing.symbol_map.SymbolMapUnavailableError',
+    'sovereignai.memory.graph_backend',
+    'sovereignai.memory.graph_backend.TaskGraphCache',
 }
 TUI_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.container',
@@ -73,6 +80,8 @@ TUI_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.model_catalog.ModelCatalog',
     'sovereignai.shared.librarian',
     'sovereignai.shared.librarian.Librarian',
+    'sovereignai.managers.coding',
+    'sovereignai.managers.coding.CodingManager',
 }
 
 UI_PACKAGE_DENYLIST = {  # noqa: E501
