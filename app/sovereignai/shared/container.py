@@ -20,6 +20,10 @@ class DIContainer:
         with self._lock:
             self._instances[interface] = instance
 
+    def register_instance(self, interface: type[T], instance: T) -> None:
+        with self._lock:
+            self._instances[interface] = instance
+
     def register_factory(
         self, interface: type[T], factory: Callable[[], T]
     ) -> None:

@@ -3,14 +3,14 @@ from __future__ import annotations
 import asyncio
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from sovereignai.managers.base import DepartmentManager
 from sovereignai.managers.exceptions import SymbolMapUnavailableError
 from sovereignai.managers.types import Deliverable, ValidationResult
 from sovereignai.shared.capability_graph import CapabilityGraph
 from sovereignai.shared.container import DIContainer
-from sovereignai.shared.types import CapabilityCategory
+from sovereignai.shared.types import CapabilityCategory, ComponentManifest
 
 if TYPE_CHECKING:
     pass
@@ -141,8 +141,12 @@ class CodingManager(DepartmentManager):
             # Convert ComponentManifest to dict for tools
             tool_dicts = [
                 {
-                    "name": t.provides[0].name if t.provides else "unknown",
-                    "description": t.description if hasattr(t, 'description') else "",
+                    "name": (
+                        cast(ComponentManifest, t).provides[0].name
+                        if cast(ComponentManifest, t).provides
+                        else "unknown"
+                    ),
+                    "description": "",
                 }
                 for t in tools if t is not None
             ]

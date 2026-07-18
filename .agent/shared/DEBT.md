@@ -17,7 +17,7 @@ Open items only. Resolved items → CHANGELOG.md.
 | DEBT-7 | TUI cookie auth for agent SSE stream | Low | Low | Identified | TBD | TUI framework investigation |
 | DEBT-8 | Web UI consumer for agent SSE stream | Low | Low | Identified | TBD | Web UI implementation prioritised |
 | DEBT-9 | Cross-task persistent graph memory | Medium | Medium | Identified | TBD | Graph memory prioritised |
-| DEBT-10 | AR7 violation - UI/core layering in Plan 25 | Medium | Medium | Identified | Plan 26 | Plan 25 commit separation |
+| DEBT-10 | AR7 violation - UI/core layering in Plan 25 | Medium | Medium | Deferred | Plan 26 | Plan 25 commit separation |
 
 ## Resolved Items → See CHANGELOG.md
 
@@ -121,7 +121,7 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 
 **Severity**: Medium
 **Priority**: Medium
-**Status**: Identified
+**Status**: Deferred
 **Target**: Plan 26
 **Trigger**: Plan 25 commit separation
-**Reason**: Plan 25 S7 AR check detected AR7 violation: commit touches both UI layers (app/tui/, app/web/) and core layer (app/sovereignai/). This violates AR7 (UI layers must not touch sovereignai/). To resolve, changes should be split into separate commits: one for UI-only changes, one for core-only changes. Deferring to Plan 26 for proper commit separation.
+**Reason**: Plan 25 S7 AR check detected AR7 violation: commit touches both UI layers (app/tui/, app/web/) and core layer (app/sovereignai/). This violates AR7 (UI layers must not touch sovereignai/). To resolve, changes should be split into separate commits: one for UI-only changes, one for core-only changes. Deferring to Plan 26 for proper commit separation. Plan 25.1 deferred this debt as it requires git history manipulation beyond current plan scope.
