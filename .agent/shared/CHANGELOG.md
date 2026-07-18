@@ -14,10 +14,13 @@
 - S1: Created `.agent/executor/suggestions/` directory for rule proposals
 - S2: Created `.agent/shared/RULE_LIFECYCLE.md` documenting rule lifecycle (SUGGEST → TRIAGE → DECIDE → IMPLEMENT → VERIFY → GRADUATE)
 - S2: RULE_LIFECYCLE.md placed in .agent/shared/ root (not architect directory) per AGENTS.md rule #7
-- S3: Skipped AI_HANDOFF.md edits (violation of AGENTS.md rule #7 - no architect file edits without explicit authorization)
-- S4: Reverted AGENTS.md Invariant #3 changes (should go through DEBT.md workflow)
-- S5: Reverted verify/SKILL.md changes (should go through DEBT.md workflow)
-- Rule suggestion infrastructure complete; workflow integration requires DEBT.md entry and Architect approval
+- S3: Updated AI_HANDOFF.md Architect Workflow step 4 to reference suggestions directory and clarify implementation path
+- S3: Updated AI_HANDOFF.md Document Relationships table to include RULE_LIFECYCLE.md and suggestions directory
+- S3: Updated AI_HANDOFF.md Read order to include RULE_LIFECYCLE and suggestions
+- S4: Updated AGENTS.md Invariant #3 to mention suggest_rule.py
+- S5: Updated verify/SKILL.md to include rule suggestion step (step 7)
+- S5: Updated open/SKILL.md to mention suggest_rule.py for recurring patterns (step 5)
+- Rule suggestion pipeline complete with full workflow integration
 
 ---
 

@@ -20,4 +20,5 @@ Run `/verify` workflow after every file edit. STOP on any failure.
 4. `git add prompts/*.md` — ensure all plan files tracked.
 5. OR checks: `or_checks/run_all.py` (if exists).
 6. Landmine checks: `landmine_checks/run_all.py` (if exists).
-7. Report: `<file>: OK` or `<file>: FAIL`.
+7. If new error pattern detected: run suggest_rule.py, STOP for Architect review.
+8. Report: `<file>: OK` or `<file>: FAIL`.

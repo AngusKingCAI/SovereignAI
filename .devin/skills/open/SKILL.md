@@ -17,7 +17,7 @@ Run `/open` workflow. STOP on any failure.
 2. Read plan file `prompts/plan-{N}-Rev{X}.md`.
 3. Read `.agent/shared/CHANGELOG.md` latest entry.
 4. Identify ambiguities. Ask user. Wait for answers.
-5. Log new patterns to `.agent/shared/LANDMINES.md`. Do not add AR/OR rules.
+5. Log new patterns to `.agent/shared/LANDMINES.md`. For recurring patterns, run suggest_rule.py.
 6. Update `.agent/shared/PLANS.md` with new plan entry.
 7. Begin Phase 1.
 8. After each phase: run `verify_syntax.py`, `ruff check`, scoped `pytest`. STOP on failure.

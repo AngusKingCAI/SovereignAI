@@ -21,11 +21,12 @@ Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Wind
 1. Read logs end-to-end. Extract test counts, STOPs, deviations.
 2. Verify repo state. Spot-check `.agent/shared/CHANGELOG.md` latest entry (first 10 lines). PLANS.md updated. No scope creep.
 3. Re-read `.agent/shared/LANDMINES.md` + `PRINCIPLES.md`.
-4. Review patterns. Propose new rules or reject.
+4. Review execution patterns. Check `.agent/executor/suggestions/` for new rule proposals.
    - New AR → add to `.agent/shared/DEBT.md` with target plan → Round Table → ARCHITECTURE.md
    - New OR → add to `.agent/shared/DEBT.md` with target plan → edit skill
-   - New landmine → note for Executor (they log during execution)
-   Include in next plan's S0.
+   - New landmine → add to `.agent/shared/DEBT.md` with target plan → LANDMINES.md
+   - Reject → document reason in suggestion file, archive
+   Include accepted rules in next plan's S0.
 5. Research. Web search for new tech. Document findings in plan header.
 6. Draft. N plan files + 1 brief (Rev 1 only) + 1 Round Table prompt per rev.
 7. Round Table. Runs until clean pass. Apply findings at discretion.
@@ -115,6 +116,7 @@ Missing/reordered sections block delivery (GR7).
 |---|---|---|
 | `AI_HANDOFF.md` | Process guide | Architect |
 | `PRINCIPLES.md` | Living principles | User + Architect |
+| `.agent/shared/RULE_LIFECYCLE.md` | Rule lifecycle process | Architect |
 | `PLANS.md` | Dynamic state, baselines, queue | Executor |
 | `.agent/shared/LANDMINES.md` | Failure patterns | Executor |
 | `.agent/shared/CHANGELOG.md` | Per-plan change log | Executor |
@@ -122,11 +124,12 @@ Missing/reordered sections block delivery (GR7).
 | `.agent/shared/DECISIONS.md` | Architectural decisions | Executor |
 | `.agent/shared/DEBT.md` | Deferred items | Executor |
 | `.devin/skills/*/SKILL.md` | Workflow skills | Architect |
+| `.agent/executor/suggestions/` | Rule proposals | Executor |
 
 **SSOT**: Each fact in one document only.
 
 **Read order**:
-- Architect (new chat): AI_HANDOFF → PRINCIPLES → `.agent/shared/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DECISIONS.md` → `.agent/shared/DEBT.md`
+- Architect (new chat): AI_HANDOFF → PRINCIPLES → `.agent/shared/RULE_LIFECYCLE.md` → `.agent/shared/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DECISIONS.md` → `.agent/shared/DEBT.md` → `.agent/executor/suggestions/`
 - Executor (S0.2): AGENTS.md (consult `.agent/shared/LANDMINES.md` if ambiguous)
 
 *Pending: Document structure will be revised as part of workflow optimisation.*

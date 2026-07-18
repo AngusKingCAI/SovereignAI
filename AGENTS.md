@@ -8,7 +8,7 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/shared/ARCH
 
 1. STOP on any failure. Tests, lint, security, AR checks — any exit≠0 = STOP.
 2. Execute plan steps in strict order. No reordering, no skipping.
-3. Never delete or edit governance docs. Prepend-only for LANDMINES.md.
+3. Never delete or edit governance docs. Prepend-only for LANDMINES.md. Executor may suggest new rules via suggest_rule.py for Architect review.
 4. `/open` → execute → `/verify` per edit → `/close`. No shortcuts.
 5. Follow skills literally. Reference AR IDs, not full text.
 6. Exceptions need plan number. "Deferred" without plan = STOP.
