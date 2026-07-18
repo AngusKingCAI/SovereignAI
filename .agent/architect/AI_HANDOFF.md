@@ -12,7 +12,7 @@ Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Wind
 - **Design documents**: `.agent/architect/documents/`
 - **All paths use `/`**
 
-**Clone**: `cd /tmp && rm -rf SovereignAI && git clone --depth 1 https://github.com/AngusKingCAI/SovereignAI.git`
+**Clone**: `cd /tmp && rm -rf SovereignAI && git clone https://github.com/AngusKingCAI/SovereignAI.git`
 
 ---
 
