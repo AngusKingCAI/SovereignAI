@@ -31,7 +31,7 @@ class SkillDiscovery:
             if not path.exists():
                 self._trace.emit(
                     component="SkillDiscovery",
-                    level="debug",
+                    level=TraceLevel.DEBUG,
                     message=f"Skill scan path does not exist: {path}",
                 )
                 continue
@@ -50,7 +50,7 @@ class SkillDiscovery:
         if unexpected_modules:
             self._trace.emit(
                 component="SkillDiscovery",
-                level="warn",
+                level=TraceLevel.WARN,
                 message=f"Unexpected modules loaded during scan: {unexpected_modules}",
             )
 
@@ -70,13 +70,13 @@ class SkillDiscovery:
 
             self._trace.emit(
                 component="SkillDiscovery",
-                level="info",
+                level=TraceLevel.INFO,
                 message=f"Discovered skill: {skill_manifest.id} v{skill_manifest.version}",
             )
         except Exception as e:
             self._trace.emit(
                 component="SkillDiscovery",
-                level="error",
+                level=TraceLevel.ERROR,
                 message=f"Failed to load manifest {manifest_path}: {e}",
             )
 
@@ -104,7 +104,7 @@ class SkillDiscovery:
             for skill_id, deps in dangling_deps.items():
                 self._trace.emit(
                     component="SkillDiscovery",
-                    level="warn",
+                    level=TraceLevel.WARN,
                     message=f"Skill {skill_id} has dangling DAG dependencies: {deps}",
                 )
 

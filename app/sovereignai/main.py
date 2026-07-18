@@ -238,16 +238,14 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
 
     react_config = ReActConfig()
 
-    def create_react_loop():
-        return ReActLoop(
-            config=react_config,
-            skill_runner=container.retrieve(ISkillRunner),  # type: ignore
-            session_registry=container.retrieve(ToolSessionRegistry),
-            emitter=container.retrieve(TraceEmitterWrapper)
-        )
-
-    container.register_factory(ReActLoopFactory, create_react_loop)
-    container.register_factory(ReActLoop, create_react_loop)
+    # Register ReActLoop instance as ReActLoopFactory
+    react_loop = ReActLoop(
+        config=react_config,
+        skill_runner=container.retrieve(ISkillRunner),  # type: ignore
+        session_registry=container.retrieve(ToolSessionRegistry),
+        emitter=container.retrieve(TraceEmitterWrapper)
+    )
+    container.register_instance(ReActLoopFactory, react_loop)  # type: ignore
 
     # 13. Register default_model_path_resolver (Plan 19 S2.1)
     # Note: Registered as a singleton since it's a pure function
@@ -431,7 +429,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
                     os.unlink(marker_path)
                     trace.emit(component="recovery", level=TraceLevel.INFO,
                                message="Clean shutdown detected — skipping crash recovery")
-            except Exception:
+            except (FileNotFoundError, OSError):
                 pass
 
         from sovereignai.memory.trace_backend import TraceMemoryBackend
@@ -483,37 +481,38 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
         _writer_thread.start()
         trace.subscribe_callback(_on_trace_emitted)
 
-    from sovereignai.shared.types import TASK_STATE_CHANNEL, TaskState
+    from sovereignai.shared.types import TASK_STATE_CHANNEL, TaskState, TaskStateChanged
 
-    def _on_task_state_persist(event: TaskState) -> None:
+    def _on_task_state_persist(event: Event) -> None:
+        if not isinstance(event, TaskStateChanged):
+            return
         try:
-            # Cast to TaskStateChanged for metadata extraction
-            if (
-                hasattr(event, "task_id")
-                and hasattr(event, "old_state")
-                and hasattr(event, "new_state")
-            ):
-                task_changed = event  # type: ignore
-                trace_backend.store(
-                    data={
-                        "component": "TaskStateMachine",
-                        "level": "info",
-                        "message": (
-                            f"Task {task_changed.task_id}: "
-                            f"{task_changed.old_state} → "
-                            f"{task_changed.new_state}"
-                        ),
-                        "correlation_id": str(task_changed.task_id),
-                    },
-                    metadata={
-                        "task_id": str(task_changed.task_id),
-                        "task_state": (
-                            task_changed.new_state.value
-                            if hasattr(task_changed.new_state, "value")
-                            else str(task_changed.new_state)
-                        ),
-                    },
-                )
+            task_changed = event
+            if not task_changed.task_id:
+                return
+            if not tb:
+                return
+            # Store in trace backend
+            tb.store(
+                data={
+                    "component": "TaskStateMachine",
+                    "level": "info",
+                    "message": (
+                        f"Task {task_changed.task_id}: "
+                        f"{task_changed.old_state} → "
+                        f"{task_changed.new_state}"
+                    ),
+                    "correlation_id": str(task_changed.task_id),
+                },
+                metadata={
+                    "task_id": str(task_changed.task_id),
+                    "task_state": (
+                        task_changed.new_state.value
+                        if hasattr(task_changed.new_state, "value")
+                        else str(task_changed.new_state)
+                    ),
+                },
+            )
         except Exception:
             pass
     bus.subscribe(TASK_STATE_CHANNEL, _on_task_state_persist)

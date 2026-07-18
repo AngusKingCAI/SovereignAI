@@ -382,7 +382,8 @@ async def get_symbol_map(request: Request, query: str = "") -> SymbolMapResponse
     container: Any = request.app.state.container
 
     try:
-        from sovereignai.indexing.symbol_map import SymbolMap, SymbolMapUnavailableError
+        from sovereignai.indexing.symbol_map import SymbolMap
+        from sovereignai.managers.exceptions import SymbolMapUnavailableError
 
         symbol_map = container.retrieve(SymbolMap)
 

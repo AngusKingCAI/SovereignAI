@@ -5,8 +5,8 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from sovereignai.indexing.symbol_map import SymbolMapUnavailableError
 from sovereignai.managers.base import DepartmentManager
+from sovereignai.managers.exceptions import SymbolMapUnavailableError
 from sovereignai.managers.types import Deliverable, ValidationResult
 from sovereignai.shared.capability_graph import CapabilityGraph
 from sovereignai.shared.container import DIContainer
@@ -25,7 +25,7 @@ class CodingManager(DepartmentManager):
         super().__init__(container)
         self._project_root = project_root
 
-    async def _build_context_impl(self, task: Any) -> dict:
+    async def _build_context_impl(self, task: Any) -> dict[str, Any]:
         """Build symbol context for coding tasks."""
         # Will be implemented when SymbolMap exists (S4)
         return {}
@@ -42,6 +42,8 @@ class CodingManager(DepartmentManager):
             trace = self._container.retrieve(TraceEmitter)
 
             # Index project using asyncio.to_thread to avoid blocking event loop (P24-P)
+            if self._project_root is None:
+                return {}
             index_result = await asyncio.to_thread(
                 symbol_map.index, self._project_root
             )
@@ -115,11 +117,14 @@ class CodingManager(DepartmentManager):
 
             # Build tools list from skill manifests (P24-L: get_skill_index, not get_tools)
             capability_graph = self._container.retrieve(CapabilityGraph)
+            all_manifests = capability_graph.list_all_components()
+            manifest_map = {str(m.component_id): m for m in all_manifests}
             tools = [
-                capability_graph.get_manifest(skill_id)
+                manifest_map.get(skill_id)
                 for skill_id, (cat, name) in skill_index.items()
-                if cat == CapabilityCategory.SKILL
+                if cat == CapabilityCategory.SKILL and skill_id in manifest_map
             ]
+            tools = [t for t in tools if t is not None]
 
             # Create session (P24-L: no args)
             session = SkillSession()
@@ -128,14 +133,24 @@ class CodingManager(DepartmentManager):
             task_description = task.description if hasattr(task, 'description') else str(task)
 
             # Retrieve ReAct Worker (P24-L: ReActLoopFactory returns ReActLoop)
-            worker = self._container.retrieve(ReActLoopFactory)
+            worker = self._container.retrieve(ReActLoopFactory)  # type: ignore
 
             # Run ReAct Worker with context and memory
+            # Convert ctx to JSON string for ReActLoop
+            ctx_str = str(ctx) if ctx else None
+            # Convert ComponentManifest to dict for tools
+            tool_dicts = [
+                {
+                    "name": t.provides[0].name if t.provides else "unknown",
+                    "description": t.description if hasattr(t, 'description') else "",
+                }
+                for t in tools if t is not None
+            ]
             result = await worker.run(
                 task_description,
-                tools,
+                tool_dicts,
                 session,
-                context=ctx,
+                context=ctx_str,
                 memory=graph_memory
             )
 

@@ -67,7 +67,7 @@ def execute(args: dict[str, str]) -> str:
     if not root.exists():
         return f"Error: project_root not found: {project_root}"
 
-    results = []
+    results: list[str] = []
     _search_recursive(root, pattern, 0, max_depth, root, results)
 
     if not results:

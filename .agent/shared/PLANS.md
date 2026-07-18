@@ -26,7 +26,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Plan | Rev | Description | Start Date |
 |------|-----|-------------|------------|
-| None | — | — | — |
+| Plan 25 | Rev 1 | Scan & Cleanup (Whole-Repo Verification) | 2026-07-19 |
 
 ## Recent Completed
 

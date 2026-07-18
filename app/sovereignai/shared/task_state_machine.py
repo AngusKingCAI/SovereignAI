@@ -7,16 +7,13 @@ from uuid import UUID
 from sovereignai.shared.event_bus import EventBus
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import (
-    TASK_STATE_CHANNEL,
     DAGSpec,
     InvalidStateTransitionError,
     Task,
     TaskState,
     TaskStateChanged,
     UnknownTaskError,
-    now_utc,
 )
-from sovereignai.shared.types_base import CorrelationId
 
 # NOTE (Rev6 Finding 3): UnknownTaskError, InvalidStateTransitionError, and
 # DAGValidationError are defined in shared/types.py (Plan 3 S1.1 per Rev5
@@ -89,9 +86,6 @@ class TaskStateMachine:
     def _publish(self, task_id: UUID, old_state: TaskState | None,
                  new_state: TaskState) -> None:
         event = TaskStateChanged(
-            channel=TASK_STATE_CHANNEL,
-            correlation_id=CorrelationId(task_id),
-            timestamp=now_utc(),
             task_id=task_id,
             old_state=old_state or TaskState.RECEIVED,
             new_state=new_state,

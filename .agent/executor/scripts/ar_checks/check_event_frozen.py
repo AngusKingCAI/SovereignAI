@@ -8,7 +8,7 @@ This script checks that:
 3. Event dataclass has trace_level field
 4. Event dataclass has event_type property
 
-AR ID: AR22-2
+AR ID: AR8 (tracing)
 """
 
 import sys

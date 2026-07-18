@@ -18,11 +18,11 @@ dynamic = ["dependencies"]
 dependencies = {file = ["app/txt/requirements.txt"]}
 
 [tool.setuptools.packages.find]
-# app/sovereignai/, app/databases/, app/services/, app/adapters/, and app/tui/ are installable packages.
-# UIs (app/web/, app/cli/, app/phone/) are separate processes — NOT installable as part of the core.
+# app/sovereignai/, app/databases/, app/adapters/, and app/tui/ are installable packages.
+# UIs (app/web/, app/cli/, app/phone/) and services/ are separate processes — NOT installable as part of the core.
 where = ["app"]
-include = ["sovereignai*", "databases*", "services*", "adapters*", "tui*"]
-exclude = ["*.tests*", "web*", "cli*", "phone*", "documents*", "prompts*", "logs*", "txt*"]
+include = ["sovereignai*", "databases*", "adapters*", "tui*"]
+exclude = ["*.tests*", "web*", "cli*", "phone*", "documents*", "prompts*", "logs*", "txt*", "services*"]
 
 [project.optional-dependencies]
 # Dev-only tools — never installed in production.
@@ -50,7 +50,7 @@ dev = [
 # ============================================================================
 
 [tool.pytest.ini_options]
-testpaths = [".agent/executor/tests", ".agent/executor/tests/app_tests"]
+testpaths = [".agent/executor/tests", ".agent/executor/tests/app_tests", ".agent/executor/tests/sovereignai"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]

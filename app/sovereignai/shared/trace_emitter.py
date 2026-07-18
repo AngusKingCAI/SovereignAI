@@ -148,7 +148,8 @@ class BoundedTraceQueue:
                     item = self._queue.get(timeout=0.1)
                     if item is DRAIN_SHUTDOWN:
                         break
-                    batch.append(item)
+                    if isinstance(item, TraceEvent):
+                        batch.append(item)
                     if len(batch) >= 50:
                         callback(batch)
                         batch = []

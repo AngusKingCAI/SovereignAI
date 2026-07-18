@@ -13,7 +13,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from sovereignai.managers.base import SymbolMapUnavailableError
+from sovereignai.managers.exceptions import SymbolMapUnavailableError
 from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
 
 log = logging.getLogger(__name__)
@@ -274,5 +274,11 @@ class SymbolMap:
                     })
 
         # Sort by relevance score and limit to budget
-        matched_symbols.sort(key=lambda x: x["relevance_score"], reverse=True)
+        def get_score(item: dict[str, object]) -> float:
+            val = item.get("relevance_score", 0.0)
+            if isinstance(val, (int, float)):
+                return float(val)
+            return 0.0
+
+        matched_symbols.sort(key=get_score, reverse=True)
         return matched_symbols[:budget]

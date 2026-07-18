@@ -108,7 +108,7 @@ class SingleCallStructuredOutput:
                         action_line = line.split(":", 1)[1].strip()
                         action_index = i
                         break
-                
+
                 if action_line and action_index >= 0:
                     # Try to parse name
                     parts = action_line.split(None, 1)  # Split on first whitespace
@@ -116,14 +116,17 @@ class SingleCallStructuredOutput:
                         name = parts[0].strip()
                         # Look for arguments in next lines
                         args = {}
-                        if action_index + 1 < len(lines) and "arguments:" in lines[action_index + 1].lower():
+                        if (
+                            action_index + 1 < len(lines)
+                            and "arguments:" in lines[action_index + 1].lower()
+                        ):
                             args_line = lines[action_index + 1].split(":", 1)[1].strip()
                             # Simple JSON-like parsing
                             if args_line.startswith("{") and args_line.endswith("}"):
                                 try:
                                     import json
                                     args = json.loads(args_line)
-                                except:
+                                except json.JSONDecodeError:
                                     args = {"raw": args_line}
                         return ToolCall(name=name, arguments=args)
             raise ValueError("No ToolCall pattern found in response")

@@ -1,10 +1,6 @@
 """Tests for departments API endpoints (Plan 24 S9)."""
 from __future__ import annotations
 
-from unittest.mock import MagicMock
-
-import pytest
-
 from app.web.schemas import DepartmentListDTO, DepartmentTaskResponseDTO, SymbolMapResponseDTO
 
 
@@ -13,7 +9,7 @@ def test_departments_list_dto():
     dto = DepartmentListDTO(departments=[
         {"id": "coding", "name": "Coding Manager", "description": "Test"}
     ])
-    
+
     assert len(dto.departments) == 1
     assert dto.departments[0]["id"] == "coding"
 
@@ -26,7 +22,7 @@ def test_department_task_response_dto():
         output="test output",
         error=None
     )
-    
+
     assert dto.task_id == "test-id"
     assert dto.status == "success"
     assert dto.output == "test output"
@@ -41,7 +37,7 @@ def test_symbol_map_response_dto():
         symbols=[{"name": "test", "type": "function"}],
         error=None
     )
-    
+
     assert dto.status == "success"
     assert dto.health == "healthy"
     assert len(dto.symbols) == 1
@@ -56,7 +52,7 @@ def test_symbol_map_response_dto_error():
         symbols=[],
         error="tree-sitter unavailable"
     )
-    
+
     assert dto.status == "error"
     assert dto.health == "degraded"
     assert len(dto.symbols) == 0

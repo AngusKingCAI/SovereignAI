@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from sovereignai.shared.event_bus import EventBus
 from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import Channel, Event, TraceLevel
+from sovereignai.shared.types import TraceLevel
 
 
 class TraceEmitterWrapper:
@@ -12,7 +12,9 @@ class TraceEmitterWrapper:
         self._event_bus = event_bus
         self._inner = inner
 
-    def emit_event(self, event_name: str, payload: dict, level: TraceLevel = TraceLevel.INFO) -> None:
+    def emit_event(
+        self, event_name: str, payload: dict, level: TraceLevel = TraceLevel.INFO
+    ) -> None:
         """Emit a trace event via EventBus when started, otherwise fallback to inner emitter."""
         # Prefix with "trace." if not already (case-insensitive)
         if not event_name.lower().startswith("trace."):

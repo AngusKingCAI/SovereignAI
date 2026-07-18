@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import AsyncGenerator
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from uuid import UUID, uuid4
 
 from sovereignai.shared.auth import AuthMiddleware
@@ -25,6 +25,7 @@ from sovereignai.shared.types import (
     HardwareSnapshot,
     MemoryBackendInfo,
     ModelEntry,
+    ModelFilter,
     NoActiveProviderError,
     ProceduralQuery,
     ProceduralResult,
@@ -61,6 +62,7 @@ class CapabilityAPI:
         database_registry: DatabaseRegistry | None = None,
         service_registry: ServiceRegistry | None = None,
         memory_backends: dict[str, object] | None = None,
+        lifecycle_manager: object | None = None,
     ) -> None:
         self._auth = auth
         self._index = capability_index
@@ -71,6 +73,7 @@ class CapabilityAPI:
         self._database_registry = database_registry
         self._service_registry = service_registry
         self._memory_backends = memory_backends or {}
+        self._lifecycle_manager = lifecycle_manager
 
     def query_capabilities(
         self, token: str, query: CapabilityQuery
@@ -169,13 +172,19 @@ class CapabilityAPI:
                 ):
                     if isinstance(backend, EpisodicMemoryBackend):
                         backend_type = "episodic"
+                        if backend._conn:
+                            cursor = backend._conn.cursor()
+                            cursor.execute("SELECT COUNT(*) FROM episodes")
+                            record_count = cursor.fetchone()[0] or 0
+                        else:
+                            record_count = 0
                     elif isinstance(backend, ProceduralMemoryBackend):
                         backend_type = "procedural"
+                        # Procedural backend doesn't use SQLite
+                        record_count = 0
                     else:
                         backend_type = "trace"
-                    cursor = backend._conn.cursor()
-                    cursor.execute("SELECT COUNT(*) FROM episodes")
-                    record_count = cursor.fetchone()[0] or 0
+                        record_count = 0
                     capacity_mb = 0
                     used_mb = record_count
                 else:
@@ -209,11 +218,11 @@ class CapabilityAPI:
         if self._database_registry is None:
             return []
         catalog = ModelCatalog(self._database_registry, self._trace)
-        return catalog.list_models()
+        return catalog.list_models(ModelFilter())
 
-    def query_skills(self, token: str) -> list[dict]:
+    def query_skills(self, token: str) -> list[dict[str, Any]]:
         self._auth.validate(token)
-        results = []
+        results: list[dict[str, Any]] = []
         manifests = self._index.list_all_components()
 
         for manifest in manifests:
@@ -250,7 +259,7 @@ class CapabilityAPI:
 
     def query_service_registry(self, token: str) -> list[tuple[str, ServiceStatus]]:
         self._auth.validate(token)
-        results = []
+        results: list[tuple[str, ServiceStatus]] = []
         if self._service_registry is None:
             return results
         for service_name in self._service_registry.list_services():

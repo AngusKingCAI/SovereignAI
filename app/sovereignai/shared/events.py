@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID, uuid4
 
-from sovereignai.shared.types import Channel, CorrelationId, Event, TraceLevel
+from sovereignai.shared.types import Channel, CorrelationId, TraceLevel
 
 
 @dataclass(frozen=True)

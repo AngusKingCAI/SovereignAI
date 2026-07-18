@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import datetime
 import inspect
 import shutil
 import sqlite3
@@ -33,7 +34,8 @@ class EventBus:
         self._subscribers: dict[Channel, list[Subscriber]] = defaultdict(list)
         self._lock = Lock()
         self._loop: asyncio.AbstractEventLoop | None = None
-        self._loop_thread: any | None = None
+        import threading
+        self._loop_thread: threading.Thread | None = None
         self._overflow_dir: Path
         self._owns_overflow_dir: bool
 
@@ -163,7 +165,7 @@ class EventBus:
             pass
 
     async def _write_critical_overflow(self, event: Event) -> None:
-        def write_to_sqlite():
+        def write_to_sqlite() -> None:
             try:
                 conn = sqlite3.connect(str(self._critical_overflow_db))
                 cursor = conn.cursor()
@@ -203,7 +205,7 @@ class EventBus:
                 pass
 
         with contextlib.suppress(Exception):
-            await asyncio.to_thread(write_to_sqlite, timeout=5.0)
+            await asyncio.to_thread(write_to_sqlite)
 
         with contextlib.suppress(Exception):
             if self._loop and self._loop.is_running():
@@ -212,10 +214,10 @@ class EventBus:
                         self._safe_publish_internal, event
                     )
 
-    def _now_utc(self):
-        from datetime import UTC, datetime
+    def _now_utc(self) -> datetime.datetime:
+        from datetime import UTC
 
-        return datetime.now(UTC)
+        return datetime.datetime.now(UTC)
 
     async def _safe_publish_internal(self, event: Event) -> None:
         if self._state in ("STOPPING", "STOPPED"):
@@ -237,12 +239,13 @@ class EventBus:
 
         self._state = "RUNNING"
         self._loop = asyncio.new_event_loop()
-        self._loop_thread = asyncio.Thread(target=self._run_loop, daemon=True)
+        import threading
+        self._loop_thread = threading.Thread(target=self._run_loop, daemon=True)
         self._loop_thread.start()
 
         self._registry.mark_started()
 
-        async def drain_buffers():
+        async def drain_buffers() -> None:
             for event in self._pre_start_buffer:
                 await self.publish_async(event)
             self._pre_start_buffer.clear()
@@ -250,12 +253,14 @@ class EventBus:
                 await self.publish_async(event)
             self._pre_start_critical_buffer.clear()
 
-        def schedule_drain():
+        def schedule_drain() -> None:
+            if self._loop is None:
+                return
             asyncio.run_coroutine_threadsafe(drain_buffers(), self._loop)
 
         schedule_drain()
 
-        async def start_drain_tasks():
+        async def start_drain_tasks() -> None:
             handlers = self._registry.handlers_for("*")
             for registration in handlers:
                 queue_key = f"{registration.event_type}_{id(registration.handler)}"
@@ -263,12 +268,16 @@ class EventBus:
                     self._drain_task(registration)
                 )
 
-        def schedule_start():
+        def schedule_start() -> None:
+            if self._loop is None:
+                return
             asyncio.run_coroutine_threadsafe(start_drain_tasks(), self._loop)
 
         schedule_start()
 
     def _run_loop(self) -> None:
+        if self._loop is None:
+            return
         asyncio.set_event_loop(self._loop)
         self._loop.run_forever()
 
@@ -335,16 +344,20 @@ class EventBus:
 
         self._state = "STOPPING"
 
-        async def cancel_tasks():
+        async def cancel_tasks() -> None:
             for task in self._drain_tasks.values():
                 task.cancel()
             _ = await asyncio.gather(*self._drain_tasks.values(), return_exceptions=True)
             self._drain_tasks.clear()
 
+        if self._loop is None:
+            return
+
         asyncio.run_coroutine_threadsafe(cancel_tasks(), self._loop).result()
 
         self._loop.call_soon_threadsafe(self._loop.stop)
-        self._loop_thread.join(timeout=5.0)
+        if self._loop_thread:
+            self._loop_thread.join(timeout=5.0)
 
         self._state = "STOPPED"
 

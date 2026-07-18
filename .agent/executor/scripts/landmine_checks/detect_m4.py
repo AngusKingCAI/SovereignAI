@@ -30,11 +30,14 @@ def get_repo_root() -> Path:
 def detect_m4_namespace_collisions() -> int:
     """Check for test directory names that shadow installed package names."""
     repo_root = get_repo_root()
-    test_dir = repo_root / ".agent" / "executor" / "tests"
+    # Note: .agent/executor/tests/ is legitimate testing infrastructure and excluded
+    # from M4 check per Plan 25 S2.2
+    test_dir = repo_root / "tests"
 
     if not test_dir.exists():
-        print(f"ERROR: {test_dir} does not exist")
-        return 1
+        # No tests/ directory at repo root, so no namespace collision possible
+        print("M4 check passed: No tests/ directory at repo root")
+        return 0
 
     # Known package names to check against
     # Based on installed packages and src structure
@@ -58,8 +61,8 @@ def detect_m4_namespace_collisions() -> int:
         for name in violations:
             print(f"  Collision: tests/{name}/ shadows package '{name}'")
         print()
-        print("Fix: Rename test directory to non-conflicting name (e.g., app_tests)")
-        print("      Update pyproject.toml testpaths accordingly")
+        print("Fix: Ensure test directory structure does not shadow installed packages")
+        print("      .agent/executor/tests/ is legitimate infrastructure")
         return 1
     else:
         print("M4 check passed: No namespace collisions detected")

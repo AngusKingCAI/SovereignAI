@@ -1,9 +1,8 @@
 """Concurrency tests for ReActLoop (Plan 23 S9)."""
 
-import pytest
-import asyncio
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import AsyncMock, MagicMock
 
+import pytest
 from sovereignai.agent.config import ReActConfig
 from sovereignai.agent.react import ReActLoop
 from sovereignai.agent.tool_session import ToolSessionRegistry

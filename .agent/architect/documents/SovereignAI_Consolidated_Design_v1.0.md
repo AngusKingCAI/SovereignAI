@@ -269,7 +269,7 @@ AR20. Crash recovery: check `~/.sovereignai/.shutdown_marker`. Skip if exists. M
 
 AR21. Durable backends use atomic writes. SQLite = WAL + transactions. JSON = temp + `os.replace()`. Locks never force-acquired.
 
-AR22. Every function with side effects emits ≥1 trace event. Mechanical classification via check_tracing.py; no self-exemptions.
+AR8. Every function with side effects emits ≥1 trace event. Mechanical classification via check_tracing.py; no self-exemptions.
 
 AR23. Correlation IDs propagate from entry point through all downstream calls via context var.
 
@@ -1270,7 +1270,7 @@ Tracked solely in `principles.md` (SSOT) — do not duplicate the full table her
 
 - Created 4 Python scripts to replace complex shell pipelines (verify_syntax.py, check_rule_crossrefs.py, check_ar7_allowlist.py, get_current_plan.py)
 - Updated close/open/scan/verify workflow files to use new scripts and add concrete criteria
-- Condensed 3 verbose rules in AGENTS.md (AR11, AR22, AR29) for better readability
+- Condensed 3 verbose rules in AGENTS.md (AR11, AR8, AR29) for better readability
 - Added D6-Correction to DECISIONS.md for stale rule references
 - Added test coverage for new scripts (4 test files, 12 tests)
 - Updated spec_match.py allowlist for new files
@@ -5533,7 +5533,7 @@ Plans are not yet numbered. Tentative: sequential from 21, scans at 25/30/35. Se
 The existing EventBus (48 lines) already implements:
 - Typed frozen dataclass `Event` (channel, correlation_id, timestamp)
 - Fan-out delivery with per-subscriber try/except
-- AR22 trace emission on subscribe and publish
+- AR8 trace emission on subscribe and publish
 - AR23 correlation_id propagation
 
 What it lacks:
@@ -5552,10 +5552,10 @@ This document specifies the delta from existing code to full cross-department me
 
 | # | Decision | Rationale |
 |---|----------|-----------|
-| 20.10.4 | **Event schema** -- 8-field base: event_id, timestamp, source, event_type, version, correlation_id, trace_level, payload | P9/P10/AR22/AR23. Universal tracing. Versioned from day one. |
+| 20.10.4 | **Event schema** -- 8-field base: event_id, timestamp, source, event_type, version, correlation_id, trace_level, payload | P9/P10/AR8/AR23. Universal tracing. Versioned from day one. |
 | 20.10.5 | **Event type registry** -- Pydantic classes with ClassVar event_type/version/source, explicit register() in main.py | P1/P5/D2/D4. No manifest overhead for pure types. |
 | 20.10.6 | **Consumer registration** -- EventRegistry.subscribe(PayloadClass, handler) with get_type_hints validation | D2/D4/P1. No decorators, no auto-wiring. Mechanical enforcement. |
-| 20.10.7 | **Delivery** -- Async fan-out, per-handler FIFO, priority ordering, per-handler breaker | P9/P13/AR22. Error isolation. In-order per handler. |
+| 20.10.7 | **Delivery** -- Async fan-out, per-handler FIFO, priority ordering, per-handler breaker | P9/P13/AR8. Error isolation. In-order per handler. |
 | 20.10.8 | **Persistence** -- All events to episodic memory via Librarian subscription | P4/P9. Full audit trail. No classification tax. |
 | 20.10.9 | **Versioning** -- Forward-compatible (C) default; new class per major version (B) escape hatch | P4/P5/AR6/AR17. Frozen classes enforced by OR28. |
 | 20.10.10 | **Integration** -- Extend existing EventBus in place. 5 callsites. No wrapper. | P5. Existing code already does fan-out + traces. Delta only. |
@@ -7024,7 +7024,7 @@ The edit format must work correctly in multi-step ReAct loops where the file sta
 
 | # | Decision | Rationale |
 |---|----------|-----------|
-| 1 | **Option A+ — Search/replace with optional line-range hint** | P3/P5/P9/P13/AR22. Content-based matching. No silent corruption. |
+| 1 | **Option A+ — Search/replace with optional line-range hint** | P3/P5/P9/P13/AR8. Content-based matching. No silent corruption. |
 | 2 | **Whitespace normalization** before matching | Solves 80% of "fragile" failures. |
 | 3 | **Context lines** (2-3 before/after) for disambiguation | Prevents wrong-location matches. |
 | 4 | **Retry on failure** per DD-21.3.1 | Self-correcting. Errors are observations. |
@@ -7213,7 +7213,7 @@ def _find_closest_match(content: str, search: str) -> ClosestMatch | None:
     return None
 ```
 
-### 4.3 AR22 trace emission
+### 4.3 AR8 trace emission
 
 ```python
 # On successful edit:
@@ -7408,7 +7408,7 @@ class CodebaseIndex:
         self._symbol_map: SymbolMap | None = None
 
     def build(self, project_root: Path) -> None:
-        """Build symbol map from project root. Emits AR22 trace."""
+        """Build symbol map from project root. Emits AR8 trace."""
         ...
 
     def rank_for_task(
@@ -7583,7 +7583,7 @@ def pagerank(
 
 ---
 
-## 6. AR22 Trace Emission
+## 6. AR8 Trace Emission
 
 ```python
 # On map build:
@@ -8504,7 +8504,7 @@ The question: how should the Options panel save and load settings?
 
 | # | Decision | Rationale |
 |---|----------|-----------|
-| 1 | **Option E — SQLite + Pydantic-validated typed settings** | P4/P5/AR6/AR21/AR22. SQLite already a dependency. Pydantic validation at interface. |
+| 1 | **Option E — SQLite + Pydantic-validated typed settings** | P4/P5/AR6/AR21/AR8. SQLite already a dependency. Pydantic validation at interface. |
 | 2 | **One row per settings category** (not per individual option) | Fewer rows. Simpler schema. Pydantic handles nested structure. |
 | 3 | **`get(category, model_cls) -> T` validates on read** | AR6. No `Any` at interface. Type-safe. |
 | 4 | **`set(category, value: BaseModel)` validates on write** | AR6. Invalid values caught at write time. |
@@ -8590,7 +8590,7 @@ T = TypeVar("T", bound=BaseModel)
 
 class OptionsBackend:
     """SQLite-backed options with Pydantic-validated typed settings.
-    One row per settings category. AR21 atomic writes. AR22 trace on every get/set."""
+    One row per settings category. AR21 atomic writes. AR8 trace on every get/set."""
 
     def __init__(self, db_path: Path, trace: TraceEmitter) -> None:
         self._trace = trace

@@ -228,15 +228,15 @@ TASK_STATE_CHANNEL = Channel("task_state")
 
 
 @dataclass(frozen=True)
-class TaskStateChanged:
-    channel: Channel = field(default_factory=lambda: TASK_STATE_CHANNEL)
-    correlation_id: CorrelationId = field(default_factory=lambda: CorrelationId(uuid4()))
-    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
+class TaskStateChanged(Event):
     task_id: UUID = field(default_factory=uuid4)
     old_state: TaskState = field(default_factory=lambda: TaskState.RECEIVED)
     new_state: TaskState = field(default_factory=lambda: TaskState.RECEIVED)
     version: int = 1
-    trace_level: TraceLevel = TraceLevel.INFO
+
+    def __post_init__(self) -> None:
+        # Set channel to TASK_STATE_CHANNEL
+        object.__setattr__(self, 'channel', TASK_STATE_CHANNEL)
 
 
 @dataclass(frozen=True)

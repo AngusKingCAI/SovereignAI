@@ -766,7 +766,7 @@
 
 - Created 4 Python scripts to replace complex shell pipelines (verify_syntax.py, check_rule_crossrefs.py, check_ar7_allowlist.py, get_current_plan.py)
 - Updated close/open/scan/verify workflow files to use new scripts and add concrete criteria
-- Condensed 3 verbose rules in AGENTS.md (AR11, AR22, AR29) for better readability
+- Condensed 3 verbose rules in AGENTS.md (AR11, AR8, AR29) for better readability
 - Added D6-Correction to DECISIONS.md for stale rule references
 - Added test coverage for new scripts (4 test files, 12 tests)
 - Updated spec_match.py allowlist for new files

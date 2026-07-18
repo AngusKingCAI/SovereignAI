@@ -1,10 +1,10 @@
 """Tests for TraceEmitterWrapper (Plan 23 S9)."""
 
-import pytest
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock
 
+import pytest
 from sovereignai.observability.trace_emitter import TraceEmitterWrapper
-from sovereignai.shared.types import Channel, Event, TraceLevel
+from sovereignai.shared.types import TraceLevel
 
 
 @pytest.fixture

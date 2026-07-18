@@ -17,7 +17,7 @@
 
 ## 2. Design Decision
 
-**DD-21.10.1**: Codebase indexing (Proposed, P3/P4/P5/AR6/AR22-aligned): Symbol map (Aider-style) for v1. Tree-sitter extracts symbol definitions and references -> builds directed graph -> PageRank ranks by relevance to currently-edited files -> ranked context string (~1024 tokens) injected into ReAct prompt. No embeddings, no vector store, no ML model.
+**DD-21.10.1**: Codebase indexing (Proposed, P3/P4/P5/AR6/AR8-aligned): Symbol map (Aider-style) for v1. Tree-sitter extracts symbol definitions and references -> builds directed graph -> PageRank ranks by relevance to currently-edited files -> ranked context string (~1024 tokens) injected into ReAct prompt. No embeddings, no vector store, no ML model.
 
 ---
 
@@ -203,7 +203,7 @@ Python grammar for v1. Add grammars per language as needed.
 
 ---
 
-## 9. AR22 Traces
+## 9. AR8 Traces
 
 ```python
 # On map build

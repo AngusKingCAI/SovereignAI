@@ -1,8 +1,7 @@
 """Tests for TokenBudgetHistory (Plan 23 S9)."""
 
 import pytest
-
-from sovereignai.agent.history import TokenBudgetHistory, TokenBudgetExceededError
+from sovereignai.agent.history import TokenBudgetExceededError, TokenBudgetHistory
 
 
 @pytest.fixture

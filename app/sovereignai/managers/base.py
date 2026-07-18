@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
-from sovereignai.indexing.symbol_map import SymbolMapUnavailableError
+from sovereignai.managers.exceptions import SymbolMapUnavailableError
 from sovereignai.managers.types import Deliverable, ValidationResult
 from sovereignai.shared.container import DIContainer
 
@@ -18,7 +18,7 @@ class DepartmentManager(ABC):
         self._container = container
 
     @abstractmethod
-    async def build_context(self, task: Any) -> dict | None:
+    async def build_context(self, task: Any) -> dict[str, Any] | None:
         """Build context for task execution. Returns None if context unavailable."""
         try:
             context = await self._build_context_impl(task)
@@ -37,7 +37,7 @@ class DepartmentManager(ABC):
             return None
 
     @abstractmethod
-    def _build_context_impl(self, task: Any) -> dict:
+    async def _build_context_impl(self, task: Any) -> dict[str, Any]:
         """Implementation-specific context building logic."""
         ...
 

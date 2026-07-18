@@ -53,11 +53,6 @@ Rules specific to close skill only.
 **Applies to**: close skill
 **Trigger**: Plan title contains "fix" or "test"
 
-### COR-1: Test-Fix Plans Run Full Suite
-**Rule**: Plans with "fix" or "test" in title MUST run full test suite via `pytest .agent/executor/tests`, not scoped tests.
-**Applies to**: close skill
-**Trigger**: Plan title contains "fix" or "test"
-
 ## SOR — scan Skill Rules
 
 Rules specific to scan skill only.

@@ -1,8 +1,8 @@
 """Tests for ToolSessionRegistry (Plan 23 S9)."""
 
-import pytest
 from unittest.mock import MagicMock
 
+import pytest
 from sovereignai.agent.tool_session import ToolSessionRegistry
 
 

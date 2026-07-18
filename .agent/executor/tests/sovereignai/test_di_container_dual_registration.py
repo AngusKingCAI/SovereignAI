@@ -1,9 +1,8 @@
 """Tests for DIContainer dual-registration (protocol + concrete) (Plan 23 S10)."""
 
 import pytest
-
-from sovereignai.shared.container import DIContainer
 from sovereignai.agent.protocols import GraphMemory
+from sovereignai.shared.container import DIContainer
 
 
 class MockGraphMemory:

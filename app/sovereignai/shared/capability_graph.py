@@ -69,7 +69,7 @@ class CapabilityGraph:
             # to preserve LRU cache
             if self._conformance_runner is None:
                 self._conformance_runner = ConformanceRunner(self._trace)
-            runner = self._conformance_runner
+            runner: ConformanceRunner = self._conformance_runner  # type: ignore
             capability_class = (
                 manifest.provides[0].category.value if manifest.provides else "unknown"
             )  # Per Rev5 F3: derive from first provides category

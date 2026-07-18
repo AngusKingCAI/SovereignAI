@@ -1,6 +1,5 @@
 """Tests for agent API endpoints (Plan 23 S9)."""
 
-import pytest
 
 
 def test_agent_api_placeholder():

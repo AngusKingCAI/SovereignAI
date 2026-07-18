@@ -17,7 +17,7 @@
 
 ## 2. Design Decision
 
-**DD-21.15.1**: Options panel persistence (Proposed, P4/P5/AR6/AR21/AR22-aligned): SQLite backend with Pydantic-validated typed settings. One row per settings category (model, worker, display, etc.), value column stores serialized Pydantic model JSON. get(category, model_cls) -> T validates on read. set(category, value: BaseModel) validates on write. AR21 atomic writes (WAL + transactions). AR22 trace on every get/set.
+**DD-21.15.1**: Options panel persistence (Proposed, P4/P5/AR6/AR21/AR8-aligned): SQLite backend with Pydantic-validated typed settings. One row per settings category (model, worker, display, etc.), value column stores serialized Pydantic model JSON. get(category, model_cls) -> T validates on read. set(category, value: BaseModel) validates on write. AR21 atomic writes (WAL + transactions). AR8 trace on every get/set.
 
 ---
 
@@ -81,7 +81,7 @@ class OptionsBackend:
             event="options.updated",
             category=category,
             version="1.0.0"
-        )  # AR22
+        )  # AR8
 ```
 
 ---
@@ -171,7 +171,7 @@ E fixes AR6 at the interface layer without changing the storage choice. Storage 
 | P5 (no speculative contracts) | One table, typed interface. No TOML, no EAV, no env vars. |
 | AR6 (no context bags) | `get() -> T` instead of `get() -> Any`. Pydantic validation. |
 | AR21 (atomic writes) | WAL + transactions. No corruption on crash. |
-| AR22 (observability) | Trace on every get/set. Audit trail. |
+| AR8 (observability) | Trace on every get/set. Audit trail. |
 | DD-20.10.9 (versioning) | Forward-compatible Pydantic models. |
 
 ---

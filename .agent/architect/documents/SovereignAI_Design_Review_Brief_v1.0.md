@@ -25,10 +25,10 @@
 | DD-20.10.1 | Trace queue circuit breaker | None | P9/P13/P7 |
 | DD-20.10.2 | Sentinel-based drain exit | DD-20.10.1 | P9/P13 |
 | DD-20.10.3 | Queue strategy taxonomy | DD-20.10.1 | P9/P13/P7 |
-| DD-20.10.4 | Event schema base (8 fields) | None | P9/AR22/AR23 |
+| DD-20.10.4 | Event schema base (8 fields) | None | P9/AR8/AR23 |
 | DD-20.10.5 | Event type registry (explicit) | DD-20.10.4 | P1/P5/D2/D4 |
 | DD-20.10.6 | Consumer registration (signature-validated) | DD-20.10.5 | D2/D4/P1/AR6 |
-| DD-20.10.7 | Fan-out delivery (async + breaker) | DD-20.10.6 | P9/P13/AR22 |
+| DD-20.10.7 | Fan-out delivery (async + breaker) | DD-20.10.6 | P9/P13/AR8 |
 | DD-20.10.8 | All events persist via Librarian | DD-20.10.7 | P4/P9/AR2 |
 | DD-20.10.9 | Versioning + major-bump escape | DD-20.10.4 | P4/P5/AR6/AR17 |
 | DD-20.10.10 | EventBus integration (extend in place) | DD-20.10.4–9 | P5 |
@@ -37,11 +37,11 @@
 | DD-21.3.1 | Tool call generation (single-call + retry) | None | P2/P3/P5/AR6 |
 | DD-21.5.1 | Hardware SSE (wraps stream_hardware) | None | P8/AR13/AR24 |
 | DD-21.7.1 | Department manager (deterministic + 1 ReAct) | DD-21.0.1/21.3.1/21.10.1 | P5/AR1/P13 |
-| DD-21.9.1 | Diff editing (search/replace + hint) | DD-21.3.1 | P3/P5/P9/P13/AR22 |
-| DD-21.10.1 | Codebase indexing (symbol map) | None | P3/P4/P5/AR6/AR22 |
+| DD-21.9.1 | Diff editing (search/replace + hint) | DD-21.3.1 | P3/P5/P9/P13/AR8 |
+| DD-21.10.1 | Codebase indexing (symbol map) | None | P3/P4/P5/AR6/AR8 |
 | DD-21.12.1 | Graph memory (SQLite EAV + CTE) | None | P4/P5/AR6/AR19/AR21 |
 | DD-21.13.1 | Models panel drill-down (4-table) | DD-21.5.1/21.15.1 | P4/P5/AR6/AR21/AR25/AR26 |
-| DD-21.15.1 | Options persistence (SQLite + Pydantic) | None | P4/P5/AR6/AR21/AR22 |
+| DD-21.15.1 | Options persistence (SQLite + Pydantic) | None | P4/P5/AR6/AR21/AR8 |
 | DD-misc-1 | RT bypass for design docs | None | Process |
 
 ## 3. Decisions proposed (GR6/GR8)

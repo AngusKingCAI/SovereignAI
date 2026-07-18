@@ -82,9 +82,22 @@ class RoutingEngine:
             if current_time - timestamp < self._health_check_ttl:
                 return healthy
 
-        health = instance.health_check()
-        self._health_check_cache[component_id] = (health.healthy, current_time)
-        return health.healthy
+        # Handle different health check return types
+        if hasattr(instance, 'health_check'):
+            health_result = instance.health_check()
+            if isinstance(health_result, bool):
+                healthy_result = health_result
+            elif hasattr(health_result, 'healthy'):
+                healthy_result = health_result.healthy
+            elif hasattr(health_result, 'running'):
+                healthy_result = health_result.running
+            else:
+                healthy_result = True  # Default to healthy if unclear
+        else:
+            healthy_result = True  # Default to healthy if no health_check method
+
+        self._health_check_cache[component_id] = (healthy_result, current_time)
+        return healthy_result
 
     def invalidate_health_cache(self, component_id: str) -> None:
         if component_id in self._health_check_cache:

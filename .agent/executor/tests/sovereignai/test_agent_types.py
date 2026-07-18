@@ -1,9 +1,8 @@
 """Tests for agent types and protocols (Plan 23 S9)."""
 
-import pytest
 
-from sovereignai.agent.types import AgentErrorObservation, FinalAnswer, AgentResult
 from sovereignai.agent.protocols import GraphMemory
+from sovereignai.agent.types import AgentErrorObservation, AgentResult, FinalAnswer
 
 
 def test_agent_error_observation_creation():

@@ -83,20 +83,30 @@ def main() -> int:
     cache = get_cache()
     landmine_checks_dir = Path(__file__).parent
 
-    scripts = sorted(landmine_checks_dir.glob("detect_*.py"))
+    scripts = sorted(landmine_checks_dir.glob("*.py"))
+    scripts = [s for s in scripts if s.name != "run_all.py" and not s.name.startswith("_")]
 
     if not scripts:
         print("No landmine detection scripts found in scripts/landmine_checks/")
-        print("Landmine checks not yet implemented - add detect_*.py scripts as needed")
         return 0
 
     print(f"Found {len(scripts)} landmine detection scripts")
     print(f"Cache: {CACHE_FILE}")
     print()
 
+    # Scripts that accept path arguments - provide default paths
+    path_scripts = {
+        "check_m1_import_paths.py": [],
+        "check_m6_namespace_collision.py": [],
+    }
+
     all_passed = True
     for script in scripts:
-        exit_code, output = run_check(script, cache)
+        default_args = None
+        if script.name in path_scripts:
+            default_args = path_scripts[script.name]
+
+        exit_code, output = run_check(script, cache, default_args)
         if exit_code != 0:
             all_passed = False
             print(f"[FAILED] {script.name}")

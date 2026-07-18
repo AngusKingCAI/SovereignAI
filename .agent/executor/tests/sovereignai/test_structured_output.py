@@ -1,13 +1,13 @@
 """Tests for SingleCallStructuredOutput (Plan 23 S9)."""
 
-import pytest
 from unittest.mock import MagicMock
 
+import pytest
 from sovereignai.agent.structured_output import (
+    FinalAnswer,
     SingleCallStructuredOutput,
     StructuredOutputExhaustedError,
     ToolCall,
-    FinalAnswer,
 )
 
 

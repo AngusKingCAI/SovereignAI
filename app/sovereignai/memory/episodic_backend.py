@@ -82,7 +82,7 @@ class EpisodicMemoryBackend:
 
         # Build SQL query dynamically based on EpisodicQuery parameters
         conditions = []
-        params = []
+        params: list[str | float] = []
 
         # Map session_id to task_id for compatibility
         conditions.append("task_id = ?")

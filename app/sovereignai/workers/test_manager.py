@@ -30,7 +30,7 @@ class TestManager:
         return task_id
 
     def approve_result(self, task_id: str) -> bool:
-        result = self._working_memory.query({"task_id": task_id, "key": "result"})
+        result = self._working_memory.query({"task_id": task_id, "key": "result"})  # type: ignore
         if result:
             self._working_memory.store(
                 {"task_id": task_id, "key": "status", "value": "approved"}
@@ -44,7 +44,7 @@ class TestManager:
         return False
 
     def get_task_status(self, task_id: str) -> str:
-        status = self._working_memory.query({"task_id": task_id, "key": "status"})
+        status = self._working_memory.query({"task_id": task_id, "key": "status"})  # type: ignore
         if status:
             value = status[0]["value"]
             return str(value) if value is not None else "unknown"

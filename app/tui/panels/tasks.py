@@ -7,7 +7,7 @@ from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.types import TaskState
 from textual.app import ComposeResult
 from textual.containers import Vertical
-from textual.widgets import Button, DataTable, Static, RichLog
+from textual.widgets import Button, DataTable, RichLog, Static
 
 
 class TasksPanel(Vertical):

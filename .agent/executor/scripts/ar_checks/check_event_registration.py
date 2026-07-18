@@ -8,7 +8,7 @@ This script checks that:
 3. Event payload classes exist in events.py
 4. Events are properly registered with handlers
 
-AR ID: AR22-1
+AR ID: AR8 (tracing)
 """
 
 import sys

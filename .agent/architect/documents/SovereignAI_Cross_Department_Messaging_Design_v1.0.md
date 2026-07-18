@@ -12,7 +12,7 @@
 The existing EventBus (48 lines) already implements:
 - Typed frozen dataclass `Event` (channel, correlation_id, timestamp)
 - Fan-out delivery with per-subscriber try/except
-- AR22 trace emission on subscribe and publish
+- AR8 trace emission on subscribe and publish
 - AR23 correlation_id propagation
 
 What it lacks:
@@ -31,10 +31,10 @@ This document specifies the delta from existing code to full cross-department me
 
 | # | Decision | Rationale |
 |---|----------|-----------|
-| 20.10.4 | **Event schema** -- 8-field base: event_id, timestamp, source, event_type, version, correlation_id, trace_level, payload | P9/P10/AR22/AR23. Universal tracing. Versioned from day one. |
+| 20.10.4 | **Event schema** -- 8-field base: event_id, timestamp, source, event_type, version, correlation_id, trace_level, payload | P9/P10/AR8/AR23. Universal tracing. Versioned from day one. |
 | 20.10.5 | **Event type registry** -- Pydantic classes with ClassVar event_type/version/source, explicit register() in main.py | P1/P5/D2/D4. No manifest overhead for pure types. |
 | 20.10.6 | **Consumer registration** -- EventRegistry.subscribe(PayloadClass, handler) with get_type_hints validation | D2/D4/P1. No decorators, no auto-wiring. Mechanical enforcement. |
-| 20.10.7 | **Delivery** -- Async fan-out, per-handler FIFO, priority ordering, per-handler breaker | P9/P13/AR22. Error isolation. In-order per handler. |
+| 20.10.7 | **Delivery** -- Async fan-out, per-handler FIFO, priority ordering, per-handler breaker | P9/P13/AR8. Error isolation. In-order per handler. |
 | 20.10.8 | **Persistence** -- All events to episodic memory via Librarian subscription | P4/P9. Full audit trail. No classification tax. |
 | 20.10.9 | **Versioning** -- Forward-compatible (C) default; new class per major version (B) escape hatch | P4/P5/AR6/AR17. Frozen classes enforced by OR28. |
 | 20.10.10 | **Integration** -- Extend existing EventBus in place. 5 callsites. No wrapper. | P5. Existing code already does fan-out + traces. Delta only. |

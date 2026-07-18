@@ -22,7 +22,7 @@ class TestWorker:
         )
 
     def process_task(self, task_id: str) -> str:
-        prompt = self._working_memory.query({"task_id": task_id, "key": "prompt"})
+        prompt = self._working_memory.query({"task_id": task_id, "key": "prompt"})  # type: ignore
         if not prompt:
             self._trace.emit(
                 component="TestWorker",

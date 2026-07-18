@@ -59,6 +59,7 @@ PACKAGE_ALIASES = {
     "nvidia_ml_py3": "nvidia-ml-py",
     "llama_cpp": "llama-cpp-python",
     "httpx": "httpx2",
+    "tree_sitter_python": "tree-sitter-python",
 }
 
 TRANSITIVE_DEPENDENCIES = {
@@ -77,6 +78,7 @@ TRANSITIVE_DEPENDENCIES = {
 
 OPTIONAL_IMPORTS = {
     "torch",
+    "tree_sitter",
 }
 
 

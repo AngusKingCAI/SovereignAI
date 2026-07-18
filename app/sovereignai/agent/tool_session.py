@@ -10,7 +10,9 @@ class ToolSessionRegistry:
         self._sessions: dict[str, Any] = {}
 
     def register(self, tool_id: str, runner: Any) -> None:
-        """Register a tool session. Raises ValueError if tool_id already registered with different runner."""
+        """Register a tool session. Raises ValueError if tool_id already
+        registered with different runner.
+        """
         if tool_id in self._sessions:
             existing_runner = self._sessions[tool_id]
             if existing_runner is not runner:
@@ -23,7 +25,9 @@ class ToolSessionRegistry:
         self._sessions[tool_id] = runner
 
     def close(self, tool_id: str) -> None:
-        """Remove tool session entry. Does NOT call runner.close() (singleton). Idempotent. Sync method."""
+        """Remove tool session entry. Does NOT call runner.close() (singleton).
+        Idempotent. Sync method.
+        """
         if tool_id in self._sessions:
             del self._sessions[tool_id]
         # Idempotent: no error if not found

@@ -72,7 +72,7 @@ Review each DD against:
 2. **Internal consistency** — Do DDs contradict each other? Are dependencies correctly mapped?
 3. **Codebase delta accuracy** — Does the DD correctly describe what exists vs what's new? (Key codebase facts in the Worker Spawning and Hardware SSE design docs — verified against actual repo code this session.)
 4. **AR6 (typed, no context bags)** — Are there `Any`, `dict[str, Any]`, or untyped boundaries?
-5. **AR22 (trace side effects)** — Does every side-effectful function emit a trace?
+5. **AR8 (trace side effects)** — Does every side-effectful function emit a trace?
 6. **P5 (no speculative contracts)** — Is there infrastructure built before the use case arrives?
 7. **P9 (no silent failures)** — Are there failure modes that succeed silently?
 8. **P13 (fail gracefully)** — Are there failure modes that hang or cascade?

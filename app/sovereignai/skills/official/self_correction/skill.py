@@ -41,9 +41,16 @@ class SelfCorrectionSkill:
         traces = self._librarian.query("trace", TraceQuery(task_id=task_id))
         patterns = self._extract_patterns(traces)
         for pattern in patterns:
-            self.update_procedural_memory(pattern, confidence=pattern.get("confidence", 0.5))
+            confidence = pattern.get("confidence", 0.5)
+            if isinstance(confidence, (int, float)):
+                self.update_procedural_memory(pattern, confidence=float(confidence))
         for pattern in patterns:
-            if pattern.get("type") == "routing_failure" and pattern.get("confidence", 0) > 0.8:
+            conf = pattern.get("confidence", 0)
+            if (
+                isinstance(conf, (int, float))
+                and pattern.get("type") == "routing_failure"
+                and conf > 0.8
+            ):
                 self._recommend_retraining(pattern)
         return {"patterns_found": len(patterns), "memory_updated": len(patterns) > 0}
 
