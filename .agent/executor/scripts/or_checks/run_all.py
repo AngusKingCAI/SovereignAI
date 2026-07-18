@@ -87,8 +87,7 @@ def main() -> int:
     scripts = [s for s in scripts if s.name != "run_all.py" and not s.name.startswith("_")]
 
     if not scripts:
-        print("No OR-check scripts found in scripts/or_checks/")
-        print("OR checks not yet implemented - add check_or*.py scripts as needed")
+        print("No OR checks defined")
         return 0
 
     print(f"Found {len(scripts)} OR-check scripts")

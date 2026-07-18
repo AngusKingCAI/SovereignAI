@@ -22,11 +22,10 @@ Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Wind
 1.5. If user states execution log has been pushed: clone latest repo, read execution log, diff-check against plan expectations.
 2. Verify repo state. Spot-check `.agent/shared/CHANGELOG.md` latest entry (first 10 lines). PLANS.md updated. No scope creep.
 3. Re-read `.agent/shared/LANDMINES.md` + `PRINCIPLES.md` + `.agent/shared/RULE_LIFECYCLE.md`.
-4. Review execution patterns. Check `.agent/executor/suggestions/` for new rule proposals (per OOR-1). If suggestions exist, evaluate per RULE_LIFECYCLE.md TRIAGE before creating plan.
+4. Review execution patterns. Identify rule gaps or recurring failure patterns from execution logs. Create rule specifications with IDs (OR{n}, AR{n}, {C|H|M|L}{n}) directly.
    - New AR → assign ID, implement directly: add to ARCHITECTURE.md with verification script
    - New OR → assign ID, implement directly: edit relevant skill with OR reference
    - New landmine → assign ID, implement directly: add to LANDMINES.md with detection script
-   - Reject → document reason in suggestion file, archive
    Implementation per RULE_LIFECYCLE.md IMPLEMENT stage.
 5. Check `.agent/shared/DEBT.md` for non-rule deferred items (features, tech debt, security fixes).
 6. Research. Web search for new tech. Document findings in plan header.
@@ -83,9 +82,8 @@ Open questions resolved: <which Q1-Q34, or "none">
 - S0.0: If resuming from prior execution, clone latest repo and verify execution log state.
 - S0.1: Run `/open`
 - S0.2: Read `AGENTS.md` in full
-- S0.3: Check `.agent/executor/suggestions/` for new rule proposals from Executor. If suggestions exist, evaluate per RULE_LIFECYCLE.md TRIAGE before proceeding (per OOR-1). Include accepted rules in this plan. Implementation per RULE_LIFECYCLE.md IMPLEMENT stage.
-- S0.4: Check `.agent/shared/DEBT.md` for other deferred items (non-rule items).
-- S0.5: If new tech stack, add research findings to plan header (per Architect Workflow step 7).
+- S0.3: Check `.agent/shared/DEBT.md` for other deferred items (non-rule items).
+- S0.4: If new tech stack, add research findings to plan header (per Architect Workflow step 7).
 
 **Plan body (S1-Sn)**: Execute steps. Run `/verify` after each edit. HTML/CSS/JS plans: include "WILL edit" UI element list. Reference operational rules where pertinent (e.g., "Use VOR-2 for test suite execution").
 
@@ -129,12 +127,11 @@ Missing/reordered sections block delivery (GR7).
 | `.agent/shared/DECISIONS.md` | Architectural decisions | Executor |
 | `.agent/shared/DEBT.md` | Non-rule deferred items (features, tech debt, security) | Executor |
 | `.devin/skills/*/SKILL.md` | Workflow skills | Architect |
-| `.agent/executor/suggestions/` | Rule proposals | Executor |
 
 **SSOT**: Each fact in one document only.
 
 **Read order**:
-- Architect (new chat): AI_HANDOFF → PRINCIPLES → `.agent/shared/RULE_LIFECYCLE.md` → `.agent/shared/OR_RULES.md` → `.agent/shared/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DECISIONS.md` → `.agent/shared/DEBT.md` → `.agent/executor/suggestions/`
+- Architect (new chat): AI_HANDOFF → PRINCIPLES → `.agent/shared/RULE_LIFECYCLE.md` → `.agent/shared/OR_RULES.md` → `.agent/shared/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DECISIONS.md` → `.agent/shared/DEBT.md`
 - Executor (S0.2): AGENTS.md (consult `.agent/shared/LANDMINES.md` if ambiguous)
 
 **Rule References in Plans**:

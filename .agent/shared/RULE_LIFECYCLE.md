@@ -2,58 +2,25 @@
 
 Process guide for rule suggestion, review, implementation, and graduation.
 
-Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `suggest_rule.py`; Architect implements directly per AI_HANDOFF.md step 4.
+Authority: `.agent/architect/PRINCIPLES.md`. Architect implements rules directly per AI_HANDOFF.md step 4.
 
 ---
 
 ## Lifecycle Stages
 
-### 1. SUGGEST — Executor Proposes Rule
-
-**Trigger**: Executor encounters recurring error pattern not covered by existing rules.
-
-**Action**: Executor runs `suggest_rule.py` with:
-- Rule type (OR/AR/Landmine)
-- Trigger condition
-- Frequency data
-- Proposed rule text
-- Detection method
-- Affected files
-
-**Output**: Structured suggestion file written to `.agent/executor/suggestions/suggestion_{type}_{timestamp}.md`
-
-**Authority**: Executor may suggest; Architect implements directly per AI_HANDOFF.md step 4.
-
-**No Executor Implementation**: Executor does NOT write check scripts or edit governance docs. Suggestion only.
-
----
-
-### 2. TRIAGE — Architect Reviews Suggestions
+### 1. TRIAGE — Architect Detects Rules
 
 **Trigger**: Round Table review or dedicated rule review session.
 
-**Action**: Architect reviews `.agent/executor/suggestions/` directory.
+**Action**: Architect identifies rule gaps or recurring failure patterns in execution logs.
 
-**Decision**: Accept / Reject / Defer
+**Decision**: Create rule specification with ID (OR{n}, AR{n}, {C|H|M|L}{n})
 
-**Note**: Accepted rules are included in next plan's S0; rejected rules are archived; deferred rules are added to DEBT.md only if they are non-rule items.
-
-**If Accept**:
-- Assign rule ID (OR{n}, AR{n}, {C|H|M|L}{n})
-- Include in next plan's S0 per AI_HANDOFF.md step 4
-
-**If Reject**:
-- Document reason in suggestion file
-- Archive suggestion to `.agent/executor/suggestions/archived/`
-- Note pattern in LANDMINES.md as "rejected pattern"
-
-**If Defer**:
-- Include in next plan's S0
-- Keep suggestion in pending state
+**Note**: New rules are included in next plan's S0 per AI_HANDOFF.md step 4.
 
 ---
 
-### 3. DECIDE — Rule Approved for Implementation
+### 2. DECIDE — Rule Approved for Implementation
 
 **Trigger**: Round Table acceptance + target plan reached.
 
@@ -66,7 +33,7 @@ Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `sug
 
 ---
 
-### 4. IMPLEMENT — Executor Writes Check Script
+### 3. IMPLEMENT — Executor Writes Check Script
 
 **Trigger**: Plan S0 includes accepted rule.
 
@@ -86,7 +53,7 @@ Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `sug
 
 ---
 
-### 5. VERIFY — Testing and False Positive Monitoring
+### 4. VERIFY — Testing and False Positive Monitoring
 
 **Trigger**: Check script integrated into workflow.
 
@@ -104,7 +71,7 @@ Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `sug
 
 ---
 
-### 6. GRADUATE — Rule Marked as Stable
+### 5. GRADUATE — Rule Marked as Stable
 
 **Trigger**: 5 clean passes with no false positives.
 
@@ -146,11 +113,6 @@ Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `sug
 
 ```
 .agent/executor/
-├── suggestions/
-│   ├── suggestion_or_20260718_090000.md (pending)
-│   ├── suggestion_ar_20260718_091500.md (pending)
-│   ├── archived/ (rejected suggestions)
-│   └── graduated/ (graduated rule suggestions)
 ├── scripts/
 │   ├── ar_checks/
 │   │   ├── run_all.py
@@ -161,7 +123,6 @@ Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `sug
 │   └── landmine_checks/
 │       ├── run_all.py
 │       └── detect_{severity}{n}.py
-└── suggest_rule.py
 
 .agent/shared/
 └── RULE_LIFECYCLE.md (this file)
@@ -171,8 +132,6 @@ Authority: `.agent/architect/PRINCIPLES.md`. Executor may suggest rules via `sug
 
 ## Key Principles
 
-1. **Executor Suggests, Architect Decides**: Executor never implements rules without Architect approval.
-2. **Structured Suggestion Format**: All suggestions follow the same format for consistent review.
-3. **Graduation Requires Monitoring**: Rules must prove stability before graduation.
-4. **No Silent Rule Changes**: All rule changes go through SUGGEST → TRIAGE → DECIDE → IMPLEMENT → VERIFY → GRADUATE.
-5. **Archival Maintains History**: Rejected and graduated suggestions are archived, not deleted.
+1. **Architect-Driven Rule Creation**: Architect identifies rule gaps and creates rule specifications directly.
+2. **Graduation Requires Monitoring**: Rules must prove stability before graduation.
+3. **No Silent Rule Changes**: All rule changes go through TRIAGE → DECIDE → IMPLEMENT → VERIFY → GRADUATE.

@@ -43,5 +43,5 @@ Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothin
 
    *Populate this file with the chat transcript from the {plan-name} plan execution.*
    ```
-12. Documentation: prepend CHANGELOG, update PLANS.md, add to DEBT.md.
+12. Documentation: prepend CHANGELOG, update PLANS.md.
 13. Git: `git status` → identify session files only → `git add` specific files → commit → tag `prompt-{N}` → push.

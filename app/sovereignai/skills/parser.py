@@ -33,7 +33,8 @@ class ToolCallParser:
             result = parser(text)
             if isinstance(result, ToolCall):
                 return result
-            if isinstance(result, ToolCallErrorObservation) and first_error is None:
+            # Use duck-typing instead of isinstance for cross-module safety
+            if hasattr(result, 'error_type') and hasattr(result, 'message') and first_error is None:
                 first_error = result
 
         return first_error or ToolCallErrorObservation(

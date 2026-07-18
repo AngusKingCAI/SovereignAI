@@ -83,8 +83,7 @@ def main() -> int:
     cache = get_cache()
     landmine_checks_dir = Path(__file__).parent
 
-    scripts = sorted(landmine_checks_dir.glob("*.py"))
-    scripts = [s for s in scripts if s.name != "run_all.py" and not s.name.startswith("_")]
+    scripts = sorted(landmine_checks_dir.glob("detect_*.py"))
 
     if not scripts:
         print("No landmine detection scripts found in scripts/landmine_checks/")

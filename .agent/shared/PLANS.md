@@ -8,9 +8,9 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Metric | Value | Plan |
 |--------|-------|------|
-| Tests | 497 | 20.9.9 |
-| ruff | 0 | 20.9.9 |
-| mypy | 0 | 20.9.9 |
+| Tests | 531 | plan-fix-2-Rev1 |
+| ruff | 0 | plan-fix-2-Rev1 |
+| mypy | 0 | plan-fix-2-Rev1 |
 
 ## Trend (last 5 plans)
 
@@ -24,7 +24,9 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 ## Active Plan
 
-None.
+| Plan | Description | Status |
+|------|-------------|--------|
+| plan-fix-3-Rev1 | Plan Fix 3 - ToolCallParser isinstance Module Identity Fix | 🔄 In Progress |
 
 ## Next in Queue
 
@@ -50,17 +52,6 @@ None.
 | 20.9.9 | Documentation Hygiene + Document Hygiene Tests | 497 | 2026-07-03 |
 | 20.9.8 | Correlation ID Typing + VersionNegotiator Disable | 492 | 2026-07-03 |
 | 20.9.7 | TUI Memory Panel AR7 Compliance via CapabilityAPI | 485 | 2026-07-03 |
-| 20.9.6 | BoundedTraceQueue Implementation | 480 | 2026-07-03 |
-| 20.9.4 | Performance Improvements — health_check caching, generate() timeout | 468 | 2026-07-03 |
-| 20.9.3 | Typed Memory Queries — Add typed query dataclasses | 464 | 2026-07-03 |
-| 20.9.2 | Hardware Probe Refactoring - GPU Detection and Dependency Cleanup | 59 | 2026-07-03 |
-| 20.9.1 | TUI AR7 Compliance: Capability API Extension and Panel Refactoring | 480 | 2026-07-02 |
-| 20.8 | AGENTS.md + LANDMINES.md Cleanup and Restructure | N/A | 2026-07-02 |
-| 20.9.4 | Performance Improvements — health_check caching, generate() timeout | 468 | 2026-07-03 |
-| 20.9.3 | Typed Memory Queries — Add typed query dataclasses | 464 | 2026-07-03 |
-| 20.9.2 | Hardware probe cleanup | 59 | 2026-07-03 |
-| 20.9.1 | TUI AR7 compliance — 13 scoped tests | 480 | 2026-07-02 |
-| 20.9 | Workflow optimization | 480 | 2026-07-02 |
 
 ## Scan History
 

@@ -1,6 +1,6 @@
 # LANDMINES.md — Executor Failure Patterns
 
-Prepend-only (newest at top). Each entry: pattern, detection, mitigation.
+Prepend within severity bucket (newest at top within each severity level). Each entry: pattern, detection, mitigation.
 
 Naming: C{n} = Critical, H{n} = High, M{n} = Medium, L{n} = Low.
 

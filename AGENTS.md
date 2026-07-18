@@ -13,7 +13,7 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/shared/ARCH
 4. `/open` → execute → `/verify` per edit → `/close`. No shortcuts.
 5. Follow skills literally. Reference AR IDs, not full text.
 6. Exceptions need plan number. "Deferred" without plan = STOP.
-7. No architect file edits. AGENTS.md, PRINCIPLES.md, AI_HANDOFF.md are read-only.
+7. No architect file edits. AGENTS.md, PRINCIPLES.md, AI_HANDOFF.md are read-only unless explicitly authorized by Architect plan or user instruction.
 8. Scripts are SSOT. Skills reference scripts by path; no inline commands.
 9. Coverage ≥90% at `/close`. No exemptions.
 

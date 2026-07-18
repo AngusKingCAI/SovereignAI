@@ -4,15 +4,18 @@ Local-first, modular AI assistant framework. Built for a single user. Designed t
 
 ## Status
 
-Pre-Plan 1 (bootstrap). No code yet — governance docs and infrastructure only.
+Post-Plan 21. Active development. Core system complete with 531 tests.
 
 ## Documentation
 
 - `.agent/architect/AI_HANDOFF.md` — Architect process guide
 - `AGENTS.md` — Executor always-on rules
 - `.agent/shared/PLANS.md` — current project state
-- `.agent/architect/documents/project-vision-Rev5.md` — canonical vision (locked)
-- `.agent/architect/documents/SovereignAI_Architecture_Decisions.md` — architecture sketch
+- `.agent/shared/ARCHITECTURE.md` — architecture specification
+- `.agent/shared/CHANGELOG.md` — per-plan change log
+- `.agent/shared/LANDMINES.md` — executor failure patterns
+- `.agent/shared/OR_RULES.md` — operational rules
+- `.agent/shared/RULE_LIFECYCLE.md` — rule lifecycle process
 
 ## License
 

@@ -39,11 +39,6 @@ Rules specific to verify skill only.
 
 Rules specific to open skill only.
 
-### OOR-1: Architect Suggestion Review
-**Rule**: Architect must evaluate all suggestions before creating plan — if suggestions exist, read and evaluate per RULE_LIFECYCLE.md TRIAGE
-**Applies to**: open skill
-**Trigger**: New rule proposals in suggestions/ directory
-
 ## COR — close Skill Rules
 
 Rules specific to close skill only.
