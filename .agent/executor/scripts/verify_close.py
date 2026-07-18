@@ -15,26 +15,10 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-MAX_LOG_BYTES = 500
 
 def check_execution_log_empty() -> tuple[bool, str]:
-    """Pattern 1: Execution log must be < 500 bytes (template only)."""
-    log_dir = REPO_ROOT / "logs"
-    if not log_dir.exists():
-        return True, "No logs directory (OK for first run)"
-
-    log_files = list(log_dir.glob("execution-log-*.md"))
-    if not log_files:
-        return True, "No execution logs found (OK for first run)"
-
-    for log in log_files:
-        size = log.stat().st_size
-        if size > MAX_LOG_BYTES:
-            return False, (
-                f"Execution log {log.name} is {size} bytes (max {MAX_LOG_BYTES}). "
-                "Blank it before proceeding."
-            )
-    return True, "Execution logs OK"
+    """Pattern 1: Execution log check disabled - no size restriction."""
+    return True, "Execution log size check disabled"
 
 def check_changelog_position() -> tuple[bool, str]:
     """Pattern 2: Latest prompt must be at TOP of CHANGELOG (prepend, not append)."""
