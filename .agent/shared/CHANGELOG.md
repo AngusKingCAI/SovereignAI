@@ -20,6 +20,7 @@
 - S4: Updated AGENTS.md Invariant #3 to mention suggest_rule.py
 - S5: Updated verify/SKILL.md to include rule suggestion step (step 7)
 - S5: Updated open/SKILL.md to mention suggest_rule.py for recurring patterns (step 5)
+- Created blank execution logs for user to populate with chat transcripts
 - Rule suggestion pipeline complete with full workflow integration
 
 ---
@@ -43,6 +44,7 @@
 - S4: Updated `.devin/skills/verify/SKILL.md` to include OR checks (step 5) and landmine checks (step 6)
 - S4: Updated `.devin/skills/scan/SKILL.md` to include landmine checks (step 5) and OR checks (step 6)
 - Both runners gracefully handle empty script sets (report "not yet implemented" and exit 0)
+- Created blank execution log for user to populate with chat transcript
 - Infrastructure ready for individual OR check scripts (check_or*.py) and landmine detection scripts (detect_*.py)
 
 ---
