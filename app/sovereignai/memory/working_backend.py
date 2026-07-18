@@ -3,8 +3,8 @@ from __future__ import annotations
 import uuid
 from typing import TYPE_CHECKING
 
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import TraceLevel, WorkingQuery
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import TraceLevel, WorkingQuery
 
 if TYPE_CHECKING:
     pass

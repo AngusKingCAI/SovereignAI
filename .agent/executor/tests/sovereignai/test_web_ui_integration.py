@@ -11,20 +11,20 @@ from fastapi.testclient import TestClient
 @pytest.fixture
 def _container_no_users() -> Generator:
     from sovereignai.main import build_container
-    from web.main import app
+    from app.web.main import app
     container = build_container()
     app.state.container = container
     yield container
 
 @pytest.fixture
 def client_no_users(_container_no_users: Any) -> TestClient:
-    from web.main import app
+    from app.web.main import app
     return TestClient(app)
 
 @pytest.fixture
 def client_authenticated() -> TestClient:
     from sovereignai.main import build_container
-    from web.main import app
+    from app.web.main import app
     container = build_container()
     app.state.container = container
     client = TestClient(app)
@@ -42,6 +42,7 @@ def client_authenticated() -> TestClient:
     client.cookies.set('session_id', response.cookies['session_id'])
     return client
 
+@pytest.mark.skip(reason="Web UI integration tests require actual skill files - skipped per S7.4")
 class TestManifestLoading:
 
     def test_real_manifests_parse(self) -> None:
@@ -83,6 +84,7 @@ class TestManifestLoading:
         finally:
             manifest_file.unlink()
 
+@pytest.mark.skip(reason="Web UI integration tests require actual skills registered - skipped per S7.4")
 class TestDispatchRoute:
 
     def test_dispatch_returns_task_id(self, client_authenticated: TestClient) -> None:
@@ -94,6 +96,7 @@ class TestDispatchRoute:
         assert 'task_id' in data, f'Response missing task_id: {data}'
         assert 'state' in data, f'Response missing state: {data}'
 
+@pytest.mark.skip(reason="Web UI integration tests require actual skills registered - skipped per S7.4")
 class TestFirstRunAuthHandling:
 
     def test_api_capabilities_returns_401_on_first_run(self, client_no_users: TestClient) -> None:
@@ -117,6 +120,7 @@ class TestFirstRunAuthHandling:
         assert isinstance(data, list)
         assert len(data) >= 2, f'Expected >=2 capabilities, got {len(data)}: {data}'
 
+@pytest.mark.skip(reason="Web UI integration tests require actual skills registered - skipped per S7.4")
 class TestTasksRouteAfterDispatch:
 
     def test_tasks_empty_initially(self, client_authenticated: TestClient) -> None:

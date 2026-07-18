@@ -4,9 +4,9 @@ import sqlite3
 import uuid
 from typing import TYPE_CHECKING
 
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import TraceEvent, TraceLevel, TraceQuery, now_utc
-from app.sovereignai.shared.types_base import CorrelationId
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import TraceEvent, TraceLevel, TraceQuery, now_utc
+from sovereignai.shared.types_base import CorrelationId
 
 if TYPE_CHECKING:
     pass

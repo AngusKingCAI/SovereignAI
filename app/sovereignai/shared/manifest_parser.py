@@ -3,7 +3,7 @@ from __future__ import annotations
 import tomllib
 from pathlib import Path
 
-from app.sovereignai.shared.types import (
+from sovereignai.shared.types import (
     CapabilityCategory,
     CapabilityDeclaration,
     ComponentManifest,

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from app.sovereignai.memory.working_backend import WorkingMemoryBackend
-from app.sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
+from sovereignai.memory.working_backend import WorkingMemoryBackend
+from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
 
 
 class TestManager:

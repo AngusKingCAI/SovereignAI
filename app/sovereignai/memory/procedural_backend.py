@@ -6,8 +6,8 @@ import time
 import uuid
 from typing import TYPE_CHECKING
 
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import ProceduralQuery, TraceLevel
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import ProceduralQuery, TraceLevel
 
 if TYPE_CHECKING:
     pass

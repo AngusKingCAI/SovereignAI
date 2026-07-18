@@ -13,12 +13,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.responses import JSONResponse, RedirectResponse, StreamingResponse
 
-from app.sovereignai.main import build_container
-from app.sovereignai.shared.auth import AuthMiddleware
-from app.sovereignai.shared.capability_api import CapabilityAPI
-from app.sovereignai.shared.capability_graph import ICapabilityIndex
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import (
+from sovereignai.main import build_container
+from sovereignai.shared.auth import AuthMiddleware
+from sovereignai.shared.capability_api import CapabilityAPI
+from sovereignai.shared.capability_graph import ICapabilityIndex
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import (
     CapabilityCategory,
     TaskState,
 )

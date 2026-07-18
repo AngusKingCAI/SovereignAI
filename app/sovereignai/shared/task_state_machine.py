@@ -4,9 +4,9 @@ from threading import RLock
 from typing import Protocol, runtime_checkable
 from uuid import UUID
 
-from app.sovereignai.shared.event_bus import EventBus
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import (
+from sovereignai.shared.event_bus import EventBus
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import (
     TASK_STATE_CHANNEL,
     DAGSpec,
     InvalidStateTransitionError,
@@ -16,7 +16,7 @@ from app.sovereignai.shared.types import (
     UnknownTaskError,
     now_utc,
 )
-from app.sovereignai.shared.types_base import CorrelationId
+from sovereignai.shared.types_base import CorrelationId
 
 # NOTE (Rev6 Finding 3): UnknownTaskError, InvalidStateTransitionError, and
 # DAGValidationError are defined in shared/types.py (Plan 3 S1.1 per Rev5

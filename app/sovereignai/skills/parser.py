@@ -6,7 +6,7 @@ from typing import Any
 
 import defusedxml.ElementTree as ElementTree
 
-from app.sovereignai.skills.observation import ToolCall, ToolCallErrorObservation
+from sovereignai.skills.observation import ToolCall, ToolCallErrorObservation
 
 
 class ToolCallParser:

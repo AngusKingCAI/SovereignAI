@@ -6,7 +6,7 @@ from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, DataTable, Static
 
-from app.sovereignai.shared.lifecycle_manager import LifecycleManager
+from sovereignai.shared.lifecycle_manager import LifecycleManager
 
 
 class WorkersPanel(Vertical):

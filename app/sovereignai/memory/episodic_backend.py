@@ -6,8 +6,8 @@ import sqlite3
 import uuid
 from typing import TYPE_CHECKING
 
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import EpisodicQuery, TraceLevel, now_utc
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import EpisodicQuery, TraceLevel, now_utc
 
 if TYPE_CHECKING:
     pass

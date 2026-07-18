@@ -6,8 +6,8 @@ from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, Input, RichLog, Static
 
-from app.sovereignai.shared.capability_api import CapabilityAPI
-from app.sovereignai.shared.types import CapabilityCategory
+from sovereignai.shared.capability_api import CapabilityAPI
+from sovereignai.shared.types import CapabilityCategory
 
 
 class OrchestratorPanel(Vertical):

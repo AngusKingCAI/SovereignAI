@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from app.sovereignai.shared.hardware_probe import (
+from sovereignai.shared.hardware_probe import (
     MEMORY_BANDWIDTH_GBPS,
 )
-from app.sovereignai.shared.types import HardwareSnapshot, ModelEntry
+from sovereignai.shared.types import HardwareSnapshot, ModelEntry
 
 
 def estimate_tok_s(model: ModelEntry, hw: HardwareSnapshot) -> float | None:

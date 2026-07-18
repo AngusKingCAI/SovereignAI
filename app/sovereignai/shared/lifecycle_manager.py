@@ -4,8 +4,8 @@ from collections import deque
 from threading import Lock
 from time import monotonic
 
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import ComponentId, ComponentStatus, TraceLevel
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import ComponentId, ComponentStatus, TraceLevel
 
 CIRCUIT_BREAKER_THRESHOLD = 50      # errors
 CIRCUIT_BREAKER_WINDOW_SECONDS = 10.0

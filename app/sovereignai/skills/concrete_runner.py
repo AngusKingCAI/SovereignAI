@@ -12,8 +12,8 @@ if TYPE_CHECKING:
     from sovereignai.shared.trace_emitter import TraceEmitter
     from sovereignai.skills.session import SkillSession
 
-from app.sovereignai.shared.types import CapabilityCategory, TraceLevel
-from app.sovereignai.skills.runner import ISkillRunner, SkillResult
+from sovereignai.shared.types import CapabilityCategory, TraceLevel
+from sovereignai.skills.runner import ISkillRunner, SkillResult
 
 
 class SkillNotFoundError(Exception):

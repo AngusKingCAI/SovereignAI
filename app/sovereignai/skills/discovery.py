@@ -9,8 +9,8 @@ if TYPE_CHECKING:
     from sovereignai.shared.capability_graph import CapabilityGraph
     from sovereignai.shared.trace_emitter import TraceEmitter
 
-from app.sovereignai.shared.types import CapabilityCategory, TraceLevel
-from app.sovereignai.skills.manifest import SkillManifest
+from sovereignai.shared.types import CapabilityCategory, TraceLevel
+from sovereignai.skills.manifest import SkillManifest
 
 
 class SkillDiscovery:

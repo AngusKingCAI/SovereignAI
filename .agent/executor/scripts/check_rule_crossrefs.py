@@ -14,25 +14,40 @@ def extract_rule_numbers(file_path: Path) -> set[str]:
     with open(file_path, encoding='utf-8') as f:
         content = f.read()
 
-    # Find all OR\d+ and AR\d+ patterns (uppercase only, followed by digits)
-    matches = re.findall(r'\b(?:OR|AR)\d+\b', content)
+    # Find all patterns: AR\d+, UOR-\d+, VOR-\d+, OOR-\d+, COR-\d+, SOR-\d+
+    matches = re.findall(r'\b(?:AR|UOR|VOR|OOR|COR|SOR)-?\d+\b', content)
     return set(matches)
 
 
 def extract_defined_rules(agents_path: Path) -> set[str]:
-    """Extract rule numbers defined in ARCHITECTURE.md (must be at start of line)."""
-    architecture_path = agents_path.parent / '.agent' / 'shared' / 'ARCHITECTURE.md'
+    """Extract rule numbers defined in ARCHITECTURE.md and OR_RULES.md."""
+    defined_rules = set()
     
-    if not architecture_path.exists():
+    # Extract AR rules from ARCHITECTURE.md
+    architecture_path = agents_path.parent / '.agent' / 'shared' / 'ARCHITECTURE.md'
+    if architecture_path.exists():
+        with open(architecture_path, encoding='utf-8') as f:
+            content = f.read()
+        # Only match rules at start of line (e.g., "AR1. Owner ↔ Orchestrator")
+        ar_matches = re.findall(r'^(AR\d+)\.', content, re.MULTILINE)
+        defined_rules.update(ar_matches)
+    else:
         print(f"WARNING: {architecture_path} not found, no AR rules defined", file=sys.stderr)
-        return set()
-
-    with open(architecture_path, encoding='utf-8') as f:
-        content = f.read()
-
-    # Only match rules at start of line (e.g., "AR1. Owner ↔ Orchestrator")
-    matches = re.findall(r'^((?:OR|AR)\d+)\.', content, re.MULTILINE)
-    return set(matches)
+    
+    # Extract OR rules from OR_RULES.md (new naming convention)
+    or_rules_path = agents_path.parent / '.agent' / 'shared' / 'OR_RULES.md'
+    if or_rules_path.exists():
+        with open(or_rules_path, encoding='utf-8') as f:
+            content = f.read()
+        # Match new naming convention: UOR-1, VOR-1, OOR-1, COR-1, SOR-1
+        or_matches = re.findall(r'^### (UOR|VOR|OOR|COR|SOR)-(\d+)', content, re.MULTILINE)
+        # Convert to expected format for citations
+        for prefix, num in or_matches:
+            defined_rules.add(f"{prefix}-{num}")
+    else:
+        print(f"WARNING: {or_rules_path} not found, no OR rules defined", file=sys.stderr)
+    
+    return defined_rules
 
 
 def is_historical_section(content: str, line_num: int, file_name: str) -> bool:
@@ -69,7 +84,8 @@ def extract_cited_rules_with_exemptions(file_path: Path) -> set[str]:
         if is_historical_section(content, line_num, file_path.name):
             continue
 
-        matches = re.findall(r'\b(?:OR|AR)\d+\b', line)
+        # Match new naming convention: UOR-1, VOR-1, etc. and old OR\d+, AR\d+
+        matches = re.findall(r'\b(?:AR|UOR|VOR|OOR|COR|SOR)-?\d+\b', line)
         cited_rules.update(matches)
 
     return cited_rules
@@ -88,18 +104,8 @@ def main():
         repo_root / '.agent' / 'architect' / 'AI_HANDOFF.md',
     ]
 
-    # Extract defined AR rules from ARCHITECTURE.md
+    # Extract defined rules from ARCHITECTURE.md and OR_RULES.md
     defined_rules = extract_defined_rules(agents_path)
-    
-    # Extract defined OR rules from skills
-    skills_dir = repo_root / '.devin' / 'skills'
-    if skills_dir.exists():
-        for skill_file in skills_dir.glob('*/SKILL.md'):
-            with open(skill_file, encoding='utf-8') as f:
-                content = f.read()
-            # Match OR rules at start of line in skill files
-            or_matches = re.findall(r'^(OR\d+)\.', content, re.MULTILINE)
-            defined_rules.update(or_matches)
 
     # Extract cited rules from all files
     cited_rules = set()
@@ -114,7 +120,7 @@ def main():
         print(f"Defined: {sorted(defined_rules)}, Cited: {sorted(cited_rules)}", file=sys.stderr)
         sys.exit(1)
     else:
-        print(f"OK: All {len(cited_rules)} cited rules are defined in AGENTS.md")
+        print(f"OK: All {len(cited_rules)} cited rules are defined in ARCHITECTURE.md and OR_RULES.md")
         sys.exit(0)
 
 

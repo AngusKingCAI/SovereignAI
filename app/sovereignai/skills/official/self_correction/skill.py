@@ -1,8 +1,8 @@
 import threading
 
-from app.sovereignai.librarian.librarian import Librarian
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import TaskState, TaskStateChanged, TraceLevel
+from sovereignai.librarian.librarian import Librarian
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import TaskState, TaskStateChanged, TraceLevel
 
 
 class SelfCorrectionSkill:

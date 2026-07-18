@@ -7,7 +7,7 @@ from enum import StrEnum
 from typing import Any, NewType
 from uuid import UUID, uuid4
 
-from app.sovereignai.shared.types_base import CorrelationId
+from sovereignai.shared.types_base import CorrelationId
 
 # ============================================================================
 # Trace types (used by TraceEmitter in S3)
@@ -129,6 +129,7 @@ class ComponentManifest:
     core: bool = False
     _source_path: str = ""  # Rev8: source path for first-party detection
     routing_priority: int = 1000  # lower = higher priority; default 1000
+    category: CapabilityCategory | None = None  # Component category for skills/other components
     metadata: dict[str, Any] = field(default_factory=dict)
 
 

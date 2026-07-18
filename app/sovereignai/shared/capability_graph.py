@@ -3,8 +3,8 @@ from __future__ import annotations
 from threading import Lock
 from typing import Protocol, runtime_checkable
 
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import (
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import (
     CapabilityCategory,
     CapabilityDeclaration,
     ComponentId,

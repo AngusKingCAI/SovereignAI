@@ -9,14 +9,14 @@ from collections.abc import Callable
 from threading import Lock
 from typing import TYPE_CHECKING
 
-from app.sovereignai.shared.types import (
+from sovereignai.shared.types import (
     TraceEvent,
     TraceLevel,
     current_correlation_id,
     new_correlation_id,
     now_utc,
 )
-from app.sovereignai.shared.types_base import CorrelationId
+from sovereignai.shared.types_base import CorrelationId
 
 if TYPE_CHECKING:
     pass

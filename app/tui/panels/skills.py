@@ -6,7 +6,7 @@ from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, DataTable, Static
 
-from app.sovereignai.shared.capability_api import CapabilityAPI
+from sovereignai.shared.capability_api import CapabilityAPI
 
 
 class SkillsPanel(Vertical):

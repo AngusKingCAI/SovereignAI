@@ -3,9 +3,9 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from app.sovereignai.shared.capability_graph import ICapabilityIndex
-from app.sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
-from app.sovereignai.shared.types import (
+from sovereignai.shared.capability_graph import ICapabilityIndex
+from sovereignai.shared.trace_emitter import TraceEmitter, TraceLevel
+from sovereignai.shared.types import (
     AdapterUnavailableError,
     NoHealthyAdapterError,
 )

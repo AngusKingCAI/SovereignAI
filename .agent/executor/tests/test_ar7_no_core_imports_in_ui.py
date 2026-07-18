@@ -35,6 +35,8 @@ WEB_MAIN_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.types.TraceLevel',
     'sovereignai.shared.task_state_machine',
     'sovereignai.shared.task_state_machine.ITaskStateQuery',
+    'sovereignai.main',
+    'sovereignai.main.build_container',
     'sovereignai.skills.runner',
     'sovereignai.skills.runner.ISkillRunner',
     'sovereignai.skills.session',
@@ -49,10 +51,12 @@ TUI_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.shared.capability_graph.ICapabilityIndex',
     'sovereignai.shared.auth',
     'sovereignai.shared.auth.AuthMiddleware',
+    'sovereignai.shared.auth.AuthError',
     'sovereignai.shared.trace_emitter',
     'sovereignai.shared.trace_emitter.TraceEmitter',
     'sovereignai.shared.types',
     'sovereignai.shared.types.CapabilityCategory',
+    'sovereignai.shared.types.CapabilityQuery',
     'sovereignai.shared.types.TaskState',
     'sovereignai.shared.types.TraceLevel',
     'sovereignai.shared.task_state_machine',
@@ -60,7 +64,13 @@ TUI_ALLOWED_IMPORTS = {  # noqa: E501
     'sovereignai.main',
     'sovereignai.main.build_container',
     'sovereignai.shared.lifecycle_manager',
-    'sovereignai.shared.lifecycle_manager.LifecycleManager'
+    'sovereignai.shared.lifecycle_manager.LifecycleManager',
+    'sovereignai.shared.hardware_probe',
+    'sovereignai.shared.hardware_probe.HardwareProbe',
+    'sovereignai.shared.model_catalog',
+    'sovereignai.shared.model_catalog.ModelCatalog',
+    'sovereignai.shared.librarian',
+    'sovereignai.shared.librarian.Librarian',
 }
 
 UI_PACKAGE_DENYLIST = {  # noqa: E501
@@ -73,6 +83,9 @@ UI_PACKAGE_DENYLIST = {  # noqa: E501
     'sovereignai.skills',
 }
 UI_DIRECTORIES = ['app/web', 'app/cli', 'app/tui', 'app/phone']
+CAPABILITY_API_FILE = 'app/sovereignai/shared/capability_api.py'
+
+# Update import paths after standardization
 CAPABILITY_API_FILE = 'app/sovereignai/shared/capability_api.py'
 
 def _scan_imports(file_path: Path) -> set[str]:

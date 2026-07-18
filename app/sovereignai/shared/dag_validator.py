@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from app.sovereignai.shared.types import DAGValidationError
+from sovereignai.shared.types import DAGValidationError
 
 
 def validate_dag(nodes: list[str], edges: list[tuple[str, str]],

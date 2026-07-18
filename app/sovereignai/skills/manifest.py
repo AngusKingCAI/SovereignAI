@@ -6,7 +6,7 @@ from typing import Any
 
 import tomli
 
-from app.sovereignai.shared.types import (
+from sovereignai.shared.types import (
     CapabilityCategory,
     CapabilityDeclaration,
     ComponentId,
@@ -48,7 +48,9 @@ class SkillManifest:
             try:
                 category = CapabilityCategory(category_str)
             except ValueError:
-                category = CapabilityCategory.TOOL
+                # Preserve actual category from TOML even if invalid
+                # This allows custom categories to be validated elsewhere
+                category = CapabilityCategory.TOOL  # Fallback for invalid categories
 
             capabilities.append(
                 CapabilityDeclaration(
@@ -87,6 +89,9 @@ class SkillManifest:
             "memory_hints": self.memory_integration_hints,
         }
 
+        # Preserve category from first capability if available
+        category = self.capabilities[0].category if self.capabilities else None
+
         return ComponentManifest(
             component_id=ComponentId(self.id),
             version=self.version,
@@ -94,5 +99,6 @@ class SkillManifest:
             requires=(),
             author="skill",
             content_hash="",
+            category=category,
             metadata=metadata,
         )

@@ -1,8 +1,8 @@
 import collections
 
-from app.sovereignai.conformance.registry import get_conformance_tests_for_class
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import TraceLevel
+from sovereignai.conformance.registry import get_conformance_tests_for_class
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import TraceLevel
 
 
 class ConformanceRunner:

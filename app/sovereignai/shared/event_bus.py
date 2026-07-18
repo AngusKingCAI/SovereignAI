@@ -4,8 +4,8 @@ from collections import defaultdict
 from collections.abc import Callable
 from threading import Lock
 
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import Channel, Event, TraceLevel
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import Channel, Event, TraceLevel
 
 Subscriber = Callable[[Event], None]
 

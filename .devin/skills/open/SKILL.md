@@ -11,10 +11,8 @@ allowed-tools:
   - write
 ---
 
-OR17. Deliverables ship in full or defer — no partial implementations
-OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
-OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
-OR65. Architect must evaluate all suggestions before creating plan — if suggestions exist, read and evaluate per RULE_LIFECYCLE.md TRIAGE
+Operational Rules: See .agent/shared/OR_RULES.md
+- Read UOR section (Universal) + OOR section (open-specific)
 
 Run `/open` workflow. STOP on any failure.
 

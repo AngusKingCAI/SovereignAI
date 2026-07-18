@@ -4,11 +4,11 @@ import re
 import tomllib
 from pathlib import Path
 
-from app.sovereignai.shared.capability_api import CapabilityAPI
-from app.sovereignai.shared.capability_graph import CapabilityGraph
-from app.sovereignai.shared.task_state_machine import ITaskStateQuery, Task
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import (
+from sovereignai.shared.capability_api import CapabilityAPI
+from sovereignai.shared.capability_graph import CapabilityGraph
+from sovereignai.shared.task_state_machine import ITaskStateQuery, Task
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import (
     CapabilityCategory,
     ComponentId,
     TraceLevel,

@@ -6,8 +6,8 @@ import secrets
 from datetime import timedelta
 from threading import Lock
 
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import (
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import (
     AuthError,
     SessionToken,
     TraceLevel,

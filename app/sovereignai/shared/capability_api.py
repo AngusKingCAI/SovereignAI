@@ -5,15 +5,15 @@ from collections.abc import AsyncGenerator
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
-from app.sovereignai.shared.auth import AuthMiddleware
-from app.sovereignai.shared.capability_graph import ICapabilityIndex
-from app.sovereignai.shared.database_registry import DatabaseRegistry
-from app.sovereignai.shared.hardware_probe import HardwareProbe
-from app.sovereignai.shared.model_catalog import ModelCatalog
-from app.sovereignai.shared.service_registry import ServiceRegistry
-from app.sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import (
+from sovereignai.shared.auth import AuthMiddleware
+from sovereignai.shared.capability_graph import ICapabilityIndex
+from sovereignai.shared.database_registry import DatabaseRegistry
+from sovereignai.shared.hardware_probe import HardwareProbe
+from sovereignai.shared.model_catalog import ModelCatalog
+from sovereignai.shared.service_registry import ServiceRegistry
+from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import (
     CapabilityAPIError,
     CapabilityCategory,
     CapabilityDeclaration,

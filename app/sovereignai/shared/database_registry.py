@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from app.databases.base import DatabaseProvider, ModelEntry
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import TraceLevel
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import TraceLevel
 
 
 class DatabaseRegistry:

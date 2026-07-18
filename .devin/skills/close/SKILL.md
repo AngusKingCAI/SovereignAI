@@ -12,17 +12,18 @@ allowed-tools:
   - write
 ---
 
-OR17. Deliverables ship in full or defer — no partial implementations
-OR19. Test/mypy/static-analysis failures: no "pre-existing" exemption
-OR63. diskcache CVE monitoring — check DEBT.md for CVE status before close
+Operational Rules: See .agent/shared/OR_RULES.md
+- Universal: UOR-1, UOR-2, UOR-3
+- Close-specific: COR-1
 
 Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothing commits.
 
 1. Resolve plan: `get_current_plan.py`.
-2. Scan check: `is_scan_plan.py $CURRENT_PLAN`.
-   - If "true": full pytest suite. 300s timeout.
-   - If "false": `get_scoped_tests.py $CHANGED_PY`. If empty + .py changes: STOP.
-3. Tests: run scoped or full. STOP on failure. STOP if coverage <90%.
+2. Determine test scope: Apply COR-1 (test-fix plans run full suite). Otherwise use `get_scoped_tests.py` (auto-detects based on git changes).
+   - Returns: `.agent/executor/tests/` (architect/executor only)
+   - Returns: `.agent/executor/tests/sovereignai/` (sovereignai only)
+   - Returns: `.agent/executor/tests/` (both or all)
+3. Tests: run scoped or full tests with 300s timeout. STOP on failure. STOP if coverage <90%.
 4. Static analysis: `ruff check .`, `mypy`, `bandit`, `pip-audit`, `vulture`, `detect-secrets`. STOP on any failure.
 5. AR checks: `ar_checks/run_all.py`. STOP on any failure.
 6. Landmine checks: `landmine_checks/run_all.py`. STOP if exit≠0.

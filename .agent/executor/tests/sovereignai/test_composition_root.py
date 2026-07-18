@@ -4,18 +4,18 @@ import subprocess
 import sys
 from pathlib import Path
 
-from app.sovereignai.main import build_container
-from app.sovereignai.shared.auth import AuthMiddleware
-from app.sovereignai.shared.capability_api import CapabilityAPI
-from app.sovereignai.shared.capability_graph import CapabilityGraph, ICapabilityIndex
-from app.sovereignai.shared.container import DIContainer
-from app.sovereignai.shared.event_bus import EventBus
-from app.sovereignai.shared.lifecycle_manager import LifecycleManager
-from app.sovereignai.shared.relay_placeholder import RelayPlaceholder
-from app.sovereignai.shared.routing_engine import RoutingEngine
-from app.sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
-from app.sovereignai.shared.trace_emitter import TraceEmitter
-from app.sovereignai.shared.types import Channel, Event, new_correlation_id, now_utc
+from sovereignai.main import build_container
+from sovereignai.shared.auth import AuthMiddleware
+from sovereignai.shared.capability_api import CapabilityAPI
+from sovereignai.shared.capability_graph import CapabilityGraph, ICapabilityIndex
+from sovereignai.shared.container import DIContainer
+from sovereignai.shared.event_bus import EventBus
+from sovereignai.shared.lifecycle_manager import LifecycleManager
+from sovereignai.shared.relay_placeholder import RelayPlaceholder
+from sovereignai.shared.routing_engine import RoutingEngine
+from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import Channel, Event, new_correlation_id, now_utc
 
 
 def test_build_container_returns_populated_container() -> None:

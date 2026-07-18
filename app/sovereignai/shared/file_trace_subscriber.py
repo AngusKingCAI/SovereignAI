@@ -6,7 +6,7 @@ from pathlib import Path
 from threading import Lock
 from typing import TYPE_CHECKING
 
-from app.sovereignai.shared.types import TraceEvent
+from sovereignai.shared.types import TraceEvent
 
 if TYPE_CHECKING:
     from collections.abc import Callable

@@ -3,9 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from app.sovereignai.shared.types import ComponentId, ComponentManifest
-from app.sovereignai.versioning.compatibility_matrix import CompatibilityMatrix
-from app.sovereignai.versioning.semver import SemVer
+from sovereignai.shared.types import ComponentId, ComponentManifest
+from sovereignai.versioning.compatibility_matrix import CompatibilityMatrix
+from sovereignai.versioning.semver import SemVer
 
 if TYPE_CHECKING:
     from sovereignai.shared.capability_graph import ICapabilityIndex

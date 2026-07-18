@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from app.sovereignai.shared.types import CapabilityCategory
-from app.sovereignai.skills.manifest import SkillManifest
+from sovereignai.shared.types import CapabilityCategory
+from sovereignai.skills.manifest import SkillManifest
 
 
 def test_manifest_parsing() -> None:
@@ -30,7 +30,7 @@ def test_no_import_guarantee() -> None:
     if not manifest_path.exists():
         pytest.skip(f"Manifest file not found: {manifest_path}")
 
-    from app.sovereignai.skills.manifest import SkillManifest
+    from sovereignai.skills.manifest import SkillManifest
     SkillManifest.from_toml(manifest_path)
 
     modules_after = set(sys.modules.keys())
