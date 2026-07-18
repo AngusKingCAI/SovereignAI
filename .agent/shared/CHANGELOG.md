@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## prompt-plan-fix-6-Rev1 — Plan Fix 6 - Plan 22 Forward Dependency, Plan Filename Convention, Devin Hardcoding, /verify git add, scan Self-Contained, STOP Recovery
+
+**Date**: 2026-07-18
+**Plan**: prompts/plan-fix-6-Rev1.md
+**Tests**: pytest .agent/executor/tests (531 tests, 479 passed, 52 skipped, 0 failed)
+**Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
+**Coverage**: N/A (no new code added)
+**Screenshots**: N/A
+**AR7 diff**: None
+**UOR-2**: Test failures: no "pre-existing" exemption
+**COR-1**: Plans with "fix" or "test" in title run full suite
+
+- Updated plan-22-Rev11.md to depend on Plan 24 for TaskGraphCache
+- Renamed plan-22-rev11.md, plan-23-rev11.md, plan-24-rev11.md to use uppercase Rev
+- Updated verify_close.py to handle both Rev and rev suffixes for historical compatibility
+- Replaced hardcoded "Executor: Devin" with "Executor: {executor-name}" in close/SKILL.md
+- Replaced Devin-specific API terms with generic equivalents in LANDMINES.md and OR_RULES.md
+- Removed git add prompts/*.md from verify/SKILL.md (handled by close/SKILL.md step 13)
+- Updated scan/SKILL.md description to note shared verify_close.py hard gate
+- Added STOP recovery semantics to close/SKILL.md (non-HARD-GATE vs HARD-GATE)
+- Updated PLANS.md with active plan entry for plan-fix-6-Rev1
+- Moved plan-fix-5-Rev1.md to completed/
+
 ## prompt-plan-fix-5-Rev1 — Plan Fix 5 - Legacy OR ID Migration and check_rule_crossrefs.py Blind Spot Fix
 
 **Date**: 2026-07-18

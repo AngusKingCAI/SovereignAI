@@ -18,6 +18,8 @@ Operational Rules: See .agent/shared/OR_RULES.md
 
 Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothing commits.
 
+Non-HARD-GATE STOP (steps 1–9): fix and retry. HARD-GATE STOP (step 10): abort, do not commit.
+
 1. Resolve plan: `get_current_plan.py`.
 2. Determine test scope: Apply COR-1 (test-fix plans run full suite). Otherwise use `get_scoped_tests.py` (auto-detects based on git changes).
    - Returns: `.agent/executor/tests/` (architect/executor only)
@@ -37,7 +39,7 @@ Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothin
 
    **Date**: YYYY-MM-DD
    **Plan**: {plan-file}
-   **Executor**: Devin
+   **Executor**: {executor-name}
 
    ---
 

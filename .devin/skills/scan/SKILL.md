@@ -1,7 +1,7 @@
 ---
 name: scan
 authority: AGENTS.md
-description: Run at scan prompts (5, 10, 15...). Whole-repo scan. No new features. Fixes only. More thorough than /close. Self-contained - does not invoke /close.
+description: Run at scan prompts (5, 10, 15...). Whole-repo scan. No new features. Fixes only. More thorough than /close. Self-contained except for shared verify_close.py hard gate.
 argument-hint: "[plan-number]"
 triggers: ["user"]
 allowed-tools:

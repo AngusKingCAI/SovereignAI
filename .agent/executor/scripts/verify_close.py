@@ -45,7 +45,7 @@ def check_execution_log_empty() -> tuple[bool, str]:
         return True, f"get_current_plan.py failed: {result.stderr} - skipping execution log check"
 
     current_plan_path = Path(result.stdout.strip())
-    # Extract plan name from path (e.g., "plan-22-rev11.md" -> "plan-22")
+    # Extract plan name from path (e.g., "plan-22-Rev11.md" -> "plan-22")
     current_plan = current_plan_path.stem  # Removes .md extension
 
     if not current_plan:
@@ -55,9 +55,11 @@ def check_execution_log_empty() -> tuple[bool, str]:
     # Try base name first (e.g., execution-log-plan-22.md)
     execution_log = logs_dir / f"execution-log-{current_plan}.md"
     if not execution_log.exists():
-        # Try with Rev suffix pattern (e.g., execution-log-plan-22-rev11.md)
-        rev_pattern = f"execution-log-{current_plan}-rev*.md"
-        rev_logs = list(logs_dir.glob(rev_pattern))
+        # Try with Rev suffix pattern (both upper and lower for historical compatibility)
+        # e.g., execution-log-plan-22-Rev11.md or execution-log-plan-22-rev11.md
+        rev_pattern_upper = f"execution-log-{current_plan}-Rev*.md"
+        rev_pattern_lower = f"execution-log-{current_plan}-rev*.md"
+        rev_logs = list(logs_dir.glob(rev_pattern_upper)) + list(logs_dir.glob(rev_pattern_lower))
         if rev_logs:
             execution_log = rev_logs[0]  # Use first match
         else:
@@ -128,22 +130,31 @@ def check_plan_files_moved() -> tuple[bool, str]:
         return True, "No current plan identified"
 
     # Check if ANY variant of this plan file has been moved to completed/
-    # Look for {current_plan}.md OR {current_plan}-Rev*.md
+    # Look for {current_plan}.md OR {current_plan}-Rev*.md (historical: {current_plan}-rev*.md)
     prompts_dir = REPO_ROOT / "prompts"
     completed_dir = REPO_ROOT / "prompts" / "completed"
 
     # Check if any variant still exists in prompts/
     base_pattern = f"{current_plan}.md"
-    rev_pattern = f"{current_plan}-Rev*.md"
+    rev_pattern_upper = f"{current_plan}-Rev*.md"
+    rev_pattern_lower = f"{current_plan}-rev*.md"
 
-    if (prompts_dir / base_pattern).exists() or list(prompts_dir.glob(rev_pattern)):
+    if (
+        (prompts_dir / base_pattern).exists()
+        or list(prompts_dir.glob(rev_pattern_upper))
+        or list(prompts_dir.glob(rev_pattern_lower))
+    ):
         return False, (
             f"Plan file {current_plan} (or Rev variant) "
             "still in prompts/ (not moved to completed/)"
         )
 
     # Check if any variant exists in completed/
-    if (completed_dir / base_pattern).exists() or list(completed_dir.glob(rev_pattern)):
+    if (
+        (completed_dir / base_pattern).exists()
+        or list(completed_dir.glob(rev_pattern_upper))
+        or list(completed_dir.glob(rev_pattern_lower))
+    ):
         return True, f"Plan file {current_plan} (or Rev variant) moved to completed/"
 
     return True, f"Plan file {current_plan} not found (may not be executed yet)"

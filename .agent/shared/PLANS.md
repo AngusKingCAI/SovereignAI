@@ -40,6 +40,7 @@ None.
 
 | Prompt | Description | Tests | Date |
 |--------|-------------|-------|------|
+| prompt-plan-fix-6-Rev1 | Plan Fix 6 - Plan 22 Forward Dependency, Plan Filename Convention, Devin Hardcoding, /verify git add, scan Self-Contained, STOP Recovery | 531 | 2026-07-18 |
 | prompt-plan-fix-5-Rev1 | Plan Fix 5 - Legacy OR ID Migration and check_rule_crossrefs.py Blind Spot Fix | 531 | 2026-07-18 |
 | prompt-plan-fix-4-Rev1 | Plan Fix 4 - Remaining suggest_rule.py References Cleanup, AR Rule Cleanup, RULE_LIFECYCLE.md File References | 531 | 2026-07-18 |
 | prompt-plan-fix-3-Rev1 | Plan Fix 3 - ToolCallParser isinstance Module Identity Fix and Governance Cleanup | 531 | 2026-07-18 |

@@ -21,9 +21,8 @@ Run `/verify` workflow after every file edit. STOP on any failure.
 2. Syntax check: `verify_syntax.py <file>`. STOP on error.
 3. Ruff: `ruff check --fix <file>`. If still failing: STOP.
 4. Import path check: `.agent/executor/scripts/check_import_paths.py` (if <file> is in app/sovereignai/). STOP on error.
-5. `git add prompts/*.md` — ensure all plan files tracked.
-6. OR checks: `or_checks/run_all.py` (if exists).
-7. Landmine checks: `landmine_checks/run_all.py` (if exists).
-8. Report: `<file>: OK` or `<file>: FAIL`.
+5. OR checks: `or_checks/run_all.py` (if exists).
+6. Landmine checks: `landmine_checks/run_all.py` (if exists).
+7. Report: `<file>: OK` or `<file>: FAIL`.
 
 Note: Test execution moved to `/close` skill for scoped testing based on modified files.

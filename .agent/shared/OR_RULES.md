@@ -31,7 +31,7 @@ Rules specific to verify skill only.
 **Trigger**: Repeated error patterns during verification
 
 ### VOR-2: Long-Running Commands
-**Rule**: Test suites and build commands MUST use run_in_background=true with timeout=300000 on first invocation. Never restart command; poll existing shell_id with get_output. If output truncated, read overflow file.
+**Rule**: Test suites and build commands MUST use background execution mode with timeout=300000 on first invocation. Never restart command; poll existing process identifier with output retrieval. If output truncated, read overflow file.
 **Applies to**: verify skill
 **Trigger**: Running pytest, mypy, ruff, or other long-running commands
 

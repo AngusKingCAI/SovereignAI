@@ -17,7 +17,7 @@ Naming: C{n} = Critical, H{n} = High, M{n} = Medium, L{n} = Low.
 
 | ID | Pattern | Detection | Mitigation |
 |----|---------|-----------|------------|
-| H1 | Repeatedly restarting long-running commands instead of waiting | Multiple pytest/test invocations within short time window; "Stopped waiting for output" messages | Use run_in_background=true with timeout=300000 for first invocation; poll existing shell_id; read overflow file if truncated |
+| H1 | Repeatedly restarting long-running commands instead of waiting | Multiple pytest/test invocations within short time window; "Stopped waiting for output" messages | Use background execution mode with timeout=300000 for first invocation; poll existing process identifier; read output truncation file if truncated |
 
 ### Medium — Address or document.
 

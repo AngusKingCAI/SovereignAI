@@ -1,4 +1,4 @@
-Depends on: Plan 21
+Depends on: Plan 21, Plan 24
 Vision principles: P1 (core sacred), P2 (pluggable), P5 (wire as you go), P9 (observability), P11 (DI only)
 Open questions resolved: Q-22.1 (ReActLoopFactory as Protocol), Q-22.2 (UUID session keys), Q-22.3 (TraceEmitterWrapper level parameter), Q-22.4 (ISkillRunner singleton close safety), Q-22.5 (GraphMemory Protocol, no forward import)
 
