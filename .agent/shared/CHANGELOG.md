@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## prompt-22 — Workflow Fix 3 - AR Check Script Paths and verify_close.py Logic
+## prompt-workflow-fix-3 — Workflow Fix 3 - AR Check Script Paths and verify_close.py Logic
 
 **Date**: 2026-07-18
 **Plan**: prompts/plan-workflow-fix-3.md
