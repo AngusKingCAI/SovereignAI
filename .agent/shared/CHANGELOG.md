@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## prompt-workflow-fix-5 — Workflow Fix 5 - STOP Definition, get_current_plan.py Fix, verify_close.py Rev Suffix Handling
+
+**Date**: 2026-07-18
+**Plan**: prompts/plan-workflow-fix-5.md
+**Tests**: N/A (documentation-only change)
+**Coverage**: N/A (no code changes)
+**Screenshots**: N/A
+**AR7 diff**: None
+**OR63**: None
+
+- Added formal STOP definition to AGENTS.md invariant 1: STOP means halt current step execution, report failure reason, do not proceed to next step. Executor may fix and retry same step, but must not skip to subsequent steps without passing current step. Only verify_close.py HARD GATE is fatal: do not commit or tag if it fails.
+- Fixed get_current_plan.py path bug: corrected repo_root calculation from 2 levels up to 4 levels up (scripts/ → executor/ → .agent/ → repo root)
+- Fixed verify_close.py plan file check to handle Rev suffixes: now looks for plan-{current_plan}.md OR plan-{current_plan}-Rev*.md patterns, checks if ANY variant is in completed/
+- Fixed verify_close.py execution log check to use get_current_plan.py for session-scoped plan detection, handles Rev suffixes in execution log filenames (e.g., execution-log-plan-22-rev11.md)
+- Re-enabled execution log size check (was previously disabled), now properly scoped to current session plan only
+- Verified plans 22-24 remain in prompts/ as drafts (not moved to completed/, no execution logs, not in CHANGELOG)
+- Verified workflow-fix plans (workflow-fix, workflow-fix-2, workflow-fix-3) are in completed/ with execution logs
+- All verify_close.py checks now pass with proper session-scoped logic and Rev suffix handling
+
+---
+
 ## prompt-workflow-fix-3 — Workflow Fix 3 - AR Check Script Paths and verify_close.py Logic
 
 **Date**: 2026-07-18

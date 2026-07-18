@@ -11,7 +11,7 @@ def main():
         print("Usage: get_current_plan.py", file=sys.stderr)
         sys.exit(1)
 
-    repo_root = Path(__file__).parent.parent
+    repo_root = Path(__file__).parent.parent.parent.parent
     prompts_dir = repo_root / 'prompts'
 
     if not prompts_dir.exists():
