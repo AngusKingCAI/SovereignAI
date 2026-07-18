@@ -23,8 +23,8 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/shared/ARCH
 
 ## Session Protocol
 
-1. Read plan file → invoke `/open` slash command
-2. Execute steps → invoke `/verify` slash command after each edit
-3. Invoke `/close` slash command → STOP on any failure
+1. Read plan file → invoke `/open` slash command → STOP on failure
+2. Execute steps → invoke `/verify` slash command after each edit → STOP on failure
+3. Invoke `/close` slash command → STOP on failure
 
 Ambiguous → read `.agent/shared/LANDMINES.md`.
