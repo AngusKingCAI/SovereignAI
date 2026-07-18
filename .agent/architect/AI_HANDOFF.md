@@ -20,14 +20,21 @@ Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Wind
 
 1. Read logs end-to-end. Extract test counts, STOPs, deviations.
 1.5. If user states execution log has been pushed: clone latest repo, read execution log, diff-check against plan expectations.
-2. Verify repo state. Spot-check `.agent/shared/CHANGELOG.md` latest entry (first 10 lines). PLANS.md updated. No scope creep.
-3. Re-read `.agent/shared/LANDMINES.md` + `PRINCIPLES.md` + `.agent/shared/RULE_LIFECYCLE.md`.
+2. Verify repo state. Read `.agent/shared/CHANGELOG.md` latest entry in full. Read `.agent/shared/PLANS.md` current baseline. No scope creep.
+3. Re-read governance documents in full:
+   - `.agent/shared/PRINCIPLES.md`
+   - `.agent/shared/RULE_LIFECYCLE.md`
+   - `.agent/shared/OR_RULES.md`
+   - `.agent/shared/ARCHITECTURE.md`
+   - `.agent/shared/LANDMINES.md`
+   - `.agent/shared/DECISIONS.md` (verify accepted decisions still valid; note any violations)
+   - `.agent/shared/DEBT.md` (check for triggered items; note resolutions)
 4. Review execution patterns. Identify rule gaps or recurring failure patterns from execution logs. Create rule specifications with IDs (OR{n}, AR{n}, {C|H|M|L}{n}) directly.
    - New AR → assign ID, implement directly: add to ARCHITECTURE.md with verification script
    - New OR → assign ID, implement directly: edit relevant skill with OR reference
    - New landmine → assign ID, implement directly: add to LANDMINES.md with detection script
    Implementation per RULE_LIFECYCLE.md IMPLEMENT stage.
-5. Check `.agent/shared/DEBT.md` for non-rule deferred items (features, tech debt, security fixes).
+5. Check `.agent/executor/suggestions/` for new rule proposals. Evaluate per RULE_LIFECYCLE.md TRIAGE.
 6. Research. Web search for new tech. Document findings in plan header.
 7. Draft. N plan files + 1 brief (Rev 1 only) + 1 Round Table prompt per rev.
 8. Round Table. Runs until clean pass. Apply findings at discretion.
@@ -80,14 +87,14 @@ Open questions resolved: <which Q1-Q34, or "none">
 
 **S0 — Opening**:
 - S0.0: If resuming from prior execution, clone latest repo and verify execution log state.
-- S0.1: Run `/open` (if skill tool fails, execute via shell fallback per AGENTS.md Rule 11)
+- S0.1: Run `/open`
 - S0.2: Read `AGENTS.md` in full
 - S0.3: Check `.agent/shared/DEBT.md` for other deferred items (non-rule items).
 - S0.4: If new tech stack, add research findings to plan header (per Architect Workflow step 7).
 
-**Plan body (S1-Sn)**: Execute steps. Run `/verify` after each edit (if skill tool fails, execute via shell fallback per AGENTS.md Rule 11). HTML/CSS/JS plans: include "WILL edit" UI element list. Reference operational rules where pertinent (e.g., "Use VOR-2 for test suite execution").
+**Plan body (S1-Sn)**: Execute steps. Run `/verify` after each edit. HTML/CSS/JS plans: include "WILL edit" UI element list. Reference operational rules where pertinent (e.g., "Use VOR-2 for test suite execution").
 
-**Closing**: Run `/close` (if skill tool fails, execute via shell fallback per AGENTS.md Rule 11).
+**Closing**: Run `/close`.
 
 **Token budget**: This Handoff + PRINCIPLES.md + plan file = context.
 
