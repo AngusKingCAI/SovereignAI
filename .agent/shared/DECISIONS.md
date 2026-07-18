@@ -16,6 +16,8 @@ Append-only. Status: `Proposed | Accepted | Superseded`.
 | D6-v2 | Prohibit docstrings | Naming must be descriptive. No docstring maintenance. | — |
 | D7 | Remove OR references from code | Lost code-to-rule traceability. Governance docs are SSOT. | — |
 | D8 | Scoped tests during iteration | Untouched-area regressions may persist up to 4 plans. | — |
+| DD-23.11.1 | DIContainer dual-registration (protocol + concrete) | Double registration overhead. Protocol-key retrieval for testability. | — |
+| DD-23.11.3 | GraphMemory duck-typed protocol satisfaction | Runtime type checking overhead. No concrete GraphMemory class. | — |
 
 ## Superseded Decisions
 
@@ -94,3 +96,21 @@ Append-only. Status: `Proposed | Accepted | Superseded`.
 **Context**: Full pytest suite (~183s) caused output-truncation thrashing mid-plan. Agent repeatedly failed to find final summary line.
 **Decision**: Scoped execution during non-scan plans. Full suite on scan plans (divisible by 5).
 **Consequences**: Untouched-area regressions may persist up to 4 plans. Full suite timeout increased to 300s. Scoped failures still governed by UOR-2 — no exemption.
+
+---
+
+## DD-23.11.1 — DIContainer dual-registration (protocol + concrete)
+
+**Status**: Proposed
+**Context**: Plan 23 S10 requires ReActLoop to be retrievable via both protocol key (ReActLoopFactory) and concrete key (ReActLoop) for testability and runtime flexibility.
+**Decision**: DIContainer supports dual-registration: both protocol key and concrete key map to same factory instance. Protocol classes are hashable and work as dict keys.
+**Consequences**: Double registration overhead (minimal). Protocol-key retrieval enables duck-typed testing while concrete-key retrieval provides direct instance access.
+
+---
+
+## DD-23.11.3 — GraphMemory duck-typed protocol satisfaction
+
+**Status**: Proposed
+**Context**: Plan 23 S2.3 requires GraphMemory as @runtime_checkable Protocol for duck-typed satisfaction without concrete class.
+**Decision**: GraphMemory defined as Protocol with @runtime_checkable decorator. Plan 24 TaskGraphCache must satisfy this protocol (locked contract).
+**Consequences**: Runtime type checking overhead (minimal). No concrete GraphMemory class exists — any class with matching method signature satisfies protocol. Enables flexible memory implementations.

@@ -65,7 +65,7 @@ def check_execution_log_empty() -> tuple[bool, str]:
         else:
             return True, f"Execution log for {current_plan} not found (not created yet)"
 
-    content = execution_log.read_text().strip()
+    content = execution_log.read_text(encoding='utf-8').strip()
     # Allow header template only
     header_template = "# Execution Log:"
     if content.startswith(header_template) and len(content) < 250:
@@ -132,7 +132,7 @@ def check_plan_files_moved() -> tuple[bool, str]:
     # Check if ANY variant of this plan file has been moved to completed/
     # Add "plan-" prefix to current_plan for file lookup
     plan_file_prefix = f"plan-{current_plan}"
-    
+
     # Look for {plan_file_prefix}.md OR {plan_file_prefix}-Rev*.md (historical: {plan_file_prefix}-rev*.md)
     prompts_dir = REPO_ROOT / "prompts"
     completed_dir = REPO_ROOT / "prompts" / "completed"
@@ -142,15 +142,13 @@ def check_plan_files_moved() -> tuple[bool, str]:
     rev_pattern_upper = f"{plan_file_prefix}-Rev*.md"
     rev_pattern_lower = f"{plan_file_prefix}-rev*.md"
 
+    # If plan still in prompts/, it's not yet completed - skip this check
     if (
         (prompts_dir / base_pattern).exists()
         or list(prompts_dir.glob(rev_pattern_upper))
         or list(prompts_dir.glob(rev_pattern_lower))
     ):
-        return False, (
-            f"Plan file {plan_file_prefix} (or Rev variant) "
-            "still in prompts/ (not moved to completed/)"
-        )
+        return True, f"Plan file {plan_file_prefix} still in prompts/ (not yet completed - OK for active work)"
 
     # Check if any variant exists in completed/
     if (

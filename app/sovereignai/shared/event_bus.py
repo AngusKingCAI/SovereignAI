@@ -75,7 +75,7 @@ class EventBus:
     def publish(self, event: Event) -> None:
         if self._state == "INIT":
             is_critical = (
-                event.trace_level == TraceLevel.CRITICAL
+                event.trace_level == TraceLevel.ERROR
                 or event.event_type.endswith((".error", ".completed"))
             )
             if is_critical:
@@ -105,7 +105,7 @@ class EventBus:
     async def publish_async(self, event: Event) -> None:
         if self._state == "INIT":
             is_critical = (
-                event.trace_level == TraceLevel.CRITICAL
+                event.trace_level == TraceLevel.ERROR
                 or event.event_type.endswith((".error", ".completed"))
             )
             if is_critical:
@@ -126,7 +126,7 @@ class EventBus:
             if queue_key not in self._queues:
                 queue_maxsize = registration.queue_maxsize
                 is_critical = (
-                    event.trace_level == TraceLevel.CRITICAL
+                    event.trace_level == TraceLevel.ERROR
                     or event.event_type.endswith((".error", ".completed"))
                 )
                 if is_critical:
@@ -142,7 +142,7 @@ class EventBus:
                     self._last_dropped_emission[queue_key] = now
                     await self._emit_queue_dropped(event, registration)
 
-                if event.trace_level == TraceLevel.CRITICAL or event.event_type.endswith(
+                if event.trace_level == TraceLevel.ERROR or event.event_type.endswith(
                     (".error", ".completed")
                 ):
                     await self._write_critical_overflow(event)

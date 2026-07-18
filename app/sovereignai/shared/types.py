@@ -19,6 +19,7 @@ class TraceLevel(StrEnum):
     INFO = "info"
     WARN = "warn"
     ERROR = "error"
+    CRITICAL = "critical"
 
 
 @dataclass(frozen=True)
@@ -47,6 +48,7 @@ class Event:
     timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     version: int = 1
     trace_level: TraceLevel = TraceLevel.INFO
+    payload: dict[str, Any] = field(default_factory=dict)
 
     @property
     def event_type(self) -> str:

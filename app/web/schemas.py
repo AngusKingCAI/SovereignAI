@@ -147,3 +147,27 @@ class SubscriptionListDTO(BaseModel):
 
     subscriptions: list[SubscriptionDTO]
 
+
+class AgentTaskSubmitDTO(BaseModel):
+
+    task_description: str
+    tools: list[dict]
+    context: str | None = None
+
+
+class AgentTaskResponseDTO(BaseModel):
+
+    task_id: str
+    status: str
+    output: str | None = None
+    error: str | None = None
+    trace: list[str] = []
+
+
+class AgentStepDTO(BaseModel):
+
+    step_number: int
+    thought: str | None = None
+    action: str | None = None
+    observation: str | None = None
+

@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## prompt-23-rev16 — ReAct Agent Loop with Structured Output and Session Management
+
+**Date**: 2026-07-19
+**Plan**: prompts/plan-23-rev16.md
+**Tests**: 62 passed, 1 skipped (63 total)
+**Previous Baseline**: 483 tests (plan-22-rev16)
+**Coverage**: N/A (coverage tool not available)
+**Screenshots**: N/A
+**AR7 diff**: spec_match.py updated for new files
+**UOR-2**: N/A (not a fix plan)
+**COR-1**: N/A (not a fix plan)
+
+- Created TraceEmitterWrapper in app/sovereignai/observability/trace_emitter.py
+- Created ReActLoop in app/sovereignai/agent/react.py with session management
+- Created ToolSessionRegistry in app/sovereignai/agent/tool_session.py
+- Created agent types in app/sovereignai/agent/types.py (AgentErrorObservation, FinalAnswer, AgentResult)
+- Created GraphMemory Protocol in app/sovereignai/agent/protocols.py (@runtime_checkable)
+- Created structured prompt template in app/sovereignai/agent/prompts.py
+- Created ReActConfig and TokenBudgetHistory in app/sovereignai/agent/config.py and history.py
+- Created SingleCallStructuredOutput in app/sovereignai/agent/structured_output.py
+- Integrated ReActLoop with ISkillRunner
+- Created web endpoints in app/web/main.py for agent tasks (/api/agent/tasks)
+- Updated TUI tasks panel in app/tui/panels/tasks.py
+- Created comprehensive test suite in .agent/executor/tests/sovereignai/
+- Implemented dual-registration protocol in DIContainer (protocol + concrete)
+- Added DEBT.md entries for Web UI and TUI SSE stream consumers (DEBT-7, DEBT-8)
+- Added DECISIONS.md entries for dual-registration (DD-23.11.1) and GraphMemory protocol (DD-23.11.3)
+
 ## prompt-22-rev16 — Event Bus System: Async Delivery, Per-Handler FIFO Queues, Circuit Breakers, Critical Overflow Handling
 
 **Date**: 2026-07-19

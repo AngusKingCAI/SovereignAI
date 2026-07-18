@@ -7,7 +7,7 @@ from sovereignai.shared.capability_api import CapabilityAPI
 from sovereignai.shared.types import TaskState
 from textual.app import ComposeResult
 from textual.containers import Vertical
-from textual.widgets import Button, DataTable, Static
+from textual.widgets import Button, DataTable, Static, RichLog
 
 
 class TasksPanel(Vertical):
@@ -21,6 +21,8 @@ class TasksPanel(Vertical):
         yield Button("Refresh", id="btn-refresh")
         yield Button("Create Task", id="btn-create-task")
         yield DataTable(id="tasks-table")
+        yield Static("Agent Reasoning Trace", id="trace-title")
+        yield RichLog(id="agent-trace-log", markup=True)
 
     def on_mount(self) -> None:
         self.call_after_refresh(self._load_data)
@@ -89,4 +91,31 @@ class TasksPanel(Vertical):
         if event.button.id == "btn-refresh":
             self._refresh_tasks()
         elif event.button.id == "btn-create-task":
+            self._create_agent_task()
+
+    def _create_agent_task(self) -> None:
+        """Create and submit an agent task (placeholder for Plan 23 S8)."""
+        # TODO: Implement agent task creation UI
+        # For now, this is a placeholder per P23-F cookie auth requirement
+        # TUI tasks panel should include session cookie in SSE request headers
+        # If textual cannot attach cookie, defer stream consumption + DEBT.md entry
+        self._log_trace("Agent task creation not yet implemented")
+
+    def _log_trace(self, message: str) -> None:
+        """Log message to agent reasoning trace display."""
+        try:
+            trace_log = self.query_one("#agent-trace-log", RichLog)
+            trace_log.write(message)
+        except Exception:
+            pass
+
+    def _update_agent_indicator(self, active: bool) -> None:
+        """Update agent task indicator in the panel."""
+        try:
+            title = self.query_one("#tasks-title", Static)
+            if active:
+                title.update("Tasks [green]● Agent Active[/]")
+            else:
+                title.update("Tasks")
+        except Exception:
             pass

@@ -14,6 +14,8 @@ Open items only. Resolved items → CHANGELOG.md.
 | DEBT-4 | UI implementations (web, tui) | Low | Low | Identified | TBD | UI implementation prioritised |
 | DEBT-5 | P4 compliance test isolation | Low | Low | Identified | TBD | Test infrastructure improvement |
 | DEBT-6 | Librarian.handle_event method + episodic event consumer | Medium | Medium | Identified | TBD | Event system prioritised |
+| DEBT-7 | TUI cookie auth for agent SSE stream | Low | Low | Identified | TBD | TUI framework investigation |
+| DEBT-8 | Web UI consumer for agent SSE stream | Low | Low | Identified | TBD | Web UI implementation prioritised |
 
 ## Resolved Items → See CHANGELOG.md
 
@@ -66,6 +68,28 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Target**: TBD
 **Trigger**: When test infrastructure improves to support isolated file modifications.
 **Reason**: P4 compliance tests (test_p4_compliance.py) require temporary modifications to manifest files and DEBT.md to test edge cases (1 adapter vs 2 adapters, exception handling). Current test infrastructure cannot safely isolate these modifications without risking impact on real files. Tests deferred until better isolation mechanisms available.
+
+---
+
+## DEBT-7 — TUI cookie auth for agent SSE stream
+
+**Severity**: Low
+**Priority**: Low
+**Status**: Identified
+**Target**: TBD
+**Trigger**: When TUI framework (textual) cookie attachment capability is investigated.
+**Reason**: Plan 23 S8 requires TUI tasks panel to include session cookie in SSE request headers for agent task streaming. Textual framework may not support cookie attachment in HTTP requests. If textual cannot attach cookie, stream consumption is deferred until framework supports it or alternative auth mechanism is implemented.
+
+---
+
+## DEBT-8 — Web UI consumer for agent SSE stream
+
+**Severity**: Low
+**Priority**: Low
+**Status**: Identified
+**Target**: TBD
+**Trigger**: When Web UI implementation is prioritised.
+**Reason**: Plan 23 S7 created agent SSE endpoints (/api/agent/tasks/{task_id}/stream) but deferred web UI consumer implementation. Web UI needs to consume agent task streams for real-time progress display.
 
 ---
 

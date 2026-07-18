@@ -54,7 +54,7 @@ testpaths = [".agent/executor/tests", ".agent/executor/tests/app_tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-pythonpath = ["."]
+pythonpath = [".", "app"]
 addopts = "-vvv --timeout=300 --timeout-method=thread"
 
 [tool.ruff]

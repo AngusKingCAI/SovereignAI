@@ -25,6 +25,9 @@ from sovereignai.shared.types import (
 from starlette.responses import JSONResponse, RedirectResponse, StreamingResponse
 
 from app.web.schemas import (
+    AgentStepDTO,
+    AgentTaskResponseDTO,
+    AgentTaskSubmitDTO,
     CapabilityResponseDTO,
     DatabaseResponseDTO,
     DiskUsageDTO,
@@ -773,4 +776,104 @@ async def get_first_run_check(request: Request) -> FirstRunStatusDTO:
     return FirstRunStatusDTO(
         healthy_adapters=healthy,
         instructions=instructions,
+    )
+
+
+# ============================================================================
+# Agent API endpoints (Plan 23 S7)
+# ============================================================================
+
+
+@app.post("/api/agent/tasks", dependencies=[Depends(get_current_user)])
+async def submit_agent_task(request: Request, task_dto: AgentTaskSubmitDTO) -> AgentTaskResponseDTO:
+    """Submit an agent task for execution."""
+    import uuid
+
+    from sovereignai.agent.config import ReActConfig
+    from sovereignai.agent.react import ReActLoop
+    from sovereignai.agent.tool_session import ToolSessionRegistry
+    from sovereignai.observability.trace_emitter import TraceEmitterWrapper
+
+    container: Any = request.app.state.container
+    tool_session_registry: ToolSessionRegistry = container.retrieve(ToolSessionRegistry)
+    trace_wrapper: TraceEmitterWrapper = container.retrieve(TraceEmitterWrapper)
+
+    # Get skill runner (ISkillRunner)
+    from sovereignai.skills.runner import ISkillRunner
+    skill_runner = container.retrieve(ISkillRunner)  # type: ignore[type-abstract]
+
+    # Create ReActLoop instance
+    config = ReActConfig()
+    react_loop = ReActLoop(
+        config=config,
+        skill_runner=skill_runner,
+        session_registry=tool_session_registry,
+        emitter=trace_wrapper,
+    )
+
+    # Generate task ID
+    task_id = str(uuid.uuid4())
+
+    # Execute task (in background for now - will be proper async in production)
+    # For MVP, we'll run it synchronously
+    try:
+        result = await react_loop.run(
+            task_description=task_dto.task_description,
+            tools=task_dto.tools,
+            session=task_id,
+            context=task_dto.context,
+        )
+
+        return AgentTaskResponseDTO(
+            task_id=task_id,
+            status=result.status,
+            output=result.output,
+            error=result.error.message if result.error else None,
+            trace=result.trace,
+        )
+    except Exception as e:
+        return AgentTaskResponseDTO(
+            task_id=task_id,
+            status="error",
+            output=None,
+            error=str(e),
+            trace=[],
+        )
+
+
+@app.get("/api/agent/tasks/{task_id}", dependencies=[Depends(get_current_user)])
+async def get_agent_task(request: Request, task_id: str) -> AgentTaskResponseDTO:
+    """Get agent task status and trace."""
+    # Placeholder - would retrieve from task store
+    return AgentTaskResponseDTO(
+        task_id=task_id,
+        status="unknown",
+        output=None,
+        error="Task retrieval not implemented",
+        trace=[],
+    )
+
+
+@app.get("/api/agent/tasks/{task_id}/stream")
+async def stream_agent_task(request: Request, task_id: str):
+    """Stream agent task execution via SSE."""
+    # Check session cookie auth
+    session_id = request.cookies.get("session_id")
+    if not session_id:
+        raise HTTPException(status_code=403, detail="Unauthenticated")
+
+    container: Any = request.app.state.container
+    auth: Any = container.retrieve(AuthMiddleware)
+    try:
+        auth.validate(session_id)
+    except Exception:
+        raise HTTPException(status_code=403, detail="Invalid session")
+
+    # SSE streaming placeholder
+    async def event_stream():
+        yield "data: Task streaming not implemented\n\n"
+
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
     )

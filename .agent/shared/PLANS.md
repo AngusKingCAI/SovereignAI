@@ -8,7 +8,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Metric | Value | Plan |
 |--------|-------|------|
-| Tests | 483 | plan-22-rev16 |
+| Tests | 62 (sovereignai) | plan-23-rev16 |
 | ruff | 22 | plan-fix-7-Rev1 |
 | mypy | 0 | plan-fix-2-Rev1 |
 
@@ -16,22 +16,23 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Plan | Tests | Delta | Note |
 |------|-------|-------|------|
+| 23-rev16 | 62 (sovereignai) | -421 | ReAct Agent Loop |
 | 22-rev16 | 483 | +0 | Event bus system |
 | 20.9.9 | 497 | +5 | Documentation hygiene |
 | 20.9.8 | 492 | +7 | Correlation ID typing |
 | 20.9.7 | 485 | +8 | TUI Memory Panel AR7 |
-| 20.9.6 | 480 | +8 | BoundedTraceQueue |
 
 ## Active Plan
 
 | Plan | Rev | Description | Start Date |
 |------|-----|-------------|------------|
-| None | — | — | — |
+| Plan 24 | Rev 4 | Task Graph Cache and Diff-Based Editing | 2026-07-19 |
 
 ## Recent Completed
 
 | Plan | Rev | Completion Date |
 |------|-----|-----------------|
+| Plan 23 | Rev 16 | 2026-07-19 |
 | Plan 22 | Rev 16 | 2026-07-19 |
 
 ## Next in Queue

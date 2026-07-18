@@ -40,6 +40,16 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     container.register_singleton(EventBus, bus)
     container.register_singleton(EventRegistry, registry)
 
+    # 2.5. TraceEmitterWrapper — depends on EventBus + TraceEmitter, singleton (Plan 23 S1)
+    from sovereignai.observability.trace_emitter import TraceEmitterWrapper
+    trace_wrapper = TraceEmitterWrapper(event_bus=bus, inner=trace)
+    container.register_singleton(TraceEmitterWrapper, trace_wrapper)
+
+    # 2.6. ToolSessionRegistry — singleton (Plan 23 S2.1)
+    from sovereignai.agent.tool_session import ToolSessionRegistry
+    tool_session_registry = ToolSessionRegistry()
+    container.register_singleton(ToolSessionRegistry, tool_session_registry)
+
     # Set event_bus and trace on container for remove() support (per Rev9)
     container._event_bus = bus
     container._trace = trace
