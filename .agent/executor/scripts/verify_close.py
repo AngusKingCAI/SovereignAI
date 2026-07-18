@@ -45,17 +45,17 @@ def check_execution_log_empty() -> tuple[bool, str]:
         return True, f"get_current_plan.py failed: {result.stderr} - skipping execution log check"
 
     current_plan_path = Path(result.stdout.strip())
-    # Extract plan name from path (e.g., "plan-22-Rev11.md" -> "plan-22")
+    # Extract plan name from path (e.g., "plan-22-Rev11.md" -> "plan-22-Rev11")
     current_plan = current_plan_path.stem  # Removes .md extension
 
     if not current_plan:
         return True, "No current plan identified - skipping execution log check"
 
     # Check execution log for current plan only, handle Rev suffixes
-    # Try base name first (e.g., execution-log-plan-22.md)
+    # Try exact name first (e.g., execution-log-plan-22-rev16.md)
     execution_log = logs_dir / f"execution-log-{current_plan}.md"
     if not execution_log.exists():
-        # Try with Rev suffix pattern (both upper and lower for historical compatibility)
+        # Try with different Rev suffix patterns for historical compatibility
         # e.g., execution-log-plan-22-Rev11.md or execution-log-plan-22-rev11.md
         rev_pattern_upper = f"execution-log-{current_plan}-Rev*.md"
         rev_pattern_lower = f"execution-log-{current_plan}-rev*.md"
@@ -130,14 +130,17 @@ def check_plan_files_moved() -> tuple[bool, str]:
         return True, "No current plan identified from CHANGELOG or PLANS.md"
 
     # Check if ANY variant of this plan file has been moved to completed/
-    # Look for {current_plan}.md OR {current_plan}-Rev*.md (historical: {current_plan}-rev*.md)
+    # Add "plan-" prefix to current_plan for file lookup
+    plan_file_prefix = f"plan-{current_plan}"
+    
+    # Look for {plan_file_prefix}.md OR {plan_file_prefix}-Rev*.md (historical: {plan_file_prefix}-rev*.md)
     prompts_dir = REPO_ROOT / "prompts"
     completed_dir = REPO_ROOT / "prompts" / "completed"
 
     # Check if any variant still exists in prompts/
-    base_pattern = f"{current_plan}.md"
-    rev_pattern_upper = f"{current_plan}-Rev*.md"
-    rev_pattern_lower = f"{current_plan}-rev*.md"
+    base_pattern = f"{plan_file_prefix}.md"
+    rev_pattern_upper = f"{plan_file_prefix}-Rev*.md"
+    rev_pattern_lower = f"{plan_file_prefix}-rev*.md"
 
     if (
         (prompts_dir / base_pattern).exists()
@@ -145,7 +148,7 @@ def check_plan_files_moved() -> tuple[bool, str]:
         or list(prompts_dir.glob(rev_pattern_lower))
     ):
         return False, (
-            f"Plan file {current_plan} (or Rev variant) "
+            f"Plan file {plan_file_prefix} (or Rev variant) "
             "still in prompts/ (not moved to completed/)"
         )
 
@@ -155,9 +158,9 @@ def check_plan_files_moved() -> tuple[bool, str]:
         or list(completed_dir.glob(rev_pattern_upper))
         or list(completed_dir.glob(rev_pattern_lower))
     ):
-        return True, f"Plan file {current_plan} (or Rev variant) moved to completed/"
+        return True, f"Plan file {plan_file_prefix} (or Rev variant) moved to completed/"
 
-    return True, f"Plan file {current_plan} not found (may not be executed yet)"
+    return True, f"Plan file {plan_file_prefix} not found (may not be executed yet)"
 
 def check_no_uncommitted_governance() -> tuple[bool, str]:
     """Pattern 4: No uncommitted changes to governance docs before tag."""
