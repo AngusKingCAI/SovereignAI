@@ -18,6 +18,8 @@ Operational Rules: See .agent/executor/OR_RULES.md
 
 Run `/scan` workflow. Whole-repo scan. No new features. Fixes only. STOP on failure.
 
+Note: Log organization not required in scan mode — logs are organized at session open via /open skill.
+
 1. Resolve plan: `get_current_plan.py`.
 2. Full pytest suite. 300s timeout. STOP on failure. STOP if coverage <90%.
 3. Static analysis: `ruff check .`, `mypy`, `bandit`, `pip-audit`, `vulture`, `detect-secrets`. STOP on any failure.

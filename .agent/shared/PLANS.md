@@ -46,8 +46,8 @@ None.
 
 | Plan | Rev | Date | Note |
 |------|-----|------|------|
+| workflow-fix | Rev 1 | 2026-07-19 | Fixed 9 critical/high/medium compliance system issues |
 | Plan 27 | Rev 5 | 2026-07-19 | Cross-department messaging with InterDepartmentBus, security, and integration |
 | Plan 26 | Rev 5 | 2026-07-19 | Orchestrator component with IntentClassifier, DepartmentRouter, ConversationState, and EventBus integration |
 | Plan 25.5 | Rev 1 | 2026-07-19 | Test infrastructure fixes |
 | Plan 25.4 | Rev 1 | 2026-07-19 | 643 passed, 52 skipped |
-| Plan 25.3 | Rev 1 | 2026-07-19 | 637 passed, 58 skipped |

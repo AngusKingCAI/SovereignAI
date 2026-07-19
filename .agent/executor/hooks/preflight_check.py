@@ -65,42 +65,42 @@ def main():
     # Check required files
     for req_file in REQUIRED_FILES:
         if os.path.exists(req_file):
-            print(f"  ✅ {req_file}")
+            print(f"  [OK] {req_file}")
         else:
             errors.append(f"Missing required file: {req_file}")
-            print(f"  ❌ {req_file}")
+            print(f"  [FAIL] {req_file}")
 
     # Check/create required directories
     for req_dir in REQUIRED_DIRS:
         if os.path.exists(req_dir):
-            print(f"  ✅ {req_dir}/")
+            print(f"  [OK] {req_dir}/")
         else:
             os.makedirs(req_dir, exist_ok=True)
             warnings.append(f"Created missing directory: {req_dir}")
-            print(f"  ⚠️  {req_dir}/ (created)")
+            print(f"  [WARN] {req_dir}/ (created)")
 
     # Check plan manifest
     ok, err = check_plan_manifest(args.plan)
     if ok:
-        print(f"  ✅ Plan {args.plan} has Executor Manifest")
+        print(f"  [OK] Plan {args.plan} has Executor Manifest")
     else:
         errors.append(err)
-        print(f"  ❌ {err}")
+        print(f"  [FAIL] {err}")
 
     print()
     if errors:
         print(f"FAIL: {len(errors)} critical issues found")
         for e in errors:
-            print(f"  ❌ {e}")
+            print(f"  [FAIL] {e}")
         if warnings:
             for w in warnings:
-                print(f"  ⚠️  {w}")
+                print(f"  [WARN] {w}")
         return False
     else:
         print(f"PASS: All preflight checks passed")
         if warnings:
             for w in warnings:
-                print(f"  ⚠️  {w}")
+                print(f"  [WARN] {w}")
         return True
 
 

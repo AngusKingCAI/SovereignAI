@@ -24,5 +24,8 @@
     "before_file_write": "python .agent/executor/hooks/check_manifest.py --file {file_path} --plan {plan_id}",
     "after_skill_invoke": "python .agent/executor/hooks/append_trace.py --skill {skill_name} --plan {plan_id}",
     "session_end": "python .agent/executor/hooks/verify_attestation.py --plan {plan_id}"
+  },
+  "notes": {
+    "plan_id_variable": "The {plan_id} variable is available when executing plans via /open skill. Hook scripts include fallback logic to read from .agent/current_plan.txt if variable is not available."
   }
 }

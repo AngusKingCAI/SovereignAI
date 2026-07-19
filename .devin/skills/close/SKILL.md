@@ -21,7 +21,7 @@ Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothin
 
 Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (step 11): abort, do not commit.
 
-0. **Trace integrity check: Verify `.agent/executor/traces/trace-plan-{N}.jsonl` exists and contains entries for all phases declared in Executor Manifest. If gaps found: STOP. (Invariant 12)**
+0. **Quick trace check: Verify `.agent/executor/traces/trace-plan-{N}.jsonl` exists. If missing: STOP. (Invariant 12 — lightweight check before heavy verification)**
 1. Resolve plan: `get_current_plan.py`.
 2. Determine test scope: Apply COR-1 (test-fix plans run full suite). Otherwise use `get_scoped_tests.py` (auto-detects based on git changes).
    - Returns: `.agent/executor/tests/` (architect/executor only)
@@ -43,7 +43,7 @@ Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (step 11): abor
 12. **Verify `.agent/executor/ATTESTATION_TEMPLATE.md` exists. If missing: STOP. (COR-3, Invariant 13)**
 13. **Produce execution attestation: `logs/execution-attestation-plan-{N}.md` using template at `.agent/executor/ATTESTATION_TEMPLATE.md`. (Invariant 13, COR-3)**
 14. **Manually run `.agent/executor/hooks/verify_attestation.py --plan {N}` to verify attestation. (Invariant 13, COR-3 — fallback if config.json hook fails)**
-15. **Run `.agent/executor/scripts/verify_execution.py --final --plan {N}`. If FAIL: STOP. Do not commit. (UOR-4, COR-3)**
+15. **Full trace integrity verification: Run `.agent/executor/scripts/verify_execution.py --final --plan {N}`. This performs complete trace integrity verification including hash validation against manifest. If FAIL: STOP. Do not commit. (UOR-4, COR-3, Invariant 12)**
 16. **Manually run `.agent/executor/hooks/append_trace.py --skill close --plan {N}` to log /close invocation. (Invariant 12 — fallback if config.json hook fails)**
 17. Execution log: create BLANK execution log file at `logs/execution-log-{plan-name}.md` with ONLY the header template. Do NOT populate with chat transcript — user will populate after execution. Template:
     ```

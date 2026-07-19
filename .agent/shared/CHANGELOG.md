@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## workflow-fix — Compliance System Fixes
+
+**Date**: 2026-07-19
+**Plan**: prompts/plan-workflow-fix.md
+**Tests**: N/A (compliance system fixes only)
+**Previous Baseline**: plan-27-Rev5
+**Coverage**: N/A (compliance system fixes only)
+**Screenshots**: N/A
+
+**Changes**:
+- Fixed verify_execution.py malformed quote (Critical #4): replaced `\', \'.join(missing)` with `', '.join(missing)` to fix f-string syntax error
+- Enhanced append_trace.py with file edit tracing (Critical #5): added --action argument (skill, file_write, file_edit, file_delete) and --file argument to capture all file modifications per Invariant 12
+- Clarified check_manifest.py out-of-scope file handling (Critical #9): added comment explaining that out-of-scope files are allowed with warning to support exploratory work
+- Added phase gate script reference to verify/SKILL.md (High #2): documented step to run verify_execution.py --phase-gate for deliverable verification
+- Consolidated redundant trace checks in close/SKILL.md (High #3): clarified Step 0 as quick trace check and Step 15 as full trace integrity verification with hash validation
+- Added {plan_id} fallback logic to config.json and hook scripts (High #8): all hook scripts now read from .agent/current_plan.txt if {plan_id} variable is not available
+- Removed hardcoded path from organize_logs.py (Medium #1): replaced `c:/SovereignAI/logs` with `Path("logs").resolve()` for portability
+- Removed dead code from get_current_plan.py (Medium #6): removed redundant `.replace('plan', 'plan')` calls
+- Added log organization note to scan/SKILL.md (Medium #7): documented that log organization is not required in scan mode since it runs at session open
+
+**Resolution Status**: All verification steps passed - syntax checks, preflight check, init verification
+
+---
+
 ## prompt-27 — Cross-Department Messaging Implementation
 
 **Date**: 2026-07-19

@@ -37,7 +37,6 @@ def main(repo_root: Path | None = None) -> None:
         if plan_name and plan_name != '—':
             # Convert "Plan 25.4" + "Rev 1" to "plan-25.4-Rev1" format
             plan_file_name = plan_name.lower().replace(' ', '-')
-            plan_file_name = plan_file_name.replace('plan', 'plan')
             if plan_rev and plan_rev != '—':
                 # Convert "Rev 1" to "Rev1" (remove space)
                 plan_rev_formatted = plan_rev.replace(' ', '')
@@ -77,7 +76,6 @@ def main(repo_root: Path | None = None) -> None:
                     if plan_name and plan_name != '—':
                         # Convert "Plan 25.4" + "Rev 1" to "plan-25.4-Rev1" format
                         plan_file_name = plan_name.lower().replace(' ', '-')
-                        plan_file_name = plan_file_name.replace('plan', 'plan')
                         if plan_rev and plan_rev != '—':
                             # Convert "Rev 1" to "Rev1" (remove space)
                             plan_rev_formatted = plan_rev.replace(' ', '')

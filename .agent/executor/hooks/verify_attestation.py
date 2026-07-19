@@ -15,10 +15,19 @@ import sys
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--plan", required=True)
+    parser.add_argument("--plan", required=False)
     args = parser.parse_args()
 
     plan_id = args.plan
+
+    # Fallback: read plan_id from .agent/current_plan.txt if not provided
+    if not plan_id:
+        try:
+            with open(".agent/current_plan.txt") as f:
+                plan_id = f.read().strip()
+        except FileNotFoundError:
+            print("ERROR: plan_id not provided and .agent/current_plan.txt not found")
+            sys.exit(1)
     attestation_path = f"logs/execution-attestation-plan-{plan_id}.md"
 
     if not os.path.exists(attestation_path):

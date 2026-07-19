@@ -134,7 +134,7 @@ def check_attestation(plan_id, repo_path="."):
             missing.append(section)
 
     if missing:
-        return False, f"Attestation missing sections: {\', \'.join(missing)}"
+        return False, f"Attestation missing sections: {', '.join(missing)}"
 
     if "❌" in content:
         return False, "Attestation contains failures (❌)"
@@ -177,7 +177,7 @@ def verify_final(plan_id, repo_path="."):
     if not attestation_ok:
         errors.append(attestation_err)
     else:
-        print(f"  Attestation: ✅ present and complete")
+        print(f"  Attestation: [OK] present and complete")
 
     # 3. Get commits since plan start
     tag = f"prompt-{plan_id}"
@@ -205,9 +205,9 @@ def verify_final(plan_id, repo_path="."):
             missing_deliverables.append(d)
 
     if missing_deliverables:
-        errors.append(f"Missing deliverables: {\', \'.join(missing_deliverables)}")
+        errors.append(f"Missing deliverables: {', '.join(missing_deliverables)}")
     else:
-        print(f"  Deliverables: ✅ {len(manifest['deliverables'])}/{len(manifest['deliverables'])} found")
+        print(f"  Deliverables: [OK] {len(manifest['deliverables'])}/{len(manifest['deliverables'])} found")
 
     # 6. Check no governance files modified
     gov_files = [
@@ -222,14 +222,14 @@ def verify_final(plan_id, repo_path="."):
             modified_gov.append(g)
 
     if modified_gov:
-        errors.append(f"Governance files modified: {\', \'.join(modified_gov)}")
+        errors.append(f"Governance files modified: {', '.join(modified_gov)}")
     else:
-        print(f"  Governance: ✅ no unauthorized modifications")
+        print(f"  Governance: [OK] no unauthorized modifications")
 
     # 7. Check trace file exists
     trace_path = os.path.join(repo_path, f".agent/executor/traces/trace-plan-{plan_id}.jsonl")
     if os.path.exists(trace_path):
-        print(f"  Trace: ✅ {trace_path} exists")
+        print(f"  Trace: [OK] {trace_path} exists")
     else:
         warnings.append(f"Trace file not found: {trace_path}")
 
@@ -238,16 +238,16 @@ def verify_final(plan_id, repo_path="."):
     if errors:
         print(f"FAIL: Plan {plan_id}")
         for e in errors:
-            print(f"  ❌ {e}")
+            print(f"  [FAIL] {e}")
         if warnings:
             for w in warnings:
-                print(f"  ⚠️  {w}")
+                print(f"  [WARN] {w}")
         return False
     else:
         print(f"PASS: Plan {plan_id}")
         if warnings:
             for w in warnings:
-                print(f"  ⚠️  {w}")
+                print(f"  [WARN] {w}")
         return True
 
 
@@ -255,17 +255,28 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--init", action="store_true", help="Initialize verification at /open")
     parser.add_argument("--final", action="store_true", help="Final verification at /close")
-    parser.add_argument("--plan", required=True, help="Plan number")
+    parser.add_argument("--plan", required=False, help="Plan number")
     parser.add_argument("--repo", default=".", help="Repository path")
     args = parser.parse_args()
 
+    plan_id = args.plan
+
+    # Fallback: read plan_id from .agent/current_plan.txt if not provided
+    if not plan_id:
+        try:
+            with open(".agent/current_plan.txt") as f:
+                plan_id = f.read().strip()
+        except FileNotFoundError:
+            print("ERROR: plan_id not provided and .agent/current_plan.txt not found")
+            sys.exit(1)
+
     if args.init:
-        ok = verify_init(args.plan, args.repo)
+        ok = verify_init(plan_id, args.repo)
     elif args.final:
-        ok = verify_final(args.plan, args.repo)
+        ok = verify_final(plan_id, args.repo)
     else:
         # Default: manual verification (same as --final)
-        ok = verify_final(args.plan, args.repo)
+        ok = verify_final(plan_id, args.repo)
 
     sys.exit(0 if ok else 1)
 
