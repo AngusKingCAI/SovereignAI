@@ -3,7 +3,7 @@ name: close
 authority: AGENTS.md
 description: Run at end of every plan. Verify, document, commit, tag, push. Atomic — all green or STOP.
 argument-hint: "[plan-number]"
-triggers: ["user"]
+triggers: ["user", "model"]
 allowed-tools:
   - read
   - grep

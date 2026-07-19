@@ -3,7 +3,7 @@ name: verify
 authority: AGENTS.md
 description: Run after every file edit during plan execution. All supported file types.
 argument-hint: "[file-path]"
-triggers: ["user"]
+triggers: ["user", "model"]
 allowed-tools:
   - read
   - grep

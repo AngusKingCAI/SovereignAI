@@ -2,7 +2,7 @@
 name: open
 description: Run at start of every plan. Read context, resolve ambiguities, set up workspace.
 argument-hint: "[plan-number]"
-triggers: ["user"]
+triggers: ["user", "model"]
 allowed-tools:
   - read
   - grep
