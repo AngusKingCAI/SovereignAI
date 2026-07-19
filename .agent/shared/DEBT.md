@@ -13,9 +13,18 @@ Open items only. Resolved items → CHANGELOG.md.
 | DEBT-7 | TUI cookie auth for agent SSE stream | Low | Low | Identified | TBD | TUI framework investigation |
 | DEBT-8 | Web UI consumer for agent SSE stream | Low | Low | Identified | TBD | Web UI implementation prioritised |
 | DEBT-9 | Cross-task persistent graph memory | Medium | Medium | Identified | TBD | Graph memory prioritised |
-| DEBT-11 | Workflow compliance verification system | Medium | High | In Progress | Plan 28 | Compliance system implementation |
 
 ## Resolved Items → See CHANGELOG.md
+
+---
+
+## DEBT-11 — Workflow compliance verification system (Resolved)
+
+**Severity**: Medium
+**Priority**: High
+**Status**: Resolved
+**Target**: Plan 28
+**Reason**: Implemented in Plan 28. Created Executor Manifest in plan files, execution trace logging, execution attestation production, `verify_execution.py` script, and hook scripts for real-time enforcement. Compliance system fully functional and tested on Plan 28.
 
 ---
 

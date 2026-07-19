@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## prompt-28 — Options Panel Persistence Implementation
+
+**Date**: 2026-07-19
+**Plan**: prompts/plan-28-Rev5.md
+**Tests**: 845 passed, 52 skipped (0 failures)
+**Previous Baseline**: plan-workflow-fix
+**Coverage**: 93% (62/67 new lines covered)
+**Screenshots**: N/A
+
+**Changes**:
+- Created app/sovereignai/options/schema.py with Pydantic models: APIKey, DisplaySettings, BehaviorSettings, EncryptedStr
+- Created app/sovereignai/options/backend.py with SQLiteOptionsBackend implementing SQLite persistence with Fernet encryption
+- Created app/sovereignai/options/migrations.py with Migration and MigrationRunner classes for schema upgrades
+- Added EventBus integration to backend: publishes options.changed and options.deleted events on setting/deleting options
+- Created FastAPI routes in app/web/main.py: GET/PUT/DELETE /api/options/* endpoints with confirm_destructive guard
+- Added API schemas in app/web/schemas.py: OptionsGetResponseDTO, OptionsListResponseDTO, OptionsSetRequestDTO, OptionsSetResponseDTO, OptionsDeleteResponseDTO
+- Created comprehensive test suite: test_options_schema.py (14 tests), test_options_backend.py (25 tests), test_options_migrations.py (8 tests), test_options_events.py (6 tests), test_options_api.py (9 tests)
+- Added AR check script: check_options_encryption_at_rest.py to verify API keys are encrypted at rest
+- Updated check_tracing_allowlist.txt to include new options backend functions
+- Fixed mypy and ruff errors in new code
+- All options tests passing: 62 new tests total
+
+**Resolution Status**: All verification steps passed - tests, AR checks, landmine checks, static analysis, verify_execution.py
+
+---
+
 ## workflow-fix — Compliance System Fixes
 
 **Date**: 2026-07-19
