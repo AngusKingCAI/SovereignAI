@@ -44,6 +44,14 @@ Rules specific to close skill only.
 **Applies to**: close skill
 **Trigger**: Plan title contains "fix" or "test"
 
+### COR-2: Iterative Testing for Developer Efficiency
+**Rule**: Use `run_failing_tests.py` for iterative test execution to reduce iteration time:
+- First run: `run_failing_tests.py <test_path> --full` to establish baseline and cache failures
+- On retry: `run_failing_tests.py <test_path>` to run only failing tests from cache
+- Final verification: `run_failing_tests.py <test_path> --full` when all specific tests pass
+**Applies to**: close skill, verify skill
+**Trigger**: Test failure requiring fix
+
 ## SOR — scan Skill Rules
 
 Rules specific to scan skill only.

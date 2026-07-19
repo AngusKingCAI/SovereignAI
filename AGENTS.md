@@ -21,6 +21,18 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/executor/AR
 
 ---
 
+## Testing Best Practices
+
+1. Iterative Testing: Use `run_failing_tests.py` for faster iteration:
+   - First run: `run_failing_tests.py <test_path> --full` to establish baseline
+   - On retry: `run_failing_tests.py <test_path>` to run only failing tests
+   - Final verification: `run_failing_tests.py <test_path> --full` when all specific tests pass
+   - This reduces iteration time from 60s to <5s per fix
+2. Full suite is required at close for final verification - no exceptions
+3. Test failures should be fixed individually with targeted re-runs, not blanket full-suite retries
+
+---
+
 ## Session Protocol
 
 1. Read plan file → read AR rules and OR rules from plan header → invoke `/open` slash command → STOP on failure

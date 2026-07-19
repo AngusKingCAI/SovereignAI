@@ -26,7 +26,11 @@ Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (step 11): abor
    - Returns: `.agent/executor/tests/` (architect/executor only)
    - Returns: `.agent/executor/tests/sovereignai/` (sovereignai only)
    - Returns: `.agent/executor/tests/` (both or all)
-3. Tests: run scoped or full tests with 300s timeout. STOP on failure. STOP if coverage <90%.
+3. Tests: run scoped or full tests with 300s timeout. Use iterative approach:
+   a. First run: `run_failing_tests.py <test_path> --full` to establish baseline and cache failures.
+   b. On retry: `run_failing_tests.py <test_path>` to run only failing tests from cache.
+   c. Once all specific tests pass: run `run_failing_tests.py <test_path> --full` for final verification.
+   STOP on failure. STOP if coverage <90%.
 4. Static analysis: `ruff check .`, `mypy`, `bandit`, `pip-audit`, `vulture`, `detect-secrets`. STOP on any failure.
 5. AR checks: `ar_checks/run_all.py`. STOP on any failure.
 6. Landmine checks: `landmine_checks/run_all.py`. STOP if exit≠0.
