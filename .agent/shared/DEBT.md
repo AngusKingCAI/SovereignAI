@@ -9,8 +9,6 @@ Open items only. Resolved items → CHANGELOG.md.
 | ID | Item | Severity | Priority | Status | Target | Trigger |
 |----|------|----------|----------|--------|--------|---------|
 | DEBT-1 | diskcache CVE-2025-69872 | High | High | Identified | TBD | diskcache PR #361 merged to PyPI |
-| DEBT-2 | — | — | — | — | — | — |
-| DEBT-3 | First-run experience UI | Medium | Low | Identified | TBD | UI implementation prioritised |
 | DEBT-4 | UI implementations (web, tui) | Low | Low | Identified | TBD | UI implementation prioritised |
 | DEBT-5 | P4 compliance test isolation | Low | Low | Identified | TBD | Test infrastructure improvement |
 | DEBT-6 | Librarian.handle_event method + episodic event consumer | Medium | Medium | Identified | TBD | Event system prioritised |

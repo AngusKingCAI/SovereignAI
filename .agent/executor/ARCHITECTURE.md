@@ -1,6 +1,6 @@
 # ARCHITECTURE.md — SovereignAI Architecture Constraints
 
-Authority: `.agent/architect/PRINCIPLES.md`. Propose changes via `.agent/shared/DEBT.md` or Round Table.
+Authority: `.agent/architect/PRINCIPLES.md`. Propose changes via plan body instruction (Executor writes) or Round Table.
 
 ---
 
@@ -86,4 +86,4 @@ AR14. Web-layer DTOs in `app/web/schemas.py`. Core types never returned directly
 
 ---
 
-*Propose changes via `.agent/shared/DEBT.md` or Round Table.*
+*Propose changes via plan body instruction (Executor writes) or Round Table.*

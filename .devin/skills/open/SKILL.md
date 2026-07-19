@@ -11,7 +11,7 @@ allowed-tools:
   - write
 ---
 
-Operational Rules: See .agent/shared/OR_RULES.md
+Operational Rules: See .agent/executor/OR_RULES.md
 - Read UOR section (Universal) + OOR section (open-specific)
 
 Run `/open` workflow. STOP on any failure.
@@ -20,10 +20,11 @@ Run `/open` workflow. STOP on any failure.
 
 1. Read `AGENTS.md`.
 2. Read plan file `prompts/plan-{N}-Rev{X}.md`.
-3. Read `.agent/shared/CHANGELOG.md` latest entry.
-4. Check `.agent/executor/suggestions/` for new rule proposals. If suggestions exist, evaluate before proceeding.
-5. Identify ambiguities. Ask user. Wait for answers.
-6. Log new patterns to `.agent/shared/LANDMINES.md`. For recurring patterns, document in execution log for Architect review.
-7. Update `.agent/shared/PLANS.md` with new plan entry.
-8. Begin Phase 1.
-9. After each phase: run `verify_syntax.py`, `ruff check`, scoped `pytest`. STOP on failure.
+3. Read plan header AR rules from `.agent/executor/ARCHITECTURE.md` (listed rules only).
+4. Read plan header OR rules from `.agent/executor/OR_RULES.md` (listed rules only).
+5. Read `.agent/shared/CHANGELOG.md` latest entry.
+6. Read `.agent/shared/DEBT.md` for deferred items.
+7. Identify ambiguities. Ask user. Wait for answers.
+8. Update `.agent/shared/PLANS.md` with new plan entry (mark "In Progress", shift upcoming queue).
+9. Begin Phase 1.
+10. After each phase: run `verify_syntax.py`, `ruff check`, scoped `pytest`. STOP on failure.

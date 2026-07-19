@@ -35,15 +35,6 @@ Rules specific to verify skill only.
 **Applies to**: verify skill
 **Trigger**: Running pytest, mypy, ruff, or other long-running commands
 
-## OOR — open Skill Rules
-
-Rules specific to open skill only.
-
-### OOR-1: Architect Suggestion Review
-**Rule**: Architect must evaluate all suggestions before creating plan — if suggestions exist, read and evaluate before proceeding
-**Applies to**: open skill
-**Trigger**: Before creating plan
-
 ## COR — close Skill Rules
 
 Rules specific to close skill only.
@@ -77,5 +68,5 @@ Legacy OR IDs that have been retired or replaced with new naming scheme.
 - Update this file instead of editing skill files directly
 - Skills reference by ID, not by embedding full text
 - Skills read UOR section + their specific section only
-- When creating new rules, update AI_HANDOFF.md references if needed
+- When creating new rules, update AI_HANDOFF.md references if needed (Architect drafts, Executor writes)
 - When renaming rules, update all references project-wide (CHANGELOG.md, plans, etc.)

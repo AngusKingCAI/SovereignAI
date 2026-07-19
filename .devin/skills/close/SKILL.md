@@ -12,7 +12,7 @@ allowed-tools:
   - write
 ---
 
-Operational Rules: See .agent/shared/OR_RULES.md
+Operational Rules: See .agent/executor/OR_RULES.md
 - Universal: UOR-1, UOR-2, UOR-3
 - Close-specific: COR-1
 
@@ -20,7 +20,7 @@ Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothin
 
 **FALLBACK**: If skill tool invocation fails, execute steps manually via exec tool with scripts.
 
-Non-HARD-GATE STOP (steps 1–9): fix and retry. HARD-GATE STOP (step 10): abort, do not commit.
+Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (step 11): abort, do not commit.
 
 1. Resolve plan: `get_current_plan.py`.
 2. Determine test scope: Apply COR-1 (test-fix plans run full suite). Otherwise use `get_scoped_tests.py` (auto-detects based on git changes).
@@ -34,18 +34,19 @@ Non-HARD-GATE STOP (steps 1–9): fix and retry. HARD-GATE STOP (step 10): abort
 7. OR checks: `or_checks/run_all.py`. STOP if exit≠0.
 8. Placeholders: `check_placeholders.py`. STOP on hit.
 9. Spec match: `spec_match.py`. STOP if exit≠0.
-10. HARD GATE — `verify_close.py`. If exit≠0: STOP. Do not commit. Do not tag.
-11. Execution log: create BLANK execution log file at `logs/execution-log-{plan-name}.md` with ONLY the header template. Do NOT populate with chat transcript — user will populate after execution. Template:
-   ```
-   # Execution Log: {plan-name}
+10. Read `.agent/shared/DEBT.md`. For each debt marked for resolution in plan: verify resolved, update status to "Resolved" or delete entry. Document resolution in CHANGELOG.
+11. HARD GATE — `verify_close.py`. If exit≠0: STOP. Do not commit. Do not tag.
+12. Execution log: create BLANK execution log file at `logs/execution-log-{plan-name}.md` with ONLY the header template. Do NOT populate with chat transcript — user will populate after execution. Template:
+    ```
+    # Execution Log: {plan-name}
 
-   **Date**: YYYY-MM-DD
-   **Plan**: {plan-file}
-   **Executor**: {executor-name}
+    **Date**: YYYY-MM-DD
+    **Plan**: {plan-file}
+    **Executor**: {executor-name}
 
-   ---
+    ---
 
-   *Populate this file with the chat transcript from the {plan-name} plan execution.*
-   ```
-12. Documentation: prepend CHANGELOG, update PLANS.md.
-13. Git: `git status` → identify session files only → `git add` specific files → commit → tag `prompt-{N}` → push.
+    *Populate this file with the chat transcript from the {plan-name} plan execution.*
+    ```
+13. Documentation: prepend CHANGELOG, update PLANS.md (mark "Completed", shift upcoming queue).
+14. Git: `git status` → identify session files only → `git add` specific files → commit → tag `prompt-{N}` → push.

@@ -12,7 +12,7 @@ allowed-tools:
   - write
 ---
 
-Operational Rules: See .agent/shared/OR_RULES.md
+Operational Rules: See .agent/executor/OR_RULES.md
 - Read UOR section (Universal)
 
 Run `/scan` workflow. Whole-repo scan. No new features. Fixes only. STOP on failure.
@@ -29,6 +29,7 @@ Run `/scan` workflow. Whole-repo scan. No new features. Fixes only. STOP on fail
 10. Rule conciseness: `check_rule_conciseness.py`. STOP on failure.
 11. Changelog: `check_changelog.py`. STOP on failure.
 12. Spec match: `spec_match.py`. STOP if exit!=0. No new features.
-13. HARD GATE - `verify_close.py`. If exit!=0: STOP. Do not commit.
-14. Documentation: prepend CHANGELOG, update PLANS.md, add to DEBT.md.
-15. Git: commit, tag `prompt-{N}`, push.
+13. Read `.agent/shared/DEBT.md`. Verify trigger conditions for external debts. Document status.
+14. HARD GATE - `verify_close.py`. If exit!=0: STOP. Do not commit.
+15. Documentation: prepend CHANGELOG, update PLANS.md.
+16. Git: commit, tag `prompt-{N}`, push.
