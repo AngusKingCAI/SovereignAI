@@ -16,12 +16,18 @@ from pathlib import Path
 
 def get_architect_test_paths() -> list[str]:
     """Return test paths for architect/executor system."""
-    return [".agent/executor/tests/"]
+    return [".agent/executor/tests/test_*.py"]
 
 
 def get_sovereignai_test_paths() -> list[str]:
     """Return test paths for sovereignai application code."""
-    return [".agent/executor/tests/app_tests/"]
+    return [
+        ".agent/executor/tests/app_tests/",
+        ".agent/executor/tests/sovereignai/",
+        ".agent/executor/tests/conformance/",
+        ".agent/executor/tests/contracts/",
+        ".agent/executor/tests/property/"
+    ]
 
 
 def get_all_test_paths() -> list[str]:
@@ -47,12 +53,18 @@ def determine_test_scope() -> str:
                 return "all"  # Fix plans always run full suite
 
         result = subprocess.run(
-            ["git", "diff", "--name-only", "HEAD"],
+            ["git", "log", "--name-only", "-1", "--pretty=format:"],
             capture_output=True,
             text=True,
             check=True
         )
         changed_files = result.stdout.strip().split("\n") if result.stdout.strip() else []
+
+        # Check if only test files changed
+        test_only_changed = all(
+            f.startswith(".agent/executor/tests/") or f == ""
+            for f in changed_files
+        )
 
         # Check if any architect/executor files changed
         architect_changed = any(
@@ -66,7 +78,9 @@ def determine_test_scope() -> str:
             for f in changed_files
         )
 
-        if architect_changed and sovereignai_changed:
+        if test_only_changed:
+            return "all"  # Test-only changes run full suite
+        elif architect_changed and sovereignai_changed:
             return "all"
         elif architect_changed:
             return "architect"

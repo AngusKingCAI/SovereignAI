@@ -19,14 +19,14 @@ def main(repo_root: Path | None = None) -> None:
 
     # Get current plan from PLANS.md (SSOT for active plan and recent history)
     plans_file = repo_root / '.agent' / 'shared' / 'PLANS.md'
-    
+
     if not plans_file.exists():
         print(f"ERROR: {plans_file} not found", file=sys.stderr)
         sys.exit(1)
-    
+
     with open(plans_file, encoding='utf-8', errors='ignore') as f:
         content = f.read()
-    
+
     # Parse the Active Plan section first
     active_plan_match = re.search(r'## Active Plan\s*\| (.*?) \| (.*?) \|', content, re.MULTILINE)
     if active_plan_match:
@@ -40,19 +40,19 @@ def main(repo_root: Path | None = None) -> None:
                 # Convert "Rev 1" to "Rev1" (remove space)
                 plan_rev_formatted = plan_rev.replace(' ', '')
                 plan_file_name = f"{plan_file_name}-{plan_rev_formatted}"
-            
+
             # Look for the plan file in prompts/
             plan_path = repo_root / 'prompts' / f'{plan_file_name}.md'
             if plan_path.exists():
                 print(plan_path)
                 sys.exit(0)
-            
+
             # Try prompts/completed/
             plan_path = repo_root / 'prompts' / 'completed' / f'{plan_file_name}.md'
             if plan_path.exists():
                 print(plan_path)
                 sys.exit(0)
-    
+
     # If no active plan, check Recent History for most recent completed plan
     recent_history_section = re.search(r'## Recent History.*?\n((?:\|.*?\n)+)', content, re.DOTALL)
     if recent_history_section:
@@ -80,7 +80,7 @@ def main(repo_root: Path | None = None) -> None:
                             # Convert "Rev 1" to "Rev1" (remove space)
                             plan_rev_formatted = plan_rev.replace(' ', '')
                             plan_file_name = f"{plan_file_name}-{plan_rev_formatted}"
-                        
+
                         # Look for the plan file in prompts/completed/
                         plan_path = repo_root / 'prompts' / 'completed' / f'{plan_file_name}.md'
                         if plan_path.exists():
@@ -89,7 +89,7 @@ def main(repo_root: Path | None = None) -> None:
                         else:
                             print(f"ERROR: Plan file not found: {plan_path}", file=sys.stderr)
                             sys.exit(1)
-    
+
     print("ERROR: No active plan or recent history found in PLANS.md", file=sys.stderr)
     sys.exit(1)
 

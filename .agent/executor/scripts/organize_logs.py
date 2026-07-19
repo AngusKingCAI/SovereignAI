@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 def get_plan_number(filename: str) -> int | None:
-    """Extract plan number from filename like 'execution-log-plan-25-Rev1.md' or 'execution-log-prompt-10.md'."""
+    """Extract plan number from filename like 'execution-log-plan-25-Rev1.md'."""
     # Try to match plan- or prompt- followed by a number
     match = re.search(r'(?:plan|prompt)-(\d+)', filename)
     if match:
@@ -18,7 +18,7 @@ def get_plan_number(filename: str) -> int | None:
     return None
 
 
-def organize_logs():
+def organize_logs() -> None:
     logs_dir = Path("c:/SovereignAI/logs")
     subfolders = {
         "1-9": lambda n: 1 <= n <= 9,
@@ -40,15 +40,11 @@ def organize_logs():
             dest_folder = logs_dir / "Misc"
         else:
             # Find appropriate folder based on plan number
-            dest_folder = None
+            dest_folder = logs_dir / "Misc"  # Default to Misc
             for subfolder, condition in subfolders.items():
                 if condition(plan_num):
                     dest_folder = logs_dir / subfolder
                     break
-
-            if dest_folder is None:
-                # Plan number outside known ranges - move to Misc
-                dest_folder = logs_dir / "Misc"
 
         # Skip if file is already in a subfolder
         if log_file.parent != logs_dir:

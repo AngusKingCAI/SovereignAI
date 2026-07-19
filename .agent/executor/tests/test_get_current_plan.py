@@ -8,11 +8,11 @@ import pytest
 
 
 @pytest.fixture
-def plan_script():
+def plan_script() -> Path:
     return Path(__file__).parent.parent / "scripts" / "get_current_plan.py"
 
 
-def test_get_current_plan_usage(plan_script):
+def test_get_current_plan_usage(plan_script: Path) -> None:
     """Test script rejects extra arguments."""
     result = subprocess.run(
         [sys.executable, str(plan_script), "extra_arg"],
@@ -23,7 +23,7 @@ def test_get_current_plan_usage(plan_script):
     assert "Usage" in result.stderr
 
 
-def test_get_current_plan_no_plans(plan_script, tmp_path):
+def test_get_current_plan_no_plans(plan_script: Path, tmp_path: Path) -> None:
     """Test with no plan files available."""
     # Script now accepts REPO_ROOT environment variable, so we can test with isolated environment
     # Create minimal test structure in tmp_path
@@ -52,7 +52,7 @@ None.
     # Run script with REPO_ROOT environment variable
     import os
     env = os.environ.copy()
-    env['REPO_ROOT'] = str(test_repo)
+    env["REPO_ROOT"] = str(test_repo)
 
     result = subprocess.run(
         [sys.executable, str(plan_script)],
@@ -62,4 +62,4 @@ None.
     )
     # Should fail because plan file doesn't exist
     assert result.returncode != 0
-    assert "not found" in result.stderr
+    assert "No active plan or recent history found" in result.stderr

@@ -54,14 +54,63 @@ def test_plans_table_completeness() -> None:
 
     plans_content = plans_path.read_text(encoding="utf-8")
     assert "## Recent History" in plans_content, "Recent History section missing"
-    assert "Plan 25.3" in plans_content, "Recent plan not documented"
+
+    # Verify recent history table has required columns
+    assert "| Plan |" in plans_content, "Recent History table missing Plan column"
+    assert "| Rev |" in plans_content, "Recent History table missing Rev column"
+    assert "| Date |" in plans_content, "Recent History table missing Date column"
+    assert "| Note |" in plans_content, "Recent History table missing Note column"
+
+    # Verify table has at least one data row (not just header)
+    lines = plans_content.split("\n")
+    history_section_started = False
+    found_data_row = False
+    for line in lines:
+        if "## Recent History" in line:
+            history_section_started = True
+        elif (
+            history_section_started
+            and line.startswith("|")
+            and "| Plan |" not in line  # Skip header row
+            and "|------|" not in line  # Skip separator row
+        ):
+            found_data_row = True
+            break
+        elif history_section_started and line.startswith("## "):
+            break  # Reached next section
+
+    assert found_data_row, "Recent History table has no data rows"
 
 
 def test_plans_baseline_reconciliation_completeness() -> None:
-    """Verify PLANS.md has baseline section with recent entries."""
+    """Verify PLANS.md has baseline section with required structure."""
     plans_path = Path(".agent/shared/PLANS.md")
     assert plans_path.exists(), "PLANS.md not found"
 
     plans_content = plans_path.read_text(encoding="utf-8")
     assert "## Current Baseline" in plans_content, "Current Baseline section missing"
-    assert "plan-25.3-Rev1" in plans_content, "Recent baseline plan not documented"
+
+    # Verify baseline table has required columns
+    assert "| Metric |" in plans_content, "Baseline table missing Metric column"
+    assert "| Value |" in plans_content, "Baseline table missing Value column"
+    assert "| Source Plan |" in plans_content, "Baseline table missing Source Plan column"
+
+    # Verify table has at least one data row (not just header)
+    lines = plans_content.split("\n")
+    baseline_section_started = False
+    found_data_row = False
+    for line in lines:
+        if "## Current Baseline" in line:
+            baseline_section_started = True
+        elif (
+            baseline_section_started
+            and line.startswith("|")
+            and "| Metric |" not in line  # Skip header row
+            and "|--------|" not in line  # Skip separator row
+        ):
+            found_data_row = True
+            break
+        elif baseline_section_started and line.startswith("## "):
+            break  # Reached next section
+
+    assert found_data_row, "Baseline table has no data rows"

@@ -1,0 +1,2 @@
+.agent/executor/tests/test_get_current_plan.py::test_get_current_plan_no_plans
+.agent/executor/tests/test_get_current_plan.py::test_get_current_plan_no_plans

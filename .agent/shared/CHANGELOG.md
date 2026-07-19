@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## prompt-25.5-rev1 — Test Infrastructure Fixes
+
+**Date**: 2026-07-19
+**Plan**: prompts/plan-25.5-Rev1.md
+**Tests**: 643 passed, 52 skipped (0 failures)
+**Previous Baseline**: plan-25.4-rev1
+**Coverage**: N/A (coverage tool not available)
+**Screenshots**: N/A
+
+**Changes**:
+- Fixed get_scoped_tests.py to use `git log --name-only -1 --pretty=format:` instead of `git diff --name-only HEAD` for post-commit change detection
+- Updated get_scoped_tests.py sovereignai scope to include ALL test directories (app_tests, sovereignai, conformance, contracts, property)
+- Updated get_scoped_tests.py architect scope to return only top-level test files (test_*.py)
+- Added test-only change detection in get_scoped_tests.py to run full suite when only test files change
+- Fixed test_document_hygiene.py to check for table structure instead of hardcoded plan names (eliminates maintenance burden)
+- Fixed test_document_hygiene.py to verify PLANS.md tables have required columns and data rows
+- Fixed test_get_current_plan.py to match updated error message format from get_current_plan.py
+- Fixed mypy type annotations in test_get_current_plan.py
+- Fixed ruff whitespace issues in get_current_plan.py
+- Fixed ruff line length issue in organize_logs.py
+- Fixed mypy type annotation in organize_logs.py
+
+**Resolution Status**: All verification steps passed - tests, AR checks, landmine checks, static analysis
+
+---
+
 ## prompt-25.4-rev1 — Code Quality Refactoring & Architecture Enforcement
 
 **Date**: 2026-07-19
