@@ -1,4 +1,0 @@
-.agent/executor/tests/test_ar_checks.py::test_check_tracing_clean_function
-.agent/executor/tests/test_ar_checks.py::test_check_tracing_allowlist
-.agent/executor/tests/test_ar_checks.py::test_check_tracing_clean_function
-.agent/executor/tests/test_ar_checks.py::test_check_tracing_allowlist

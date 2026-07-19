@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## prompt-27 — Cross-Department Messaging Implementation
+
+**Date**: 2026-07-19
+**Plan**: prompts/plan-27-Rev5.md
+**Tests**: 721 passed, 52 skipped (0 failures)
+**Previous Baseline**: plan-26-Rev5
+**Coverage**: N/A (coverage tool not available)
+**Screenshots**: N/A
+
+**Changes**:
+- Created CrossDepartmentMessage dataclass with MessageType enum (REQUEST, RESPONSE, NOTIFICATION, ERROR)
+- Implemented InterDepartmentBus with department-aware routing using EventBus wrapper
+- Added department whitelist enforcement (default deny) sourced from allowed_departments set
+- Created DepartmentMessagingAdapter to wrap existing DepartmentManager instances without modifying Plan 24 code
+- Implemented security features: SQLite audit logging (messaging_audit.db with WAL mode), rate limiting (100 messages/minute per pair), circuit breaker (5 failures → open circuit, 30s timeout)
+- Added integration tests demonstrating multi-department workflows (Research → Coding → Orchestrator)
+- Added AR checks: check_messaging_whitelist_enforced.py (verifies only allowed departments in whitelists), check_messaging_no_department_manager_subclass.py (verifies no subclassing/monkey-patching of DepartmentManager in messaging module)
+- Updated check_tracing_allowlist.txt to include new messaging functions
+- All messaging tests passing: 46 new tests (4 schema, 11 bus, 9 handlers, 17 security, 5 integration)
+
+**Resolution Status**: All verification steps passed - tests, AR checks, landmine checks, static analysis
+
+---
+
 ## prompt-26 — Orchestrator Component Implementation
 
 **Date**: 2026-07-19

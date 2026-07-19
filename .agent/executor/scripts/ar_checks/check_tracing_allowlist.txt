@@ -44,3 +44,5 @@ agent/prompts.py:build_react_prompt
 agent/react.py:__init__
 agent/structured_output.py:__init__
 managers/coding.py:__init__
+messaging/bus.py:publish_event
+messaging/security.py:__init__
