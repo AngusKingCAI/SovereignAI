@@ -38,6 +38,11 @@ from app.web.schemas import (
     GpuInfoDTO,
     HardwareSnapshotDTO,
     ModelEntryDTO,
+    OptionsDeleteResponseDTO,
+    OptionsGetResponseDTO,
+    OptionsListResponseDTO,
+    OptionsSetRequestDTO,
+    OptionsSetResponseDTO,
     ServiceResponseDTO,
     SkillExecuteDTO,
     SkillListDTO,
@@ -897,6 +902,117 @@ async def get_first_run_check(request: Request) -> FirstRunStatusDTO:
         healthy_adapters=healthy,
         instructions=instructions,
     )
+
+
+# ============================================================================
+# Options API endpoints (Plan 28 S5)
+# ============================================================================
+
+
+@app.get("/api/options", dependencies=[Depends(get_current_user)])
+async def get_options(request: Request) -> OptionsListResponseDTO:
+    """Get all options."""
+    from pathlib import Path
+
+    from sovereignai.options.backend import SQLiteOptionsBackend
+
+    # Get or create backend instance
+    db_path = Path("data/options.db")
+    backend = SQLiteOptionsBackend(db_path, event_bus=None)
+
+    try:
+        # Get all options
+        options: dict[str, Any] = {}
+        cursor = backend._connection.cursor()
+        cursor.execute("SELECT key, value FROM options")
+        for row in cursor.fetchall():
+            import json
+
+            key, value = row
+            options[key] = json.loads(value)
+
+        return OptionsListResponseDTO(options=options)
+    finally:
+        backend.close()
+
+
+@app.get("/api/options/{key}", dependencies=[Depends(get_current_user)])
+async def get_option(request: Request, key: str) -> OptionsGetResponseDTO:
+    """Get a specific option."""
+    from pathlib import Path
+
+    from sovereignai.options.backend import SQLiteOptionsBackend
+
+    db_path = Path("data/options.db")
+    backend = SQLiteOptionsBackend(db_path, event_bus=None)
+
+    try:
+        value = backend.get(key)
+        if value is None:
+            raise HTTPException(status_code=404, detail="Option not found")
+
+        return OptionsGetResponseDTO(key=key, value=value)
+    finally:
+        backend.close()
+
+
+@app.put(
+    "/api/options/{key}",
+    dependencies=[Depends(get_current_user)],
+)
+async def set_option(
+    request: Request,
+    key: str,
+    dto: OptionsSetRequestDTO,
+) -> OptionsSetResponseDTO:
+    """Set an option."""
+    from pathlib import Path
+
+    from sovereignai.options.backend import SQLiteOptionsBackend
+
+    db_path = Path("data/options.db")
+    backend = SQLiteOptionsBackend(db_path, event_bus=None)
+
+    try:
+        backend.set(key, dto.value)
+        return OptionsSetResponseDTO(key=key, value=dto.value)
+    finally:
+        backend.close()
+
+
+@app.delete(
+    "/api/options/{key}",
+    dependencies=[Depends(get_current_user)],
+)
+async def delete_option(
+    request: Request,
+    key: str,
+    force: bool = False,
+) -> OptionsDeleteResponseDTO:
+    """Delete an option.
+
+    If confirm_destructive is enabled, requires ?force=true query parameter.
+    """
+    from pathlib import Path
+
+    from sovereignai.options.backend import SQLiteOptionsBackend
+
+    db_path = Path("data/options.db")
+    backend = SQLiteOptionsBackend(db_path, event_bus=None)
+
+    try:
+        # Check if confirm_destructive is enabled
+        confirm_destructive = backend.get("confirm_destructive", True)
+        if confirm_destructive and not force:
+            raise HTTPException(
+                status_code=409,
+                detail="Add ?force=true to confirm destructive operation",
+            )
+
+        deleted = backend.delete(key)
+        return OptionsDeleteResponseDTO(deleted=deleted)
+    finally:
+        backend.close()
 
 
 # ============================================================================

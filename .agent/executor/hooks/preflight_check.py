@@ -20,7 +20,6 @@ import argparse
 import os
 import sys
 
-
 REQUIRED_FILES = [
     ".agent/executor/scripts/verify_execution.py",
     ".agent/executor/ATTESTATION_TEMPLATE.md",
@@ -38,9 +37,25 @@ REQUIRED_DIRS = [
 
 def check_plan_manifest(plan_id):
     """Check plan file has Executor Manifest."""
-    plan_path = f"prompts/plan-{plan_id}.md"
-    if not os.path.exists(plan_path):
-        return False, f"Plan file not found: {plan_path}"
+    # Look for plan files with revision suffixes (e.g., plan-28-Rev5.md)
+    import glob
+    plan_pattern = f"prompts/plan-{plan_id}*.md"
+    plan_files = glob.glob(plan_pattern)
+
+    if not plan_files:
+        return False, f"Plan file not found: {plan_pattern}"
+
+    # Sort by revision number if present, otherwise use the file name
+    def extract_revision(filename):
+        # Extract revision number from filename like plan-28-Rev5.md
+        import re
+        match = re.search(r'Rev(\d+)', filename)
+        if match:
+            return int(match.group(1))
+        return 0
+
+    plan_files.sort(key=extract_revision, reverse=True)
+    plan_path = plan_files[0]  # Use highest revision
 
     with open(plan_path) as f:
         content = f.read()
@@ -97,7 +112,7 @@ def main():
                 print(f"  [WARN] {w}")
         return False
     else:
-        print(f"PASS: All preflight checks passed")
+        print("PASS: All preflight checks passed")
         if warnings:
             for w in warnings:
                 print(f"  [WARN] {w}")

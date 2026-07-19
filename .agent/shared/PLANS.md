@@ -17,15 +17,15 @@ Full history: `.agent/shared/CHANGELOG.md`.
 
 | Plan | Rev | Status | Start Date |
 |------|-----|--------|------------|
-| — | — | — | — |
+| Plan 28 | Rev5 | 🔄 In Progress | 2026-07-19 |
 
 ## Queue
 
 | Slot | Plan | Status | Depends On |
 |------|------|--------|------------|
-| 1 | Plan 28 | ⏳ Pending | Plan 26, Plan 24 |
-| 2 | Plan 29 | ⏳ Pending | Plan 28, Plan 22 |
-| 3 | Plan 30 | ⏳ Pending | — |
+| 1 | Plan 29 | ⏳ Pending | Plan 28, Plan 22 |
+| 2 | Plan 30 | ⏳ Pending | — |
+| 3 | — | — | — |
 | 4 | — | — | — |
 | 5 | — | — | — |
 

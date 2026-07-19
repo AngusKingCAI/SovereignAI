@@ -5,12 +5,17 @@ from pathlib import Path
 
 
 def check_no_department_manager_subclass() -> int:
-    messaging_dir = Path(__file__).parent.parent.parent.parent / "app/sovereignai/messaging"
+    messaging_dir = (
+        Path(__file__).parent.parent.parent.parent / "app/sovereignai/messaging"
+    )
     if not messaging_dir.exists():
         print("SKIPPED: messaging directory not found (AR check disabled for now)")
         return 0
 
-    print("OK: No DepartmentManager subclassing, monkey-patching, or private imports detected in messaging module")
+    print(
+        "OK: No DepartmentManager subclassing, monkey-patching, "
+        "or private imports detected in messaging module"
+    )
     return 0
 
 

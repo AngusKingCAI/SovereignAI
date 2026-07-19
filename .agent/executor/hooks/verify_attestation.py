@@ -9,7 +9,6 @@ Exit 0 = pass, Exit 1 = fail
 
 import argparse
 import os
-import re
 import sys
 
 

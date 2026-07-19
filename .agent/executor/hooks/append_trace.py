@@ -14,14 +14,14 @@ import argparse
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--skill", help="Skill name (for skill_invoke action)")
     parser.add_argument("--plan", required=False)
-    parser.add_argument("--action", choices=["skill", "file_write", "file_edit", "file_delete"], 
+    parser.add_argument("--action", choices=["skill", "file_write", "file_edit", "file_delete"],
                        help="Action type")
     parser.add_argument("--file", help="File path (for file actions)")
     args = parser.parse_args()
@@ -46,7 +46,7 @@ def main():
     if args.skill and not args.action:
         # Legacy mode: skill invocation
         entry = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "plan_id": plan_id,
             "action": "skill_invoke",
             "skill": args.skill,
@@ -56,7 +56,7 @@ def main():
     elif args.action:
         # New mode: file action
         entry = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "plan_id": plan_id,
             "action": args.action,
             "file": args.file,

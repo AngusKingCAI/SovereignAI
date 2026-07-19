@@ -16,11 +16,11 @@ Checks:
 Exit 0 = PASS, Exit 1 = FAIL
 """
 
-import subprocess
-import re
-import sys
-import os
 import argparse
+import os
+import re
+import subprocess
+import sys
 
 
 def run_git(args, cwd="."):
@@ -36,9 +36,24 @@ def run_git(args, cwd="."):
 
 def get_manifest_from_plan(plan_id, repo_path="."):
     """Extract Executor Manifest from plan file."""
-    plan_path = os.path.join(repo_path, f"prompts/plan-{plan_id}.md")
-    if not os.path.exists(plan_path):
-        return None, f"Plan file not found: {plan_path}"
+    # Look for plan files with revision suffixes (e.g., plan-28-Rev5.md)
+    import glob
+    plan_pattern = os.path.join(repo_path, f"prompts/plan-{plan_id}*.md")
+    plan_files = glob.glob(plan_pattern)
+
+    if not plan_files:
+        return None, f"Plan file not found: {plan_pattern}"
+
+    # Sort by revision number if present, otherwise use the file name
+    def extract_revision(filename):
+        # Extract revision number from filename like plan-28-Rev5.md
+        match = re.search(r'Rev(\d+)', filename)
+        if match:
+            return int(match.group(1))
+        return 0
+
+    plan_files.sort(key=extract_revision, reverse=True)
+    plan_path = plan_files[0]  # Use highest revision
 
     with open(plan_path) as f:
         content = f.read()
@@ -56,25 +71,44 @@ def get_manifest_from_plan(plan_id, repo_path="."):
     deliverables = []
     coverage_target = None
 
-    for line in manifest_text.split("\n"):
-        line = line.strip()
-        if line.startswith("Phases:"):
-            phases = [p.strip() for p in line.replace("Phases:", "").split(",")]
-        elif line.startswith("- S") and ":" in line:
-            parts = line.split(":", 1)
-            if len(parts) == 2:
-                file_part = parts[1].strip()
-                file_match = re.search(r"`([^`]+)`", file_part)
-                if file_match:
-                    deliverables.append(file_match.group(1))
-                else:
-                    first_word = file_part.split()[0]
-                    if "." in first_word:
-                        deliverables.append(first_word)
-        elif line.startswith("Coverage target:"):
-            coverage_match = re.search(r"(\d+)", line)
-            if coverage_match:
-                coverage_target = int(coverage_match.group(1))
+    # Parse phases
+    phases_match = re.search(r"\*\*Phases\*\*:\s*(\d+)\s*\(([^)]+)\)", manifest_text)
+    if phases_match:
+        phases_count = int(phases_match.group(1))
+        phases = [f"S{i}" for i in range(phases_count + 1)]  # Include S0
+
+    # Parse deliverables from table format
+    # Look for table rows with file paths in backticks
+    table_match = re.search(
+        r"\| Phase \| Deliverable \| Verification \|.*?\n((?:\|.*?\n)+)",
+        manifest_text,
+        re.DOTALL,
+    )
+    if table_match:
+        table_content = table_match.group(1)
+        for line in table_content.split("\n"):
+            if (
+                "|" in line
+                and not line.strip().startswith("|---")
+                and not line.strip().startswith("| Phase")
+            ):
+                parts = [p.strip() for p in line.split("|")]
+                if len(parts) >= 3:  # Need at least 3 columns
+                    # Second column (index 1) is Phase, third column (index 2) is Deliverable
+                    deliverable = parts[2] if len(parts) > 2 else ""
+                    if deliverable:
+                        # Extract all file paths from backticks (there may be multiple)
+                        file_matches = re.findall(r"`([^`]+)`", deliverable)
+                        for file_path in file_matches:
+                            if "." in file_path:  # Only add if it looks like a file path
+                                deliverables.append(file_path)
+
+    print(f"DEBUG: Deliverables found: {deliverables}")
+
+    # Parse coverage target
+    coverage_match = re.search(r"Coverage target:\s*(\d+)", manifest_text)
+    if coverage_match:
+        coverage_target = int(coverage_match.group(1))
 
     return {
         "phases": phases,
@@ -151,8 +185,11 @@ def verify_init(plan_id, repo_path="."):
         print(f"  FAIL: {err}")
         return False
 
-    print(f"  Manifest: {len(manifest['phases'])} phases, {len(manifest['deliverables'])} deliverables")
-    print(f"  PASS: Manifest valid")
+    print(
+        f"  Manifest: {len(manifest['phases'])} phases, "
+        f"{len(manifest['deliverables'])} deliverables"
+    )
+    print("  PASS: Manifest valid")
     return True
 
 
@@ -170,14 +207,17 @@ def verify_final(plan_id, repo_path="."):
         print(f"  FAIL: {err}")
         return False
 
-    print(f"  Manifest: {len(manifest['phases'])} phases, {len(manifest['deliverables'])} deliverables")
+    print(
+        f"  Manifest: {len(manifest['phases'])} phases, "
+        f"{len(manifest['deliverables'])} deliverables"
+    )
 
     # 2. Check attestation
     attestation_ok, attestation_err = check_attestation(plan_id, repo_path)
     if not attestation_ok:
         errors.append(attestation_err)
     else:
-        print(f"  Attestation: [OK] present and complete")
+        print("  Attestation: [OK] present and complete")
 
     # 3. Get commits since plan start
     tag = f"prompt-{plan_id}"
@@ -207,7 +247,10 @@ def verify_final(plan_id, repo_path="."):
     if missing_deliverables:
         errors.append(f"Missing deliverables: {', '.join(missing_deliverables)}")
     else:
-        print(f"  Deliverables: [OK] {len(manifest['deliverables'])}/{len(manifest['deliverables'])} found")
+        print(
+            f"  Deliverables: [OK] {len(manifest['deliverables'])}/"
+            f"{len(manifest['deliverables'])} found"
+        )
 
     # 6. Check no governance files modified
     gov_files = [
@@ -224,7 +267,7 @@ def verify_final(plan_id, repo_path="."):
     if modified_gov:
         errors.append(f"Governance files modified: {', '.join(modified_gov)}")
     else:
-        print(f"  Governance: [OK] no unauthorized modifications")
+        print("  Governance: [OK] no unauthorized modifications")
 
     # 7. Check trace file exists
     trace_path = os.path.join(repo_path, f".agent/executor/traces/trace-plan-{plan_id}.jsonl")

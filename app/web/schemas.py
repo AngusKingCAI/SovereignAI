@@ -197,3 +197,30 @@ class SymbolMapResponseDTO(BaseModel):
     symbols: list[dict] = []
     error: str | None = None
 
+
+class OptionsGetResponseDTO(BaseModel):
+
+    key: str
+    value: str | int | float | bool | dict | list | None
+
+
+class OptionsListResponseDTO(BaseModel):
+
+    options: dict[str, str | int | float | bool | dict | list | None]
+
+
+class OptionsSetRequestDTO(BaseModel):
+
+    value: str | int | float | bool | dict | list | None
+
+
+class OptionsSetResponseDTO(BaseModel):
+
+    key: str
+    value: str | int | float | bool | dict | list | None
+
+
+class OptionsDeleteResponseDTO(BaseModel):
+
+    deleted: bool
+

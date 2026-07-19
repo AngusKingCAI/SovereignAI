@@ -46,3 +46,12 @@ agent/structured_output.py:__init__
 managers/coding.py:__init__
 messaging/bus.py:publish_event
 messaging/security.py:__init__
+options/backend.py:__init__
+options/backend.py:_initialize_encryption
+options/backend.py:_initialize_db
+options/backend.py:set
+options/backend.py:delete
+options/backend.py:close
+options/migrations.py:__init__
+options/migrations.py:Migration.__init__
+options/migrations.py:run_migrations
