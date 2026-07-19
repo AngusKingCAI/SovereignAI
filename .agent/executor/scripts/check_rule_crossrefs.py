@@ -57,7 +57,7 @@ def extract_defined_rules(agents_path: Path) -> set[str]:
         # Convert to expected format for citations
         for prefix, num in or_matches:
             defined_rules.add(f"{prefix}-{num}")
-        
+
         # Also extract retired rules from the Retired Rules table
         # Table format: | Legacy ID | New ID | Status | Notes |
         retired_matches = re.findall(r'^\| ([A-Z]+-\d+) \|', content, re.MULTILINE)

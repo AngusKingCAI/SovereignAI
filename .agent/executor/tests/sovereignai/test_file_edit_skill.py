@@ -4,9 +4,8 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import MagicMock
 
-from app.sovereignai.agent.types import AgentErrorObservation
-
 from app.skills.official.file_edit.skill import FileEditSkill, LineRangeHint
+from app.sovereignai.agent.types import AgentErrorObservation
 
 
 def test_file_edit_skill_construction():

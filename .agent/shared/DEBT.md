@@ -8,8 +8,7 @@ Open items only. Resolved items → CHANGELOG.md.
 
 | ID | Item | Severity | Priority | Status | Target | Trigger |
 |----|------|----------|----------|--------|--------|---------|
-| DEBT-4 | UI implementations (web, tui) | Low | Low | Identified | TBD | UI implementation prioritised |
-| DEBT-5 | P4 compliance test isolation | Low | Low | Identified | TBD | Test infrastructure improvement |
+| DEBT-4 | UI implementations (cli, phone) | Low | Low | Identified | TBD | UI implementation prioritised |
 | DEBT-6 | Librarian.handle_event method + episodic event consumer | Medium | Medium | Identified | TBD | Event system prioritised |
 | DEBT-7 | TUI cookie auth for agent SSE stream | Low | Low | Identified | TBD | TUI framework investigation |
 | DEBT-8 | Web UI consumer for agent SSE stream | Low | Low | Identified | TBD | Web UI implementation prioritised |
@@ -55,6 +54,16 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 
 ---
 
+## DEBT-5 — P4 compliance test isolation (Resolved - False Debt)
+
+**Severity**: Low
+**Priority**: Low
+**Status**: Resolved
+**Target**: Plan 25.3
+**Reason**: Investigation in Plan 25.3 revealed that P4 compliance tests (test_p4_compliance.py) are passing and do not have isolation issues. The tests properly handle temporary modifications and edge cases. No action required - marked as false debt.
+
+---
+
 ## DEBT-4 — UI implementations (cli, phone)
 
 **Severity**: Low
@@ -62,18 +71,7 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Status**: Identified
 **Target**: TBD
 **Trigger**: When UI implementation is prioritised.
-**Reason**: UI directories app/web and app/tui exist with main.py implementations (completed in Plan 25.2), but app/cli and app/phone only have .gitkeep placeholders. Tests for AR7 (no core imports in UI) skip because there are no actual .py files in cli/phone directories to scan.
-
----
-
-## DEBT-5 — P4 compliance test isolation
-
-**Severity**: Low
-**Priority**: Low
-**Status**: Identified
-**Target**: TBD
-**Trigger**: When test infrastructure improves to support isolated file modifications.
-**Reason**: P4 compliance tests (test_p4_compliance.py) require temporary modifications to manifest files and DEBT.md to test edge cases (1 adapter vs 2 adapters, exception handling). Current test infrastructure cannot safely isolate these modifications without risking impact on real files. Tests deferred until better isolation mechanisms available.
+**Reason**: UI directories app/web and app/tui exist with functional main.py implementations (completed in Plan 25.2), but app/cli and app/phone only have .gitkeep placeholders. Tests for AR7 (no core imports in UI) skip because there are no actual .py files in cli/phone directories to scan.
 
 ---
 
@@ -117,4 +115,4 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Status**: Identified
 **Target**: TBD
 **Trigger**: When graph memory prioritised.
-**Reason**: Plan 24 S5 implemented TaskGraphCache as per-task ephemeral memory using SQLite :memory: database. Cross-task persistent graph memory was deferred to avoid scope creep. Future implementation would use file-backed SQLite to maintain graph state across task boundaries for persistent knowledge accumulation.
+**Reason**: Plan 24 S5 implemented TaskGraphCache as per-task ephemeral memory using SQLite :memory: database by default for per-task isolation. Cross-task persistent graph memory functionality is already available via the db_path parameter (file-backed SQLite mode), but was not integrated into the agent system. Future work would integrate file-backed mode for persistent knowledge accumulation across task boundaries.

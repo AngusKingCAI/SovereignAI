@@ -18,7 +18,6 @@ def event_bus(trace_emitter: TraceEmitter) -> EventBus:
     # For legacy sync publish/subscribe tests, don't start the bus
     # and don't use registry - just use the old sync interface
     from sovereignai.shared.event_bus import EventBus
-    from sovereignai.shared.event_registry import EventRegistry
     registry = EventRegistry()
     return EventBus(trace=trace_emitter, registry=registry)
 

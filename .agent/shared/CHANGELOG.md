@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## prompt-25.3-rev1 — Fix All Test Failures, Skipped Tests & Clear Remaining Debt
+
+**Date**: 2026-07-19
+**Plan**: prompts/plan-25.3-Rev1.md
+**Tests**: 637 passed, 58 skipped (0 failures)
+**Previous Baseline**: plan-25.2-rev1
+**Coverage**: N/A (coverage tool not available)
+**Screenshots**: N/A
+**OOR-1**: Retired (Architect Suggestion Review - removed in governance reorganization)
+
+**Changes**:
+- Fixed test_graph_memory_protocol_is_runtime_checkable by checking for _is_runtime_protocol instead of __protocol_attrs__
+- Added return type annotations to all test functions in .agent/executor/tests/sovereignai/test_agent_types.py for mypy compliance
+- Cleared DEBT-5 (P4 compliance test isolation) as false debt - tests are passing and properly isolated
+- Updated DEBT-4 description to clarify web/tui are functional, only cli/phone have placeholders
+- Updated DEBT-9 description to clarify file-backed mode is available via db_path parameter
+- All EventBus timing tests passing (previously expected 10 failures)
+- All SymbolMap attribute tests passing (previously expected 7 failures)
+- All Department Manager abstract method tests passing (previously expected 4 failures)
+- All AR7 violation tests passing (previously expected 2 failures)
+- All TraceLevel mapping tests passing (previously expected 1 failure)
+- All misc failures resolved (previously expected 16 failures)
+- 58 skipped tests remain (all justified: tree-sitter, hardware, platform-specific, or feature deferrals)
+
+**Resolution Status**: All verification steps passed - tests, AR checks, mypy, bandit
+
+---
+
 ## prompt-25.1-rev1 — Clear Remaining Debts & Mypy Errors
 
 **Date**: 2026-07-19

@@ -32,6 +32,7 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Plan | Rev | Completion Date |
 |------|-----|-----------------|
+| Plan 25.3 | Rev 1 | 2026-07-19 |
 | Plan 25 | Rev 1 | 2026-07-19 |
 | Plan 24 | Rev 16 | 2026-07-19 |
 | Plan 23 | Rev 16 | 2026-07-19 |
@@ -41,11 +42,11 @@ Dynamic state only. SSOT for baselines, queue, scan schedule.
 
 | Slot | Plan | Status |
 |------|------|--------|
-| 1 | Plan 25 | ⏳ Pending |
-| 2 | Plan 26 | ⏳ Pending |
-| 3 | Plan 27 | ⏳ Pending |
-| 4 | Plan 28 | ⏳ Pending |
-| 5 | Plan 29 | ⏳ Pending |
+| 1 | Plan 27 | ⏳ Pending |
+| 2 | Plan 28 | ⏳ Pending |
+| 3 | Plan 29 | ⏳ Pending |
+| 4 | Plan 30 | ⏳ Pending |
+| 5 | Plan 31 | ⏳ Pending |
 
 ## Recent Completed (last 10)
 

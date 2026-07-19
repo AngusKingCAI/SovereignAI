@@ -5,7 +5,7 @@ from sovereignai.agent.protocols import GraphMemory
 from sovereignai.agent.types import AgentErrorObservation, AgentResult, FinalAnswer
 
 
-def test_agent_error_observation_creation():
+def test_agent_error_observation_creation() -> None:
     """Test AgentErrorObservation creation."""
     error = AgentErrorObservation(
         error_type="TestError",
@@ -22,7 +22,7 @@ def test_agent_error_observation_creation():
     assert error.retryable is True
 
 
-def test_agent_error_observation_defaults():
+def test_agent_error_observation_defaults() -> None:
     """Test AgentErrorObservation default values."""
     error = AgentErrorObservation(
         error_type="TestError",
@@ -34,14 +34,14 @@ def test_agent_error_observation_defaults():
     assert error.retryable is False
 
 
-def test_final_answer_creation():
+def test_final_answer_creation() -> None:
     """Test FinalAnswer creation."""
     answer = FinalAnswer(content="The answer is 42")
 
     assert answer.content == "The answer is 42"
 
 
-def test_agent_result_success():
+def test_agent_result_success() -> None:
     """Test AgentResult for success case."""
     result = AgentResult(
         status="success",
@@ -55,7 +55,7 @@ def test_agent_result_success():
     assert result.trace == ["step1", "step2"]
 
 
-def test_agent_result_error():
+def test_agent_result_error() -> None:
     """Test AgentResult for error case."""
     error = AgentErrorObservation(
         error_type="RuntimeError",
@@ -74,13 +74,13 @@ def test_agent_result_error():
     assert result.trace == ["step1"]
 
 
-def test_graph_memory_protocol_is_runtime_checkable():
+def test_graph_memory_protocol_is_runtime_checkable() -> None:
     """Test that GraphMemory protocol is runtime_checkable (P23-A)."""
     # Protocol should be runtime_checkable for isinstance checks
-    assert hasattr(GraphMemory, "__protocol_attrs__")
+    assert hasattr(GraphMemory, "_is_runtime_protocol")
 
 
-def test_graph_memory_protocol_method_signature():
+def test_graph_memory_protocol_method_signature() -> None:
     """Test that GraphMemory protocol has correct method signature."""
     # Protocol should have query method with correct signature
     assert hasattr(GraphMemory, "query")
@@ -91,7 +91,7 @@ def test_graph_memory_protocol_method_signature():
     assert "depth" in sig.parameters
 
 
-def test_concrete_class_satisfies_graph_memory_protocol():
+def test_concrete_class_satisfies_graph_memory_protocol() -> None:
     """Test that concrete class can satisfy GraphMemory protocol."""
     class ConcreteMemory:
         def query(self, entity_id: str, depth: int = 2) -> list[dict]:
@@ -102,7 +102,7 @@ def test_concrete_class_satisfies_graph_memory_protocol():
     assert isinstance(concrete, GraphMemory)
 
 
-def test_graph_memory_locked_contract():
+def test_graph_memory_locked_contract() -> None:
     """Test that GraphMemory protocol signature is locked per P23-A."""
     # This test documents the locked contract requirement
     # Plan 24 S5 TaskGraphCache.query MUST match exactly
