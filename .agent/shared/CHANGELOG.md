@@ -8,6 +8,7 @@
 **Previous Baseline**: N/A (plan-25-rev1)
 **Coverage**: N/A (coverage tool not available)
 **Screenshots**: N/A
+**OOR-1**: Retired (Architect Suggestion Review - removed in governance reorganization)
 
 **Changes**:
 - Fixed mypy error in coding.py L144 with explicit type casting for ComponentManifest
@@ -201,7 +202,7 @@
 **COR-1**: Plans with "fix" or "test" in title run full suite
 
 - Added Retired Rules section to OR_RULES.md with mapping table for legacy OR IDs
-- Added OOR-1 (Architect Suggestion Review) to OR_RULES.md
+- Added OOR-1 (Architect Suggestion Review) to OR_RULES.md (later retired in governance reorganization)
 - Added COR-1 (Test-Fix Plans Run Full Suite) to OR_RULES.md
 - Created migrate_or_ids.py script to migrate legacy OR IDs to new naming scheme
 - Migrated OR17→UOR-1, OR19→UOR-2, OR29→COR-1, OR63→UOR-3 across 17 files

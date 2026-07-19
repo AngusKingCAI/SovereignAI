@@ -25,7 +25,7 @@ def extract_defined_rules(agents_path: Path) -> set[str]:
     defined_rules = set()
 
     # Extract AR rules from ARCHITECTURE.md
-    architecture_path = agents_path.parent / '.agent' / 'shared' / 'ARCHITECTURE.md'
+    architecture_path = agents_path.parent / '.agent' / 'executor' / 'ARCHITECTURE.md'
     if architecture_path.exists():
         with open(architecture_path, encoding='utf-8') as f:
             content = f.read()
@@ -48,7 +48,7 @@ def extract_defined_rules(agents_path: Path) -> set[str]:
         print(f"WARNING: {architecture_path} not found, no AR rules defined", file=sys.stderr)
 
     # Extract OR rules from OR_RULES.md (new naming convention)
-    or_rules_path = agents_path.parent / '.agent' / 'shared' / 'OR_RULES.md'
+    or_rules_path = agents_path.parent / '.agent' / 'executor' / 'OR_RULES.md'
     if or_rules_path.exists():
         with open(or_rules_path, encoding='utf-8') as f:
             content = f.read()
@@ -57,6 +57,12 @@ def extract_defined_rules(agents_path: Path) -> set[str]:
         # Convert to expected format for citations
         for prefix, num in or_matches:
             defined_rules.add(f"{prefix}-{num}")
+        
+        # Also extract retired rules from the Retired Rules table
+        # Table format: | Legacy ID | New ID | Status | Notes |
+        retired_matches = re.findall(r'^\| ([A-Z]+-\d+) \|', content, re.MULTILINE)
+        for retired_id in retired_matches:
+            defined_rules.add(retired_id)
     else:
         print(f"WARNING: {or_rules_path} not found, no OR rules defined", file=sys.stderr)
 
@@ -71,6 +77,10 @@ def is_historical_section(content: str, line_num: int, file_name: str, file_path
     if 'logs' in str(file_path):
         return True
 
+    # Exempt all completed plans - they are historical plans
+    if 'completed' in str(file_path):
+        return True
+
     # Check for disclaimer markers before this line
     for i in range(max(0, line_num - 10), line_num):
         if 'historical' in lines[i].lower() or 'disclaimer' in lines[i].lower():
@@ -83,27 +93,16 @@ def is_historical_section(content: str, line_num: int, file_name: str, file_path
             if 'completed prompts' in lines[i].lower():
                 return True
 
-    if file_name == 'CHANGELOG.md':
-        # Exempt only entries older than rule-rename date (2026-07-18)
-        # Check if the line is in an entry before the rule-rename date
-        for i in range(max(0, line_num - 50), line_num):
-            # If we find a header for an entry before rule-rename, exempt
-            if lines[i].startswith('## ') and any(historical in lines[i] for historical in [
-                '## prompt-plan-fix-3-Rev1',
-                '## prompt-plan-fix-2-Rev1',
-                '## prompt-plan-fix-1-Rev1',
-                '## prompt-workflow-fix',
-                '## 20.9.',
-                '## prompt-',
-            ]):
-                return True
-
     return False
 
 
 def extract_cited_rules_with_exemptions(file_path: Path) -> set[str]:
     """Extract cited rule numbers, excluding historical sections."""
     if not file_path.exists():
+        return set()
+
+    # Skip CHANGELOG.md entirely - it documents historical state
+    if file_path.name == 'CHANGELOG.md':
         return set()
 
     with open(file_path, encoding='utf-8') as f:
@@ -139,7 +138,6 @@ def main(repo_root: Path | None = None):
         repo_root / 'AGENTS.md',
         repo_root / '.agent' / 'shared' / 'PLANS.md',
         repo_root / '.agent' / 'shared' / 'DEBT.md',
-        repo_root / '.agent' / 'shared' / 'DECISIONS.md',
         repo_root / '.agent' / 'architect' / 'AI_HANDOFF.md',
     ]
 

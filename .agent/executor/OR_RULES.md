@@ -61,6 +61,7 @@ Legacy OR IDs that have been retired or replaced with new naming scheme.
 | OR61 | - | Retired | No equivalent found |
 | OR63 | UOR-3 | Replaced | diskcache CVE Monitoring |
 | OR65 | - | Retired | No equivalent found |
+| OOR-1 | - | Retired | Architect Suggestion Review - removed in governance reorganization |
 
 ## Rule Maintenance
 
