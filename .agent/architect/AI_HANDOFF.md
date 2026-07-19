@@ -94,7 +94,6 @@ Open questions resolved: <which Q1-Q34, or "none">
 ```
 
 **S0 — Opening**:
-- S0.0: If resuming from prior execution, clone latest repo and verify execution log state.
 - S0.1: Run `/open`
 - S0.2: Read `AGENTS.md` in full
 - S0.3: Read plan header AR rules from `.agent/executor/ARCHITECTURE.md`. Read plan header OR rules from `.agent/executor/OR_RULES.md`.
