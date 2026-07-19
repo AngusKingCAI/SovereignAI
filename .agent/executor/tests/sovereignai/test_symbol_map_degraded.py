@@ -14,7 +14,7 @@ def test_symbol_map_degraded_mode_logs_error():
 
     # Verify error trace was emitted if tree-sitter unavailable
     # (In real implementation, this checks _TREE_SITTER_AVAILABLE flag)
-    if not symbol_map._TREE_SITTER_AVAILABLE:
+    if not SymbolMap._TREE_SITTER_AVAILABLE:
         trace.emit.assert_called()
         call_args = trace.emit.call_args
         assert "degraded" in str(call_args).lower()
@@ -26,7 +26,7 @@ def test_symbol_map_degraded_emits_trace_event():
     symbol_map = SymbolMap(trace=trace)
 
     # Verify trace event emitted with ERROR level
-    if not symbol_map._TREE_SITTER_AVAILABLE:
+    if not SymbolMap._TREE_SITTER_AVAILABLE:
         trace.emit.assert_called()
         # Check that it was called with ERROR level and degraded message
         call_args = trace.emit.call_args
@@ -40,7 +40,7 @@ def test_symbol_map_degraded_health_check():
 
     health = symbol_map.health_check()
 
-    if not symbol_map._TREE_SITTER_AVAILABLE:
+    if not SymbolMap._TREE_SITTER_AVAILABLE:
         assert health == HealthStatus.DEGRADED
 
 
@@ -49,6 +49,6 @@ def test_symbol_map_degraded_query_raises_error():
     trace = MagicMock()
     symbol_map = SymbolMap(trace=trace)
 
-    if not symbol_map._TREE_SITTER_AVAILABLE:
+    if not SymbolMap._TREE_SITTER_AVAILABLE:
         with pytest.raises(SymbolMapUnavailableError):
             symbol_map.query("test query", budget=10)

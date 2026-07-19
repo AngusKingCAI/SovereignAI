@@ -4,6 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import MagicMock
 
+import pytest
 from sovereignai.indexing.symbol_map import HealthStatus, SymbolMap, SymbolMapUnavailableError
 
 
@@ -15,7 +16,8 @@ def test_symbol_map_construction():
     symbol_map = SymbolMap(trace=trace)
     assert symbol_map._project_root is None
 
-    # With project_root
+    # With project_root - should work regardless of tree-sitter availability
+    # but only index if tree-sitter is available
     project_root = Path("/test/project")
     symbol_map = SymbolMap(project_root=project_root, trace=trace)
     assert symbol_map._project_root == project_root
@@ -52,13 +54,15 @@ def test_symbol_map_empty_project_no_crash():
         symbol_map = SymbolMap(project_root=empty_project, trace=trace)
 
         # Should not crash on empty project
-        try:
+        # If tree-sitter is available, it will index and find 0 files
+        # If tree-sitter is unavailable, index() will raise SymbolMapUnavailableError
+        if SymbolMap._TREE_SITTER_AVAILABLE:
             result = symbol_map.index(empty_project)
             assert "files_indexed" in result
             assert result["files_indexed"] == 0
-        except SymbolMapUnavailableError:
-            # Expected if tree-sitter unavailable
-            pass
+        else:
+            with pytest.raises(SymbolMapUnavailableError):
+                symbol_map.index(empty_project)
 
 
 def test_symbol_map_single_file_ranking():
@@ -80,13 +84,13 @@ class TestClass:
 
         symbol_map = SymbolMap(project_root=project_root, trace=trace)
 
-        try:
+        if SymbolMap._TREE_SITTER_AVAILABLE:
             result = symbol_map.index(project_root)
             assert result["files_indexed"] >= 0
 
             # Query should return relevant symbols
             symbols = symbol_map.query("test_function", budget=10)
             assert isinstance(symbols, list)
-        except SymbolMapUnavailableError:
-            # Expected if tree-sitter unavailable
-            pass
+        else:
+            with pytest.raises(SymbolMapUnavailableError):
+                symbol_map.index(project_root)

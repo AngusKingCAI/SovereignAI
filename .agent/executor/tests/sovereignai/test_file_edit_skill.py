@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import MagicMock
 
-from sovereignai.agent.types import AgentErrorObservation
+from app.sovereignai.agent.types import AgentErrorObservation
 
 from app.skills.official.file_edit.skill import FileEditSkill, LineRangeHint
 
@@ -239,7 +239,7 @@ def test_edit_returns_retryable_error_for_ambiguity():
         # Should return AgentErrorObservation for retryable error
         assert isinstance(result, AgentErrorObservation)
         assert result.retryable is True
-        assert result.error_type == "AmbiguousMatch"
+        assert result.error_type == "ambiguous_match"
     finally:
         Path(temp_path).unlink()
 

@@ -33,6 +33,7 @@ def test_task_graph_cache_file_backed():
         cache = TaskGraphCache(db_path=db_path)
         assert cache._db_path == db_path
         assert cache._closed is False
+        cache.close()
     finally:
         Path(db_path).unlink(missing_ok=True)
 

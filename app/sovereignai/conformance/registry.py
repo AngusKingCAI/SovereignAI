@@ -28,8 +28,8 @@ def get_conformance_tests_for_class(capability_class: str) -> list[type]:
                 try:
                     cls: type = ep.load()
                     tests.append(cls)
-                except ImportError:
+                except Exception:
                     pass
-    except ImportError:
+    except Exception:
         pass
     return tests

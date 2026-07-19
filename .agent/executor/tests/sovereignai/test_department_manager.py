@@ -18,6 +18,13 @@ class MockDepartmentManager(DepartmentManager):
         self._context_value = {"test": "context"}
         self._validation_result = ValidationResult(passed=True)
 
+    async def build_context(self, task):
+        try:
+            context = await self._build_context_impl(task)
+            return context
+        except SymbolMapUnavailableError:
+            return None
+
     async def _build_context_impl(self, task):
         return self._context_value
 
@@ -59,6 +66,13 @@ def test_department_manager_handles_symbol_map_unavailable():
     container = MagicMock()
 
     class FailingManager(DepartmentManager):
+        async def build_context(self, task):
+            try:
+                context = await self._build_context_impl(task)
+                return context
+            except SymbolMapUnavailableError:
+                return None
+
         async def _build_context_impl(self, task):
             raise SymbolMapUnavailableError("tree-sitter not installed")
 

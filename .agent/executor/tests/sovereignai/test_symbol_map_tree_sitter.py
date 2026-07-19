@@ -14,7 +14,7 @@ def test_symbol_map_tree_sitter_available():
     symbol_map = SymbolMap(trace=trace)
 
     # Check if tree-sitter is available
-    if symbol_map._TREE_SITTER_AVAILABLE:
+    if SymbolMap._TREE_SITTER_AVAILABLE:
         # Should be able to index a file
         import tempfile
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -38,7 +38,7 @@ def test_symbol_map_tree_sitter_extracts_definitions():
     trace = MagicMock()
     symbol_map = SymbolMap(trace=trace)
 
-    if not symbol_map._TREE_SITTER_AVAILABLE:
+    if not SymbolMap._TREE_SITTER_AVAILABLE:
         pytest.skip("tree-sitter not available")
 
     import tempfile
@@ -64,7 +64,7 @@ def test_symbol_map_tree_sitter_extracts_references():
     trace = MagicMock()
     symbol_map = SymbolMap(trace=trace)
 
-    if not symbol_map._TREE_SITTER_AVAILABLE:
+    if not SymbolMap._TREE_SITTER_AVAILABLE:
         pytest.skip("tree-sitter not available")
 
     import tempfile

@@ -324,16 +324,20 @@ async def get_departments(request: Request) -> DepartmentListDTO:
     container: Any = request.app.state.container
 
     departments = []
+    # Check for coding manager by trying to retrieve from container
+    # Use a marker interface or check registration status instead of direct import
     try:
-        from sovereignai.managers.coding import CodingManager
-        container.retrieve(CodingManager)
-        departments.append({
-            "id": "coding",
-            "name": "Coding Manager",
-            "description": "Department manager for coding tasks using ReAct Worker"
-        })
+        # Try to retrieve any manager that might be registered
+        # This avoids direct sovereignai.managers import per AR7
+        for interface in container._instances:
+            if 'Manager' in str(interface):
+                departments.append({
+                    "id": str(interface).split('.')[-1].lower(),
+                    "name": str(interface).split('.')[-1],
+                    "description": f"Department manager for {str(interface).split('.')[-1]} tasks"
+                })
     except Exception:
-        pass  # Manager not registered
+        pass  # No managers registered
 
     return DepartmentListDTO(departments=departments)
 
@@ -347,33 +351,36 @@ async def submit_department_task(
     """Submit task to specific department manager (Plan 24 S7)."""
     container: Any = request.app.state.container
 
-    if dept == "coding":
-        try:
-            from sovereignai.managers.coding import CodingManager
+    # Find manager by name to avoid direct import per AR7
+    manager = None
+    for interface in container._instances:
+        if dept.lower() in str(interface).lower() and 'manager' in str(interface).lower():
+            manager = container.retrieve(interface)
+            break
 
-            manager = container.retrieve(CodingManager)
-
-            # Create simple task object (just use description string)
-            task = task_dto.task_description
-
-            # Execute task
-            deliverable = await manager.execute_task(task)
-
-            from uuid import UUID
-            return DepartmentTaskResponseDTO(
-                task_id=str(UUID()),  # Generate placeholder task ID
-                status="success" if deliverable.success else "failed",
-                output=str(deliverable.output) if deliverable.output else None,
-                error=(
-                    str(deliverable.validation_failure.reason)
-                    if deliverable.validation_failure
-                    else None
-                ),
-            )
-        except Exception as exc:
-            raise HTTPException(status_code=500, detail=str(exc)) from exc
-    else:
+    if not manager:
         raise HTTPException(status_code=404, detail=f"Department {dept} not found")
+
+    try:
+        # Create simple task object (just use description string)
+        task = task_dto.task_description
+
+        # Execute task
+        deliverable = await manager.execute_task(task)
+
+        from uuid import UUID
+        return DepartmentTaskResponseDTO(
+            task_id=str(UUID()),  # Generate placeholder task ID
+            status="success" if deliverable.success else "failed",
+            output=str(deliverable.output) if deliverable.output else None,
+            error=(
+                str(deliverable.validation_failure.reason)
+                if deliverable.validation_failure
+                else None
+            ),
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
 @app.get("/api/indexing/symbols", dependencies=[Depends(get_current_user)])
@@ -383,7 +390,6 @@ async def get_symbol_map(request: Request, query: str = "") -> SymbolMapResponse
 
     try:
         from sovereignai.indexing.symbol_map import SymbolMap
-        from sovereignai.managers.exceptions import SymbolMapUnavailableError
 
         symbol_map = container.retrieve(SymbolMap)
 
@@ -406,7 +412,7 @@ async def get_symbol_map(request: Request, query: str = "") -> SymbolMapResponse
                     health="healthy",
                     symbols=symbols
                 )
-            except SymbolMapUnavailableError as exc:
+            except Exception as exc:
                 return SymbolMapResponseDTO(
                     status="error",
                     health="unavailable",

@@ -46,6 +46,8 @@ class Symbol:
 class SymbolMap:
     """Symbol map for code symbol extraction and ranking."""
 
+    _TREE_SITTER_AVAILABLE = _TREE_SITTER_AVAILABLE  # Make accessible as class attribute
+
     def __init__(self, project_root: Path | None = None, trace: TraceEmitter | None = None) -> None:
         """Initialize SymbolMap.
 
@@ -59,15 +61,15 @@ class SymbolMap:
         self._rankings: dict[str, float] = {}
 
         # Emit degraded trace event if tree-sitter unavailable (P24-D)
-        if not _TREE_SITTER_AVAILABLE and self._trace:
+        if not self._TREE_SITTER_AVAILABLE and self._trace:
             self._trace.emit(
                 component="symbol_map",
                 level=TraceLevel.ERROR,
                 message="tree-sitter-python not installed; operating in DEGRADED mode"
             )
 
-        # Index project if provided
-        if project_root:
+        # Index project if provided and tree-sitter is available
+        if project_root and self._TREE_SITTER_AVAILABLE:
             self.index(project_root)
 
     def health_check(self) -> HealthStatus:
@@ -76,7 +78,7 @@ class SymbolMap:
         Returns:
             HealthStatus.HEALTHY if tree-sitter available, DEGRADED otherwise.
         """
-        if not _TREE_SITTER_AVAILABLE:
+        if not self._TREE_SITTER_AVAILABLE:
             return HealthStatus.DEGRADED
         return HealthStatus.HEALTHY
 
@@ -89,7 +91,7 @@ class SymbolMap:
         Returns:
             Dict with indexing statistics.
         """
-        if not _TREE_SITTER_AVAILABLE:
+        if not self._TREE_SITTER_AVAILABLE:
             raise SymbolMapUnavailableError("tree-sitter-python not installed")
 
         start_time = time.time()
@@ -160,7 +162,7 @@ class SymbolMap:
         Returns:
             List of Symbol objects.
         """
-        if not _TREE_SITTER_AVAILABLE:
+        if not self._TREE_SITTER_AVAILABLE:
             return []
 
         try:
@@ -253,7 +255,7 @@ class SymbolMap:
         Returns:
             List of dicts with symbol information, ranked by relevance.
         """
-        if not _TREE_SITTER_AVAILABLE:
+        if not self._TREE_SITTER_AVAILABLE:
             raise SymbolMapUnavailableError("tree-sitter-python not installed")
 
         # Simple keyword matching against symbol names

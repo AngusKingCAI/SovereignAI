@@ -261,12 +261,15 @@ class EventBus:
         schedule_drain()
 
         async def start_drain_tasks() -> None:
-            handlers = self._registry.handlers_for("*")
-            for registration in handlers:
-                queue_key = f"{registration.event_type}_{id(registration.handler)}"
-                self._drain_tasks[queue_key] = asyncio.create_task(
-                    self._drain_task(registration)
-                )
+            # Start drain tasks for all registered handlers, not just wildcard
+            all_handlers = self._registry._handlers
+            for _event_type, registrations in all_handlers.items():
+                for registration in registrations:
+                    queue_key = f"{registration.event_type}_{id(registration.handler)}"
+                    if queue_key not in self._drain_tasks:
+                        self._drain_tasks[queue_key] = asyncio.create_task(
+                            self._drain_task(registration)
+                        )
 
         def schedule_start() -> None:
             if self._loop is None:

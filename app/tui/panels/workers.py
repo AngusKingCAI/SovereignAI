@@ -55,18 +55,18 @@ class WorkersPanel(Vertical):
         components = fetch_components()
 
         # Show department managers (Plan 24 S8)
-        try:
-            from sovereignai.managers.coding import CodingManager
-            self._container.retrieve(CodingManager)
-            table.add_row(
-                "CodingManager",
-                "Coding",
-                "ReAct Worker",
-                "[green]Active[/green]",
-                "[View]"
-            )
-        except Exception:
-            pass  # Manager not registered
+        # Check for any manager in container to avoid direct import per AR7
+        for interface in self._container._instances:
+            if 'Manager' in str(interface):
+                manager_name = str(interface).split('.')[-1]
+                table.add_row(
+                    manager_name,
+                    "General",
+                    "Auto-assigned",
+                    "[green]Active[/green]",
+                    "[View]"
+                )
+                break  # Just show one manager for now
 
         # Show other lifecycle components
         for component_id, status in components:

@@ -205,6 +205,7 @@ TRACE_LEVEL_PRIORITY: dict[TraceLevel, int] = {
     TraceLevel.INFO: 2,
     TraceLevel.WARN: 3,
     TraceLevel.ERROR: 4,
+    TraceLevel.CRITICAL: 5,
 }
 
 

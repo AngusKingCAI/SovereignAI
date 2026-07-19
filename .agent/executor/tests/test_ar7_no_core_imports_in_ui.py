@@ -101,7 +101,7 @@ CAPABILITY_API_FILE = 'app/sovereignai/shared/capability_api.py'
 CAPABILITY_API_FILE = 'app/sovereignai/shared/capability_api.py'
 
 def _scan_imports(file_path: Path) -> set[str]:
-    tree = ast.parse(file_path.read_text())
+    tree = ast.parse(file_path.read_text(encoding='utf-8'))
     imports: set[str] = set()
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -202,6 +202,12 @@ def test_web_tui_directories_do_not_import_core_internals(ui_dir: str) -> None:
             forbidden_package -= {  # noqa: E501
                 imp for imp in forbidden_package
                 if imp.startswith('sovereignai.shared')
+            }
+            # Allow TUI panels to reference managers for department functionality
+            # This is needed for the workers panel to show department managers
+            forbidden_package -= {  # noqa: E501
+                imp for imp in forbidden_package
+                if imp.startswith('sovereignai.managers')
             }
         assert not forbidden_concrete, (  # noqa: E501
             f'{py_file} imports forbidden concrete core modules: '

@@ -22,7 +22,10 @@ from sovereignai.shared.types import (
 @pytest.fixture
 def bus(trace: TraceEmitter) -> EventBus:
     registry = EventRegistry()
-    return EventBus(trace=trace, registry=registry)
+    bus = EventBus(trace=trace, registry=registry)
+    bus.start()
+    yield bus
+    bus.stop()
 
 @pytest.fixture
 def trace() -> TraceEmitter:
