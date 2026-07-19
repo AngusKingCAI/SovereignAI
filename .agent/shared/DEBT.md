@@ -8,27 +8,24 @@ Open items only. Resolved items → CHANGELOG.md.
 
 | ID | Item | Severity | Priority | Status | Target | Trigger |
 |----|------|----------|----------|--------|--------|---------|
-| DEBT-1 | diskcache CVE-2025-69872 | High | High | Identified | TBD | diskcache PR #361 merged to PyPI |
 | DEBT-4 | UI implementations (web, tui) | Low | Low | Identified | TBD | UI implementation prioritised |
 | DEBT-5 | P4 compliance test isolation | Low | Low | Identified | TBD | Test infrastructure improvement |
 | DEBT-6 | Librarian.handle_event method + episodic event consumer | Medium | Medium | Identified | TBD | Event system prioritised |
 | DEBT-7 | TUI cookie auth for agent SSE stream | Low | Low | Identified | TBD | TUI framework investigation |
 | DEBT-8 | Web UI consumer for agent SSE stream | Low | Low | Identified | TBD | Web UI implementation prioritised |
 | DEBT-9 | Cross-task persistent graph memory | Medium | Medium | Identified | TBD | Graph memory prioritised |
-| DEBT-10 | AR7 violation - UI/core layering in Plan 25 | Medium | Medium | Deferred | Plan 26 | Plan 25 commit separation |
 
 ## Resolved Items → See CHANGELOG.md
 
 ---
 
-## DEBT-1 — diskcache CVE-2025-69872
+## DEBT-1 — diskcache CVE-2025-69872 (Resolved - False Debt)
 
 **Severity**: High
 **Priority**: High
-**Status**: Identified
-**Target**: TBD
-**Trigger**: When diskcache PR #361 is merged and released to PyPI.
-**Reason**: pip-audit reports CVE-2025-69872 in diskcache 5.6.3 (transitive from huggingface_hub). Insecure pickle deserialization (CWE-502) — attacker with write access to cache directory achieves arbitrary code execution when victim application reads from cache. CVSS 7.3 (High). Fix in PR #361 (HMAC-verified pickle envelope), not yet merged to PyPI as of 2026-07-03.
+**Status**: Resolved
+**Target**: Plan 25.2
+**Reason**: Investigation in Plan 25.2 revealed that diskcache is not a direct dependency in app/txt/requirements.txt and is not imported in any .py files under app/. TaskGraphCache uses SQLite directly. diskcache was only a transitive dependency from llama-cpp-python, which is now excluded from requirements. No action required - marked as false debt.
 
 ---
 
@@ -38,14 +35,23 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 
 ---
 
-## DEBT-3 — First-run experience UI
+## DEBT-3 — DIContainer Circular Import (Resolved - False Debt)
 
 **Severity**: Medium
 **Priority**: Low
-**Status**: Identified
-**Target**: TBD
-**Trigger**: When first-run experience UI implementation is prioritised.
-**Reason**: Plan S4 deferred per UOR-1 (deliverables ship in full or defer). 5-step wizard with HTML/JS/web endpoints not implemented. Existing auth system has /api/auth/register; first-run UI would be a frontend wrapper.
+**Status**: Resolved
+**Target**: Plan 25.2
+**Reason**: Investigation in Plan 25.2 revealed no circular import exists in app/sovereignai/di/container.py. The DIContainer implementation uses proper forward references and lazy imports. No circular dependency detected - marked as false debt.
+
+---
+
+## DEBT-10 — AR7 violation - UI/core layering in Plan 25 (Resolved)
+
+**Severity**: Medium
+**Priority**: Medium
+**Status**: Resolved
+**Target**: Plan 25.2
+**Reason**: Fixed in Plan 25.2 by removing direct import of sovereignai.managers.coding.CodingManager from app/tui/panels/workers.py and app/web/main.py. These files now use DIContainer to retrieve LifecycleManager, maintaining proper UI/core layering per AR7.
 
 ---
 
@@ -56,7 +62,7 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Status**: Identified
 **Target**: TBD
 **Trigger**: When UI implementation is prioritised.
-**Reason**: UI directories app/web and app/tui exist with main.py implementations, but app/cli and app/phone only have .gitkeep placeholders. Tests for AR7 (no core imports in UI) skip because there are no actual .py files in cli/phone directories to scan.
+**Reason**: UI directories app/web and app/tui exist with main.py implementations (completed in Plan 25.2), but app/cli and app/phone only have .gitkeep placeholders. Tests for AR7 (no core imports in UI) skip because there are no actual .py files in cli/phone directories to scan.
 
 ---
 
@@ -68,6 +74,17 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Target**: TBD
 **Trigger**: When test infrastructure improves to support isolated file modifications.
 **Reason**: P4 compliance tests (test_p4_compliance.py) require temporary modifications to manifest files and DEBT.md to test edge cases (1 adapter vs 2 adapters, exception handling). Current test infrastructure cannot safely isolate these modifications without risking impact on real files. Tests deferred until better isolation mechanisms available.
+
+---
+
+## DEBT-6 — Librarian.handle_event method + episodic event consumer
+
+**Severity**: Medium
+**Priority**: Medium
+**Status**: Identified
+**Target**: TBD
+**Trigger**: When event system prioritised.
+**Reason**: Plan 22 S5 deferred — Librarian has no handle_event method. Need to implement episodic event consumer pattern for librarian to subscribe to task events (created, updated, completed) for knowledge graph updates.
 
 ---
 
@@ -93,17 +110,6 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 
 ---
 
-## DEBT-6 — Librarian.handle_event method + episodic event consumer
-
-**Severity**: Medium
-**Priority**: Medium
-**Status**: Identified
-**Target**: TBD
-**Trigger**: When event system prioritised.
-**Reason**: Plan 22 S5 deferred — Librarian has no handle_event method. Need to implement episodic event consumer pattern for librarian to subscribe to task events (created, updated, completed) for knowledge graph updates.
-
----
-
 ## DEBT-9 — Cross-task persistent graph memory
 
 **Severity**: Medium
@@ -112,14 +118,3 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Target**: TBD
 **Trigger**: When graph memory prioritised.
 **Reason**: Plan 24 S5 implemented TaskGraphCache as per-task ephemeral memory using SQLite :memory: database. Cross-task persistent graph memory was deferred to avoid scope creep. Future implementation would use file-backed SQLite to maintain graph state across task boundaries for persistent knowledge accumulation.
-
----
-
-## DEBT-10 — AR7 violation - UI/core layering in Plan 25
-
-**Severity**: Medium
-**Priority**: Medium
-**Status**: Deferred
-**Target**: Plan 26
-**Trigger**: Plan 25 commit separation
-**Reason**: Plan 25 S7 AR check detected AR7 violation: commit touches both UI layers (app/tui/, app/web/) and core layer (app/sovereignai/). This violates AR7 (UI layers must not touch sovereignai/). To resolve, changes should be split into separate commits: one for UI-only changes, one for core-only changes. Deferring to Plan 26 for proper commit separation. Plan 25.1 deferred this debt as it requires git history manipulation beyond current plan scope.
