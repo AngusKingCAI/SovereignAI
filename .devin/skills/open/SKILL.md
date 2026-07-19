@@ -17,8 +17,6 @@ Operational Rules: See .agent/executor/OR_RULES.md
 
 Run `/open` workflow. STOP on any failure.
 
-**FALLBACK**: If skill tool invocation fails, execute steps manually via read/exec tools.
-
 1. Read `AGENTS.md`.
 2. Read plan file `prompts/plan-{N}-Rev{X}.md`.
 3. Read plan header AR rules from `.agent/executor/ARCHITECTURE.md` (listed rules only).

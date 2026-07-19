@@ -17,14 +17,14 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/executor/AR
 8. Scripts are SSOT. Skills reference scripts by path; no inline commands.
 9. Coverage ≥90% at `/close`. No exemptions.
 10. Never execute workflow steps manually unless explicitly requested by user. Always use skills/workflows as intended.
-11. Skill invocation failure: If `/open`, `/verify`, or `/close` cannot be invoked via skill tool (skill not found, permission denied, or other invocation error), execute via shell commands as fallback. Log the failure reason. If shell fallback also fails, STOP completely. Skill tool failures indicate environment/tooling issues that should be reported.
+11. Skill invocation failure: If `/open`, `/verify`, or `/close` cannot be invoked via skill tool (skill not found, permission denied, or other invocation error), STOP completely. Skill tool failures indicate environment/tooling issues that should be reported.
 
 ---
 
 ## Session Protocol
 
-1. Read plan file → read AR rules and OR rules from plan header → invoke `/open` slash command → if skill tool fails, execute via shell → STOP on failure
-2. Execute steps → invoke `/verify` slash command after each edit → if skill tool fails, execute via shell → STOP on failure
-3. → Invoke `/close` slash command → if skill tool fails, execute via shell → STOP on failure
+1. Read plan file → read AR rules and OR rules from plan header → invoke `/open` slash command → STOP on failure
+2. Execute steps → invoke `/verify` slash command after each edit → STOP on failure
+3. → Invoke `/close` slash command → STOP on failure
 
 Ambiguous → read `.agent/shared/LANDMINES.md`.

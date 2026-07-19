@@ -17,8 +17,6 @@ Operational Rules: See .agent/executor/OR_RULES.md
 
 Run `/verify` workflow after every file edit. STOP on any failure.
 
-**FALLBACK**: If skill tool invocation fails, execute steps manually via exec tool with scripts.
-
 1. Syntax check: `verify_syntax.py <file>`. STOP on error. (Supports: .py, .json, .toml, .yaml, .yml, .html, .htm, .css, .js)
 2. If <file> is `.py`: Run ruff: `ruff check --fix <file>`. If still failing: STOP.
 3. If <file> is `.py`: Import path check: `.agent/executor/scripts/check_import_paths.py` (if <file> is in app/sovereignai/). STOP on error.
