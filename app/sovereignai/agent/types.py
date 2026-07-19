@@ -6,7 +6,6 @@ from typing import Literal
 
 @dataclass
 class AgentErrorObservation:
-    """Error observation from agent execution."""
     error_type: str
     message: str
     last_response: str | None = None
@@ -16,13 +15,11 @@ class AgentErrorObservation:
 
 @dataclass
 class FinalAnswer:
-    """Final answer from agent reasoning."""
     content: str
 
 
 @dataclass
 class AgentResult:
-    """Result of agent execution."""
     status: Literal["success", "error"]
     output: str | None = None
     error: AgentErrorObservation | None = None

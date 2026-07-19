@@ -53,8 +53,8 @@ def test_plans_table_completeness() -> None:
     assert plans_path.exists(), "PLANS.md not found"
 
     plans_content = plans_path.read_text(encoding="utf-8")
-    assert "## Recent Completed" in plans_content, "Recent Completed section missing"
-    assert "workflow-fix-6" in plans_content, "Recent workflow fix not documented"
+    assert "## Recent History" in plans_content, "Recent History section missing"
+    assert "Plan 25.3" in plans_content, "Recent plan not documented"
 
 
 def test_plans_baseline_reconciliation_completeness() -> None:
@@ -64,4 +64,4 @@ def test_plans_baseline_reconciliation_completeness() -> None:
 
     plans_content = plans_path.read_text(encoding="utf-8")
     assert "## Current Baseline" in plans_content, "Current Baseline section missing"
-    assert "20.9.9" in plans_content, "Recent baseline plan not documented"
+    assert "plan-25.3-Rev1" in plans_content, "Recent baseline plan not documented"

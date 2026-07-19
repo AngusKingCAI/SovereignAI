@@ -19,19 +19,15 @@ log = logging.getLogger(__name__)
 
 
 class CodingManager(DepartmentManager):
-    """Department manager for coding tasks using ReAct Worker with file operations."""
 
     def __init__(self, container: DIContainer, project_root: Path | None = None) -> None:
         super().__init__(container)
         self._project_root = project_root
 
     async def _build_context_impl(self, task: Any) -> dict[str, Any]:
-        """Build symbol context for coding tasks."""
-        # Will be implemented when SymbolMap exists (S4)
         return {}
 
     async def build_context(self, task: Any) -> dict | None:
-        """Build context using SymbolMap with async wrapping to avoid blocking event loop."""
         try:
             from sovereignai.indexing.symbol_map import SymbolMap
             from sovereignai.shared.trace_emitter import TraceEmitter
@@ -73,8 +69,6 @@ class CodingManager(DepartmentManager):
             return None
 
     def validate(self, deliverable: Deliverable) -> ValidationResult:
-        """Validate coding deliverable - check tests exist and pass."""
-        # Basic validation - will be enhanced in S9 tests
         if deliverable.success:
             return ValidationResult(passed=True)
         else:
@@ -85,7 +79,6 @@ class CodingManager(DepartmentManager):
             )
 
     async def execute_task(self, task: Any) -> Deliverable:
-        """Execute coding task using ReAct Worker with symbol context."""
         from sovereignai.agent.factory import ReActLoopFactory
         from sovereignai.memory.graph_backend import TaskGraphCache
         from sovereignai.shared.trace_emitter import TraceEmitter

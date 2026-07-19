@@ -1,6 +1,7 @@
 Depends on: Plans 22-24, Plan 28 (Options, soft runtime dependency — S3.4 reads BehaviorSettings with fallback)
 Vision principles: P8 (UIs are separate processes), P11 (Quality), P14 (Modularity)
 Open questions resolved: DD-26.6, DD-26.7, DD-26.8
+**Revision**: Rev5
 
 ## S0 — Opening
 

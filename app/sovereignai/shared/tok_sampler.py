@@ -28,4 +28,4 @@ def estimate_tok_s(model: ModelEntry, hw: HardwareSnapshot) -> float | None:
         return None
 
     tok_s = max_bandwidth_bytes_per_s / model.file_size_bytes * 0.65
-    return tok_s
+    return float(tok_s)

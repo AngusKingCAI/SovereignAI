@@ -5,7 +5,6 @@ from typing import Any
 
 
 class TokenBudgetExceededError(Exception):
-    """Raised when pinned minimum exceeds adapter max context tokens."""
 
     def __init__(self, minimum: int, maximum: int) -> None:
         self.minimum = minimum
@@ -17,17 +16,14 @@ class TokenBudgetExceededError(Exception):
 
 @dataclass
 class TokenBudgetHistory:
-    """Manages conversation history with token budget compression."""
 
     max_context_tokens: int = 8192
     history: list[dict[str, Any]] = field(default_factory=list)
 
     def add_turn(self, role: str, content: str) -> None:
-        """Add a conversation turn to history."""
         self.history.append({"role": role, "content": content})
 
     def to_messages(self, budget: int) -> list[dict[str, str]]:
-        """Convert history to messages within budget, preserving system + task + last 2 turns."""
         if not self.history:
             return []
 

@@ -15,10 +15,7 @@ def main(repo_root: Path | None = None) -> None:
     if repo_root is None:
         # Check for REPO_ROOT environment variable first
         env_root = os.environ.get('REPO_ROOT')
-        if env_root:
-            repo_root = Path(env_root)
-        else:
-            repo_root = Path(__file__).parent.parent.parent.parent
+        repo_root = Path(env_root) if env_root else Path(__file__).parent.parent.parent.parent
 
     # Use CHANGELOG as source of truth (per verify_close.py)
     changelog = repo_root / '.agent' / 'shared' / 'CHANGELOG.md'
@@ -38,7 +35,8 @@ def main(repo_root: Path | None = None) -> None:
         # Convert "prompt-22-rev16" to "plan-22-rev16" for file lookup
         current_plan_file = current_plan.replace("prompt-", "plan-")
 
-        # Look for the plan file in completed/ first (most recent completed plans), then prompts/ (active)
+        # Look for the plan file in completed/ first (most recent completed plans),
+        # then prompts/ (active)
         plan_path = repo_root / 'prompts' / 'completed' / f'{current_plan_file}.md'
         if plan_path.exists():
             print(plan_path)

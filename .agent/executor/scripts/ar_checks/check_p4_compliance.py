@@ -12,9 +12,12 @@ def check_p4_compliance() -> int:
     # Get repo root from git to handle different script locations
     result = subprocess.run(
         ["git", "rev-parse", "--show-toplevel"],
-        capture_output=True, text=True, cwd=Path(__file__).parent
+        capture_output=True, text=True, cwd=Path(__file__).parent,
     )
-    repo_root = Path(result.stdout.strip()) if result.returncode == 0 else Path(__file__).parent.parent.parent.parent.parent
+    repo_root = (
+        Path(result.stdout.strip()) if result.returncode == 0
+        else Path(__file__).parent.parent.parent.parent.parent
+    )
 
     # (a) Count adapters with model.inference capability
     adapters_dir = repo_root / "app" / "adapters" / "external"

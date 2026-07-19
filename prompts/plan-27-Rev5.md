@@ -1,6 +1,7 @@
 Depends on: Plan 26 (Orchestrator), Plan 22 (EventBus), Plan 24 (DepartmentManager registry, audit database)
 Vision principles: P8 (UIs are separate processes), P11 (Quality), P14 (Modularity)
 Open questions resolved: DD-27.1
+**Revision**: Rev5
 
 ## S0 — Opening
 

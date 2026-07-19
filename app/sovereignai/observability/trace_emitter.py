@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# Re-export — canonical in shared.trace_emitter
 from sovereignai.shared.event_bus import EventBus
 from sovereignai.shared.trace_emitter import TraceEmitter
 from sovereignai.shared.types import TraceLevel

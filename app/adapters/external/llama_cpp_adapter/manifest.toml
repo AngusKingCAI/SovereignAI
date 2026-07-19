@@ -6,6 +6,9 @@ author = "user"
 content_hash = "sha256:e67e94ea87773fc71d8e4337bf4b95d21baf5cb4e3223331998accd3fcf8805f"
 routing_priority = 20
 
+[component.kwargs]
+health_check = true
+
 [[provides]]
 category = "model_inference"
 name = "text_generation"

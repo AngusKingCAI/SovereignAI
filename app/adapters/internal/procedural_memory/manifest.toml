@@ -5,6 +5,9 @@ version = "0.1.0"
 author = "system"
 content_hash = "sha256:placeholder-internal-adapter"
 
+[component.kwargs]
+health_check = true
+
 [[provides]]
 category = "memory"
 name = "procedural"

@@ -111,9 +111,11 @@ class MessageDispatcher:
                     keywords = data.get("intent_keywords", [])
                     if isinstance(keywords, list):
                         return [str(k) for k in keywords]
-                except Exception:
-                    # If we can't read the manifest, return empty list
-                    pass
+                except (tomllib.TOMLDecodeError, OSError) as e:
+                    import logging
+                    logging.getLogger(__name__).error(
+                        f"Failed to read manifest {manifest_path}: {e}"
+                    )
         return []
 
     def _get_capability_name(self, component_id: ComponentId) -> str:
@@ -121,7 +123,7 @@ class MessageDispatcher:
         for manifest in manifests:
             if manifest.component_id == component_id and manifest.provides:
                 # Return the first capability name (primary capability)
-                return manifest.provides[0].name
+                return str(manifest.provides[0].name)
         # Fallback for Ollama adapter
         if component_id == ComponentId("ollama_adapter"):
             return "chat_completion"

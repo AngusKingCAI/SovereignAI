@@ -61,12 +61,10 @@ _logged_deprecations: set[str] = set()
 
 
 def register_deprecated_event(old_type: str, new_type: str) -> None:
-    """Register a deprecated event type mapping."""
     _deprecated_events[old_type] = new_type
 
 
 def check_event_version(event: Event) -> Event:
-    """Check event version and emit deprecation warning if needed."""
     if (
         event.channel in _deprecated_events
         and event.channel not in _logged_deprecations

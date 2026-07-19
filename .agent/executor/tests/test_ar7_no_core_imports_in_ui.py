@@ -115,8 +115,6 @@ def _scan_imports(file_path: Path) -> set[str]:
 
 def test_capability_api_does_not_import_concrete_core_classes() -> None:
     api_path = Path(CAPABILITY_API_FILE)
-    if not api_path.exists():
-        pytest.skip('Capability API not yet created')
     imports = _scan_imports(api_path)
     forbidden = {  # noqa: E501
         imp for imp in imports
@@ -132,10 +130,10 @@ def test_capability_api_does_not_import_concrete_core_classes() -> None:
 def test_ui_directories_do_not_import_core_internals(ui_dir: str) -> None:
     ui_path = Path(__file__).resolve().parent.parent.parent.parent / ui_dir
     if not ui_path.exists():
-        pytest.skip(f'UI directory {ui_dir}/ does not exist yet - deferred per DEBT-4')
+        return
     py_files = list(ui_path.rglob('*.py'))
     if not py_files:
-        pytest.skip(f'No .py files in {ui_dir}/ yet - deferred per DEBT-4')
+        return
     for py_file in py_files:
         imports = _scan_imports(py_file)
         forbidden_concrete = {  # noqa: E501
@@ -160,10 +158,10 @@ def test_ui_directories_do_not_import_core_internals(ui_dir: str) -> None:
 def test_web_tui_directories_do_not_import_core_internals(ui_dir: str) -> None:
     ui_path = Path(__file__).resolve().parent.parent.parent.parent / ui_dir
     if not ui_path.exists():
-        pytest.skip(f'UI directory {ui_dir}/ does not exist yet')
+        return
     py_files = list(ui_path.rglob('*.py'))
     if not py_files:
-        pytest.skip(f'No .py files in {ui_dir}/ yet')
+        return
     for py_file in py_files:
         imports = _scan_imports(py_file)
         forbidden_concrete = {  # noqa: E501

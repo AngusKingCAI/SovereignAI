@@ -41,7 +41,9 @@ class HardwareProbe:
                     timeout=5,
                 )
                 return result.returncode == 0 and bool(result.stdout.strip())
-            except (FileNotFoundError, subprocess.TimeoutExpired):
+            except (FileNotFoundError, subprocess.TimeoutExpired) as e:
+                import logging
+                logging.getLogger(__name__).error(f"nvidia-smi check failed: {e}")
                 return False
         else:
             # Linux/macOS: check for nvidia-smi in PATH
@@ -63,8 +65,9 @@ class HardwareProbe:
                 )
                 if result.returncode == 0:
                     return int(result.stdout.strip())
-            except (FileNotFoundError, subprocess.TimeoutExpired, ValueError):
-                pass
+            except (FileNotFoundError, subprocess.TimeoutExpired, ValueError) as e:
+                import logging
+                logging.getLogger(__name__).error(f"CPU core count check failed: {e}")
         return 0
 
     def has_cuda_via_torch(self) -> bool:

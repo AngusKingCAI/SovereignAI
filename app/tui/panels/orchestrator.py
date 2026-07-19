@@ -3,16 +3,23 @@ from __future__ import annotations
 from typing import Any
 
 from sovereignai.shared.capability_api import CapabilityAPI
-from sovereignai.shared.types import CapabilityCategory
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import CapabilityCategory, TraceLevel
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, Input, RichLog, Static
 
 
 class OrchestratorPanel(Vertical):
-    def __init__(self, container: Any, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        container: Any,
+        trace: TraceEmitter,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self._container = container
+        self._trace = trace
         self._api = None
 
     def compose(self) -> ComposeResult:
@@ -30,7 +37,11 @@ class OrchestratorPanel(Vertical):
             self._populate_model_selector()
         except Exception as e:
             import traceback
-            print(f"OrchestratorPanel load error: {e}")
+            self._trace.emit(
+                component="OrchestratorPanel",
+                level=TraceLevel.ERROR,
+                message=f"OrchestratorPanel load error: {e}",
+            )
             traceback.print_exc()
 
     def _populate_model_selector(self) -> None:

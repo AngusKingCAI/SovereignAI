@@ -161,8 +161,12 @@ class EventBus:
                 trace_level=TraceLevel.INFO,
             )
             await self._safe_publish_internal(trace_event)
-        except Exception:
-            pass
+        except (RuntimeError, ValueError) as e:
+            self._trace.emit(
+                component="EventBus",
+                level=TraceLevel.ERROR,
+                message=f"EventBus trace publish failed: {e}",
+            )
 
     async def _write_critical_overflow(self, event: Event) -> None:
         def write_to_sqlite() -> None:
@@ -201,8 +205,12 @@ class EventBus:
                 )
                 conn.commit()
                 conn.close()
-            except Exception:
-                pass
+            except (sqlite3.Error, OSError) as e:
+                self._trace.emit(
+                    component="EventBus",
+                    level=TraceLevel.ERROR,
+                    message=f"Critical overflow write failed: {e}",
+                )
 
         with contextlib.suppress(Exception):
             await asyncio.to_thread(write_to_sqlite)
@@ -230,8 +238,10 @@ class EventBus:
         except RuntimeError:
             return
 
-        with contextlib.suppress(Exception):
+        try:  # noqa: SIM105
             await self.publish_async(event)
+        except (RuntimeError, ValueError):
+            pass
 
     def start(self) -> None:
         if self._state != "INIT":

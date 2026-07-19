@@ -3,7 +3,7 @@
 from unittest.mock import MagicMock
 
 import pytest
-from sovereignai.observability.trace_emitter import TraceEmitterWrapper
+from sovereignai.shared.trace_emitter import TraceEmitterWrapper
 from sovereignai.shared.types import TraceLevel
 
 

@@ -133,7 +133,8 @@ def check_plan_files_moved() -> tuple[bool, str]:
     # Add "plan-" prefix to current_plan for file lookup
     plan_file_prefix = f"plan-{current_plan}"
 
-    # Look for {plan_file_prefix}.md OR {plan_file_prefix}-Rev*.md (historical: {plan_file_prefix}-rev*.md)
+    # Look for {plan_file_prefix}.md OR {plan_file_prefix}-Rev*.md
+    # (historical: {plan_file_prefix}-rev*.md)
     prompts_dir = REPO_ROOT / "prompts"
     completed_dir = REPO_ROOT / "prompts" / "completed"
 
@@ -148,7 +149,11 @@ def check_plan_files_moved() -> tuple[bool, str]:
         or list(prompts_dir.glob(rev_pattern_upper))
         or list(prompts_dir.glob(rev_pattern_lower))
     ):
-        return True, f"Plan file {plan_file_prefix} still in prompts/ (not yet completed - OK for active work)"
+        return (
+            True,
+            f"Plan file {plan_file_prefix} still in prompts/ "
+            "(not yet completed - OK for active work)",
+        )
 
     # Check if any variant exists in completed/
     if (

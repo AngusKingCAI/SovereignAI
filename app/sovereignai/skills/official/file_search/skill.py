@@ -110,5 +110,9 @@ def _search_recursive(
                 if item.match(pattern):
                     results.append(str(item))
 
-    except PermissionError:
-        pass
+    except PermissionError as e:
+        import logging
+        logging.getLogger(__name__).error(f"Permission denied accessing {current}: {e}")
+    except OSError as e:
+        import logging
+        logging.getLogger(__name__).error(f"OS error accessing {current}: {e}")

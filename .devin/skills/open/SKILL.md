@@ -23,7 +23,7 @@ Run `/open` workflow. STOP on any failure.
 4. Read plan header OR rules from `.agent/executor/OR_RULES.md` (listed rules only).
 5. Read `.agent/shared/CHANGELOG.md` latest entry.
 6. Read `.agent/shared/DEBT.md` for deferred items.
-7. Move all log files from subfolders (1-9, 10-19, 20-29, Misc) to logs root directory for easy access by running `.agent/executor/scripts/move_logs_to_root.py`.
+7. Organize log files from logs root into numbered subfolders (1-9, 10-19, 20-29, Misc) by running `.agent/executor/scripts/organize_logs.py`.
 8. Identify ambiguities. Ask user. Wait for answers.
 9. Update `.agent/shared/PLANS.md` with new plan entry (mark "In Progress", shift upcoming queue).
 10. Begin Phase 1.

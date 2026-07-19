@@ -5,6 +5,10 @@ from typing import Any
 _CONFORMANCE_TESTS: dict[str, list[type]] = {}
 
 
+class ConformanceRegistry:
+    pass
+
+
 def register(capability_class: str) -> Callable[[type], type]:
     def decorator(cls: type) -> type:
         _CONFORMANCE_TESTS.setdefault(capability_class, []).append(cls)
@@ -28,8 +32,10 @@ def get_conformance_tests_for_class(capability_class: str) -> list[type]:
                 try:
                     cls: type = ep.load()
                     tests.append(cls)
-                except Exception:
-                    pass
-    except Exception:
-        pass
+                except (ImportError, AttributeError) as e:
+                    import logging
+                    logging.getLogger(__name__).error(f"Failed to load conformance test: {e}")
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Failed to discover conformance tests: {e}")
     return tests

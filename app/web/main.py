@@ -83,7 +83,7 @@ async def first_run_redirect(request: Request, call_next: Any) -> Response:
         or path in ("/login", "/register")
         or path.startswith("/api/auth/")
     ):
-        return await call_next(request)  # type: ignore[no-any-return]
+        return await call_next(request)
 
     container: Any = request.app.state.container
     auth: Any = container.retrieve(AuthMiddleware)
@@ -96,7 +96,7 @@ async def first_run_redirect(request: Request, call_next: Any) -> Response:
                 status_code=401,
                 content={"detail": "No user registered — complete first-run setup"},
             )
-        return RedirectResponse(url="/register")  # type: ignore[no-any-return]
+        return RedirectResponse(url="/register")
 
     return await call_next(request)  # type: ignore[no-any-return]
 
@@ -199,7 +199,7 @@ async def auth_status(request: Request) -> dict:
 @app.get("/api/capabilities", dependencies=[Depends(get_current_user)])
 async def get_capabilities(request: Request) -> list[CapabilityResponseDTO]:
     container: Any = request.app.state.container
-    capability_index: Any = container.retrieve(ICapabilityIndex)  # type: ignore[type-abstract]
+    capability_index: Any = container.retrieve(ICapabilityIndex)
     manifests = capability_index.list_all_components()
 
     dtos = []
@@ -222,7 +222,7 @@ async def get_capabilities(request: Request) -> list[CapabilityResponseDTO]:
 @app.get("/api/workers", dependencies=[Depends(get_current_user)])
 async def get_workers(request: Request) -> list[dict]:
     container: Any = request.app.state.container
-    capability_index: Any = container.retrieve(ICapabilityIndex)  # type: ignore[type-abstract]
+    capability_index: Any = container.retrieve(ICapabilityIndex)
     components = capability_index.list_all_components()
 
     return [
@@ -240,7 +240,7 @@ async def get_tasks(request: Request) -> list[TaskResponseDTO]:
     from sovereignai.shared.task_state_machine import ITaskStateQuery
 
     container: Any = request.app.state.container
-    task_state_query: Any = container.retrieve(ITaskStateQuery)  # type: ignore[type-abstract]
+    task_state_query: Any = container.retrieve(ITaskStateQuery)
     tasks = task_state_query.list_tasks()
 
     dtos: list[TaskResponseDTO] = []
@@ -442,7 +442,7 @@ async def dispatch(request: Request) -> TaskResponseDTO:
 
     container: Any = request.app.state.container
     capability_api: Any = container.retrieve(CapabilityAPI)
-    task_state_query: Any = container.retrieve(ITaskStateQuery)  # type: ignore[type-abstract]
+    task_state_query: Any = container.retrieve(ITaskStateQuery)
     token = get_session_token(request)
 
     data = await request.json()
@@ -774,7 +774,7 @@ async def get_skills(request: Request) -> SkillListDTO:
     from sovereignai.shared.capability_graph import ICapabilityIndex
 
     container: Any = request.app.state.container
-    capability_index: Any = container.retrieve(ICapabilityIndex)  # type: ignore[type-abstract]
+    capability_index: Any = container.retrieve(ICapabilityIndex)
 
     skills = []
     for manifest in capability_index.list_all_components():
@@ -802,7 +802,7 @@ async def execute_skill(
     from sovereignai.skills.session import SkillSession
 
     container: Any = request.app.state.container
-    skill_runner: Any = container.retrieve(ISkillRunner)  # type: ignore[type-abstract]
+    skill_runner: Any = container.retrieve(ISkillRunner)
     skill_session: Any = container.retrieve(SkillSession)
 
     try:
@@ -876,7 +876,7 @@ async def get_first_run_check(request: Request) -> FirstRunStatusDTO:
     from sovereignai.shared.capability_graph import ICapabilityIndex
 
     container: Any = request.app.state.container
-    capability_index: Any = container.retrieve(ICapabilityIndex)  # type: ignore[type-abstract]
+    capability_index: Any = container.retrieve(ICapabilityIndex)
 
     healthy = []
     for meta in capability_index.adapters_by_capability("model_inference"):
@@ -920,7 +920,7 @@ async def submit_agent_task(request: Request, task_dto: AgentTaskSubmitDTO) -> A
 
     # Get skill runner (ISkillRunner)
     from sovereignai.skills.runner import ISkillRunner
-    skill_runner = container.retrieve(ISkillRunner)  # type: ignore[type-abstract]
+    skill_runner = container.retrieve(ISkillRunner)
 
     # Create ReActLoop instance
     config = ReActConfig()

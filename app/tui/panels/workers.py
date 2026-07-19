@@ -3,15 +3,23 @@ from __future__ import annotations
 from typing import Any
 
 from sovereignai.shared.lifecycle_manager import LifecycleManager
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import TraceLevel
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, DataTable, Static
 
 
 class WorkersPanel(Vertical):
-    def __init__(self, container: Any, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        container: Any,
+        trace: TraceEmitter,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self._container = container
+        self._trace = trace
         self._lifecycle = None
 
     def compose(self) -> ComposeResult:
@@ -28,7 +36,11 @@ class WorkersPanel(Vertical):
             self._refresh_workers()
         except Exception as e:
             import traceback
-            print(f"WorkersPanel load error: {e}")
+            self._trace.emit(
+                component="WorkersPanel",
+                level=TraceLevel.ERROR,
+                message=f"WorkersPanel load error: {e}",
+            )
             traceback.print_exc()
 
     def _refresh_workers(self) -> None:

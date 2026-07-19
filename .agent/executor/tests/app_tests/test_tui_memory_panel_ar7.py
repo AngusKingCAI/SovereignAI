@@ -22,8 +22,9 @@ def test_memory_panel_uses_capability_api() -> None:
     container = MagicMock()
     api = MagicMock(spec=CapabilityAPI)
     container.retrieve.return_value = api
+    trace = MagicMock()
 
-    panel = MemoryPanel(container)
+    panel = MemoryPanel(container, trace)
     panel._api = api
 
     assert panel._api is not None

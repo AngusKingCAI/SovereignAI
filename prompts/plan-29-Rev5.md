@@ -1,6 +1,7 @@
 Depends on: Plan 28 (Options), Plan 22 (EventBus)
 Vision principles: P3 (Reliability), P8 (UIs are separate processes), P11 (Quality), P14 (Modularity)
 Open questions resolved: DD-29.1, DD-29.2, DD-29.3, DD-29.4, DD-29.5
+**Revision**: Rev5
 
 ## S0 — Opening
 

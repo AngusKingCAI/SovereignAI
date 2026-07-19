@@ -3,15 +3,23 @@ from __future__ import annotations
 from typing import Any
 
 from sovereignai.shared.capability_api import CapabilityAPI
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import TraceLevel
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, DataTable, RichLog, Static
 
 
 class MemoryPanel(Vertical):
-    def __init__(self, container: Any, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        container: Any,
+        trace: TraceEmitter,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self._container = container
+        self._trace = trace
         self._api = None
 
     def compose(self) -> ComposeResult:
@@ -29,7 +37,11 @@ class MemoryPanel(Vertical):
             self._refresh_memory_table()
         except Exception as e:
             import traceback
-            print(f"MemoryPanel load error: {e}")
+            self._trace.emit(
+                component="MemoryPanel",
+                level=TraceLevel.ERROR,
+                message=f"MemoryPanel load error: {e}",
+            )
             traceback.print_exc()
 
     def _refresh_memory_table(self) -> None:

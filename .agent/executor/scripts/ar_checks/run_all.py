@@ -84,7 +84,10 @@ def main() -> int:
     ar_checks_dir = Path(__file__).parent
 
     scripts = sorted(ar_checks_dir.glob("*.py"))
-    scripts = [s for s in scripts if s.name != "run_all.py" and not s.name.startswith("_")]
+    scripts = [
+        s for s in scripts
+        if s.name != "run_all.py" and not s.name.startswith("_")
+    ]
 
     if not scripts:
         print("No AR-check scripts found in scripts/ar_checks/")

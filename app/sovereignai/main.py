@@ -41,7 +41,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     container.register_singleton(EventRegistry, registry)
 
     # 2.5. TraceEmitterWrapper — depends on EventBus + TraceEmitter, singleton (Plan 23 S1)
-    from sovereignai.observability.trace_emitter import TraceEmitterWrapper
+    from sovereignai.shared.trace_emitter import TraceEmitterWrapper
     trace_wrapper = TraceEmitterWrapper(event_bus=bus, inner=trace)
     container.register_singleton(TraceEmitterWrapper, trace_wrapper)
 
@@ -65,7 +65,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     )
     graph = CapabilityGraph(trace=trace, dev_mode=dev_mode)
     container.register_singleton(CapabilityGraph, graph)
-    container.register_singleton(ICapabilityIndex, graph)  # type: ignore[type-abstract]
+    container.register_singleton(ICapabilityIndex, graph)
 
     # 4. LifecycleManager — depends on TraceEmitter, singleton (Plan 3)
     # Rev2 per Finding 4: accepts TraceEmitter to emit on circuit-breaker trips.
@@ -76,7 +76,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     # 5. RoutingEngine — depends on ICapabilityIndex + LifecycleManager + TraceEmitter
     from sovereignai.shared.routing_engine import RoutingEngine
     router = RoutingEngine(
-        capability_index=container.retrieve(ICapabilityIndex),  # type: ignore[type-abstract]
+        capability_index=container.retrieve(ICapabilityIndex),
         lifecycle_manager=lifecycle,
         trace=trace,
     )
@@ -89,7 +89,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     )
     state_machine = TaskStateMachine(bus=bus, trace=trace)
     container.register_singleton(TaskStateMachine, state_machine)
-    container.register_singleton(ITaskStateQuery, state_machine)  # type: ignore[type-abstract]
+    container.register_singleton(ITaskStateQuery, state_machine)
 
     # 7. AuthMiddleware — depends on TraceEmitter, singleton (Plan 4)
     from sovereignai.shared.auth import AuthMiddleware
@@ -108,8 +108,8 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     from sovereignai.shared.task_state_machine import ITaskStateQuery, TaskStateMachine
     api = CapabilityAPI(
         auth=auth,
-        capability_index=container.retrieve(ICapabilityIndex),  # type: ignore[type-abstract]
-        task_state_query=container.retrieve(ITaskStateQuery),  # type: ignore[type-abstract]
+        capability_index=container.retrieve(ICapabilityIndex),
+        task_state_query=container.retrieve(ITaskStateQuery),
         state_machine=container.retrieve(TaskStateMachine),
         trace=trace,
         hardware_probe=HardwareProbe(),
@@ -128,7 +128,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     dispatcher = MessageDispatcher(
         capability_api=container.retrieve(CapabilityAPI),
         capability_graph=container.retrieve(CapabilityGraph),
-        task_state_machine=container.retrieve(ITaskStateQuery),  # type: ignore[type-abstract]
+        task_state_machine=container.retrieve(ITaskStateQuery),
         trace=trace,
     )
     container.register_singleton(MessageDispatcher, dispatcher)
@@ -145,7 +145,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
         capability_graph=container.retrieve(CapabilityGraph),
         trace=trace,
     )
-    container.register_singleton(ISkillRunner, skill_runner)  # type: ignore[type-abstract]
+    container.register_singleton(ISkillRunner, skill_runner)
     container.register_singleton(ConcreteSkillRunner, skill_runner)
 
     skill_session = SkillSession()
@@ -234,23 +234,23 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     from sovereignai.agent.config import ReActConfig
     from sovereignai.agent.factory import ReActLoopFactory
     from sovereignai.agent.react import ReActLoop
-    from sovereignai.observability.trace_emitter import TraceEmitterWrapper
+    from sovereignai.shared.trace_emitter import TraceEmitterWrapper
 
     react_config = ReActConfig()
 
     # Register ReActLoop instance as ReActLoopFactory
     react_loop = ReActLoop(
         config=react_config,
-        skill_runner=container.retrieve(ISkillRunner),  # type: ignore
+        skill_runner=container.retrieve(ISkillRunner),
         session_registry=container.retrieve(ToolSessionRegistry),
         emitter=container.retrieve(TraceEmitterWrapper)
     )
-    container.register_instance(ReActLoopFactory, react_loop)  # type: ignore
+    container.register_instance(ReActLoopFactory, react_loop)
 
     # 13. Register default_model_path_resolver (Plan 19 S2.1)
     # Note: Registered as a singleton since it's a pure function
     from sovereignai.shared.model_path_resolver import default_model_path_resolver
-    container.register_singleton(default_model_path_resolver, default_model_path_resolver)  # type: ignore[arg-type]
+    container.register_singleton(default_model_path_resolver, default_model_path_resolver)
 
     # 14. DatabaseRegistry and ServiceRegistry (Plan 17)
     from sovereignai.shared.database_registry import DatabaseRegistry
@@ -326,7 +326,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     if config.version_negotiation_enabled:
         from sovereignai.versioning.negotiator import VersionNegotiator
         negotiator = VersionNegotiator(
-            capability_graph=container.retrieve(ICapabilityIndex),  # type: ignore[type-abstract]
+            capability_graph=container.retrieve(ICapabilityIndex),
             trace=trace,
         )
         result = negotiator.negotiate()
@@ -394,7 +394,7 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
             and hasattr(event, "old_state")
             and hasattr(event, "new_state")
         ):
-            self_correction.on_task_state_changed(event)  # type: ignore
+            self_correction.on_task_state_changed(event)
     bus.subscribe(Channel("TaskStateChanged"), _wrap_task_state_changed)
 
     # 21. Register Test Manager and Worker for TUI (Plan 20.4 S8)
@@ -416,7 +416,6 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
 
     # 20. Crash recovery (re-enabled per L41 fix)
     import os
-    import sys
 
 
     marker_path = os.path.expanduser("~/.sovereignai/.shutdown_marker")
@@ -446,7 +445,11 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
                     metadata={"task_id": task_id_str, "task_state": "failed"},
                 )
     except Exception as e:
-        print(f"Crash recovery failed (non-fatal): {e}", file=sys.stderr)
+        trace.emit(
+            component="build_container",
+            level=TraceLevel.ERROR,
+            message=f"Crash recovery failed (non-fatal): {e}",
+        )
 
     # Wire TraceEmitter → TraceMemoryBackend (deferred to background thread)
     import queue
@@ -473,8 +476,12 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
                     },
                     metadata={},
                 )
-            except Exception:
-                pass
+            except Exception as e:
+                trace.emit(
+                    component="trace_writer",
+                    level=TraceLevel.ERROR,
+                    message=f"Trace writer error: {e}",
+                )
 
     if hasattr(trace, 'subscribe_callback'):
         _writer_thread = threading.Thread(target=_trace_writer, daemon=True)
@@ -513,14 +520,18 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
                     ),
                 },
             )
-        except Exception:
-            pass
+        except Exception as e:
+            trace.emit(
+                component="self_correction",
+                level=TraceLevel.ERROR,
+                message=f"Self-correction error: {e}",
+            )
     bus.subscribe(TASK_STATE_CHANNEL, _on_task_state_persist)
 
     def _on_task_cleanup(event: Event) -> None:
         terminal = (TaskState.COMPLETE.value, TaskState.FAILED.value)
         if hasattr(event, "task_id") and hasattr(event, "new_state"):
-            task_changed = event  # type: ignore
+            task_changed = event
             val = (
                 task_changed.new_state.value
                 if isinstance(task_changed.new_state, TaskState)
@@ -590,10 +601,17 @@ if __name__ == "__main__":
             message="Composition root built successfully — Plan 1 components wired",
         )
         for event in trace.get_events():
-            level_str = event.level.value if hasattr(event.level, 'value') else str(event.level)
-            print(f"[{level_str}] {event.component}: {event.message}")
+            trace.emit(
+                component=event.component,
+                level=event.level,
+                message=event.message,
+            )
     except FatalIncompatibilityError as e:
-        print(f"SovereignAI cannot start:\n{e}", file=sys.stderr)
+        trace.emit(
+            component="build_container",
+            level=TraceLevel.ERROR,
+            message=f"SovereignAI cannot start:\n{e}",
+        )
         # F7: 30s countdown is DEFAULT. --no-wait skips it. isatty() is a HINT, not a hard gate.
         if args.no_wait:
             sys.exit(1)

@@ -1,6 +1,7 @@
 Depends on: Plan 24 (SQLite pattern), Plan 22 (EventBus)
 Vision principles: P3 (Reliability), P8 (UIs are separate processes), P11 (Quality), P14 (Modularity)
 Open questions resolved: DD-28.1, DD-28.2, DD-28.3, DD-28.4
+**Revision**: Rev5
 
 ## S0 — Opening
 

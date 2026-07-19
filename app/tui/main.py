@@ -36,8 +36,10 @@ class SovereignTUI(App):
 
     def _load_container(self) -> None:
         from sovereignai.main import build_container
+        from sovereignai.shared.trace_emitter import TraceEmitter
 
         self.container = build_container()
+        self.trace = self.container.retrieve(TraceEmitter)
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         button_id = event.button.id
@@ -62,7 +64,7 @@ class SovereignTUI(App):
             if name == panel_name:
                 module = __import__(module_path, fromlist=[class_name])
                 panel_class = getattr(module, class_name)
-                panel = panel_class(self.container, id=panel_id)
+                panel = panel_class(self.container, self.trace, id=panel_id)
                 placeholder.remove()
                 self.query_one("#main-content", ContentSwitcher).mount(panel)
                 break

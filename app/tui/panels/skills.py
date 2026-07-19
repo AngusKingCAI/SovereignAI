@@ -3,15 +3,23 @@ from __future__ import annotations
 from typing import Any
 
 from sovereignai.shared.capability_api import CapabilityAPI
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import TraceLevel
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, DataTable, Static
 
 
 class SkillsPanel(Vertical):
-    def __init__(self, container: Any, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        container: Any,
+        trace: TraceEmitter,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self._container = container
+        self._trace = trace
         self._api = None
 
     def compose(self) -> ComposeResult:
@@ -28,7 +36,11 @@ class SkillsPanel(Vertical):
             self._refresh_skills()
         except Exception as e:
             import traceback
-            print(f"SkillsPanel load error: {e}")
+            self._trace.emit(
+                component="SkillsPanel",
+                level=TraceLevel.ERROR,
+                message=f"SkillsPanel load error: {e}",
+            )
             traceback.print_exc()
 
     def _refresh_skills(self) -> None:

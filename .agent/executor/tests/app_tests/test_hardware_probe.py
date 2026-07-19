@@ -281,6 +281,8 @@ def test_conformance_entry_points_exception_handling() -> None:
     ):
         tests = get_conformance_tests_for_class('test_capability')
         assert isinstance(tests, list)
+        # Should return registered tests even on entry_points error
+        # (tests from _CONFORMANCE_TESTS are still returned)
 
 
 def test_conformance_entry_points_load_exception() -> None:
@@ -296,6 +298,8 @@ def test_conformance_entry_points_load_exception() -> None:
     ):
         tests = get_conformance_tests_for_class('test_capability')
         assert isinstance(tests, list)
+        # Should return registered tests even on load error
+        # (tests from _CONFORMANCE_TESTS are still returned)
 
 
 def test_lifecycle_manager_set_status() -> None:

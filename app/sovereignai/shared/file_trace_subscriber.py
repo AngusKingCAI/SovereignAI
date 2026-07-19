@@ -38,8 +38,9 @@ class FileTraceSubscriber:
             with self._lock:
                 self._file.write(line + "\n")
                 self._file.flush()
-        except Exception:
-            pass
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).error(f"File trace subscriber error: {e}")
 
     def close(self) -> None:
         self._file.close()

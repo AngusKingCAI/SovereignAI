@@ -7,7 +7,6 @@ from pydantic import BaseModel
 
 
 class StructuredOutputExhaustedError(Exception):
-    """Raised when structured output extraction fails after max attempts."""
 
     def __init__(self, last_raw: str, failure_reasons: list[str]) -> None:
         self.last_raw = last_raw
@@ -20,18 +19,15 @@ class StructuredOutputExhaustedError(Exception):
 
 @dataclass
 class ToolCall:
-    """Represents a tool call in ReAct reasoning."""
     name: str
     arguments: dict[str, Any]
 
 
 class FinalAnswer(BaseModel):
-    """Final answer from ReAct reasoning."""
     content: str
 
 
 class SingleCallStructuredOutput:
-    """Extracts structured output (ToolCall | FinalAnswer) with bounded retry."""
 
     def __init__(self, emitter: Any) -> None:
         self._emitter = emitter

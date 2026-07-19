@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import AsyncGenerator
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 from uuid import UUID, uuid4
 
 from sovereignai.shared.auth import AuthMiddleware
@@ -218,7 +218,7 @@ class CapabilityAPI:
         if self._database_registry is None:
             return []
         catalog = ModelCatalog(self._database_registry, self._trace)
-        return catalog.list_models(ModelFilter())
+        return cast(list[ModelEntry], catalog.list_models(ModelFilter()))
 
     def query_skills(self, token: str) -> list[dict[str, Any]]:
         self._auth.validate(token)
@@ -270,7 +270,7 @@ class CapabilityAPI:
 
     def query_logs(self, token: str, correlation_id: str | None = None) -> list[TraceEvent]:
         self._auth.validate(token)
-        return self._trace.get_events()
+        return cast(list[TraceEvent], self._trace.get_events())
 
     def query_memory(
         self,

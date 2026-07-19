@@ -18,9 +18,12 @@ def check_m1_import_paths() -> int:
     # Get repo root from git to handle different script locations
     result = subprocess.run(
         ["git", "rev-parse", "--show-toplevel"],
-        capture_output=True, text=True, cwd=Path(__file__).parent
+        capture_output=True, text=True, cwd=Path(__file__).parent,
     )
-    repo_root = Path(result.stdout.strip()) if result.returncode == 0 else Path(__file__).parent.parent.parent.parent.parent
+    repo_root = (
+        Path(result.stdout.strip()) if result.returncode == 0
+        else Path(__file__).parent.parent.parent.parent.parent
+    )
     check_script = repo_root / ".agent" / "executor" / "scripts" / "check_import_paths.py"
 
     if not check_script.exists():

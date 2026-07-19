@@ -6,7 +6,7 @@ import pytest
 from sovereignai.agent.config import ReActConfig
 from sovereignai.agent.react import ReActLoop
 from sovereignai.agent.tool_session import ToolSessionRegistry
-from sovereignai.observability.trace_emitter import TraceEmitterWrapper
+from sovereignai.shared.trace_emitter import TraceEmitterWrapper
 
 
 @pytest.fixture

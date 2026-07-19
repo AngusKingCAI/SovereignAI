@@ -15,7 +15,7 @@ from sovereignai.agent.structured_output import (
 )
 from sovereignai.agent.tool_session import ToolSessionRegistry
 from sovereignai.agent.types import AgentErrorObservation, AgentResult, FinalAnswer
-from sovereignai.observability.trace_emitter import TraceEmitterWrapper
+from sovereignai.shared.trace_emitter import TraceEmitterWrapper
 from sovereignai.shared.types import TraceLevel
 
 

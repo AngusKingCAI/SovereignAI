@@ -4,7 +4,6 @@ from pydantic import BaseModel, Field
 
 
 class ReActConfig(BaseModel):
-    """Configuration for ReAct loop execution."""
 
     max_context_tokens: int = Field(
         default=8192, description="Maximum context tokens for LLM"

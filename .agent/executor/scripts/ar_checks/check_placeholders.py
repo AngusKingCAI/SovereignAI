@@ -5,7 +5,14 @@ from pathlib import Path
 
 
 def main():
-    search_dirs = ["app/sovereignai", "app/web", "app/adapters", "app/skills", "app/databases", "app/services"]
+    search_dirs = [
+        "app/sovereignai",
+        "app/web",
+        "app/adapters",
+        "app/skills",
+        "app/databases",
+        "app/services",
+    ]
     patterns = [r"TODO", r"FIXME", r"XXX", r"NotImplementedError", r"pass\s+#\s*placeholder"]
 
     violations = []

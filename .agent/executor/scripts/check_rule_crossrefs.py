@@ -88,9 +88,9 @@ def is_historical_section(content: str, line_num: int, file_name: str, file_path
 
     # File-specific exemptions
     if file_name == 'PLANS.md':
-        # Check if in "Completed Prompts" table
+        # Check if in "Recent History" or "Completed Prompts" table
         for i in range(max(0, line_num - 20), line_num):
-            if 'completed prompts' in lines[i].lower():
+            if 'recent history' in lines[i].lower() or 'completed prompts' in lines[i].lower():
                 return True
 
     return False
@@ -126,10 +126,7 @@ def main(repo_root: Path | None = None):
     if repo_root is None:
         # Check for REPO_ROOT environment variable first
         env_root = os.environ.get('REPO_ROOT')
-        if env_root:
-            repo_root = Path(env_root)
-        else:
-            repo_root = Path(__file__).parent.parent.parent.parent
+        repo_root = Path(env_root) if env_root else Path(__file__).parent.parent.parent.parent
 
     agents_path = repo_root / 'AGENTS.md'
 

@@ -6,6 +6,9 @@ author = "user"
 content_hash = "sha256:placeholder-external-adapter"
 routing_priority = 10
 
+[component.kwargs]
+health_check = true
+
 intent_keywords = ["chat", "talk", "ask", "explain", "help", "what", "how", "why"]
 
 [[provides]]

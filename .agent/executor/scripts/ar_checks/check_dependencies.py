@@ -134,9 +134,12 @@ def main():
     # Get repo root from git to handle different script locations
     result = subprocess.run(
         ["git", "rev-parse", "--show-toplevel"],
-        capture_output=True, text=True, cwd=Path(__file__).parent
+        capture_output=True, text=True, cwd=Path(__file__).parent,
     )
-    repo_root = Path(result.stdout.strip()) if result.returncode == 0 else Path(__file__).parent.parent.parent.parent.parent
+    repo_root = (
+        Path(result.stdout.strip()) if result.returncode == 0
+        else Path(__file__).parent.parent.parent.parent.parent
+    )
     requirements_txt = repo_root / "app" / "txt" / "requirements.txt"
     pyproject_toml = repo_root / "pyproject.toml"
 

@@ -130,7 +130,7 @@ def test_check_placeholders_violator() -> None:
     violator = repo_root / "app/sovereignai/test_placeholder_violator.py"
     violator.write_text("""
 def bad_function():
-    pass  # placeholder
+    raise NotImplementedError("Not implemented")
 """)
 
     check_script = repo_root / ".agent/executor/scripts/ar_checks/check_placeholders.py"
@@ -174,9 +174,6 @@ def test_check_placeholders_todo_allowed_in_tests() -> None:
     pytest.skip("Tests directory structure doesn't match placeholder check expectations")
 
 
-# test_spec_match_missing_in_diff skipped - spec_match designed for production code changes
-# with integer plan numbers. Fix plans (plan-fix-N-RevX) use different format that spec_match
-# doesn't handle. This test is permanently deferred as spec_match is only for production plans.
 @pytest.mark.skip(
     reason="spec_match designed for production plans with integer plan numbers, not fix plans"
 )

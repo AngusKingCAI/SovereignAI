@@ -9,7 +9,6 @@ def build_react_prompt(
     context: str | None = None,
     memory_context: str | None = None,
 ) -> str:
-    """Build ReAct loop prompt with system prompt, tools, and optional context sections."""
     system_prompt = """You are a reasoning agent that uses a THOUGHT-ACTION-OBSERVATION loop.
 
 For each step:

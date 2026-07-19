@@ -4,15 +4,23 @@ from datetime import UTC
 from typing import Any
 
 from sovereignai.shared.capability_api import CapabilityAPI
-from sovereignai.shared.types import TaskState
+from sovereignai.shared.trace_emitter import TraceEmitter
+from sovereignai.shared.types import TaskState, TraceLevel
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, DataTable, RichLog, Static
 
 
 class TasksPanel(Vertical):
-    def __init__(self, container: Any, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        container: Any,
+        trace: TraceEmitter,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
+        self._container = container
+        self._trace = trace
         self._container = container
         self._api = None
 
@@ -33,7 +41,11 @@ class TasksPanel(Vertical):
             self.call_after_refresh(self._refresh_tasks)
         except Exception as e:
             import traceback
-            print(f"TasksPanel load error: {e}")
+            self._trace.emit(
+                component="TasksPanel",
+                level=TraceLevel.ERROR,
+                message=f"TasksPanel load error: {e}",
+            )
             traceback.print_exc()
 
     def _refresh_tasks(self) -> None:

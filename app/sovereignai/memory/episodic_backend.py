@@ -27,8 +27,8 @@ class EpisodicMemoryBackend:
         self._conn = sqlite3.connect(self._db_path)
         self._conn.execute("PRAGMA journal_mode=WAL")
         self._conn.execute("PRAGMA busy_timeout=5000")
-        self._conn.execute("""
-            CREATE TABLE IF NOT EXISTS episodes (
+        self._conn.execute(
+            """CREATE TABLE IF NOT EXISTS episodes (
                 id TEXT PRIMARY KEY,
                 timestamp REAL NOT NULL,
                 component TEXT NOT NULL,
@@ -36,8 +36,8 @@ class EpisodicMemoryBackend:
                 event_type TEXT NOT NULL,
                 data TEXT NOT NULL,
                 metadata TEXT
-            )
-        """)
+            )"""
+        )
         self._conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_episodes_task ON episodes(task_id)"
         )
@@ -60,11 +60,9 @@ class EpisodicMemoryBackend:
 
         if self._conn:
             self._conn.execute(
-                """
-                INSERT INTO episodes
+                """INSERT INTO episodes
                 (id, timestamp, component, task_id, event_type, data, metadata)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
+                VALUES (?, ?, ?, ?, ?, ?, ?)""",
                 (record_id, timestamp, component, task_id, event_type, episode_data, metadata_json),
             )
             self._conn.commit()
@@ -100,12 +98,10 @@ class EpisodicMemoryBackend:
 
         where_clause = " AND ".join(conditions) if conditions else "1=1"
 
-        sql = f"""
-            SELECT id, timestamp, component, task_id, event_type, data, metadata
+        sql = f"""SELECT id, timestamp, component, task_id, event_type, data, metadata
             FROM episodes
             WHERE {where_clause}
-            ORDER BY timestamp ASC
-        """  # nosec B608
+            ORDER BY timestamp ASC"""  # nosec B608
 
         cursor = self._conn.execute(sql, params)
         results = []

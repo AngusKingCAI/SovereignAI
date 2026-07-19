@@ -5,7 +5,7 @@ import os
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 if TYPE_CHECKING:
     from sovereignai.shared.trace_emitter import TraceEmitter
@@ -22,7 +22,7 @@ class MatrixEntry:
     version_b: str
     content_hash_b: str
     tested_at: str  # ISO 8601 timestamp
-    status: str  # "compatible", "incompatible"
+    status: Literal["compatible", "incompatible", "unknown"]
 
 
 class CompatibilityMatrix:
@@ -146,7 +146,7 @@ class CompatibilityMatrix:
         component_b: str,
         version_b: str,
         content_hash_b: str,
-    ) -> str:
+    ) -> Literal["compatible", "incompatible", "unknown"]:
         data = self._load_with_recovery(self.STORAGE_PATH)
 
         for entry in data["entries"]:
@@ -162,8 +162,8 @@ class CompatibilityMatrix:
                     entry["content_hash_a"] != content_hash_a
                     or entry["content_hash_b"] != content_hash_b
                 ):
-                    return "unknown"  # type: ignore[no-any-return]
-                return entry["status"]  # type: ignore[no-any-return]
+                    return "unknown"
+                return cast(Literal["compatible", "incompatible", "unknown"], entry["status"])
 
             # Check reverse order with matching content hashes
             if (
@@ -176,15 +176,15 @@ class CompatibilityMatrix:
                     entry["content_hash_a"] != content_hash_b
                     or entry["content_hash_b"] != content_hash_a
                 ):
-                    return "unknown"  # type: ignore[no-any-return]
-                return entry["status"]  # type: ignore[no-any-return]
+                    return "unknown"
+                return cast(Literal["compatible", "incompatible", "unknown"], entry["status"])
 
-        return "unknown"  # type: ignore[no-any-return]
+        return "unknown"
 
-    def _load_with_recovery(self, path: Path) -> dict:  # type: ignore[no-any-return]
+    def _load_with_recovery(self, path: Path) -> dict[str, Any]:
         try:
             with path.open("r") as f:
-                return json.load(f)  # type: ignore[no-any-return]
+                return cast(dict, json.load(f))
         except (json.JSONDecodeError, FileNotFoundError) as e:
             # Try backup
             try:
@@ -195,7 +195,7 @@ class CompatibilityMatrix:
                     level=self._get_trace_level("WARN"),
                     message=f"Main file corrupted, restored from backup: {e}",
                 )
-                return data  # type: ignore[no-any-return]
+                return cast(dict[str, Any], data)
             except (json.JSONDecodeError, FileNotFoundError):
                 # Both failed - rebuild with empty matrix
                 self._trace.emit(
@@ -203,9 +203,9 @@ class CompatibilityMatrix:
                     level=self._get_trace_level("WARN"),
                     message=f"Main file and backup corrupted, rebuilding empty matrix: {e}",
                 )
-                return {"schema_version": self.SCHEMA_VERSION, "entries": []}  # type: ignore[no-any-return]
+                return cast(dict[str, Any], {"schema_version": self.SCHEMA_VERSION, "entries": []})
 
     def _get_trace_level(self, level: str) -> TraceLevel:
         from sovereignai.shared.types import TraceLevel
 
-        return TraceLevel(level.lower())  # type: ignore[return-value]
+        return TraceLevel(level.lower())
