@@ -22,8 +22,9 @@ def container(client: TestClient):
 
 
 def test_events_types_requires_auth(client: TestClient) -> None:
+    # Full stack integration test - skip by default for CI speed
     if not os.environ.get("SOVEREIGNAI_FULL_STACK_TESTS"):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
 
     response = client.get("/api/events/types")
     assert response.status_code == 401
@@ -31,7 +32,7 @@ def test_events_types_requires_auth(client: TestClient) -> None:
 
 def test_events_subscriptions_requires_auth(client: TestClient) -> None:
     if not os.environ.get("SOVEREIGNAI_FULL_STACK_TESTS"):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
 
     response = client.get("/api/events/subscriptions")
     assert response.status_code == 401
@@ -39,7 +40,7 @@ def test_events_subscriptions_requires_auth(client: TestClient) -> None:
 
 def test_events_types_returns_list(client: TestClient, container) -> None:
     if not os.environ.get("SOVEREIGNAI_FULL_STACK_TESTS"):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
 
     from sovereignai.shared.auth import AuthMiddleware
 
@@ -58,7 +59,7 @@ def test_events_types_returns_list(client: TestClient, container) -> None:
 
 def test_events_subscriptions_returns_list(client: TestClient, container) -> None:
     if not os.environ.get("SOVEREIGNAI_FULL_STACK_TESTS"):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
 
     from sovereignai.shared.auth import AuthMiddleware
 

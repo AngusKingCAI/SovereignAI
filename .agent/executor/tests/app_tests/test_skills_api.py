@@ -9,7 +9,7 @@ from web.main import app
 
 def test_list_endpoint_returns_correct_dto() -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     with TestClient(app) as client:
         # First, we need to authenticate
         response = client.post(
@@ -35,7 +35,7 @@ def test_list_endpoint_returns_correct_dto() -> None:
 
 def test_execute_endpoint_with_mock_skill() -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     with TestClient(app) as client:
         # Authenticate
         response = client.post(
@@ -61,7 +61,7 @@ def test_execute_endpoint_with_mock_skill() -> None:
 
 def test_auth_rejection_without_cookie() -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     with TestClient(app) as client:
         # Test without authentication
         response = client.get("/api/skills")

@@ -49,7 +49,7 @@ class TestManifestLoading:
     @classmethod
     def setup_class(cls):
         if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-            pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+            pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
 
     def test_real_manifests_parse(self) -> None:
         from sovereignai.shared.manifest_parser import parse_manifest
@@ -94,7 +94,7 @@ class TestDispatchRoute:
     @classmethod
     def setup_class(cls):
         if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-            pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+            pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
 
     def test_dispatch_returns_task_id(self, client_authenticated: TestClient) -> None:
         response = client_authenticated.post('/api/dispatch', json={'message': 'test message'})
@@ -109,7 +109,7 @@ class TestFirstRunAuthHandling:
     @classmethod
     def setup_class(cls):
         if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-            pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+            pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
 
     def test_api_capabilities_returns_401_on_first_run(self, client_no_users: TestClient) -> None:
         response = client_no_users.get('/api/capabilities')
@@ -136,7 +136,7 @@ class TestTasksRouteAfterDispatch:
     @classmethod
     def setup_class(cls):
         if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-            pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+            pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
 
     def test_tasks_empty_initially(self, client_authenticated: TestClient) -> None:
         response = client_authenticated.get('/api/tasks')

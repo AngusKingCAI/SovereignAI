@@ -29,14 +29,14 @@ def container(client: TestClient) -> Any:
 
 def test_hardware_endpoint_requires_auth(client: TestClient) -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     response = client.get("/api/hardware")
     assert response.status_code == 401
 
 
 def test_hardware_endpoint_returns_snapshot(client: TestClient, container: Any) -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     from sovereignai.shared.auth import AuthMiddleware
     auth = container.retrieve(AuthMiddleware)
     auth.register_user("testuser", "testpass")
@@ -57,7 +57,7 @@ def test_hardware_endpoint_returns_snapshot(client: TestClient, container: Any) 
 
 def test_hardware_stream_endpoint_requires_auth(client: TestClient) -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     response = client.get("/api/hardware/stream")
     assert response.status_code == 403
 
@@ -65,7 +65,7 @@ def test_hardware_stream_endpoint_requires_auth(client: TestClient) -> None:
 @pytest.mark.timeout(5)
 def test_hardware_stream_endpoint_sse(client: TestClient, container: Any) -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     from sovereignai.shared.auth import AuthMiddleware
     from sovereignai.shared.capability_api import CapabilityAPI
 
@@ -92,7 +92,7 @@ def test_hardware_stream_endpoint_sse(client: TestClient, container: Any) -> Non
 @pytest.mark.timeout(10)
 def test_hardware_stream_sse_multiple_events(client: TestClient, container: Any) -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     from sovereignai.shared.auth import AuthMiddleware
     from sovereignai.shared.capability_api import CapabilityAPI
 

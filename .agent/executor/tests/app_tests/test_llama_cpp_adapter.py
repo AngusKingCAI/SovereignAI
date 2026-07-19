@@ -51,7 +51,7 @@ def adapter(mock_trace, mock_hardware_probe, mock_database_registry, mock_model_
 
 def test_model_not_found_error(adapter, mock_database_registry, mock_trace):
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     mock_database_registry.find_model.return_value = None
 
     with pytest.raises(ModelNotFoundError):

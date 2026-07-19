@@ -20,7 +20,7 @@ def test_init_no_io() -> None:
 @patch("app.services.ollama_service.provider.shutil.which")
 def test_start_ollama_not_found(mock_which: MagicMock) -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     trace = TraceEmitter()
     provider = OllamaServiceProvider(trace)
     mock_which.return_value = None
@@ -60,7 +60,7 @@ def test_start_success(mock_which: MagicMock, mock_popen: MagicMock, mock_get: M
 @patch("app.services.ollama_service.provider.shutil.which")
 def test_start_timeout(mock_which: MagicMock, mock_popen: MagicMock, mock_get: MagicMock) -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     trace = TraceEmitter()
     provider = OllamaServiceProvider(trace, port=8080)
 

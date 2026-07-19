@@ -36,9 +36,9 @@ def test_department_full_cycle_integration():
     assert manager._container is container
 
     # Runtime guard checks imports AND hasattr(Librarian, 'handle_event')
-    # Skip if Librarian subscription unavailable
+    # Skip if Librarian subscription unavailable (DEBT-6)
     if hasattr(librarian, 'handle_event'):
         # Would test full integration here
         pass
     else:
-        pytest.skip("Librarian.handle_event not available")
+        pytest.skip("Librarian.handle_event not available - deferred per DEBT-6")

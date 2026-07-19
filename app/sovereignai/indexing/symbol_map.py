@@ -167,10 +167,9 @@ class SymbolMap:
 
         try:
             # Initialize parser with Python language
-            parser = Parser()
             try:
                 import tree_sitter_python as tspython
-                parser.set_language(Language(tspython.language()))
+                parser = Parser(Language(tspython.language()))
             except ImportError:
                 # Fallback: try to use built-in language if available
                 log.warning("tree-sitter-python not available, using fallback")

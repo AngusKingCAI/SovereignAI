@@ -120,7 +120,7 @@ def test_download_model(
 @patch("huggingface_hub.HfApi")
 def test_no_compatible_quant_error(mock_hf_api: MagicMock) -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     trace = TraceEmitter()
     cache_dir = Path.home() / ".cache"
     provider = HFDatabaseProvider(trace, cache_dir)

@@ -45,7 +45,7 @@ def mock_hf_list_models() -> Generator[None, None, None]:
 
 def test_get_databases_unauthorized() -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     with TestClient(app, raise_server_exceptions=False) as client:
         response = client.get("/api/databases")
         assert response.status_code == 401
@@ -53,7 +53,7 @@ def test_get_databases_unauthorized() -> None:
 
 def test_get_services_unauthorized() -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     with TestClient(app, raise_server_exceptions=False) as client:
         response = client.get("/api/services")
         assert response.status_code == 401
@@ -61,7 +61,7 @@ def test_get_services_unauthorized() -> None:
 
 def test_get_databases_authorized() -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     from sovereignai.main import build_container
 
     container = build_container()
@@ -90,7 +90,7 @@ def test_get_databases_authorized() -> None:
 
 def test_get_services_authorized() -> None:
     if not os.environ.get('SOVEREIGNAI_FULL_STACK_TESTS'):
-        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run")
+        pytest.skip("Set SOVEREIGNAI_FULL_STACK_TESTS=1 to run full stack integration tests")
     with TestClient(app, raise_server_exceptions=False) as client:
         # Register first user
         client.post("/api/auth/register", json={"username": "test", "password": "test123"})

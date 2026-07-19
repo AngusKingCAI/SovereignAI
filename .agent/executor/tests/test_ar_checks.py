@@ -167,9 +167,9 @@ def good_function():
 
 
 def test_check_placeholders_todo_allowed_in_tests() -> None:
-    # Test directory doesn't exist at root, skip this test
+    # Test directory structure doesn't match expectations - test deferred
     import pytest
-    pytest.skip("No tests directory at root level")
+    pytest.skip("Tests directory structure doesn't match placeholder check expectations")
 
 
 # test_spec_match_missing_in_diff skipped - spec_match designed for production code changes
