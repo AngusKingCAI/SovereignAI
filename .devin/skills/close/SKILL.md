@@ -10,6 +10,7 @@ allowed-tools:
   - exec
   - edit
   - write
+  - skill
 ---
 
 Operational Rules: See .agent/executor/OR_RULES.md
@@ -48,5 +49,6 @@ Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (step 11): abor
 
     *Populate this file with the chat transcript from the {plan-name} plan execution.*
     ```
-13. Documentation: prepend CHANGELOG, update PLANS.md (mark "Completed", shift upcoming queue).
+13. Log organization: move all log files from root back to their appropriate numbered folders by running `.agent/executor/scripts/move_logs_to_folders.py`.
+14. Documentation: prepend CHANGELOG, update PLANS.md (mark "Completed", shift upcoming queue).
 14. Git: `git status` → identify session files only → `git add` specific files → commit → tag `prompt-{N}` → push.

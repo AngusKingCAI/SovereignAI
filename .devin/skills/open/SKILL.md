@@ -9,6 +9,7 @@ allowed-tools:
   - exec
   - edit
   - write
+  - skill
 ---
 
 Operational Rules: See .agent/executor/OR_RULES.md
@@ -24,7 +25,8 @@ Run `/open` workflow. STOP on any failure.
 4. Read plan header OR rules from `.agent/executor/OR_RULES.md` (listed rules only).
 5. Read `.agent/shared/CHANGELOG.md` latest entry.
 6. Read `.agent/shared/DEBT.md` for deferred items.
-7. Identify ambiguities. Ask user. Wait for answers.
-8. Update `.agent/shared/PLANS.md` with new plan entry (mark "In Progress", shift upcoming queue).
-9. Begin Phase 1.
-10. After each phase: run `verify_syntax.py`, `ruff check`, scoped `pytest`. STOP on failure.
+7. Move all log files from subfolders (1-9, 10-19, 20-29, Misc) to logs root directory for easy access by running `.agent/executor/scripts/move_logs_to_root.py`.
+8. Identify ambiguities. Ask user. Wait for answers.
+9. Update `.agent/shared/PLANS.md` with new plan entry (mark "In Progress", shift upcoming queue).
+10. Begin Phase 1.
+11. After each phase: run `verify_syntax.py`, `ruff check`, scoped `pytest`. STOP on failure.
