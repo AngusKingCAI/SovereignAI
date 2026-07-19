@@ -28,7 +28,7 @@ def main(repo_root: Path | None = None) -> None:
         content = f.read()
 
     # Parse the Active Plan section first
-    active_plan_match = re.search(r'## Active Plan\s*\| (.*?) \| (.*?) \|', content, re.MULTILINE)
+    active_plan_match = re.search(r'## Active Plan.*?\n\|.*?\n\| (.*?) \| (.*?) \|', content, re.DOTALL)
     if active_plan_match:
         plan_name = active_plan_match.group(1).strip()
         plan_rev = active_plan_match.group(2).strip()
