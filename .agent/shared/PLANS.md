@@ -33,6 +33,15 @@ Full history: `.agent/shared/CHANGELOG.md`.
 
 None.
 
+## Compliance State
+
+| Check | Status | Last Verified |
+|-------|--------|---------------|
+| Executor Manifest present (GR14) | ✅ | plan-27-Rev5 |
+| Execution attestation produced | ✅ | plan-27-Rev5 |
+| verify_execution.py PASS | ✅ | plan-27-Rev5 |
+| Trace file complete | ✅ | plan-27-Rev5 |
+
 ## Recent History (last 5)
 
 | Plan | Rev | Date | Note |

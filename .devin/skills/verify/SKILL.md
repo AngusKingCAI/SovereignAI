@@ -13,16 +13,20 @@ allowed-tools:
 ---
 
 Operational Rules: See .agent/executor/OR_RULES.md
-- Read UOR section (Universal) + VOR section (verify-specific)
+- Read UOR section (Universal: UOR-1, UOR-2, UOR-3, UOR-4, UOR-5, UOR-6) + VOR section (verify-specific)
 
 Run `/verify` workflow after every file edit. STOP on any failure.
 
-1. Syntax check: `verify_syntax.py <file>`. STOP on error. (Supports: .py, .json, .toml, .yaml, .yml, .html, .htm, .css, .js)
-2. If <file> is `.py`: Run ruff: `ruff check --fix <file>`. If still failing: STOP.
-3. If <file> is `.py`: Import path check: `.agent/executor/scripts/check_import_paths.py` (if <file> is in app/sovereignai/). STOP on error.
-4. If <file> is `.py`: Run mypy: `mypy <file>`. STOP on error.
-5. OR checks: `or_checks/run_all.py` (if exists).
-6. Landmine checks: `landmine_checks/run_all.py` (if exists).
-7. Report: `<file>: OK` or `<file>: FAIL`.
+1. **Manually run `.agent/executor/hooks/check_manifest.py --file <file> --plan {N}` before editing. (UOR-5, Invariant 7 — fallback if config.json hook fails)**
+2. Syntax check: `verify_syntax.py <file>`. STOP on error. (Supports: .py, .json, .toml, .yaml, .yml, .html, .htm, .css, .js)
+3. If <file> is `.py`: Run ruff: `ruff check --fix <file>`. If still failing: STOP.
+4. If <file> is `.py`: Import path check: `.agent/executor/scripts/check_import_paths.py` (if <file> is in app/sovereignai/). STOP on error.
+5. If <file> is `.py`: Run mypy: `mypy <file>`. STOP on error.
+6. OR checks: `or_checks/run_all.py` (if exists).
+7. Landmine checks: `landmine_checks/run_all.py` (if exists).
+8. **Phase gate check: Verify current phase deliverables exist and meet thresholds per Executor Manifest. If any deliverable missing or check fails: STOP. (UOR-4)**
+9. **Append verification result to trace: `.agent/executor/traces/trace-plan-{N}.jsonl` with timestamp, phase, step, file, checks, result. (Invariant 12)**
+10. **Manually run `.agent/executor/hooks/append_trace.py --skill verify --plan {N}` to log /verify invocation. (Invariant 12 — fallback if config.json hook fails)**
+11. Report: `<file>: OK` or `<file>: FAIL`.
 
 Note: Test execution moved to `/close` skill for scoped testing based on modified files.

@@ -10,6 +10,19 @@
       "Exec(pip-audit)",
       "Exec(vulture)",
       "Exec(detect-secrets)"
+    ],
+    "deny": [
+      "Write(.agent/architect/**)",
+      "Write(.agent/executor/ARCHITECTURE.md)",
+      "Write(.agent/executor/OR_RULES.md)",
+      "Write(PRINCIPLES.md)",
+      "Write(.agent/architect/AI_HANDOFF.md)",
+      "Write(.agent/shared/LANDMINES.md)"
     ]
+  },
+  "hooks": {
+    "before_file_write": "python .agent/executor/hooks/check_manifest.py --file {file_path} --plan {plan_id}",
+    "after_skill_invoke": "python .agent/executor/hooks/append_trace.py --skill {skill_name} --plan {plan_id}",
+    "session_end": "python .agent/executor/hooks/verify_attestation.py --plan {plan_id}"
   }
 }

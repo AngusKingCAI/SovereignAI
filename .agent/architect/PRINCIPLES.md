@@ -31,3 +31,7 @@ P14. Provenance enforcement for external components. (Deferred.)
 - Architecture constraints: `.agent/executor/ARCHITECTURE.md`.
 - `/close` is atomic: verify before commit/tag/push.
 - Round table runs until clean pass. Each rev brings new evidence.
+- **Compliance is verifiable, not attested. The architect emits real-time
+  compliance lines after each workflow step. The executor produces an
+  attestation artifact verified by `verify_execution.py`. The human verifies
+  by checking sequences and running scripts — not by reading full output.**

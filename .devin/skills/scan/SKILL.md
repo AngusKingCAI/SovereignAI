@@ -13,7 +13,8 @@ allowed-tools:
 ---
 
 Operational Rules: See .agent/executor/OR_RULES.md
-- Read UOR section (Universal)
+- Read UOR section (Universal: UOR-1, UOR-2, UOR-3, UOR-4, UOR-5, UOR-6)
+- Read COR section (Close-specific: COR-1, COR-2, COR-3) — scan performs same closing checks
 
 Run `/scan` workflow. Whole-repo scan. No new features. Fixes only. STOP on failure.
 
@@ -31,5 +32,11 @@ Run `/scan` workflow. Whole-repo scan. No new features. Fixes only. STOP on fail
 12. Spec match: `spec_match.py`. STOP if exit!=0. No new features.
 13. Read `.agent/shared/DEBT.md`. Verify trigger conditions for external debts. Document status.
 14. HARD GATE - `verify_close.py`. If exit!=0: STOP. Do not commit.
-15. Documentation: prepend CHANGELOG, update PLANS.md.
-16. Git: commit, tag `prompt-{N}`, push.
+15. **Trace integrity check: Verify `.agent/executor/traces/trace-plan-{N}.jsonl` exists and contains entries for all phases declared in Executor Manifest. If gaps found: STOP. (Invariant 12)**
+16. **Verify `.agent/executor/ATTESTATION_TEMPLATE.md` exists. If missing: STOP. (COR-3, Invariant 13)**
+17. **Produce execution attestation: `logs/execution-attestation-plan-{N}.md` using template at `.agent/executor/ATTESTATION_TEMPLATE.md`. (Invariant 13, COR-3)**
+18. **Manually run `.agent/executor/hooks/verify_attestation.py --plan {N}` to verify attestation. (Invariant 13, COR-3 — fallback if config.json hook fails)**
+19. **Run `.agent/executor/scripts/verify_execution.py --final --plan {N}`. If FAIL: STOP. Do not commit. (UOR-4, COR-3)**
+20. **Manually run `.agent/executor/hooks/append_trace.py --skill scan --plan {N}` to log /scan invocation. (Invariant 12 — fallback if config.json hook fails)**
+21. Documentation: prepend CHANGELOG, update PLANS.md.
+22. Git: commit, tag `prompt-{N}`, push.

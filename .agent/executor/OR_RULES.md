@@ -21,6 +21,21 @@ These rules apply to all skills universally. Skills MUST read UOR section first.
 **Applies to**: close skill primarily
 **Trigger**: Before committing changes
 
+### UOR-4: Executor Manifest Compliance
+**Rule**: Every plan execution MUST read the Executor Manifest from the plan file at `/open`. The manifest defines phases, deliverables, gates, coverage target, and forbidden actions. Execution that deviates from the manifest = STOP. The executor runs `verify_execution.py --init` at `/open` and `--final` at `/close` to validate compliance automatically.
+**Applies to**: All skills
+**Trigger**: Plan execution start and end
+
+### UOR-5: Governance File Protection
+**Rule**: Governance files (ARCHITECTURE.md, OR_RULES.md, PRINCIPLES.md, AI_HANDOFF.md, LANDMINES.md) MUST NOT be modified during plan execution. The executor runs `check_manifest.py` before every file write to block unauthorized modifications. Any attempt to modify governance files = STOP.
+**Applies to**: All skills
+**Trigger**: Any file write operation
+
+### UOR-6: Execution Trace Requirement
+**Rule**: Every action (file edit, command run, skill invocation) MUST be appended to `.agent/executor/traces/trace-plan-{N}.jsonl`. The trace is the immutable record of execution. Missing trace entries indicate skipped steps or undetected drift. The executor runs `append_trace.py` after every skill invocation to ensure complete logging.
+**Applies to**: All skills
+**Trigger**: Every action during execution
+
 ## VOR — verify Skill Rules
 
 Rules specific to verify skill only.
@@ -51,6 +66,11 @@ Rules specific to close skill only.
 - Final verification: `run_failing_tests.py <test_path> --full` when all specific tests pass
 **Applies to**: close skill, verify skill
 **Trigger**: Test failure requiring fix
+
+### COR-3: Execution Attestation Required
+**Rule**: Before `/close` completes, the executor MUST produce `logs/execution-attestation-plan-{N}.md` using the template at `.agent/executor/ATTESTATION_TEMPLATE.md`. The attestation is verified by running `verify_execution.py --final --plan {N}`. If verification FAILs, do not commit, do not tag, do not push. The attestation is the executor's proof of compliance with the plan manifest.
+**Applies to**: close skill
+**Trigger**: Before session end
 
 ## SOR — scan Skill Rules
 

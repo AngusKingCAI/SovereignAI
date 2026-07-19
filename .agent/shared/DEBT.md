@@ -13,6 +13,7 @@ Open items only. Resolved items → CHANGELOG.md.
 | DEBT-7 | TUI cookie auth for agent SSE stream | Low | Low | Identified | TBD | TUI framework investigation |
 | DEBT-8 | Web UI consumer for agent SSE stream | Low | Low | Identified | TBD | Web UI implementation prioritised |
 | DEBT-9 | Cross-task persistent graph memory | Medium | Medium | Identified | TBD | Graph memory prioritised |
+| DEBT-11 | Workflow compliance verification system | Medium | High | In Progress | Plan 28 | Compliance system implementation |
 
 ## Resolved Items → See CHANGELOG.md
 
@@ -116,3 +117,14 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Target**: TBD
 **Trigger**: When graph memory prioritised.
 **Reason**: Plan 24 S5 implemented TaskGraphCache as per-task ephemeral memory using SQLite :memory: database by default for per-task isolation. Cross-task persistent graph memory functionality is already available via the db_path parameter (file-backed SQLite mode), but was not integrated into the agent system. Future work would integrate file-backed mode for persistent knowledge accumulation across task boundaries.
+
+---
+
+## DEBT-11 — Workflow compliance verification system
+
+**Severity**: Medium
+**Priority**: High
+**Status**: In Progress
+**Target**: Plan 28
+**Trigger**: Implementation of compliance artifacts in workflow files.
+**Reason**: The workflow needs verifiable artifacts to prevent scope drift and ensure exact procedure compliance. This debt tracks the implementation of: Executor Manifest in plan files, execution trace logging, execution attestation production, `verify_execution.py` script, and hook scripts for real-time enforcement. Once implemented and tested on Plan 28, this debt is resolved.
