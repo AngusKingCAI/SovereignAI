@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## prompt-26 — Orchestrator Component Implementation
+
+**Date**: 2026-07-19
+**Plan**: prompts/plan-26-Rev5.md
+**Tests**: 650 passed, 52 skipped (0 failures)
+**Previous Baseline**: plan-25.5-rev1
+**Coverage**: N/A (coverage tool not available)
+**Screenshots**: N/A
+
+**Changes**:
+- Created IntentClassifier with RuleBasedClassifier and LLMClassifier (with fallback to RuleBasedClassifier on timeout/error)
+- Implemented DepartmentRouter for department lifecycle management (init on first use, graceful shutdown)
+- Added ConversationStateManager with SQLite persistence using WAL+asyncio pattern and session retention
+- Built Orchestrator facade as CEO-level interface between Owner and departments
+- Integrated with EventBus for owner.message.received subscription and event publishing (orchestrator.response.ready, orchestrator.clarification_needed)
+- Added AR checks: check_orchestrator_no_react.py (verifies Orchestrator never imports ReActLoop) and check_orchestrator_single_entry.py (verifies only Orchestrator talks to Owner)
+- Fixed get_current_plan.py regex bug to correctly parse PLANS.md active plan (was matching header row instead of data row)
+- Added comprehensive test coverage for all Orchestrator components (test_orchestrator_classifier.py, test_orchestrator_router.py, test_orchestrator_state.py, test_orchestrator_facade.py, test_orchestrator_events.py)
+
+**Resolution Status**: All verification steps passed - tests, AR checks, landmine checks, static analysis
+
+---
+
 ## prompt-25.5-rev1 — Test Infrastructure Fixes
 
 **Date**: 2026-07-19
