@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## prompt-25.4-rev1 — Code Quality Refactoring & Architecture Enforcement
+
+**Date**: 2026-07-19
+**Plan**: prompts/plan-25.4-Rev1.md
+**Tests**: 643 passed, 52 skipped (0 failures)
+**Previous Baseline**: plan-25.3-rev1
+**Coverage**: N/A (coverage tool not available)
+**Screenshots**: N/A
+
+**Changes**:
+- Consolidated TraceEmitter implementations to shared.trace_emitter (canonical location)
+- Created missing AR check scripts: check_ar7_allowlist.py, check_component_manifest_kwargs.py, check_rule_crossrefs.py
+- Migrated print() statements to TraceEmitter.emit() in main.py and TUI panels for structured logging
+- Removed docstrings from sovereignai/ subdirectories to reduce code maintenance burden
+- Hardened .gitignore with additional Python, build, and IDE patterns
+- Added self-reference handling in plan-25.4-Rev1.md for plan reference resolution
+- Backfilled __init__.py files in sovereignai/ subdirectories for proper module structure
+- Backfilled adapter manifest skill files for all internal and external adapters
+- Cleaned up placeholder code across the codebase (TODO, FIXME, stub implementations)
+- Cleaned up execution log files and reorganized log directory structure
+- Removed type-abstract and no-any-return suppressions, fixed E501 line breaks, replaced silent failures with proper error handling
+- Integrated AR checks into run_all.py workflow for comprehensive architecture rule enforcement
+- Added iterative testing workflow (run_failing_tests.py) for faster development cycles
+- Fixed mypy type errors using proper cast() instead of suppressions
+- Fixed ruff linting errors (import organization, whitespace, type errors)
+- Updated governance docs (AGENTS.md, OR_RULES.md, close skill) to document testing best practices
+
 ## prompt-25.3-rev1 — Fix All Test Failures, Skipped Tests & Clear Remaining Debt
 
 **Date**: 2026-07-19

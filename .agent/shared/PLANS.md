@@ -9,15 +9,15 @@ Full history: `.agent/shared/CHANGELOG.md`.
 
 | Metric | Value | Source Plan |
 |--------|-------|-------------|
-| Tests | 637 passed, 58 skipped | plan-25.3-Rev1 |
-| ruff | 22 | plan-fix-7-Rev1 |
-| mypy | 0 | plan-fix-2-Rev1 |
+| Tests | 643 passed, 52 skipped | plan-25.4-Rev1 |
+| ruff | 0 | plan-25.4-Rev1 |
+| mypy | 0 | plan-25.4-Rev1 |
 
 ## Active Plan
 
 | Plan | Rev | Status | Start Date |
 |------|-----|--------|------------|
-| Plan 25.4 | Rev 1 | In Progress | 2026-07-19 |
+| — | — | — | — |
 
 ## Queue
 
@@ -37,8 +37,8 @@ None.
 
 | Plan | Rev | Date | Note |
 |------|-----|------|------|
+| Plan 25.4 | Rev 1 | 2026-07-19 | 643 passed, 52 skipped |
 | Plan 25.3 | Rev 1 | 2026-07-19 | 637 passed, 58 skipped |
 | Plan 25 | Rev 1 | 2026-07-19 | Governance infrastructure |
 | Plan 24 | Rev 16 | 2026-07-19 | Department Managers, File Edit Skill, Symbol Map, Graph Memory |
 | Plan 23 | Rev 16 | 2026-07-19 | ReAct Agent Loop |
-| Plan 22 | Rev 16 | 2026-07-19 | Event bus system |
