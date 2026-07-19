@@ -10,8 +10,9 @@ from pathlib import Path
 
 
 def get_plan_number(filename: str) -> int | None:
-    """Extract plan number from filename like 'execution-log-plan-25-Rev1.md'."""
-    match = re.search(r'plan-(\d+)', filename)
+    """Extract plan number from filename like 'execution-log-plan-25-Rev1.md' or 'execution-log-prompt-10.md'."""
+    # Try to match plan- or prompt- followed by a number
+    match = re.search(r'(?:plan|prompt)-(\d+)', filename)
     if match:
         return int(match.group(1))
     return None

@@ -51,4 +51,3 @@ Thumbs.db
 # Application runtime (logs, settings)
 app/logs/
 app/settings/
-logs/execution-log-*.md

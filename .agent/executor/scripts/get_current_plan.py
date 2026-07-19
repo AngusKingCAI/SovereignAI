@@ -17,41 +17,80 @@ def main(repo_root: Path | None = None) -> None:
         env_root = os.environ.get('REPO_ROOT')
         repo_root = Path(env_root) if env_root else Path(__file__).parent.parent.parent.parent
 
-    # Use CHANGELOG as source of truth (per verify_close.py)
-    changelog = repo_root / '.agent' / 'shared' / 'CHANGELOG.md'
-
-    if not changelog.exists():
-        print(f"ERROR: {changelog} not found", file=sys.stderr)
+    # Get current plan from PLANS.md (SSOT for active plan and recent history)
+    plans_file = repo_root / '.agent' / 'shared' / 'PLANS.md'
+    
+    if not plans_file.exists():
+        print(f"ERROR: {plans_file} not found", file=sys.stderr)
         sys.exit(1)
-
-    # Read CHANGELOG to get the current plan
-    with open(changelog, encoding='utf-8', errors='ignore') as f:
+    
+    with open(plans_file, encoding='utf-8', errors='ignore') as f:
         content = f.read()
-
-    # Extract the first (most recent) plan from the first header
-    first_header_match = re.search(r'^## (prompt-[\w-]+)', content, re.MULTILINE)
-    if first_header_match:
-        current_plan = first_header_match.group(1)  # Keep the full "prompt-22-rev16" format
-        # Convert "prompt-22-rev16" to "plan-22-rev16" for file lookup
-        current_plan_file = current_plan.replace("prompt-", "plan-")
-
-        # Look for the plan file in completed/ first (most recent completed plans),
-        # then prompts/ (active)
-        plan_path = repo_root / 'prompts' / 'completed' / f'{current_plan_file}.md'
-        if plan_path.exists():
-            print(plan_path)
-            sys.exit(0)
-
-        # Try prompts/ (active plans)
-        plan_path = repo_root / 'prompts' / f'{current_plan_file}.md'
-        if plan_path.exists():
-            print(plan_path)
-            sys.exit(0)
-
-        print(f"ERROR: Plan file not found: {plan_path}", file=sys.stderr)
-        sys.exit(1)
-
-    print("ERROR: No plan found in CHANGELOG", file=sys.stderr)
+    
+    # Parse the Active Plan section first
+    active_plan_match = re.search(r'## Active Plan\s*\| (.*?) \| (.*?) \|', content, re.MULTILINE)
+    if active_plan_match:
+        plan_name = active_plan_match.group(1).strip()
+        plan_rev = active_plan_match.group(2).strip()
+        if plan_name and plan_name != '—':
+            # Convert "Plan 25.4" + "Rev 1" to "plan-25.4-Rev1" format
+            plan_file_name = plan_name.lower().replace(' ', '-')
+            plan_file_name = plan_file_name.replace('plan', 'plan')
+            if plan_rev and plan_rev != '—':
+                # Convert "Rev 1" to "Rev1" (remove space)
+                plan_rev_formatted = plan_rev.replace(' ', '')
+                plan_file_name = f"{plan_file_name}-{plan_rev_formatted}"
+            
+            # Look for the plan file in prompts/
+            plan_path = repo_root / 'prompts' / f'{plan_file_name}.md'
+            if plan_path.exists():
+                print(plan_path)
+                sys.exit(0)
+            
+            # Try prompts/completed/
+            plan_path = repo_root / 'prompts' / 'completed' / f'{plan_file_name}.md'
+            if plan_path.exists():
+                print(plan_path)
+                sys.exit(0)
+    
+    # If no active plan, check Recent History for most recent completed plan
+    recent_history_section = re.search(r'## Recent History.*?\n((?:\|.*?\n)+)', content, re.DOTALL)
+    if recent_history_section:
+        recent_table = recent_history_section.group(1)
+        # Get the first row after the header row (skip the header row itself)
+        lines = recent_table.split('\n')
+        for line in lines:
+            if line.startswith('|') and '------' in line:
+                # This is the separator row, skip it
+                continue
+            if line.startswith('|') and line.strip():
+                parts = line.split('|')
+                # Skip header row: it has "Plan" and "Rev" as column headers
+                if len(parts) >= 3 and parts[1].strip() == 'Plan' and parts[2].strip() == 'Rev':
+                    continue
+                # This is a data row
+                if len(parts) >= 3:
+                    plan_name = parts[1].strip()
+                    plan_rev = parts[2].strip()
+                    if plan_name and plan_name != '—':
+                        # Convert "Plan 25.4" + "Rev 1" to "plan-25.4-Rev1" format
+                        plan_file_name = plan_name.lower().replace(' ', '-')
+                        plan_file_name = plan_file_name.replace('plan', 'plan')
+                        if plan_rev and plan_rev != '—':
+                            # Convert "Rev 1" to "Rev1" (remove space)
+                            plan_rev_formatted = plan_rev.replace(' ', '')
+                            plan_file_name = f"{plan_file_name}-{plan_rev_formatted}"
+                        
+                        # Look for the plan file in prompts/completed/
+                        plan_path = repo_root / 'prompts' / 'completed' / f'{plan_file_name}.md'
+                        if plan_path.exists():
+                            print(plan_path)
+                            sys.exit(0)
+                        else:
+                            print(f"ERROR: Plan file not found: {plan_path}", file=sys.stderr)
+                            sys.exit(1)
+    
+    print("ERROR: No active plan or recent history found in PLANS.md", file=sys.stderr)
     sys.exit(1)
 
 
