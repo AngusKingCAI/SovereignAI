@@ -166,8 +166,6 @@ def test_execute_task_passes_task_to_build_context():
 
     # This should not raise TypeError (P24-O fix)
     # The key is that build_context is called with the task argument
-    task = "test task description"
-
     # We can't fully test async execution without more mocking,
     # but we verify the signature accepts task parameter
     import inspect
@@ -195,7 +193,7 @@ def test_department_manager_concurrent_tasks_isolated():
 
 
 def test_task_b_fresh_symbol_map_reindexes_file_changes():
-    """Test that Task B's fresh SymbolMap correctly re-indexes file changes made by Task A (P24-K)."""
+    """Test that Task B's fresh SymbolMap correctly re-indexes file changes made by Task A."""
     container = MagicMock()
 
     # Mock SymbolMap to simulate re-indexing

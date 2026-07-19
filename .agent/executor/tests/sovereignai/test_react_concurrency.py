@@ -34,7 +34,12 @@ def mock_event_bus():
 
 
 @pytest.mark.asyncio
-async def test_two_concurrent_react_loops(mock_skill_runner, mock_session_registry, mock_emitter, mock_event_bus):
+async def test_two_concurrent_react_loops(
+    mock_skill_runner,
+    mock_session_registry,
+    mock_emitter,
+    mock_event_bus
+):
     """Test that two concurrent ReActLoop instances have separate state."""
     trace_wrapper = TraceEmitterWrapper(event_bus=mock_event_bus, inner=mock_emitter)
 
@@ -64,7 +69,12 @@ async def test_two_concurrent_react_loops(mock_skill_runner, mock_session_regist
 
 
 @pytest.mark.asyncio
-async def test_retry_counters_per_instance(mock_skill_runner, mock_session_registry, mock_emitter, mock_event_bus):
+async def test_retry_counters_per_instance(
+    mock_skill_runner,
+    mock_session_registry,
+    mock_emitter,
+    mock_event_bus
+):
     """Test that retry counters are per-instance, not shared."""
     trace_wrapper = TraceEmitterWrapper(event_bus=mock_event_bus, inner=mock_emitter)
 
@@ -92,7 +102,12 @@ async def test_retry_counters_per_instance(mock_skill_runner, mock_session_regis
 
 
 @pytest.mark.asyncio
-async def test_error_cleans_up_resources(mock_skill_runner, mock_session_registry, mock_emitter, mock_event_bus):
+async def test_error_cleans_up_resources(
+    mock_skill_runner,
+    mock_session_registry,
+    mock_emitter,
+    mock_event_bus
+):
     """Test that errors clean up resources properly."""
     trace_wrapper = TraceEmitterWrapper(event_bus=mock_event_bus, inner=mock_emitter)
 
@@ -120,7 +135,12 @@ async def test_error_cleans_up_resources(mock_skill_runner, mock_session_registr
 
 
 @pytest.mark.asyncio
-async def test_duplicate_registration_raises(mock_skill_runner, mock_session_registry, mock_emitter, mock_event_bus):
+async def test_duplicate_registration_raises(
+    mock_skill_runner,
+    mock_session_registry,
+    mock_emitter,
+    mock_event_bus
+):
     """Test that duplicate tool registration with different runner raises."""
     trace_wrapper = TraceEmitterWrapper(event_bus=mock_event_bus, inner=mock_emitter)
 
@@ -140,7 +160,12 @@ async def test_duplicate_registration_raises(mock_skill_runner, mock_session_reg
 
 
 @pytest.mark.asyncio
-async def test_session_key_is_uuid(mock_skill_runner, mock_session_registry, mock_emitter, mock_event_bus):
+async def test_session_key_is_uuid(
+    mock_skill_runner,
+    mock_session_registry,
+    mock_emitter,
+    mock_event_bus
+):
     """Test that session keys are valid UUIDs (per S9 requirement)."""
     import uuid
 

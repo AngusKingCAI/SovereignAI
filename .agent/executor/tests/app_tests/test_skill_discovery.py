@@ -15,7 +15,8 @@ def test_auto_discovery() -> None:
     graph = CapabilityGraph(trace=trace)
     discovery = SkillDiscovery(trace=trace, capability_graph=graph)
 
-    skills_path = Path(__file__).parent.parent.parent.parent.parent / "app/sovereignai/skills/official"
+    test_root = Path(__file__).parent.parent.parent.parent.parent
+    skills_path = test_root / "app/sovereignai/skills/official"
     if not skills_path.exists():
         pytest.skip(f"Skills directory not found: {skills_path}")
 
@@ -42,7 +43,8 @@ def test_capability_graph_registration() -> None:
     graph = CapabilityGraph(trace=trace, dev_mode=True)
     discovery = SkillDiscovery(trace=trace, capability_graph=graph)
 
-    skills_path = Path(__file__).parent.parent.parent.parent.parent / "app/sovereignai/skills/official"
+    test_root = Path(__file__).parent.parent.parent.parent.parent
+    skills_path = test_root / "app/sovereignai/skills/official"
     if not skills_path.exists():
         pytest.skip(f"Skills directory not found: {skills_path}")
 
@@ -75,7 +77,8 @@ def test_dangling_dependency_warning() -> None:
     graph = CapabilityGraph(trace=trace)
     discovery = SkillDiscovery(trace=trace, capability_graph=graph)
 
-    skills_path = Path(__file__).parent.parent.parent.parent.parent / "app/sovereignai/skills/official"
+    test_root = Path(__file__).parent.parent.parent.parent.parent
+    skills_path = test_root / "app/sovereignai/skills/official"
     if not skills_path.exists():
         pytest.skip(f"Skills directory not found: {skills_path}")
 

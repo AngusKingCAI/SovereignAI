@@ -133,8 +133,9 @@ def bad_function():
     pass  # placeholder
 """)
 
+    check_script = repo_root / ".agent/executor/scripts/ar_checks/check_placeholders.py"
     result = subprocess.run(
-        [sys.executable, str(repo_root / ".agent/executor/scripts/ar_checks/check_placeholders.py")],
+        [sys.executable, str(check_script)],
         capture_output=True,
         text=True,
         cwd=repo_root
@@ -155,8 +156,9 @@ def good_function():
     return 42
 """)
 
+    check_script = repo_root / ".agent/executor/scripts/ar_checks/check_placeholders.py"
     result = subprocess.run(
-        [sys.executable, str(repo_root / ".agent/executor/scripts/ar_checks/check_placeholders.py")],
+        [sys.executable, str(check_script)],
         capture_output=True,
         text=True,
         cwd=repo_root
@@ -176,12 +178,13 @@ def test_check_placeholders_todo_allowed_in_tests() -> None:
 # with integer plan numbers. Fix plans (plan-fix-N-RevX) use different format that spec_match
 # doesn't handle. This test is permanently deferred as spec_match is only for production plans.
 @pytest.mark.skip(
-    reason="spec_match designed for production code changes with integer plan numbers, not fix plans"
+    reason="spec_match designed for production plans with integer plan numbers, not fix plans"
 )
 def test_spec_match_missing_in_diff() -> None:
     repo_root = Path(__file__).parent.parent.parent.parent
+    spec_match_script = repo_root / ".agent/executor/scripts/ar_checks/spec_match.py"
     result = subprocess.run(
-        [sys.executable, str(repo_root / ".agent/executor/scripts/ar_checks/spec_match.py"), _current_plan_path()],
+        [sys.executable, str(spec_match_script), _current_plan_path()],
         capture_output=True,
         text=True,
         cwd=repo_root

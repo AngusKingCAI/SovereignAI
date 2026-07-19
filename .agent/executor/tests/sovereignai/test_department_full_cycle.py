@@ -9,7 +9,7 @@ from sovereignai.managers.coding import CodingManager
 
 
 def test_department_full_cycle_integration():
-    """Test full cycle: DepartmentManager → ReActLoop → SkillRunner → EventBus → Librarian (P24-G)."""
+    """Test full cycle: DepartmentManager → ReActLoop → SkillRunner → EventBus → Librarian."""
     # This test would wire a mock DepartmentManager through the full pipeline
     # For now, we verify the components can be retrieved from container
 

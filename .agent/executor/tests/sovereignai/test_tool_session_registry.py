@@ -93,7 +93,7 @@ def test_close_all_iterates_copy(registry):
     registry.register("tool2", runner2)
 
     # Mock to verify iteration over copy
-    original_items = list(registry._sessions.items())
+    list(registry._sessions.items())
     registry.close_all()
 
     # Should not raise even if dict was modified during iteration

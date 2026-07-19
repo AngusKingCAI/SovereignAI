@@ -41,7 +41,7 @@ def test_malformed_xml_rejection() -> None:
     result = parser.parse(text)
 
     assert isinstance(result, ToolCallErrorObservation)
-    # The parser tries JSON first (fails with json_decode_error), then XML (fails with xml_parse_error)
+    # Parser tries JSON first (fails), then XML (fails)
     # Returns the first error from JSON parsing
     assert result.error_type == "json_decode_error"
     assert result.retryable is True
@@ -53,7 +53,7 @@ def test_invalid_json() -> None:
     result = parser.parse(text)
 
     assert isinstance(result, ToolCallErrorObservation)
-    # The parser tries JSON first (fails with json_decode_error), then XML (fails with xml_parse_error)
+    # Parser tries JSON first (fails), then XML (fails)
     # Returns the first error from JSON parsing
     assert result.error_type == "json_decode_error"
     assert result.retryable is True

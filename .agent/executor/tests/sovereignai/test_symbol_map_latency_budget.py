@@ -1,12 +1,10 @@
 """Tests for SymbolMap latency budget (Plan 24 S9, DD-24.11.4)."""
 from __future__ import annotations
 
-import os
 import time
 from pathlib import Path
 from unittest.mock import MagicMock
 
-import pytest
 from sovereignai.indexing.symbol_map import SymbolMap
 
 
@@ -33,7 +31,7 @@ def function2():
 class Class1:
     def method1(self):
         pass
-    
+
     def method2(self):
         pass
 
@@ -49,7 +47,7 @@ class Class2:
         timings = []
         for i in range(5):
             start = time.time()
-            result = symbol_map.index(project_root)
+            symbol_map.index(project_root)
             elapsed = (time.time() - start) * 1000  # Convert to ms
             timings.append(elapsed)
 
@@ -61,7 +59,9 @@ class Class2:
         print(f"Median: {median:.2f}ms")
 
         # Assert median ≤ 2000ms
-        assert median <= 2000, f"Median latency {median:.2f}ms exceeds 2000ms budget. Timings: {timings}"
+        assert median <= 2000, (
+            f"Median latency {median:.2f}ms exceeds 2000ms budget. Timings: {timings}"
+        )
 
 
 def test_symbol_map_query_latency() -> None:
@@ -88,7 +88,7 @@ class TestClass:
 
         # Query timing
         start = time.time()
-        results = symbol_map.query("test_function", budget=1024)
+        symbol_map.query("test_function", budget=1024)
         elapsed = (time.time() - start) * 1000
 
         print(f"Query latency: {elapsed:.2f}ms")

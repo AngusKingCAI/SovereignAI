@@ -9,7 +9,8 @@ from sovereignai.skills.manifest import SkillManifest
 
 
 def test_manifest_parsing() -> None:
-    manifest_path = Path(__file__).parent.parent.parent.parent.parent / "app/sovereignai/skills/official/file_read/manifest.toml"
+    test_root = Path(__file__).parent.parent.parent.parent.parent
+    manifest_path = test_root / "app/sovereignai/skills/official/file_read/manifest.toml"
     if not manifest_path.exists():
         pytest.skip(f"Manifest file not found: {manifest_path}")
 
@@ -25,7 +26,8 @@ def test_manifest_parsing() -> None:
 def test_no_import_guarantee() -> None:
     modules_before = set(sys.modules.keys())
 
-    manifest_path = Path(__file__).parent.parent.parent.parent.parent / "app/sovereignai/skills/official/file_read/manifest.toml"
+    test_root = Path(__file__).parent.parent.parent.parent.parent
+    manifest_path = test_root / "app/sovereignai/skills/official/file_read/manifest.toml"
     if not manifest_path.exists():
         pytest.skip(f"Manifest file not found: {manifest_path}")
 
@@ -44,7 +46,8 @@ def test_no_import_guarantee() -> None:
 
 
 def test_dag_parse_simple() -> None:
-    manifest_path = Path(__file__).parent.parent.parent.parent.parent / "app/sovereignai/skills/official/file_read/manifest.toml"
+    test_root = Path(__file__).parent.parent.parent.parent.parent
+    manifest_path = test_root / "app/sovereignai/skills/official/file_read/manifest.toml"
     if not manifest_path.exists():
         pytest.skip(f"Manifest file not found: {manifest_path}")
 
@@ -54,7 +57,8 @@ def test_dag_parse_simple() -> None:
 
 def test_dag_parse_missing_optional() -> None:
     # Test that optional DAG dependencies are handled gracefully
-    manifest_path = Path(__file__).parent.parent.parent.parent.parent / "app/sovereignai/skills/official/file_read/manifest.toml"
+    test_root = Path(__file__).parent.parent.parent.parent.parent
+    manifest_path = test_root / "app/sovereignai/skills/official/file_read/manifest.toml"
     if not manifest_path.exists():
         pytest.skip(f"Manifest file not found: {manifest_path}")
 
@@ -64,7 +68,8 @@ def test_dag_parse_missing_optional() -> None:
 
 
 def test_to_component_manifest_mapping() -> None:
-    manifest_path = Path(__file__).parent.parent.parent.parent.parent / "app/sovereignai/skills/official/file_read/manifest.toml"
+    test_root = Path(__file__).parent.parent.parent.parent.parent
+    manifest_path = test_root / "app/sovereignai/skills/official/file_read/manifest.toml"
     if not manifest_path.exists():
         pytest.skip(f"Manifest file not found: {manifest_path}")
 

@@ -98,7 +98,14 @@ def test_unrelated_channels_are_isolated(event_bus: EventBus, sample_event: Even
         received_on_b.append(event)
     event_bus.subscribe(Channel('channel-a'), subscriber_a)
     event_bus.subscribe(Channel('channel-b'), subscriber_b)
-    event_a = Event(channel=Channel('channel-a'), correlation_id=uuid4(), timestamp=now_utc(), version=1, trace_level=TraceLevel.INFO, payload={})
+    event_a = Event(
+        channel=Channel('channel-a'),
+        correlation_id=uuid4(),
+        timestamp=now_utc(),
+        version=1,
+        trace_level=TraceLevel.INFO,
+        payload={}
+    )
     event_bus.start()
     event_bus.publish(event_a)
     event_bus.stop()
