@@ -7,7 +7,7 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/executor/AR
 ## Universal Invariants
 
 1. STOP on any failure. Tests, lint, security, AR checks — any exit≠0 = STOP.
-   STOP means: halt current step execution, report failure reason, do not proceed to next step. Executor may fix the failure and retry the same step, but must not skip to subsequent steps without passing the current step. Only the `verify_execution.py --final` HARD GATE is fatal: do not commit or tag if it fails.
+   STOP means: halt current step execution, report failure reason, do not proceed to next step. Executor may fix the failure and retry the same step, but must not skip to subsequent steps without passing the current step. Two HARD GATES are fatal and block commit/tag: `verify_close.py` and `verify_execution.py --final`. Both must PASS before git tag creation.
 2. Execute plan steps in strict order. No reordering, no skipping.
 3. Never delete or edit governance docs unless plan explicitly instructs. Prepend-only for LANDMINES.md.
 4. `/open` → execute → `/verify` after every step (not just edits) → `/close`. No shortcuts.

@@ -25,7 +25,7 @@ Run `/verify` workflow after every step, not just file edits. STOP on any failur
 6. If <file> is `.py`: Run mypy: `mypy <file>`. STOP on error.
 7. OR checks: `or_checks/run_all.py` (if exists).
 8. Landmine checks: `landmine_checks/run_all.py` (if exists).
-9. **Phase gate check: Run `python .agent/executor/scripts/verify_execution.py --phase-gate <plan_id>` to verify deliverables against manifest. If any deliverable missing or check fails: STOP. (UOR-4)**
+9. **Trace log entry: Verify `.agent/executor/traces/trace-plan-{N}.jsonl` exists and can receive a new entry. The heavy deliverable audit is deferred to `/close`'s `verify_execution.py --final`. (UOR-4, lightweight check per VOR-1)**
 10. **Append verification result to trace: `.agent/executor/traces/trace-plan-{N}.jsonl` with timestamp, phase, step, file, checks, result. (Invariant 12)**
 11. **Manually run `.agent/executor/hooks/append_trace.py --skill verify --plan {N}` to log /verify invocation. (Invariant 12 — fallback if config.json hook fails)**
 12. Report: `<file>: OK` or `<file>: FAIL`.

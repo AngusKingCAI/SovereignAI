@@ -59,4 +59,4 @@ Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (steps 11, 15):
     ```
 18. **Move completed plan files**: Run `.agent/executor/scripts/move_completed_plans.py {plan-number}` to move the completed plan and all its revisions to `plans/completed/`.
 19. Documentation: prepend CHANGELOG, update PLANS.md (mark "Completed", shift upcoming queue).
-20. Git: `git status` → identify session files only → `git add` specific files → commit → tag `prompt-{N}` → push.
+20. Git: `git status` → identify session files only → `git add` specific files → commit → tag `plan-{N}` → push.

@@ -41,4 +41,4 @@ Note: Log organization not required in scan mode — logs are organized at sessi
 19. **Run `.agent/executor/scripts/verify_execution.py --final --plan {N}`. Checks: manifest deliverables present in git history, no governance files modified, attestation present/complete, trace file exists. If FAIL: STOP. Do not commit. (UOR-4, COR-3)**
 20. **Manually run `.agent/executor/hooks/append_trace.py --skill scan --plan {N}` to log /scan invocation. (Invariant 12 — fallback if config.json hook fails)**
 21. Documentation: prepend CHANGELOG, update PLANS.md.
-22. Git: commit, tag `prompt-{N}`, push.
+22. Git: commit, tag `plan-{N}`, push.

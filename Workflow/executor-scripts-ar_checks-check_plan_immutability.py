@@ -27,7 +27,7 @@ def main() -> None:
     ]
 
     if modified_plan_files:
-        print("Plan files were modified during execution (forbidden per OR78):", file=sys.stderr)
+        print("Plan files were modified during execution (forbidden per UOR-7):", file=sys.stderr)
         for f in modified_plan_files:
             print(f"  {f}", file=sys.stderr)
         sys.exit(1)
