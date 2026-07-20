@@ -1,6 +1,6 @@
 # AI Handoff — SovereignAI
 
-**Version:** v1.2
+**Version:** v1.3
 **Last Updated:** 2026-07-20
 
 Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Windows.
@@ -80,7 +80,6 @@ git config --global --add safe.directory $(pwd)
 **Rule Creation Mechanism**:
 - Architect drafts new AR/OR/M rules with status `Proposed` during Log Reading Workflow
 - Rules identified in Log Reading go directly to Executor Manifest as write-tasks (valid review path per GR13)
-- Rules proposed in Round Table plans go to Executor Manifest as write-tasks after Round Table approval
 - Executor writes accepted rules to SSOT files (`.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, `.agent/shared/LANDMINES.md`) per plan instruction
 - No rule is written to SSOT without explicit plan instruction
 
@@ -101,7 +100,7 @@ git config --global --add safe.directory $(pwd)
 
 **GR6.** Rules get stable IDs (AR{n}, OR{n}, M{n}). Status: Proposed / Accepted / Superseded. Never delete. Accepted → `.agent/executor/ARCHITECTURE.md` or `.agent/executor/OR_RULES.md` (SSOT). Rejected → needs new evidence to re-propose.
 
-**GR7.** Briefs: 10 sections in order, ≤80 lines. Missing/reordered sections block delivery.
+**GR7.** Briefs: 9 sections in order, ≤80 lines. Missing/reordered sections block delivery.
 
 **GR8.** Screen plans against `.agent/shared/LANDMINES.md` before Round Table. BLOCKING landmines fixed before delivery.
 
@@ -422,20 +421,19 @@ Triggered independently — may run while Executor is executing plans in paralle
 
 ### Brief Format (Rev 1 Only)
 
-One brief per batch. ≤80 lines. 10 sections in order. Rev 2+ does not include brief unless user explicitly requests.
+One brief per batch. ≤80 lines. 9 sections in order. Rev 2+ does not include brief unless user explicitly requests.
 
 #### Section Order
 
 1. **Context** — baseline, repo state.
 2. **Plans in this batch** — table: plan #, title, depends on, vision principles, AR rules, OR rules.
-3. **Rules proposed** — AR-ID/OR-ID/M-ID + rule/rejected alternative/consequence (rules proposed in plans, not from Log Reading Workflow).
-4. **Rules carried forward** — AR/OR/M-IDs only, pointer to `.agent/executor/ARCHITECTURE.md` or `.agent/executor/OR_RULES.md` or `.agent/shared/LANDMINES.md`.
-5. **Questions for Round Table** — Q-ID.
-6. **Open questions resolved** — list resolved Q-IDs; "none" if none.
-7. **Risks flagged** — includes landmine pre-screen.
-8. **Coverage target**
-9. **Round Table protocol reminder**
-10. **Superseded rules** — AR/OR/M-ID + pointer to replacement.
+3. **Rules carried forward** — AR/OR/M-IDs only, pointer to `.agent/executor/ARCHITECTURE.md` or `.agent/executor/OR_RULES.md` or `.agent/shared/LANDMINES.md`.
+4. **Questions for Round Table** — Q-ID.
+5. **Open questions resolved** — list resolved Q-IDs; "none" if none.
+6. **Risks flagged** — includes landmine pre-screen.
+7. **Coverage target**
+8. **Round Table protocol reminder**
+9. **Superseded rules** — AR/OR/M-ID + pointer to replacement.
 
 #### Rules
 
