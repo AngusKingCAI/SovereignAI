@@ -13,17 +13,17 @@ from pathlib import Path
 
 
 def get_plan_number_and_rev(filename: str) -> tuple[int, int] | None:
-    """Extract plan number and revision from filename like 'plan-29-Rev5.md' or 'plan-21-rev10.md'."""
+    """Extract plan number and revision from filename like 'plan-29-Rev5.md'."""
     # Try standard Rev format first
     match = re.search(r'plan-(\d+)-Rev(\d+)\.md', filename)
     if match:
         return int(match.group(1)), int(match.group(2))
-    
+
     # Try lowercase rev format
     match = re.search(r'plan-(\d+)-rev(\d+)\.md', filename)
     if match:
         return int(match.group(1)), int(match.group(2))
-    
+
     return None
 
 
@@ -52,45 +52,45 @@ def get_target_folder(plan_number: int) -> str:
 
 
 def move_completed_plans(plan_number: int) -> None:
-    """Move all revisions of a completed plan and associated brief files to the completed directory."""
+    """Move all revisions of a completed plan and associated brief files."""
     plans_dir = Path("plans")
     completed_dir = plans_dir / "completed"
-    
+
     if not completed_dir.exists():
         completed_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Determine target folder based on plan number
     target_folder = get_target_folder(plan_number)
     target_dir = completed_dir / target_folder
-    
+
     if not target_dir.exists():
         target_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Find all revisions of the plan (both Rev and rev formats)
     plan_files = list(plans_dir.glob(f"plan-{plan_number}-Rev*.md"))
     plan_files.extend(plans_dir.glob(f"plan-{plan_number}-rev*.md"))
-    
+
     # Find associated brief batch files (brief-batch{N}*.md)
     brief_files = list(plans_dir.glob("brief-batch*.md"))
-    
+
     # Filter brief files that include this plan number in their range
     matching_briefs = []
     for brief_file in brief_files:
         plan_numbers = get_brief_plan_numbers(brief_file.name)
         if plan_numbers and plan_number in plan_numbers:
             matching_briefs.append(brief_file)
-    
+
     # Combine all files to move
     all_files = plan_files + matching_briefs
-    
+
     # Remove duplicates and filter out files that don't exist
     all_files = list(set(all_files))
     all_files = [f for f in all_files if f.exists()]
-    
+
     if not all_files:
         print(f"No plan files found for plan-{plan_number}")
         return
-    
+
     # Move each file
     moved_count = 0
     for file_path in all_files:
@@ -98,12 +98,12 @@ def move_completed_plans(plan_number: int) -> None:
         if file_path.parent != plans_dir:
             print(f"Skipped: {file_path.name} (already in completed/)")
             continue
-        
+
         dest_path = target_dir / file_path.name
         if dest_path.exists():
             # File already in completed - overwrite
             dest_path.unlink()
-        
+
         try:
             shutil.move(str(file_path), str(dest_path))
             file_type = "plan file" if "plan-" in file_path.name else "brief file"
@@ -111,16 +111,16 @@ def move_completed_plans(plan_number: int) -> None:
             moved_count += 1
         except Exception as e:
             print(f"Error moving {file_path.name}: {e}")
-    
+
     print(f"Moved {moved_count} file(s) of plan-{plan_number} to completed/{target_folder}/")
 
 
 if __name__ == "__main__":
     import sys
-    
+
     if len(sys.argv) != 2:
         print("Usage: move_completed_plans.py <plan-number>")
         sys.exit(1)
-    
+
     plan_number = int(sys.argv[1])
     move_completed_plans(plan_number)

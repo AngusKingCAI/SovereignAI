@@ -21,9 +21,10 @@ def get_plan_number(filename: str) -> int | None:
 def organize_logs() -> None:
     logs_dir = Path("logs").resolve()
     subfolders = {
-        "1-9": lambda n: 1 <= n <= 9,
+        "0-9": lambda n: 0 <= n <= 9,
         "10-19": lambda n: 10 <= n <= 19,
         "20-29": lambda n: 20 <= n <= 29,
+        "30-39": lambda n: 30 <= n <= 39,
     }
 
     # Create subfolders if they don't exist

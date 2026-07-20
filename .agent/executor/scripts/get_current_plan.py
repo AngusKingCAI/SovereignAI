@@ -50,13 +50,13 @@ def main(repo_root: Path | None = None) -> None:
 
             # Try plans/completed/ with subdirectories (0-9, 10-19, 20-29, etc.)
             completed_dir = repo_root / 'plans' / 'completed'
-            
+
             # First try direct path (for backwards compatibility)
             plan_path = completed_dir / f'{plan_file_name}.md'
             if plan_path.exists():
                 print(plan_path)
                 sys.exit(0)
-            
+
             # Try numbered subdirectories
             for subdir in ['0-9', '10-19', '20-29', '30-39', 'Misc']:
                 plan_path = completed_dir / subdir / f'{plan_file_name}.md'
@@ -93,20 +93,20 @@ def main(repo_root: Path | None = None) -> None:
 
                         # Look for the plan file in plans/completed/ with subdirectories
                         completed_dir = repo_root / 'plans' / 'completed'
-                        
+
                         # First try direct path (for backwards compatibility)
                         plan_path = completed_dir / f'{plan_file_name}.md'
                         if plan_path.exists():
                             print(plan_path)
                             sys.exit(0)
-                        
+
                         # Try numbered subdirectories
                         for subdir in ['0-9', '10-19', '20-29', '30-39', 'Misc']:
                             plan_path = completed_dir / subdir / f'{plan_file_name}.md'
                             if plan_path.exists():
                                 print(plan_path)
                                 sys.exit(0)
-                        
+
                         print(f"ERROR: Plan file not found: {plan_file_name}.md", file=sys.stderr)
                         sys.exit(1)
 
