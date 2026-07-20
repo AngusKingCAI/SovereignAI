@@ -75,7 +75,7 @@ def get_diff_files(baseline: str) -> set[str]:
 
 
 def get_all_plan_will_paths() -> set[str]:
-    plans_dir = Path("prompts")
+    plans_dir = Path("plans")
     all_paths = set()
 
     for plan_file in plans_dir.glob("plan-*.md"):
@@ -100,13 +100,13 @@ ALLOWLIST = {
     "app/logs/.gitkeep",
     ".agent/executor/scripts/verify_syntax.py",
     ".agent/executor/scripts/check_rule_crossrefs.py",
-    ".agent/executor/scripts/check_ar7_allowlist.py",
+    ".agent/executor/scripts/check_ar4_allowlist.py",
     ".agent/executor/scripts/get_current_plan.py",
     ".agent/executor/scripts/ar_checks/run_all.py",
     ".agent/executor/scripts/ar_checks/check_tracing_allowlist.txt",
     ".agent/executor/tests/test_verify_syntax.py",
     ".agent/executor/tests/test_check_rule_crossrefs.py",
-    ".agent/executor/tests/test_check_ar7_allowlist.py",
+    ".agent/executor/tests/test_check_ar4_allowlist.py",
     ".agent/executor/tests/test_get_current_plan.py",
     ".agent/executor/tests/test_run_all.py",
     ".agent/executor/tests/test_trace_emitter_bounded_queue.py",
@@ -128,16 +128,16 @@ ALLOWLIST = {
     ".agent/architect/documents/session-context-plans-16-19.md",
     ".agent/architect/documents/sovereignai_rescan1.md",
     "app/sovereignai/shared/trace_emitter.py",
-    "prompts/completed/plan-20.9.6.md",
+    "plans/completed/plan-20.9.6.md",
     ".agent/executor/scripts/ar_checks/spec_match.py",
-    "prompts/plan-20.9.9.md",
-    "prompts/plan-fix-1-Rev1.md",
-    "prompts/plan-fix-2-Rev1.md",
-    "prompts/plan-fix-3-Rev1.md",
-    "prompts/plan-fix-4-Rev1.md",
-    "prompts/plan-fix-5-Rev1.md",
-    "prompts/plan-fix-6-Rev1.md",
-    "prompts/plan-fix-7-Rev1.md",
+    "plans/plan-20.9.9.md",
+    "plans/plan-fix-1-Rev1.md",
+    "plans/plan-fix-2-Rev1.md",
+    "plans/plan-fix-3-Rev1.md",
+    "plans/plan-fix-4-Rev1.md",
+    "plans/plan-fix-5-Rev1.md",
+    "plans/plan-fix-6-Rev1.md",
+    "plans/plan-fix-7-Rev1.md",
     "app/sovereignai/shared/event_registry.py",
     "app/sovereignai/shared/events.py",
     ".agent/executor/scripts/ar_checks/check_event_registration.py",
@@ -213,8 +213,8 @@ def main() -> None:
             and not p.startswith(".devin/workflows/")
             and not p.startswith("tests/")
             and not p.startswith("documents/plan-")
-            and not p.startswith("prompts/plan-")
-            and not p.startswith("prompts/completed/")
+            and not p.startswith("plans/plan-")
+            and not p.startswith("plans/completed/")
             and not p.startswith("logs/")
             and not p.startswith("scripts/ar_checks/")
             and not p.startswith("txt/")
@@ -236,8 +236,8 @@ def main() -> None:
             and not p.startswith(".devin/workflows/")
             and not p.startswith("tests/")
             and not p.startswith("documents/plan-")
-            and not p.startswith("prompts/plan-")
-            and not p.startswith("prompts/completed/")
+            and not p.startswith("plans/plan-")
+            and not p.startswith("plans/completed/")
             and not p.startswith("logs/")
             and not p.startswith("scripts/ar_checks/")
             and not p.startswith("txt/")
