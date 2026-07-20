@@ -165,7 +165,6 @@ ALLOWLIST = {
     ".devin/skills/verify/SKILL.md",
     ".devin/workflows/close.md",
     ".devin/workflows/review.md",
-    ".agent/executor/tests/test_ar4_no_core_imports_in_ui.py",
     "app/sovereignai/managers/base.py",
     "app/sovereignai/managers/coding.py",
     "app/sovereignai/managers/types.py",
