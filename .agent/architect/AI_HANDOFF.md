@@ -1,6 +1,6 @@
 # AI Handoff — SovereignAI
 
-**Version:** v1.0
+**Version:** v1.1
 **Last Updated:** 2026-07-20
 
 Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Windows.
@@ -76,6 +76,12 @@ git config --global --add safe.directory $(pwd)
 - Architect lists specific AR/OR rules in plan header for executor context
 - Executor reads only listed rules, not full documents
 - Reference format: "Use {RULE-ID}" or "Follow {RULE-ID}"
+
+**Rule Creation Mechanism**:
+- Architect drafts new AR/OR/M rules with status `Proposed` during Log Reading Workflow
+- Rules are included in plan Executor Manifest as write-tasks when approved
+- Executor writes accepted rules to SSOT files (`.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, `.agent/shared/LANDMINES.md`) per plan instruction
+- No rule is written to SSOT without explicit plan instruction
 
 ---
 
@@ -265,13 +271,13 @@ If the log shows errors, failures, or anomalies, the Architect MAY read specific
 ### Step 4 — Debt Action (Individual Gates)
 
 1. **Identify** rules eligible for promotion (plan completed successfully). Status remains `Proposed`.
-2. Post: `✅ Promoted Rules: {rule-ids} → Accepted`
+2. Post: `✅ Identified Rules for Promotion: {rule-ids}, status remains Proposed`
 3. Resolve debts if trigger fired or target plan reached
 4. Post: `✅ Resolved Debts: {debt-ids}`
 5. Block debts with justification if needed
 6. Post: `✅ Blocked Debts: {debt-ids}, reason: {justification}`
-7. **Route to Round Table**: Eligible rules are queued for the next Round Table review. Do NOT promote to `Accepted` without Round Table approval.
-8. Post: `⏭️ Routed to Round Table: {rule-ids}`
+7. **Mark for SSOT Inclusion**: Eligible rules are marked for inclusion in SSOT files by the Executor in the next plan.
+8. Post: `✅ Marked for SSOT Inclusion: {rule-ids}`
 
 ---
 
@@ -279,14 +285,12 @@ If the log shows errors, failures, or anomalies, the Architect MAY read specific
 
 1. Identify rule gaps from execution log
 2. Post: `✅ Identified Gaps: {gap descriptions}`
-1. **Draft** new AR specifications with status `Proposed`
+3. **Draft** new AR specifications with status `Proposed`
 4. Post: `✅ Created AR Rules: {AR-ids}`
-3. **Draft** new OR specifications with status `Proposed`
+5. **Draft** new OR specifications with status `Proposed`
 6. Post: `✅ Created OR Rules: {OR-ids}`
-5. **Draft** new landmine specifications with status `Proposed`
+7. **Draft** new landmine specifications with status `Proposed`
 8. Post: `✅ Created Landmines: {M-ids}`
-7. **Route to Round Table**: All drafted rules are queued for the next Round Table review. Do NOT write to SSOT files without Round Table approval.
-8. Post: `⏭️ Routed to Round Table: {AR-ids}, {OR-ids}, {M-ids}`
 
 ---
 
@@ -608,9 +612,38 @@ After all Round Table rounds complete for a plan (clean pass achieved), create a
 
 ---
 
+### Clean Pass Gate
+
+This gate ensures delivery quality by verifying all critical criteria are met before plans are released to the Executor.
+
+**Threshold Table**:
+
+| Score Threshold | Action |
+|----------------|--------|
+| 90-100 | Clean pass — proceed to delivery |
+| 70-89 | Review findings — Architect may proceed with documented rationale |
+| <70 | BLOCK — requires additional Round Table round |
+
+**Verification Checklist**:
+- [ ] Panelist majority achieved (GR9)
+- [ ] All CRITICAL and HIGH findings addressed
+- [ ] MEDIUM findings addressed or documented
+- [ ] Clean pass score ≥90 OR documented rationale for 70-89
+- [ ] Executor Manifest present in all plans (GR14)
+- [ ] No blocking landmines (GR8)
+
+**STOP Conditions**:
+- Score <70 without additional Round Table round
+- CRITICAL or HIGH findings unaddressed
+- Panelist majority not achieved
+- Blocking landmines present
+- Executor Manifest missing from any plan
+
+---
+
 ### Step 7 — Deliver (Individual Gates)
 
-Gated by Clean Pass criteria (Section 6, Step 5).
+Gated by Clean Pass Gate above.
 
 1. Finalize plans for delivery
 2. Post: `✅ Finalized Plans: {N} plans ready`
