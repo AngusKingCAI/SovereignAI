@@ -81,7 +81,7 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Status**: Identified
 **Target**: TBD
 **Trigger**: When UI implementation is prioritised.
-**Reason**: UI directories app/web and app/tui exist with functional main.py implementations (completed in Plan 25.2), but app/cli and app/phone only have .gitkeep placeholders. Tests for AR7 (no core imports in UI) skip because there are no actual .py files in cli/phone directories to scan.
+**Reason**: UI directories app/web and app/tui exist with functional main.py implementations (completed in Plan 25.2), but app/cli and app/phone only have .gitkeep placeholders. Tests for AR4 (no core imports in UI) skip because there are no actual .py files in cli/phone directories to scan.
 
 ---
 
@@ -126,14 +126,3 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Target**: TBD
 **Trigger**: When graph memory prioritised.
 **Reason**: Plan 24 S5 implemented TaskGraphCache as per-task ephemeral memory using SQLite :memory: database by default for per-task isolation. Cross-task persistent graph memory functionality is already available via the db_path parameter (file-backed SQLite mode), but was not integrated into the agent system. Future work would integrate file-backed mode for persistent knowledge accumulation across task boundaries.
-
----
-
-## DEBT-11 — Workflow compliance verification system
-
-**Severity**: Medium
-**Priority**: High
-**Status**: In Progress
-**Target**: Plan 28
-**Trigger**: Implementation of compliance artifacts in workflow files.
-**Reason**: The workflow needs verifiable artifacts to prevent scope drift and ensure exact procedure compliance. This debt tracks the implementation of: Executor Manifest in plan files, execution trace logging, execution attestation production, `verify_execution.py` script, and hook scripts for real-time enforcement. Once implemented and tested on Plan 28, this debt is resolved.

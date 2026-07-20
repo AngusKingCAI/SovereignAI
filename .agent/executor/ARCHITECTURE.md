@@ -67,7 +67,7 @@ AR14. Web-layer DTOs in `app/web/schemas.py`. Core types never returned directly
 | AR1 | — | Design-time | Enforced by architecture review |
 | AR2 | — | Design-time | Enforced by architecture review |
 | AR3 | — | Design-time | Enforced by architecture review |
-| AR4 | `no_hardcoded_component_names.py` | Per-close | UI-layer import restrictions |
+| AR4 | `no_hardcoded_component_names.py`, `check_ar4_allowlist.py` | Per-close | UI-layer import restrictions; `main.py` exemption allowlist diff |
 | AR5 | — | Design-time | Enforced by architecture review |
 | AR6 | — | Design-time | Enforced by startup code pattern |
 | AR7 | — | Design-time | Runtime circuit-breaker behavior |
@@ -75,7 +75,7 @@ AR14. Web-layer DTOs in `app/web/schemas.py`. Core types never returned directly
 | AR9 | — | Design-time | Enforced by skill authoring pattern |
 | AR10 | `check_p4_compliance.py` | Per-close | Local-first compliance |
 | AR11 | — | Design-time | Enforced by ruff D-rules disabled |
-| AR12 | `ui_does_not_touch_core.py`, `check_ar7_allowlist.py` | Per-close | UI/core separation |
+| AR12 | `ui_does_not_touch_core.py` | Per-close | UI/core separation |
 | AR13 | `check_tracing.py` | Per-close | SSE auth audit |
 | AR14 | `check_p4_compliance.py` | Per-close | Web DTO compliance |
 | AR15 | `check_component_manifest_kwargs.py` | Per-close | Adapter manifest validation |
