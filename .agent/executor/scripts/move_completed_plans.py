@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Move completed plan files and all their revisions to prompts/completed/.
+Move completed plan files and all their revisions to plans/completed/.
 
 This script is called during /close to move the completed plan and all its
 previous revisions to the completed directory. It also moves associated brief
@@ -53,8 +53,8 @@ def get_target_folder(plan_number: int) -> str:
 
 def move_completed_plans(plan_number: int) -> None:
     """Move all revisions of a completed plan and associated brief files to the completed directory."""
-    prompts_dir = Path("prompts")
-    completed_dir = prompts_dir / "completed"
+    plans_dir = Path("plans")
+    completed_dir = plans_dir / "completed"
     
     if not completed_dir.exists():
         completed_dir.mkdir(parents=True, exist_ok=True)
@@ -67,11 +67,11 @@ def move_completed_plans(plan_number: int) -> None:
         target_dir.mkdir(parents=True, exist_ok=True)
     
     # Find all revisions of the plan (both Rev and rev formats)
-    plan_files = list(prompts_dir.glob(f"plan-{plan_number}-Rev*.md"))
-    plan_files.extend(prompts_dir.glob(f"plan-{plan_number}-rev*.md"))
+    plan_files = list(plans_dir.glob(f"plan-{plan_number}-Rev*.md"))
+    plan_files.extend(plans_dir.glob(f"plan-{plan_number}-rev*.md"))
     
     # Find associated brief batch files (brief-batch{N}*.md)
-    brief_files = list(prompts_dir.glob("brief-batch*.md"))
+    brief_files = list(plans_dir.glob("brief-batch*.md"))
     
     # Filter brief files that include this plan number in their range
     matching_briefs = []
@@ -95,7 +95,7 @@ def move_completed_plans(plan_number: int) -> None:
     moved_count = 0
     for file_path in all_files:
         # Skip if file is already in completed directory
-        if file_path.parent != prompts_dir:
+        if file_path.parent != plans_dir:
             print(f"Skipped: {file_path.name} (already in completed/)")
             continue
         

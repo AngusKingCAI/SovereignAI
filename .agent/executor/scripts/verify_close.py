@@ -135,23 +135,23 @@ def check_plan_files_moved() -> tuple[bool, str]:
 
     # Look for {plan_file_prefix}.md OR {plan_file_prefix}-Rev*.md
     # (historical: {plan_file_prefix}-rev*.md)
-    prompts_dir = REPO_ROOT / "prompts"
-    completed_dir = REPO_ROOT / "prompts" / "completed"
+    plans_dir = REPO_ROOT / "plans"
+    completed_dir = REPO_ROOT / "plans" / "completed"
 
-    # Check if any variant still exists in prompts/
+    # Check if any variant still exists in plans/
     base_pattern = f"{plan_file_prefix}.md"
     rev_pattern_upper = f"{plan_file_prefix}-Rev*.md"
     rev_pattern_lower = f"{plan_file_prefix}-rev*.md"
 
-    # If plan still in prompts/, it's not yet completed - skip this check
+    # If plan still in plans/, it's not yet completed - skip this check
     if (
-        (prompts_dir / base_pattern).exists()
-        or list(prompts_dir.glob(rev_pattern_upper))
-        or list(prompts_dir.glob(rev_pattern_lower))
+        (plans_dir / base_pattern).exists()
+        or list(plans_dir.glob(rev_pattern_upper))
+        or list(plans_dir.glob(rev_pattern_lower))
     ):
         return (
             True,
-            f"Plan file {plan_file_prefix} still in prompts/ "
+            f"Plan file {plan_file_prefix} still in plans/ "
             "(not yet completed - OK for active work)",
         )
 

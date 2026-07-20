@@ -13,8 +13,8 @@
 
 | Path | Purpose |
 |------|---------|
-| `prompts/` | Active plan files |
-| `prompts/completed/` | Executed plan files (moved after `/close`) |
+| `plans/` | Active plan files |
+| `plans/completed/` | Executed plan files (moved after `/close`) |
 | `.agent/architect/` | Architect governance: `PRINCIPLES.md`, `AI_HANDOFF.md` |
 | `.agent/executor/` | Executor governance: `OR_RULES.md`, `ARCHITECTURE.md`, hooks, scripts, traces |
 | `.agent/shared/` | Shared state: `CHANGELOG.md`, `PLANS.md`, `LANDMINES.md`, `DEBT.md` |
@@ -38,7 +38,7 @@ git config --global --add safe.directory $(pwd)
 - `.agent/architect/PRINCIPLES.md`
 - `.agent/shared/PLANS.md`
 - `AGENTS.md`
-- `prompts/` directory
+- `plans/` directory
 
 ### Tag Convention
 

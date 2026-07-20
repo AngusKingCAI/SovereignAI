@@ -57,5 +57,5 @@ All phases executed in order. All deliverables present. All gates passed.
 No forbidden actions detected. Trace is complete and intact.
 
 **Date**: {YYYY-MM-DD}
-**Plan**: prompts/plan-{N}-Rev{n}.md
+**Plan**: plans/plan-{N}-Rev{n}.md
 **Executor**: Devin Local

@@ -39,11 +39,21 @@ def check_plan_manifest(plan_id):
     """Check plan file has Executor Manifest."""
     # Look for plan files with revision suffixes (e.g., plan-28-Rev5.md)
     import glob
-    plan_pattern = f"prompts/plan-{plan_id}*.md"
+    
+    # First try in plans/ directory (active plans)
+    plan_pattern = f"plans/plan-{plan_id}*.md"
     plan_files = glob.glob(plan_pattern)
+    
+    # If not found, try in plans/completed/ subdirectories
+    if not plan_files:
+        for subdir in ['0-9', '10-19', '20-29', '30-39', 'Misc']:
+            plan_pattern = f"plans/completed/{subdir}/plan-{plan_id}*.md"
+            plan_files = glob.glob(plan_pattern)
+            if plan_files:
+                break
 
     if not plan_files:
-        return False, f"Plan file not found: {plan_pattern}"
+        return False, f"Plan file not found: plan-{plan_id}*.md"
 
     # Sort by revision number if present, otherwise use the file name
     def extract_revision(filename):

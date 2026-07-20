@@ -42,17 +42,27 @@ def main(repo_root: Path | None = None) -> None:
                 plan_rev_formatted = plan_rev.replace(' ', '')
                 plan_file_name = f"{plan_file_name}-{plan_rev_formatted}"
 
-            # Look for the plan file in prompts/
-            plan_path = repo_root / 'prompts' / f'{plan_file_name}.md'
+            # Look for the plan file in plans/
+            plan_path = repo_root / 'plans' / f'{plan_file_name}.md'
             if plan_path.exists():
                 print(plan_path)
                 sys.exit(0)
 
-            # Try prompts/completed/
-            plan_path = repo_root / 'prompts' / 'completed' / f'{plan_file_name}.md'
+            # Try plans/completed/ with subdirectories (0-9, 10-19, 20-29, etc.)
+            completed_dir = repo_root / 'plans' / 'completed'
+            
+            # First try direct path (for backwards compatibility)
+            plan_path = completed_dir / f'{plan_file_name}.md'
             if plan_path.exists():
                 print(plan_path)
                 sys.exit(0)
+            
+            # Try numbered subdirectories
+            for subdir in ['0-9', '10-19', '20-29', '30-39', 'Misc']:
+                plan_path = completed_dir / subdir / f'{plan_file_name}.md'
+                if plan_path.exists():
+                    print(plan_path)
+                    sys.exit(0)
 
     # If no active plan, check Recent History for most recent completed plan
     recent_history_section = re.search(r'## Recent History.*?\n((?:\|.*?\n)+)', content, re.DOTALL)
@@ -81,14 +91,24 @@ def main(repo_root: Path | None = None) -> None:
                             plan_rev_formatted = plan_rev.replace(' ', '')
                             plan_file_name = f"{plan_file_name}-{plan_rev_formatted}"
 
-                        # Look for the plan file in prompts/completed/
-                        plan_path = repo_root / 'prompts' / 'completed' / f'{plan_file_name}.md'
+                        # Look for the plan file in plans/completed/ with subdirectories
+                        completed_dir = repo_root / 'plans' / 'completed'
+                        
+                        # First try direct path (for backwards compatibility)
+                        plan_path = completed_dir / f'{plan_file_name}.md'
                         if plan_path.exists():
                             print(plan_path)
                             sys.exit(0)
-                        else:
-                            print(f"ERROR: Plan file not found: {plan_path}", file=sys.stderr)
-                            sys.exit(1)
+                        
+                        # Try numbered subdirectories
+                        for subdir in ['0-9', '10-19', '20-29', '30-39', 'Misc']:
+                            plan_path = completed_dir / subdir / f'{plan_file_name}.md'
+                            if plan_path.exists():
+                                print(plan_path)
+                                sys.exit(0)
+                        
+                        print(f"ERROR: Plan file not found: {plan_file_name}.md", file=sys.stderr)
+                        sys.exit(1)
 
     print("ERROR: No active plan or recent history found in PLANS.md", file=sys.stderr)
     sys.exit(1)

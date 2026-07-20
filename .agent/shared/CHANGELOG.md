@@ -1,9 +1,30 @@
 # CHANGELOG
 
+## prompts → plans folder rename
+
+**Date**: 2026-07-20
+**Plan**: Infrastructure update
+**Tests**: N/A
+**Previous Baseline**: prompt-29
+**Coverage**: N/A
+**Screenshots**: N/A
+
+**Changes**:
+- Renamed `prompts/` directory to `plans/` for better clarity
+- Updated all references in code files: move_completed_plans.py, get_current_plan.py, verify_execution.py, preflight_check.py, verify_close.py
+- Updated all references in skill files: open/SKILL.md, close/SKILL.md
+- Updated all references in governance documentation: AI_HANDOFF.md, ATTESTATION_TEMPLATE.md
+- Updated all historical references in CHANGELOG.md (33 occurrences)
+- All plan workflows now use `plans/` instead of `prompts/`
+
+**Resolution Status**: All references updated and verified
+
+---
+
 ## prompt-29 — Model Registry Implementation
 
 **Date**: 2026-07-20
-**Plan**: prompts/plan-29-Rev5.md
+**Plan**: plans/plan-29-Rev5.md
 **Tests**: 97 passed (0 failures)
 **Previous Baseline**: prompt-28
 **Coverage**: 95% (390/410 lines covered)
@@ -34,7 +55,7 @@
 ## prompt-28 — Options Panel Persistence Implementation
 
 **Date**: 2026-07-19
-**Plan**: prompts/plan-28-Rev5.md
+**Plan**: plans/plan-28-Rev5.md
 **Tests**: 845 passed, 52 skipped (0 failures)
 **Previous Baseline**: plan-workflow-fix
 **Coverage**: 93% (62/67 new lines covered)
@@ -60,7 +81,7 @@
 ## workflow-fix — Compliance System Fixes
 
 **Date**: 2026-07-19
-**Plan**: prompts/plan-workflow-fix.md
+**Plan**: plans/plan-workflow-fix.md
 **Tests**: N/A (compliance system fixes only)
 **Previous Baseline**: plan-27-Rev5
 **Coverage**: N/A (compliance system fixes only)
@@ -84,7 +105,7 @@
 ## prompt-27 — Cross-Department Messaging Implementation
 
 **Date**: 2026-07-19
-**Plan**: prompts/plan-27-Rev5.md
+**Plan**: plans/plan-27-Rev5.md
 **Tests**: 721 passed, 52 skipped (0 failures)
 **Previous Baseline**: plan-26-Rev5
 **Coverage**: N/A (coverage tool not available)
@@ -108,7 +129,7 @@
 ## prompt-26 — Orchestrator Component Implementation
 
 **Date**: 2026-07-19
-**Plan**: prompts/plan-26-Rev5.md
+**Plan**: plans/plan-26-Rev5.md
 **Tests**: 650 passed, 52 skipped (0 failures)
 **Previous Baseline**: plan-25.5-rev1
 **Coverage**: N/A (coverage tool not available)
@@ -131,7 +152,7 @@
 ## prompt-25.5-rev1 — Test Infrastructure Fixes
 
 **Date**: 2026-07-19
-**Plan**: prompts/plan-25.5-Rev1.md
+**Plan**: plans/plan-25.5-Rev1.md
 **Tests**: 643 passed, 52 skipped (0 failures)
 **Previous Baseline**: plan-25.4-rev1
 **Coverage**: N/A (coverage tool not available)
@@ -157,7 +178,7 @@
 ## prompt-25.4-rev1 — Code Quality Refactoring & Architecture Enforcement
 
 **Date**: 2026-07-19
-**Plan**: prompts/plan-25.4-Rev1.md
+**Plan**: plans/plan-25.4-Rev1.md
 **Tests**: 643 passed, 52 skipped (0 failures)
 **Previous Baseline**: plan-25.3-rev1
 **Coverage**: N/A (coverage tool not available)
@@ -184,7 +205,7 @@
 ## prompt-25.3-rev1 — Fix All Test Failures, Skipped Tests & Clear Remaining Debt
 
 **Date**: 2026-07-19
-**Plan**: prompts/plan-25.3-Rev1.md
+**Plan**: plans/plan-25.3-Rev1.md
 **Tests**: 637 passed, 58 skipped (0 failures)
 **Previous Baseline**: plan-25.2-rev1
 **Coverage**: N/A (coverage tool not available)
@@ -212,7 +233,7 @@
 ## prompt-25.1-rev1 — Clear Remaining Debts & Mypy Errors
 
 **Date**: 2026-07-19
-**Plan**: prompts/completed/plan-25.1-Rev1.md
+**Plan**: plans/completed/plan-25.1-Rev1.md
 **Tests**: N/A (test infrastructure deferred per plan execution)
 **Previous Baseline**: N/A (plan-25-rev1)
 **Coverage**: N/A (coverage tool not available)
@@ -237,7 +258,7 @@
 ## prompt-25-rev1 — Scan & Cleanup (Whole-Repo Verification)
 
 **Date**: 2026-07-19
-**Plan**: prompts/plan-25-Rev1.md
+**Plan**: plans/plan-25-Rev1.md
 **Tests**: N/A (test infrastructure deferred per plan execution)
 **Previous Baseline**: N/A (plan-24-rev16)
 **Coverage**: N/A (coverage tool not available)
@@ -277,7 +298,7 @@
 ## prompt-24-rev16 — Department Managers, File Edit Skill, Symbol Map, and Graph Memory
 
 **Date**: 2026-07-19
-**Plan**: prompts/plan-24-rev16.md
+**Plan**: plans/plan-24-rev16.md
 **Tests**: N/A (test infrastructure deferred per plan execution)
 **Previous Baseline**: 62 tests (plan-23-rev16)
 **Coverage**: N/A (coverage tool not available)
@@ -303,7 +324,7 @@
 ## prompt-23-rev16 — ReAct Agent Loop with Structured Output and Session Management
 
 **Date**: 2026-07-19
-**Plan**: prompts/plan-23-rev16.md
+**Plan**: plans/plan-23-rev16.md
 **Tests**: 62 passed, 1 skipped (63 total)
 **Previous Baseline**: 483 tests (plan-22-rev16)
 **Coverage**: N/A (coverage tool not available)
@@ -331,7 +352,7 @@
 ## prompt-22-rev16 — Event Bus System: Async Delivery, Per-Handler FIFO Queues, Circuit Breakers, Critical Overflow Handling
 
 **Date**: 2026-07-19
-**Plan**: prompts/completed/plan-22-rev16.md
+**Plan**: plans/completed/plan-22-rev16.md
 **Tests**: Tests created but not run (deferred per plan S5 DEFERRED)
 **Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
 **Coverage**: N/A (test infrastructure not run)
@@ -356,7 +377,7 @@
 ## prompt-plan-fix-7-Rev1 — Skip Test Categorization and Environment Guards
 
 **Date**: 2026-07-19
-**Plan**: prompts/plan-fix-7-Rev1.md
+**Plan**: plans/plan-fix-7-Rev1.md
 **Tests**: pytest .agent/executor/tests (531 tests, 483 passed, 48 skipped, 0 failed)
 **Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
 **Coverage**: N/A (no new code added)
@@ -378,7 +399,7 @@
 ## prompt-plan-fix-6-Rev1 — Plan Fix 6 - Plan 22 Forward Dependency, Plan Filename Convention, Devin Hardcoding, /verify git add, scan Self-Contained, STOP Recovery
 
 **Date**: 2026-07-18
-**Plan**: prompts/plan-fix-6-Rev1.md
+**Plan**: plans/plan-fix-6-Rev1.md
 **Tests**: pytest .agent/executor/tests (531 tests, 479 passed, 52 skipped, 0 failed)
 **Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
 **Coverage**: N/A (no new code added)
@@ -401,7 +422,7 @@
 ## prompt-plan-fix-5-Rev1 — Plan Fix 5 - Legacy OR ID Migration and check_rule_crossrefs.py Blind Spot Fix
 
 **Date**: 2026-07-18
-**Plan**: prompts/plan-fix-5-Rev1.md
+**Plan**: plans/plan-fix-5-Rev1.md
 **Tests**: pytest .agent/executor/tests (531 tests, 479 passed, 52 skipped, 0 failed)
 **Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
 **Coverage**: N/A (no new code added)
@@ -429,7 +450,7 @@
 ## prompt-plan-fix-4-Rev1 — Plan Fix 4 - Remaining suggest_rule.py References Cleanup, AR Rule Cleanup, RULE_LIFECYCLE.md File References
 
 **Date**: 2026-07-18
-**Plan**: prompts/plan-fix-4-Rev1.md
+**Plan**: plans/plan-fix-4-Rev1.md
 **Tests**: pytest .agent/executor/tests (531 tests, 479 passed, 52 skipped, 0 failed)
 **Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
 **Coverage**: N/A (no new code added)
@@ -456,7 +477,7 @@
 ## prompt-plan-fix-3-Rev1 — Plan Fix 3 - ToolCallParser isinstance Module Identity Fix and Governance Cleanup
 
 **Date**: 2026-07-18
-**Plan**: prompts/plan-fix-3-Rev1.md
+**Plan**: plans/plan-fix-3-Rev1.md
 **Tests**: pytest .agent/executor/tests (531 tests, 479 passed, 52 skipped, 0 failed)
 **Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
 **Coverage**: N/A (no new code added)
@@ -484,7 +505,7 @@
 ## prompt-plan-fix-2-Rev1 — Plan Fix 2 - Namespace Package Collision Fix and ToolCallParser Error Type Fixes
 
 **Date**: 2026-07-18
-**Plan**: prompts/plan-fix-2-Rev1.md
+**Plan**: plans/plan-fix-2-Rev1.md
 **Tests**: pytest .agent/executor/tests (531 tests, 479 passed, 52 skipped, 0 failed)
 **Previous Baseline**: 531 tests, 479 passed, 52 skipped, 0 failed
 **Coverage**: N/A (no new code added)
@@ -508,7 +529,7 @@
 ## prompt-plan-fix-1-Rev1 — Plan Fix 1 - Import Path Standardization, ToolCallParser Error Types, SkillManifest Fixes, Test Reorganization
 
 **Date**: 2026-07-18
-**Plan**: prompts/plan-fix-1-Rev1.md
+**Plan**: plans/plan-fix-1-Rev1.md
 **Tests**: pytest .agent/executor/tests (531 tests, 479 passed, 52 skipped, 0 failed)
 **Previous Baseline**: 531 tests, 67 failed, 2 errors
 **Coverage**: N/A (no new code added)
@@ -536,7 +557,7 @@
 ## prompt-workflow-fix-6 — Workflow Fix 6 - Test Path Mismatches, AR Check Script Paths, OR Rules, Timeout Fix
 
 **Date**: 2026-07-18
-**Plan**: prompts/plan-workflow-fix-6.md
+**Plan**: plans/plan-workflow-fix-6.md
 **Tests**: pytest .agent/executor/tests (531 tests, 67 failed, 2 errors)
 **Coverage**: N/A (no new code added)
 **Screenshots**: N/A
@@ -567,7 +588,7 @@
 ## prompt-workflow-fix-5 — Workflow Fix 5 - STOP Definition, get_current_plan.py Fix, verify_close.py Rev Suffix Handling
 
 **Date**: 2026-07-18
-**Plan**: prompts/plan-workflow-fix-5.md
+**Plan**: plans/plan-workflow-fix-5.md
 **Tests**: N/A (documentation-only change)
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
@@ -589,7 +610,7 @@
 ## prompt-workflow-fix-3 — Workflow Fix 3 - AR Check Script Paths and verify_close.py Logic
 
 **Date**: 2026-07-18
-**Plan**: prompts/plan-workflow-fix-3.md
+**Plan**: plans/plan-workflow-fix-3.md
 **Tests**: N/A (documentation-only change)
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
@@ -616,7 +637,7 @@
 ## workflow-fix-2 — Workflow Fix 2 - OR Rules, AR21, Execution Log Handling
 
 **Date**: 2026-07-18
-**Plan**: prompts/plan-workflow-fix-2.md
+**Plan**: plans/plan-workflow-fix-2.md
 **Tests**: N/A (documentation-only change)
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
@@ -638,7 +659,7 @@
 ## workflow-fix — Fix Governance Workflow Inconsistencies
 
 **Date**: 2026-07-18
-**Plan**: prompts/plan-workflow-fix.md
+**Plan**: plans/plan-workflow-fix.md
 **Tests**: N/A (documentation-only change)
 **Coverage**: N/A (no code changes)
 **Screenshots**: N/A
@@ -780,7 +801,7 @@
 ## prompt-21 — Skills Infrastructure (ISkillRunner, SkillManifest, SkillSession, ToolCallParser, ToolErrorObservation, SkillDiscovery, initial skills, web endpoints, TUI panel)
 
 **Date**: 2026-07-17
-**Plan**: prompts/plan-21-rev11.md
+**Plan**: plans/plan-21-rev11.md
 **Tests**: 531 passed, 3 skipped (0 chronic)
 **Coverage**: N/A (backend + UI plan)
 **Screenshots**: N/A (deferred FastAPI container setup for skills API tests)
@@ -809,7 +830,7 @@
 ## prompt-20.9.9 — Documentation Hygiene + Document Hygiene Tests
 
 **Date**: 2026-07-03
-**Plan**: prompts/plan-20.9.9.md
+**Plan**: plans/plan-20.9.9.md
 **Tests**: 497 passed, 8 skipped (0 chronic)
 **Coverage**: 100% (test_document_hygiene.py only)
 **Screenshots**: N/A (backend-only plan)
@@ -831,7 +852,7 @@
 ## prompt-20.9.8 — Correlation ID Typing + VersionNegotiator Disable
 
 **Date**: 2026-07-03
-**Plan**: prompts/plan-20.9.8.md
+**Plan**: plans/plan-20.9.8.md
 **Tests**: 492 passed, 8 skipped (0 chronic)
 **Coverage**: N/A (typing + config changes)
 **Screenshots**: N/A (backend-only plan)
@@ -858,7 +879,7 @@
 ## prompt-20.9.2 — Hardware Probe Refactoring - GPU Detection and Dependency Cleanup
 
 **Date**: 2026-07-03
-**Plan**: prompts/plan-20.9.2-Rev0.md
+**Plan**: plans/plan-20.9.2-Rev0.md
 **Tests**: 489 passed, 8 skipped (0 chronic)
 **Coverage**: 92%
 **Screenshots**: N/A (backend-only plan)
@@ -880,7 +901,7 @@
 ## prompt-20.9.7 — TUI Memory Panel AR7 Compliance via CapabilityAPI
 
 **Date**: 2026-07-03
-**Plan**: prompts/plan-20.9.7.md
+**Plan**: plans/plan-20.9.7.md
 **Tests**: 485 passed, 2 skipped (0 chronic)
 **Coverage**: 92% (types.py scoped)
 **Screenshots**: N/A (backend-only plan)
@@ -901,7 +922,7 @@
 ## prompt-20.9.6 — BoundedTraceQueue Implementation
 
 **Date**: 2026-07-03
-**Plan**: prompts/plan-20.9.6.md
+**Plan**: plans/plan-20.9.6.md
 **Tests**: 16 passed, 0 skipped (0 chronic)
 **Coverage**: 79% (trace_emitter.py scoped)
 **Screenshots**: N/A (backend-only plan)
@@ -923,7 +944,7 @@
 ## prompt-20.9.5 — AR6 Context Bag Cleanup + AR-Check Caching
 
 **Date**: 2026-07-03
-**Plan**: prompts/plan-20.9.5-Rev0.md
+**Plan**: plans/plan-20.9.5-Rev0.md
 **Tests**: 471 passed, 0 skipped (0 chronic)
 **Coverage**: 89% (scoped tests only)
 **Screenshots**: N/A (backend-only plan)
@@ -946,7 +967,7 @@
 ## prompt-20.9.4 — Performance Improvements
 
 **Date**: 2026-07-03
-**Plan**: prompts/plan-20.9.4-Rev0.md
+**Plan**: plans/plan-20.9.4-Rev0.md
 **Tests**: 32 passed, 0 skipped (0 chronic)
 **Coverage**: 89% (scoped tests only)
 **Screenshots**: N/A (backend-only plan)
@@ -970,7 +991,7 @@
 ## prompt-20.9.3 — Typed Memory Queries
 
 **Date**: 2026-07-03
-**Plan**: prompts/plan-20.9.3-Rev0.md
+**Plan**: plans/plan-20.9.3-Rev0.md
 **Tests**: 472 passed, 0 skipped (0 chronic)
 **Coverage**: 93% (scoped tests only)
 **Screenshots**: N/A (backend-only plan)

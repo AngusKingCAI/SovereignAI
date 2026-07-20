@@ -18,7 +18,7 @@ Operational Rules: See .agent/executor/OR_RULES.md
 Run `/open` workflow. STOP on any failure.
 
 1. Read `AGENTS.md` (Invariants 1-13).
-2. Read plan file `prompts/plan-{N}-Rev{X}.md`.
+2. Read plan file `plans/plan-{N}-Rev{X}.md`.
 3. **Read Executor Manifest from plan file. If missing or malformed: STOP. (Invariant 12, UOR-4, GR14)**
 4. **Run `.agent/executor/hooks/preflight_check.py --plan {N}`. If FAIL: STOP.**
 5. **Run `.agent/executor/scripts/verify_execution.py --init --plan {N}`. If FAIL: STOP. (UOR-4)**
