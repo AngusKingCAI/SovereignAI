@@ -35,15 +35,10 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/executor/AR
 
 ## Testing Best Practices
 
-1. Iterative Testing: Use `run_failing_tests.py` for faster iteration:
-   - First run: `run_failing_tests.py <test_path> --full` to establish baseline and cache failures
-   - On retry: `run_failing_tests.py <test_path>` to run only cached failing tests
-   - When cached run passes: cache auto-clears; next run without `--full` does full suite
-   - Final verification: `run_failing_tests.py <test_path> --full` to force full suite and confirm no regressions
-   - This reduces iteration time from 60s to <5s per fix
-2. Full suite is required at close for final verification - no exceptions
-3. Test failures should be fixed individually with targeted re-runs, not blanket full-suite retries
-4. Deterministic Test Ordering: Tests are sorted deterministically by module path, class name, and function name to prevent flaky tests caused by execution order dependencies. This is configured in `.agent/executor/tests/conftest.py` and ensures consistent test execution order across runs, making failures reproducible and easier to debug.
+See `.agent/executor/tests/TESTING.md` for detailed testing guidelines including:
+- Iterative testing with `run_failing_tests.py`
+- Deterministic test ordering
+- Test organization and coverage requirements
 
 ---
 

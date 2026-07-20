@@ -19,9 +19,10 @@ Operational Rules: See .agent/executor/OR_RULES.md
 
 Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothing commits.
 
-Non-HARD-GATE STOP (steps 1–9): fix and retry. HARD-GATE STOP (steps 10, 14): abort, do not commit.
+Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (steps 11, 15): abort, do not commit.
 
-0. **Ensure rules cache is valid**: `python .agent/executor/scripts/rules_cache_lib.py invalidate_if_needed` to auto-regenerate if governance files changed during execution.
+0. **Initialize performance monitoring**: `python .agent/executor/scripts/performance_monitor.py` to track execution time and resource usage throughout /close workflow. This generates performance reports to identify bottlenecks and optimization opportunities.
+0.1 **Ensure rules cache is valid**: `python .agent/executor/scripts/rules_cache_lib.py invalidate_if_needed` to auto-regenerate if governance files changed during execution.
 1. **Quick trace check: Verify `.agent/executor/traces/trace-plan-{N}.jsonl` exists. If missing: STOP. (Invariant 12 — lightweight check before heavy verification)**
 2. Resolve plan: `get_current_plan.py`.
 3. Determine test scope: Apply COR-1 (test-fix plans run full suite). Otherwise use `get_scoped_tests.py` (auto-detects based on git changes).
@@ -59,3 +60,4 @@ Non-HARD-GATE STOP (steps 1–9): fix and retry. HARD-GATE STOP (steps 10, 14): 
 17. **Move completed plan files**: Run `.agent/executor/scripts/move_completed_plans.py {plan-number}` to move the completed plan and all its revisions to `plans/completed/`.
 18. Documentation: prepend CHANGELOG, update PLANS.md (mark "Completed", shift upcoming queue).
 19. Git: `git status` → identify session files only → `git add` specific files → commit → tag `plan-{N}` → push.
+20. **Generate performance report**: Performance metrics collected throughout /close workflow are saved to `logs/performance/performance-plan-{N}.json`. This includes execution time for each step, git operation overhead, memory usage, and identifies slowest steps for optimization.
