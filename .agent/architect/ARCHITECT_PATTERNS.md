@@ -14,22 +14,91 @@ This file is **not** execution-affecting. It exists solely as an Architect self-
 - **Architect identifies**: The Architect identifies patterns during Round Table Step 5 (finding review).
 - **Executor writes**: The Architect adds the write-task to the next plan's Executor Manifest. The Executor writes the entry to this file per plan instruction.
 - **No retirement**: Entries are never removed. A pattern that stops recurring remains as historical signal.
-- **Cap**: No more than ~15 entries. If adding would exceed the cap, the lowest-recurrence entry is moved to a "Historical" subsection (still present, not deleted).
+- **Cap**: No more than ~15 entries per category. If adding would exceed the cap, the lowest-recurrence entry is moved to Low-Frequency (still present, not deleted).
 
 ## Entry Format
 
 ```
-AP{n}. {Pattern} — {check: what to verify in future drafts} — seen in: {plan-list} — source: {Round Table finding RT-{id}}
+AP{n}. {Pattern} — {check: what to verify in future drafts} — seen in: {plan-list} — source: {Round Table finding RT-{id}} — recurrence: {N} — type: {pattern type}
 ```
 
+## Categorization
+
+Entries are organized by **pattern type** (main categories) and **frequency** (subcategories):
+
+**Pattern Types:**
+- Plan Structure Patterns
+- Executor Manifest Patterns
+- Context Management Patterns
+- Tool Guidance Patterns
+- Output Control Patterns
+
+**Frequency Levels:**
+- High-Frequency: Seen in 3+ plans
+- Medium-Frequency: Seen in 2 plans
+- Low-Frequency: Seen in 1 plan
+
 ---
 
-## Active
+## Plan Structure Patterns
 
-*(none yet — populate via Executor write per plan instruction)*
+### High-Frequency (seen in 3+ plans)
+*(none yet)*
+
+### Medium-Frequency (seen in 2 plans)
+*(none yet)*
+
+### Low-Frequency (seen in 1 plan)
+*(none yet)*
 
 ---
 
-## Historical
+## Executor Manifest Patterns
 
-*(none yet — lowest-recurrence entries moved here when cap exceeded)*
+### High-Frequency (seen in 3+ plans)
+*(none yet)*
+
+### Medium-Frequency (seen in 2 plans)
+*(none yet)*
+
+### Low-Frequency (seen in 1 plan)
+*(none yet)*
+
+---
+
+## Context Management Patterns
+
+### High-Frequency (seen in 3+ plans)
+*(none yet)*
+
+### Medium-Frequency (seen in 2 plans)
+*(none yet)*
+
+### Low-Frequency (seen in 1 plan)
+*(none yet)*
+
+---
+
+## Tool Guidance Patterns
+
+### High-Frequency (seen in 3+ plans)
+*(none yet)*
+
+### Medium-Frequency (seen in 2 plans)
+*(none yet)*
+
+### Low-Frequency (seen in 1 plan)
+*(none yet)*
+
+---
+
+## Output Control Patterns
+
+### High-Frequency (seen in 3+ plans)
+*(none yet)*
+
+### Medium-Frequency (seen in 2 plans)
+*(none yet)*
+
+### Low-Frequency (seen in 1 plan)
+*(none yet)*

@@ -71,7 +71,7 @@ git config --global --add safe.directory $(pwd)
 **SSOT**: Each fact in one document only.
 
 **Read order**:
-- Architect (new chat, Round Table workflow): `.agent/architect/AI_HANDOFF.md` → PRINCIPLES → `.agent/architect/ARCHITECT_PATTERNS.md` (Active section) → `.agent/executor/OR_RULES.md` → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DEBT.md`
+- Architect (new chat, Round Table workflow): `.agent/architect/AI_HANDOFF.md` → PRINCIPLES → `.agent/architect/ARCHITECT_PATTERNS.md` (relevant categories) → `.agent/executor/OR_RULES.md` → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DEBT.md`
 - Architect (new chat, Log Reading workflow): `.agent/architect/AI_HANDOFF.md` → PRINCIPLES → `.agent/executor/OR_RULES.md` → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DEBT.md`
 - Executor (S0.2): AGENTS.md → plan header AR/OR list → `.agent/executor/ARCHITECTURE.md` (relevant AR only) → `.agent/executor/OR_RULES.md` (relevant OR only)
 
@@ -481,12 +481,13 @@ wrong at any point, they must acknowledge it and withdraw that finding.
 - Settled findings: {previously accepted findings}
 
 ## EVALUATION CRITERIA (Rubric-Based)
-For each plan, evaluate across five dimensions:
+For each plan, evaluate across six dimensions (aligned with ARCHITECT_PATTERNS.md categories):
 1. Clarity & Specificity — are objectives and success criteria explicit?
-2. Structural Organization — is the plan well-organized with clear sections?
-3. Context Management — are instructions placed strategically around context?
-4. Reasoning & Tool Guidance — does the plan guide the executor's thinking?
-5. Examples & Output Control — are output formats and style rules defined?
+2. Structural Organization — is the plan well-organized with clear sections? (See: Plan Structure Patterns)
+3. Context Management — are instructions placed strategically around context? (See: Context Management Patterns)
+4. Reasoning & Tool Guidance — does the plan guide the executor's thinking? (See: Tool Guidance Patterns)
+5. Examples & Output Control — are output formats and style rules defined? (See: Output Control Patterns)
+6. Executor Manifest — does the plan include complete Executor Manifest with phases, deliverables, gates, coverage target, and forbidden actions? (See: Executor Manifest Patterns)
 
 ## SEVERITY LEVELS (Threshold-Based)
 - CRITICAL (Score 1-3): Data loss, security, irreversible damage. Blocks delivery.
@@ -540,12 +541,12 @@ Before screening plans, re-read the current governance documents to ensure up-to
 
 Before handing material to the user for Round Table, the Architect runs its own draft against the same rubric and finding format the panelists will use, plus the known-pattern checklist from `ARCHITECT_PATTERNS.md`. This is a zero-cost internal pass — no panelist round is spent catching what the Architect can catch itself.
 
-1. Read `ARCHITECT_PATTERNS.md` (Active section only)
-2. Post: `✅ Read ARCHITECT_PATTERNS.md: {N} active patterns`
-3. Apply the 5-dimension rubric (Clarity & Specificity, Structural Organization, Context Management, Reasoning & Tool Guidance, Examples & Output Control) to the plan draft, same as the Round Table Evaluation Criteria
+1. Read `ARCHITECT_PATTERNS.md` (all categories)
+2. Post: `✅ Read ARCHITECT_PATTERNS.md: {N} total patterns across {N} categories`
+3. Apply the 6-dimension rubric (Clarity & Specificity, Structural Organization, Context Management, Reasoning & Tool Guidance, Examples & Output Control, Executor Manifest) to the plan draft, same as the Round Table Evaluation Criteria
 4. Post: `✅ Self-Check Rubric Pass: {N} self-findings, {N} dimensions clean`
-5. Check the draft against every Active entry in `ARCHITECT_PATTERNS.md`
-6. Post: `✅ Self-Check Patterns Pass: {N} active patterns checked, {N} matches found`
+5. Check the draft against every entry in `ARCHITECT_PATTERNS.md` (all categories)
+6. Post: `✅ Self-Check Patterns Pass: {N} patterns checked, {N} matches found`
 7. Fix any self-identified CRITICAL/HIGH findings before delivery (same format as Step 4 finding processing: `✅ Self-Fixed Finding SC-{id}: {reasoning} — {fix applied}`)
 8. Post: `✅ Self-Check Complete: {N} findings fixed pre-delivery, {N} deferred to Round Table with reasoning`
 
@@ -591,7 +592,7 @@ For each panelist finding posted by the user:
 2. Post: `✅ Calculated Scores: {panelist} {score}/100, {panelist} {score}/100`
 3. Post scorecard inline
 4. Post: `✅ Posted Scorecard: {N} panelists scored`
-5. Check accepted CRITICAL/HIGH findings against existing `ARCHITECT_PATTERNS.md` entries. A matching finding on a second plan — update the entry's recurrence count (add write-task to next plan's Executor Manifest). A novel CRITICAL/HIGH finding with no existing entry — draft new AP entry (add write-task to next plan's Executor Manifest). Executor writes all ARCHITECT_PATTERNS.md updates per plan instruction.
+5. Check accepted CRITICAL/HIGH findings against existing `ARCHITECT_PATTERNS.md` entries. A matching finding on a second plan — update the entry's recurrence count and move to appropriate frequency subcategory (add write-task to next plan's Executor Manifest). A novel CRITICAL/HIGH finding with no existing entry — draft new AP entry with pattern type and initial frequency (add write-task to next plan's Executor Manifest). Executor writes all ARCHITECT_PATTERNS.md updates per plan instruction.
 6. Post: `✅ Reviewed Findings Against ARCHITECT_PATTERNS.md: {N} updated, {N} new entries added`
 
 ---
