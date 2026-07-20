@@ -23,11 +23,11 @@ Note: Log organization not required in scan mode — logs are organized at sessi
 1. Resolve plan: `get_current_plan.py`.
 2. Full pytest suite. 300s timeout. STOP on failure. STOP if coverage <90%.
 3. Static analysis: `ruff check .`, `mypy`, `bandit`, `pip-audit`, `vulture`, `detect-secrets`. STOP on any failure.
-4. AR checks: `ar_checks/run_all.py`. STOP on any failure.
-5. Landmine checks: `landmine_checks/run_all.py`. STOP if exit≠0.
-6. OR checks: `or_checks/run_all.py`. STOP if exit≠0.
+4. AR checks: `ar_checks/run_all_ar_checks.py`. STOP on any failure.
+5. Landmine checks: `landmine_checks/run_all_landmine_checks.py`. STOP if exit≠0.
+6. OR checks: `or_checks/run_all_or_checks.py`. STOP if exit≠0.
 7. Placeholders: `check_placeholders.py`. STOP on hit.
-8. Cross-reference check: `check_rule_crossrefs.py`. STOP on failure.
+8. Cross-reference check: `check_rule_crossrefs_doc.py`. STOP on failure.
 9. Dependency check: `check_dependencies.py`. STOP on failure.
 10. Rule conciseness: `check_rule_conciseness.py`. STOP on failure.
 11. Changelog: `check_changelog.py`. STOP on failure.

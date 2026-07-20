@@ -107,7 +107,7 @@ ALLOWLIST = {
     ".agent/executor/scripts/check_rule_crossrefs.py",
     ".agent/executor/scripts/check_ar4_allowlist.py",
     ".agent/executor/scripts/get_current_plan.py",
-    ".agent/executor/scripts/ar_checks/run_all.py",
+    ".agent/executor/scripts/ar_checks/run_all_ar_checks.py",
     ".agent/executor/scripts/ar_checks/check_tracing_allowlist.txt",
     ".agent/executor/tests/test_verify_syntax.py",
     ".agent/executor/tests/test_check_rule_crossrefs.py",

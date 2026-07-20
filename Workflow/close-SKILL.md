@@ -33,9 +33,9 @@ Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (steps 11, 15):
    c. Once all specific tests pass: run `run_failing_tests.py <test_path> --full` for final verification.
    STOP on failure. STOP if coverage <90%.
 4. Static analysis: `ruff check .`, `mypy`, `bandit`, `pip-audit`, `vulture`, `detect-secrets`. STOP on any failure.
-5. AR checks: `ar_checks/run_all.py`. STOP on any failure.
-6. Landmine checks: `landmine_checks/run_all.py`. STOP if exit≠0.
-7. OR checks: `or_checks/run_all.py`. STOP if exit≠0.
+5. AR checks: `ar_checks/run_all_ar_checks.py`. STOP on any failure.
+6. Landmine checks: `landmine_checks/run_all_landmine_checks.py`. STOP if exit≠0.
+7. OR checks: `or_checks/run_all_or_checks.py`. STOP if exit≠0.
 8. Placeholders: `check_placeholders.py`. STOP on hit.
 9. Spec match: `spec_match.py`. STOP if exit≠0.
 10. Read `.agent/shared/DEBT.md`. For each debt marked for resolution in plan: verify resolved, update status to "Resolved" or delete entry. Document resolution in CHANGELOG.

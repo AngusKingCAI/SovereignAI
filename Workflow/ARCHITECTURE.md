@@ -78,7 +78,7 @@ AR14. Web-layer DTOs in `app/web/schemas.py`. Core types never returned directly
 | AR12 | `ui_does_not_touch_core.py` | Per-close | UI/core separation |
 | AR13 | `check_tracing.py` | Per-close | SSE auth audit |
 | AR14 | `check_p4_compliance.py` | Per-close | Web DTO compliance |
-| AR15 | `check_component_manifest_kwargs.py` | Per-close | Adapter manifest validation |
+| AR15 | `check_component_manifest_kwargs_ar15.py` | Per-close | Adapter manifest validation |
 | AR21 | — | — | Retired rule - no check needed |
 | P11 | `no_context_bags.py` | Per-close | No context bags (PRINCIPLES.md) |
 
