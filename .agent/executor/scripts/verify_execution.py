@@ -301,7 +301,7 @@ def verify_final(plan_id: str, repo_path: str = ".") -> bool:
         print("  Attestation: [OK] present and complete")
 
     # 3. Get commits since plan start
-    tag = f"prompt-{plan_id}"
+    tag = f"plan-{plan_id}"
     stdout, code = run_git(["tag", "-l", tag], cwd=repo_path)
     if code != 0 or not stdout:
         commits = []
