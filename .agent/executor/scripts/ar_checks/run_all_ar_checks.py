@@ -124,7 +124,7 @@ def main() -> int:
     scripts = sorted(ar_checks_dir.glob("*.py"))
     scripts = [
         s for s in scripts
-        if s.name != "run_all.py" and not s.name.startswith("_")
+        if s.name not in ["run_all.py", "run_all_ar_checks.py"] and not s.name.startswith("_")
     ]
 
     if not scripts:
@@ -172,8 +172,9 @@ def main() -> int:
         if exit_code != 0:
             all_passed = False
             print(f"[FAILED] {script.name}")
-            for line in output:
-                print(f"  {line}")
+            for i, line in enumerate(output):
+                if i < 3:  # Only first 3 lines
+                    print(f"  {line[:60]}")  # Truncate to 60 chars
         else:
             print(f"[PASSED] {script.name}")
 

@@ -122,7 +122,7 @@ def test_capability_api_does_not_import_concrete_core_classes() -> None:
     }
     assert not forbidden, (  # noqa: E501
         f'Capability API imports forbidden concrete core modules: {forbidden}. '
-        'Per AR7, it must import only protocols '
+        'Per AR4, it must import only protocols '
         '(ICapabilityIndex, ITaskStateQuery), never concrete classes.'
     )
 
@@ -146,11 +146,11 @@ def test_ui_directories_do_not_import_core_internals(ui_dir: str) -> None:
         }
         assert not forbidden_concrete, (  # noqa: E501
             f'{py_file} imports forbidden concrete core modules: '
-            f'{forbidden_concrete}. Per AR7, UIs must consume the Capability API only.'
+            f'{forbidden_concrete}. Per AR4, UIs must consume the Capability API only.'
         )
         assert not forbidden_package, (  # noqa: E501
             f'{py_file} imports forbidden package: {forbidden_package}. '
-            'Per AR7, UIs must not import sovereignai.* packages directly.'
+            'Per AR4, UIs must not import sovereignai.* packages directly.'
         )
 
 
@@ -209,9 +209,9 @@ def test_web_tui_directories_do_not_import_core_internals(ui_dir: str) -> None:
             }
         assert not forbidden_concrete, (  # noqa: E501
             f'{py_file} imports forbidden concrete core modules: '
-            f'{forbidden_concrete}. Per AR7, UIs must consume the Capability API only.'
+            f'{forbidden_concrete}. Per AR4, UIs must consume the Capability API only.'
         )
         assert not forbidden_package, (  # noqa: E501
             f'{py_file} imports forbidden package: {forbidden_package}. '
-            'Per AR7, UIs must not import sovereignai.* packages directly.'
+            'Per AR4, UIs must not import sovereignai.* packages directly.'
         )

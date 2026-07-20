@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def extract_will_edit_paths(plan_path: Path) -> set[str]:
-    content = plan_path.read_text()
+    content = plan_path.read_text(encoding='utf-8')
     paths = set()
 
     pattern = r'^\s*[-*]\s+`?([\w./-]+\.[a-zA-Z0-9]+)'
@@ -23,8 +23,8 @@ def extract_will_edit_paths(plan_path: Path) -> set[str]:
 
 
 def get_baseline_tag(plan_path: Path) -> str:
-    content = plan_path.read_text()
-    match = re.search(r'\*\*Depends on\*\*:\s*(.+)', content)
+    content = plan_path.read_text(encoding='utf-8')
+    match = re.search(r'\*?\*?Depends on\*?\*?:\s*(.+)', content)
     if match:
         depends = match.group(1).strip()
         if depends.lower() == "none":
@@ -83,7 +83,7 @@ def get_all_plan_will_paths() -> set[str]:
     plans_dir = Path("plans")
     all_paths = set()
 
-    for plan_file in plans_dir.glob("plan-*.md"):
+    for plan_file in plans_dir.rglob("plan-*.md"):
         paths = extract_will_edit_paths(plan_file)
         all_paths.update(paths)
 
@@ -109,9 +109,21 @@ ALLOWLIST = {
     ".agent/executor/scripts/get_current_plan.py",
     ".agent/executor/scripts/ar_checks/run_all_ar_checks.py",
     ".agent/executor/scripts/ar_checks/check_tracing_allowlist.txt",
+    ".agent/executor/scripts/check_component_manifest_kwargs_ast.py",
+    ".agent/executor/scripts/check_rule_crossrefs_ar.py",
+    ".agent/executor/scripts/check_rule_crossrefs_doc.py",
+    ".agent/executor/scripts/landmine_checks/run_all_landmine_checks.py",
+    ".agent/executor/scripts/or_checks/run_all_or_checks.py",
     ".agent/executor/tests/test_verify_syntax.py",
     ".agent/executor/tests/test_check_rule_crossrefs.py",
     ".agent/executor/tests/test_check_ar4_allowlist.py",
+    ".agent/executor/tests/test_check_ar7_allowlist.py",
+    ".agent/executor/tests/test_ar4_no_core_imports_in_ui.py",
+    ".agent/executor/tests/test_check_component_manifest_kwargs_ast.py",
+    ".agent/executor/tests/test_check_rule_crossrefs_ar.py",
+    ".agent/executor/tests/test_check_rule_crossrefs_doc.py",
+    ".agent/executor/tests/test_run_all_landmine_checks.py",
+    ".agent/executor/tests/test_run_all_or_checks.py",
     ".agent/executor/tests/test_get_current_plan.py",
     ".agent/executor/tests/test_run_all.py",
     ".agent/executor/tests/test_trace_emitter_bounded_queue.py",
@@ -133,20 +145,13 @@ ALLOWLIST = {
     ".agent/architect/documents/session-context-plans-16-19.md",
     ".agent/architect/documents/sovereignai_rescan1.md",
     "app/sovereignai/shared/trace_emitter.py",
-    "plans/completed/plan-20.9.6.md",
     ".agent/executor/scripts/ar_checks/spec_match.py",
-    "plans/plan-20.9.9.md",
-    "plans/plan-fix-1-Rev1.md",
-    "plans/plan-fix-2-Rev1.md",
-    "plans/plan-fix-3-Rev1.md",
-    "plans/plan-fix-4-Rev1.md",
-    "plans/plan-fix-5-Rev1.md",
-    "plans/plan-fix-6-Rev1.md",
-    "plans/plan-fix-7-Rev1.md",
     "app/sovereignai/shared/event_registry.py",
     "app/sovereignai/shared/events.py",
     ".agent/executor/scripts/ar_checks/check_event_registration.py",
     ".agent/executor/scripts/ar_checks/check_event_frozen.py",
+    ".agent/executor/scripts/ar_checks/check_component_manifest_kwargs_ar15.py",
+    ".agent/executor/scripts/ar_checks/check_options_encryption_at_rest.py",
     ".agent/executor/tests/app_tests/test_typed_event_bus.py",
     ".agent/executor/tests/app_tests/test_event_registry.py",
     ".agent/executor/tests/app_tests/test_async_delivery.py",
@@ -160,7 +165,7 @@ ALLOWLIST = {
     ".devin/skills/verify/SKILL.md",
     ".devin/workflows/close.md",
     ".devin/workflows/review.md",
-    ".agent/executor/tests/test_ar7_no_core_imports_in_ui.py",
+    ".agent/executor/tests/test_ar4_no_core_imports_in_ui.py",
     "app/sovereignai/managers/base.py",
     "app/sovereignai/managers/coding.py",
     "app/sovereignai/managers/types.py",

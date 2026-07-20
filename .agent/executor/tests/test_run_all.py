@@ -3,7 +3,7 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from scripts.ar_checks.run_all import get_file_hash
+from scripts.ar_checks.run_all_ar_checks import get_file_hash
 
 
 def test_get_file_hash() -> None:

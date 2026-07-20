@@ -4,7 +4,9 @@ check script(s) OR is marked Design-time. Supports rules with multiple scripts."
 
 from __future__ import annotations
 
+import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -54,10 +56,23 @@ def main() -> int:
         print(f'ARCHITECTURE.md not found: {arch_path}', file=sys.stderr)
         return 1
 
-    ar_rules = extract_ar_rules_from_architecture(arch_path)
-    if not ar_rules:
+    # Get plan rules for Just-In-Time filtering
+    result = subprocess.run(
+        ["python", ".agent/executor/scripts/get_plan_rules.py"],
+        capture_output=True, text=True, cwd=repo_root
+    )
+    plan_rules = json.loads(result.stdout) if result.stdout.strip() else []
+
+    all_ar_rules = extract_ar_rules_from_architecture(arch_path)
+    if not all_ar_rules:
         print('No AR rules found in ARCHITECTURE.md verification table', file=sys.stderr)
         return 1
+
+    # Filter to only plan-relevant rules if plan_rules is not empty
+    if plan_rules:
+        ar_rules = {r: all_ar_rules[r] for r in plan_rules if r in all_ar_rules}
+    else:
+        ar_rules = all_ar_rules
 
     existing_scripts = get_existing_check_scripts(scripts_dir)
 

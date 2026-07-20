@@ -53,10 +53,7 @@ def main():
             if char_count > 600:
                 errors.append(f"{rule_id}: {char_count} chars (hard limit 600)")
             elif char_count > 400:
-                print(
-                    f"Advisory: {rule_id}: {char_count} chars (advisory limit 400)",
-                    file=sys.stderr,
-                )
+                pass  # Remove advisory output
         else:
             i += 1
 
@@ -90,10 +87,7 @@ def main():
                 if char_count > 600:
                     errors.append(f"{rule_id}: {char_count} chars (hard limit 600)")
                 elif char_count > 400:
-                    print(
-                        f"Advisory: {rule_id}: {char_count} chars (advisory limit 400)",
-                        file=sys.stderr,
-                    )
+                    pass  # Remove advisory output
             else:
                 i += 1
 

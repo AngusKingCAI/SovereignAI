@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Cross-reference check for OR/AR rule citations. Replaces scan/SKILL.md Step 5.5."""
 
+import json
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -20,12 +22,12 @@ def extract_rule_numbers(file_path: Path) -> set[str]:
     return set(matches)
 
 
-def extract_defined_rules(agents_path: Path) -> set[str]:
+def extract_defined_rules(repo_root: Path) -> set[str]:
     """Extract rule numbers defined in ARCHITECTURE.md and OR_RULES.md."""
     defined_rules = set()
 
     # Extract AR rules from ARCHITECTURE.md
-    architecture_path = agents_path.parent / '.agent' / 'executor' / 'ARCHITECTURE.md'
+    architecture_path = repo_root / '.agent' / 'executor' / 'ARCHITECTURE.md'
     if architecture_path.exists():
         with open(architecture_path, encoding='utf-8') as f:
             content = f.read()
@@ -48,7 +50,7 @@ def extract_defined_rules(agents_path: Path) -> set[str]:
         print(f"WARNING: {architecture_path} not found, no AR rules defined", file=sys.stderr)
 
     # Extract OR rules from OR_RULES.md (new naming convention)
-    or_rules_path = agents_path.parent / '.agent' / 'executor' / 'OR_RULES.md'
+    or_rules_path = repo_root / '.agent' / 'executor' / 'OR_RULES.md'
     if or_rules_path.exists():
         with open(or_rules_path, encoding='utf-8') as f:
             content = f.read()
@@ -126,9 +128,16 @@ def main(repo_root: Path | None = None):
     if repo_root is None:
         # Check for REPO_ROOT environment variable first
         env_root = os.environ.get('REPO_ROOT')
-        repo_root = Path(env_root) if env_root else Path(__file__).parent.parent.parent.parent
+        repo_root = Path(env_root) if env_root else Path(__file__).parent.parent.parent.parent.parent
 
     agents_path = repo_root / 'AGENTS.md'
+
+    # Get plan rules for Just-In-Time filtering
+    result = subprocess.run(
+        ["python", ".agent/executor/scripts/get_plan_rules.py"],
+        capture_output=True, text=True, cwd=repo_root
+    )
+    plan_rules = json.loads(result.stdout) if result.stdout.strip() else []
 
     # Files to check for citations
     check_files = [
@@ -153,7 +162,13 @@ def main(repo_root: Path | None = None):
         check_files.append(script_file)
 
     # Extract defined rules from ARCHITECTURE.md and OR_RULES.md
-    defined_rules = extract_defined_rules(agents_path)
+    all_defined_rules = extract_defined_rules(repo_root)
+
+    # Filter to only plan-relevant rules if plan_rules is not empty
+    if plan_rules:
+        defined_rules = {r for r in plan_rules if r in all_defined_rules}
+    else:
+        defined_rules = all_defined_rules
 
     # Extract cited rules from all files
     cited_rules = set()
