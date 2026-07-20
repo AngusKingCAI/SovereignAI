@@ -19,7 +19,7 @@ Operational Rules: See .agent/executor/OR_RULES.md
 
 Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothing commits.
 
-Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (step 11): abort, do not commit.
+Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (steps 11, 15): abort, do not commit.
 
 0. **Quick trace check: Verify `.agent/executor/traces/trace-plan-{N}.jsonl` exists. If missing: STOP. (Invariant 12 — lightweight check before heavy verification)**
 1. Resolve plan: `get_current_plan.py`.
@@ -39,11 +39,11 @@ Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (step 11): abor
 8. Placeholders: `check_placeholders.py`. STOP on hit.
 9. Spec match: `spec_match.py`. STOP if exit≠0.
 10. Read `.agent/shared/DEBT.md`. For each debt marked for resolution in plan: verify resolved, update status to "Resolved" or delete entry. Document resolution in CHANGELOG.
-11. HARD GATE — `verify_close.py`. If exit≠0: STOP. Do not commit. Do not tag.
+11. HARD GATE — `verify_close.py`. Checks: execution log blank, CHANGELOG position, plan files moved, no uncommitted governance changes. If exit≠0: STOP. Do not commit. Do not tag.
 12. **Verify `.agent/executor/ATTESTATION_TEMPLATE.md` exists. If missing: STOP. (COR-3, Invariant 13)**
 13. **Produce execution attestation: `logs/execution-attestation-plan-{N}.md` using template at `.agent/executor/ATTESTATION_TEMPLATE.md`. (Invariant 13, COR-3)**
 14. **Manually run `.agent/executor/hooks/verify_attestation.py --plan {N}` to verify attestation. (Invariant 13, COR-3 — fallback if config.json hook fails)**
-15. **Full trace integrity verification: Run `.agent/executor/scripts/verify_execution.py --final --plan {N}`. This performs complete trace integrity verification including hash validation against manifest. If FAIL: STOP. Do not commit. (UOR-4, COR-3, Invariant 12)**
+15. HARD GATE — `.agent/executor/scripts/verify_execution.py --final --plan {N}`. Checks: manifest deliverables present in git history, no governance files modified, attestation present/complete, trace file exists. This performs complete trace integrity verification including hash validation against manifest. If FAIL: STOP. Do not commit. (UOR-4, COR-3, Invariant 12)
 16. **Manually run `.agent/executor/hooks/append_trace.py --skill close --plan {N}` to log /close invocation. (Invariant 12 — fallback if config.json hook fails)**
 17. Execution log: create BLANK execution log file at `logs/execution-log-{plan-name}.md` with ONLY the header template. Do NOT populate with chat transcript — user will populate after execution. Template:
     ```

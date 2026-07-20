@@ -33,12 +33,12 @@ Note: Log organization not required in scan mode — logs are organized at sessi
 11. Changelog: `check_changelog.py`. STOP on failure.
 12. Spec match: `spec_match.py`. STOP if exit!=0. No new features.
 13. Read `.agent/shared/DEBT.md`. Verify trigger conditions for external debts. Document status.
-14. HARD GATE - `verify_close.py`. If exit!=0: STOP. Do not commit.
+14. HARD GATE - `verify_close.py`. Checks: execution log blank, CHANGELOG position, plan files moved, no uncommitted governance changes. If exit!=0: STOP. Do not commit.
 15. **Trace integrity check: Verify `.agent/executor/traces/trace-plan-{N}.jsonl` exists and contains entries for all phases declared in Executor Manifest. If gaps found: STOP. (Invariant 12)**
 16. **Verify `.agent/executor/ATTESTATION_TEMPLATE.md` exists. If missing: STOP. (COR-3, Invariant 13)**
 17. **Produce execution attestation: `logs/execution-attestation-plan-{N}.md` using template at `.agent/executor/ATTESTATION_TEMPLATE.md`. (Invariant 13, COR-3)**
 18. **Manually run `.agent/executor/hooks/verify_attestation.py --plan {N}` to verify attestation. (Invariant 13, COR-3 — fallback if config.json hook fails)**
-19. **Run `.agent/executor/scripts/verify_execution.py --final --plan {N}`. If FAIL: STOP. Do not commit. (UOR-4, COR-3)**
+19. **Run `.agent/executor/scripts/verify_execution.py --final --plan {N}`. Checks: manifest deliverables present in git history, no governance files modified, attestation present/complete, trace file exists. If FAIL: STOP. Do not commit. (UOR-4, COR-3)**
 20. **Manually run `.agent/executor/hooks/append_trace.py --skill scan --plan {N}` to log /scan invocation. (Invariant 12 — fallback if config.json hook fails)**
 21. Documentation: prepend CHANGELOG, update PLANS.md.
 22. Git: commit, tag `prompt-{N}`, push.

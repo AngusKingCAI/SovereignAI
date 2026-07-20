@@ -11,16 +11,28 @@ Exit 0 = allow, Exit 1 = block
 """
 
 import argparse
-import os
 import re
 import sys
 
 
 def load_manifest(plan_id):
     """Load Executor Manifest from plan file."""
-    plan_path = f"prompts/plan-{plan_id}.md"
-    if not os.path.exists(plan_path):
+    import glob
+
+    plan_pattern = f"plans/plan-{plan_id}*.md"
+    plan_files = glob.glob(plan_pattern)
+
+    if not plan_files:
         return None
+
+    def extract_revision(filename):
+        match = re.search(r"Rev(\d+)", filename)
+        if match:
+            return int(match.group(1))
+        return 0
+
+    plan_files.sort(key=extract_revision, reverse=True)
+    plan_path = plan_files[0]
 
     with open(plan_path) as f:
         content = f.read()

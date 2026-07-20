@@ -71,7 +71,7 @@ def check_plan_manifest(plan_id):
         content = f.read()
 
     if "## Executor Manifest" not in content:
-        return False, f"Plan {plan_id} missing Executor Manifest (GR14)"
+        return False, f"Plan {plan_id} missing Executor Manifest (GR13)"
 
     return True, None
 
