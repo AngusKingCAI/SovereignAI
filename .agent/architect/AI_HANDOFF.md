@@ -1,6 +1,6 @@
 # AI Handoff — SovereignAI
 
-**Version:** v1.3
+**Version:** v1.4
 **Last Updated:** 2026-07-20
 
 Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Windows.
@@ -36,16 +36,17 @@ git log --oneline -1 || { echo "Clone failed"; exit 1; }
 git config --global --add safe.directory $(pwd)
 ```
 
-**Post-clone checklist**:
-- [ ] `.agent/architect/PRINCIPLES.md` exists
-- [ ] `.agent/shared/PLANS.md` exists
-- [ ] `AGENTS.md` exists
-- [ ] `prompts/` directory exists
+**Post-clone checklist** — Architect verifies presence of:
+- `.agent/architect/PRINCIPLES.md`
+- `.agent/shared/PLANS.md`
+- `AGENTS.md`
+- `prompts/` directory
 
 ### Tag Convention
 
 - Plan completion tags: `prompt-{N}` (e.g., `prompt-28`)
 - Scan tags: `scan-{N}` (e.g., `scan-15`)
+- Plans in progress carry no tag until completion
 - No other tags without explicit plan instruction
 
 ---
@@ -79,9 +80,10 @@ git config --global --add safe.directory $(pwd)
 
 **Rule Creation Mechanism**:
 - Architect drafts new AR/OR/M rules with status `Proposed` during Log Reading Workflow
-- Rules identified in Log Reading go directly to Executor Manifest as write-tasks (valid review path per GR13)
+- Rules identified in Log Reading go directly to Executor Manifest as write-tasks (valid review path per GR12)
 - Executor writes accepted rules to SSOT files (`.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, `.agent/shared/LANDMINES.md`) per plan instruction
 - No rule is written to SSOT without explicit plan instruction
+- **Status transitions**: `Proposed` → `Accepted` occurs when the Executor writes the rule to SSOT per plan instruction. The Architect does not change rule status.
 
 ---
 
@@ -111,7 +113,7 @@ git config --global --add safe.directory $(pwd)
 **GR11.** Clean pass: post panelist scorecard inline (1-100, weighted toward accepted findings).
 
 
-**GR13.** All rule changes are reviewed before SSOT write. Valid review paths: Log Reading Workflow (execution-driven rule identification) or Round Table (plan-driven rule proposal). No silent edits to `.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, or `.agent/shared/LANDMINES.md`.
+**GR12.** All rule changes are reviewed before SSOT write. Valid review path: Log Reading Workflow (execution-driven rule identification). No silent edits to `.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, or `.agent/shared/LANDMINES.md`.
 
 **GR14.** Every plan file MUST include an `## Executor Manifest` section after the header. The manifest lists phases, deliverables per phase, gates per phase, coverage target, and forbidden actions. No plan is valid without this section.
 
@@ -174,22 +176,7 @@ The Architect MUST NOT:
 
 **Responsibility**: The Architect MUST post one compliance line per finding immediately after reading each panelist's review. Each line IS the proof of addressing that finding.
 
-**Format**:
-```
-✅ Accepted Finding RT-{id}: {reasoning} — {fix applied or documented}
-❌ Rejected Finding RT-{id}: {reasoning}
-```
-
-**Human verification checklist**:
-- [ ] Every finding has a compliance line
-- [ ] No finding is unaddressed
-- [ ] Accepted findings have fix documentation
-- [ ] Rejected findings have reasoning
-
-**STOP conditions**:
-- Any finding without a compliance line
-- Accepted finding without documented fix
-- Rejected finding without reasoning
+**Format, verification checklist, and STOP conditions**: See Section 6 Step 4 — Process Findings.
 
 ---
 
@@ -214,7 +201,7 @@ The human is the state keeper. The chat transcript is the only state.
 
 ## Section 5: Log Reading Workflow
 
-**Applicable GR Rules**: GR1, GR4, GR6, GR8, GR13, GR14, GR15, GR16
+**Applicable GR Rules**: GR1, GR4, GR6, GR8, GR12, GR14, GR15, GR16
 
 
 
@@ -276,7 +263,7 @@ If the log shows errors, failures, or anomalies, the Architect MAY read specific
 4. Post: `✅ Resolved Debts: {debt-ids}`
 5. Block debts with justification if needed
 6. Post: `✅ Blocked Debts: {debt-ids}, reason: {justification}`
-7. **Add to Executor Manifest**: Eligible rules are added as write-tasks in the next plan's Executor Manifest (valid review path per GR13).
+7. **Add to Executor Manifest**: Eligible rules are added as write-tasks in the next plan's Executor Manifest (valid review path per GR12).
 8. Post: `✅ Added to Executor Manifest: {rule-ids}`
 
 ---
@@ -291,7 +278,7 @@ If the log shows errors, failures, or anomalies, the Architect MAY read specific
 6. Post: `✅ Created OR Rules: {OR-ids}`
 7. **Draft** new landmine specifications with status `Proposed`
 8. Post: `✅ Created Landmines: {M-ids}`
-9. **Add to Executor Manifest**: All drafted rules are added as write-tasks in the next plan's Executor Manifest (valid review path per GR13).
+9. **Add to Executor Manifest**: All drafted rules are added as write-tasks in the next plan's Executor Manifest (valid review path per GR12).
 10. Post: `✅ Added to Executor Manifest: {AR-ids}, {OR-ids}, {M-ids}`
 
 ---
@@ -304,6 +291,78 @@ After Step 5, the Architect assesses: are there issues requiring a plan revision
 - **No** (no issues): Ask user how to proceed — do not auto-loop
 
 **Post**: `✅ Step 5 Complete: {issues found / no issues}. Proceeding to {Step 6 / asking user}.`
+
+---
+
+### Clean Pass Gate
+
+This gate ensures delivery quality by verifying all critical criteria are met before plans are released to the Executor.
+
+**Threshold Table**:
+
+| Score Threshold | Action |
+|----------------|--------|
+| 90-100 | Clean pass — proceed to delivery |
+| 70-89 | Review findings — Architect may proceed with documented rationale |
+| <70 | BLOCK — requires additional Round Table round |
+
+**Verification Checklist**:
+- [ ] Panelist majority achieved (GR9)
+- [ ] All CRITICAL and HIGH findings addressed
+- [ ] MEDIUM findings addressed or documented
+- [ ] Clean pass score ≥90 OR documented rationale for 70-89
+- [ ] Executor Manifest present in all plans (GR14)
+- [ ] No blocking landmines (GR8)
+
+**STOP Conditions**:
+- Score <70 without additional Round Table round
+- CRITICAL or HIGH findings unaddressed
+- Panelist majority not achieved
+- Blocking landmines present
+- Executor Manifest missing from any plan
+
+---
+
+### Step 6 — Create Round Table Score Document (Final Round Only)
+
+After all Round Table rounds complete for a plan (clean pass achieved), create a persistent score document for long-term tracking of panelist performance across plans.
+
+**Do NOT create this document after each round. Only after the final round.**
+
+1. Compile scores from all rounds for this plan
+2. Post: `✅ Compiled All Scores: {N} rounds, {N} panelists, scores: {details}`
+
+**Score Document Format** (`roundtable-scores-plan-{N}.md`):
+
+```markdown
+# Round Table Scores — Plan {N}
+
+**Date**: {YYYY-MM-DD}
+**Plan**: plan-{N}.{i}.md
+**Total Rounds**: {N}
+
+## Panelist Scores (All Rounds)
+
+| Panelist | Round 1 | Round 2 | ... | Round N | Average | Total Findings | Accepted | Rejected |
+|----------|---------|---------|-----|---------|---------|----------------|----------|----------|
+| {name} | {score} | {score} | ... | {score} | {avg} | {N} | {N} | {N} |
+| {name} | {score} | {score} | ... | {score} | {avg} | {N} | {N} | {N} |
+
+## Summary
+
+- Total findings across all rounds: {N}
+- Critical/High findings: {N}
+- Medium/Low findings: {N}
+- Clean pass achieved: {Yes / No}
+
+## Notes
+
+{any relevant notes about panelist performance or patterns}
+```
+
+3. Post: `✅ Created Score Document: roundtable-scores-plan-{N}.md`
+
+**Purpose**: This document enables long-term tracking of which panelists consistently provide the highest-quality findings. Use historical scores to optimize panel composition over time.
 
 ---
 
@@ -401,7 +460,7 @@ Before delivering the fix plan, verify:
 
 
 
-Triggered independently — may run while Executor is executing plans in parallel. User may engage this track without ever running the Log Reading Workflow. Round Table reviews new plans only, not rules (rules are reviewed via Log Reading Workflow per GR13).
+Triggered independently — may run while Executor is executing plans in parallel. User may engage this track without ever running the Log Reading Workflow. Round Table reviews new plans.
 
 ---
 
@@ -567,78 +626,6 @@ For each panelist finding posted by the user:
 2. Post: `✅ Calculated Scores: {panelist} {score}/100, {panelist} {score}/100`
 3. Post scorecard inline
 4. Post: `✅ Posted Scorecard: {N} panelists scored`
-
----
-
-### Step 6 — Create Round Table Score Document (Final Round Only)
-
-After all Round Table rounds complete for a plan (clean pass achieved), create a persistent score document for long-term tracking of panelist performance across plans.
-
-**Do NOT create this document after each round. Only after the final round.**
-
-1. Compile scores from all rounds for this plan
-2. Post: `✅ Compiled All Scores: {N} rounds, {N} panelists, scores: {details}`
-
-**Score Document Format** (`roundtable-scores-plan-{N}.md`):
-
-```markdown
-# Round Table Scores — Plan {N}
-
-**Date**: {YYYY-MM-DD}
-**Plan**: plan-{N}.{i}.md
-**Total Rounds**: {N}
-
-## Panelist Scores (All Rounds)
-
-| Panelist | Round 1 | Round 2 | ... | Round N | Average | Total Findings | Accepted | Rejected |
-|----------|---------|---------|-----|---------|---------|----------------|----------|----------|
-| {name} | {score} | {score} | ... | {score} | {avg} | {N} | {N} | {N} |
-| {name} | {score} | {score} | ... | {score} | {avg} | {N} | {N} | {N} |
-
-## Summary
-
-- Total findings across all rounds: {N}
-- Critical/High findings: {N}
-- Medium/Low findings: {N}
-- Clean pass achieved: {Yes / No}
-
-## Notes
-
-{any relevant notes about panelist performance or patterns}
-```
-
-3. Post: `✅ Created Score Document: roundtable-scores-plan-{N}.md`
-
-**Purpose**: This document enables long-term tracking of which panelists consistently provide the highest-quality findings. Use historical scores to optimize panel composition over time.
-
----
-
-### Clean Pass Gate
-
-This gate ensures delivery quality by verifying all critical criteria are met before plans are released to the Executor.
-
-**Threshold Table**:
-
-| Score Threshold | Action |
-|----------------|--------|
-| 90-100 | Clean pass — proceed to delivery |
-| 70-89 | Review findings — Architect may proceed with documented rationale |
-| <70 | BLOCK — requires additional Round Table round |
-
-**Verification Checklist**:
-- [ ] Panelist majority achieved (GR9)
-- [ ] All CRITICAL and HIGH findings addressed
-- [ ] MEDIUM findings addressed or documented
-- [ ] Clean pass score ≥90 OR documented rationale for 70-89
-- [ ] Executor Manifest present in all plans (GR14)
-- [ ] No blocking landmines (GR8)
-
-**STOP Conditions**:
-- Score <70 without additional Round Table round
-- CRITICAL or HIGH findings unaddressed
-- Panelist majority not achieved
-- Blocking landmines present
-- Executor Manifest missing from any plan
 
 ---
 
