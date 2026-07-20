@@ -244,6 +244,9 @@ def verify_init(plan_id: str, repo_path: str = ".") -> bool:
     if err:
         print(f"  FAIL: {err}")
         return False
+    if manifest is None:
+        print("  FAIL: Manifest is None")
+        return False
 
     print(
         f"  Manifest: {len(manifest['phases'])} phases, "
@@ -308,6 +311,9 @@ def verify_final(plan_id: str, repo_path: str = ".") -> bool:
     manifest, err = get_manifest_from_plan(plan_id, repo_path)
     if err:
         print(f"  FAIL: {err}")
+        return False
+    if manifest is None:
+        print("  FAIL: Manifest is None")
         return False
 
     print(
