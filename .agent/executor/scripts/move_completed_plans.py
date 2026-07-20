@@ -3,7 +3,8 @@
 Move completed plan files and all their revisions to prompts/completed/.
 
 This script is called during /close to move the completed plan and all its
-previous revisions to the completed directory.
+previous revisions to the completed directory. It also moves associated brief
+batch files (brief-batch{N}-{M}.md) that include this plan number in their range.
 """
 
 import re
@@ -23,6 +24,16 @@ def get_plan_number_and_rev(filename: str) -> tuple[int, int] | None:
     if match:
         return int(match.group(1)), int(match.group(2))
     
+    return None
+
+
+def get_brief_plan_numbers(filename: str) -> list[int] | None:
+    """Extract plan numbers from brief filename like 'brief-batch31-34-Rev1.md'."""
+    match = re.search(r'brief-batch(\d+)-(\d+)', filename)
+    if match:
+        start = int(match.group(1))
+        end = int(match.group(2))
+        return list(range(start, end + 1))
     return None
 
 
