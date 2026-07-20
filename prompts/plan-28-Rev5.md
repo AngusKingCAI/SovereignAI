@@ -3,6 +3,23 @@ Vision principles: P3 (Reliability), P8 (UIs are separate processes), P11 (Quali
 Open questions resolved: DD-28.1, DD-28.2, DD-28.3, DD-28.4
 **Revision**: Rev5
 
+## Executor Manifest
+
+**Plan**: 28
+**Phases**: 6 (S0–S6)
+**Deliverables**:
+| Phase | Deliverable | Verification |
+|-------|-------------|--------------|
+| S1 | `app/sovereignai/options/schema.py` | `pytest app/sovereignai/tests/test_options_schema.py -v` passes |
+| S2 | `app/sovereignai/options/backend.py` + `options.db` | `pytest app/sovereignai/tests/test_options_backend.py -v` passes |
+| S3 | `app/sovereignai/options/migrations.py` | `pytest app/sovereignai/tests/test_options_migrations.py -v` passes |
+| S4 | EventBus integration + SSE endpoint | `pytest app/sovereignai/tests/test_options_events.py -v` passes |
+| S5 | FastAPI routes (`/api/options/*`) | `pytest app/sovereignai/tests/test_options_api.py -v` passes |
+| S6 | AR check script + hygiene test | `pytest .agent/executor/tests/test_document_hygiene.py -v` passes |
+
+**Governance files**: Do not modify `AI_HANDOFF.md`, `AGENTS.md`, `PRINCIPLES.md`, `OR_RULES.md`, `PLANS.md`, `DEBT.md`.
+**Commit message**: `feat(options): add Options Panel persistence with encryption, migrations, and EventBus integration`
+
 ## S0 — Opening
 
 S0.0: Clone latest repo. Verify Plans 22-24 completed.

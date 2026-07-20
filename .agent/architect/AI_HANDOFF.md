@@ -1,211 +1,57 @@
 # AI Handoff — SovereignAI
 
+**Version:** v1.0
+**Last Updated:** 2026-07-20
+
 Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Windows.
 
----
+## Section 1: Repository Setup
 
-## Repository
+**Source of truth**: https://github.com/AngusKingCAI/SovereignAI
+**Default branch**: `main`
+**Path convention**: All repo paths use forward slashes (`/`). No host-local paths in plans or prompts.
 
-- **Repo**: https://github.com/AngusKingCAI/SovereignAI · `main`
-- **Plan files**: `prompts/plan-{N}-Rev{n}.md`
-- **Skills**: `.devin/skills/`
-- **Design documents**: `.agent/architect/documents/`
-- **All paths use `/``
+### Directory Structure
 
-**Clone**: `cd /tmp && rm -rf SovereignAI && git clone https://github.com/AngusKingCAI/SovereignAI.git`
+| Path | Purpose |
+|------|---------|
+| `prompts/` | Active plan files |
+| `prompts/completed/` | Executed plan files (moved after `/close`) |
+| `.agent/architect/` | Architect governance: `PRINCIPLES.md`, `AI_HANDOFF.md` |
+| `.agent/executor/` | Executor governance: `OR_RULES.md`, `ARCHITECTURE.md`, hooks, scripts, traces |
+| `.agent/shared/` | Shared state: `CHANGELOG.md`, `PLANS.md`, `LANDMINES.md`, `DEBT.md` |
+| `.devin/skills/` | Workflow skills: `open/`, `verify/`, `close/`, `scan/` |
+| `AGENTS.md` | Universal invariants (Executor reads at S0.2) |
 
----
+### Clone & Verify
 
-## Compliance Artifacts
+```bash
+# Safe clone with verification
+cd /tmp && rm -rf SovereignAI
+git clone --depth 1 https://github.com/AngusKingCAI/SovereignAI.git
+cd SovereignAI
 
-This workflow produces one mandatory artifact per plan execution to prevent scope drift
-and verify exact procedure compliance.
+# Verify clone succeeded
+git log --oneline -1 || { echo "Clone failed"; exit 1; }
+git config --global --add safe.directory $(pwd)
+```
 
-| Artifact | Producer | Consumer | Purpose |
-|----------|----------|----------|---------|
-| `execution-attestation-plan-{N}.md` | Executor (Devin) | User (human) | Proves executor followed plan manifest exactly |
+**Post-clone checklist**:
+- [ ] `.agent/architect/PRINCIPLES.md` exists
+- [ ] `.agent/shared/PLANS.md` exists
+- [ ] `AGENTS.md` exists
+- [ ] `prompts/` directory exists
 
-**Rule**: No plan execution is merged to `main` until the execution attestation
-is verified via `verify_execution.py` and returns PASS.
+### Tag Convention
 
-**Architect compliance**: The architect emits a real-time compliance line after
-completing each step of the Architect Workflow below. The user verifies by
-checking the sequence is complete, ordered, and all marks are ✅ or ⏭️.
-Missing lines, out-of-order lines, or ❌ without explanation = STOP and fix.
-
-**Round Table compliance**: When the user posts panelist reviews, the architect
-emits a compliance line for each finding showing: accepted/rejected, reasoning,
-and fix applied or documented. The user verifies all findings are addressed
-before approving the revised plans.
-
----
-
-## Architect Workflow
-
-1. Read logs end-to-end. Extract test counts, STOPs, deviations.
-   → Emit: `[STEP-1] {✅/❌} Log: {file}, {lines} lines, {tests} tests, {stops} STOPs`
-
-1.5. If user states execution log has been pushed: clone latest repo, read execution log, diff-check against plan expectations.
-   → Emit: `[STEP-1.5] {✅/❌/⏭️} Diff-check: {findings}`
-
-2. Verify repo state. Read `.agent/shared/CHANGELOG.md` latest entry in full. Read `.agent/shared/PLANS.md` current baseline. No scope creep.
-   → Emit: `[STEP-2] {✅/❌} Repo: commit {hash}, tag {tag}, CHANGELOG read, baseline verified`
-
-3. Re-read governance documents in full:
-   - `PRINCIPLES.md`
-   - `.agent/executor/OR_RULES.md`
-   - `.agent/executor/ARCHITECTURE.md`
-   - `.agent/shared/LANDMINES.md`
-   - `.agent/shared/DEBT.md` (check for triggered items; note resolutions;
-     review open items — if trigger fired or plan resolves it, include resolution in upcoming plan)
-   → Emit: `[STEP-3] {✅/❌} Governance: PRINCIPLES, OR_RULES, ARCHITECTURE, LANDMINES, DEBT`
-
-4. Decision & Debt Action:
-   - For each AR/OR rule with status "Proposed": if originating plan completed successfully,
-     include status promotion to "Accepted" in plan body. If plan STOPped, leave as "Proposed" with note.
-   - For each open debt in DEBT.md: if trigger fired or target plan reached,
-     draft resolution steps for upcoming plan OR update status to "Blocked" with justification.
-   - If debt is external dependency (e.g., DEBT-1): verify trigger condition, document status.
-   → Emit: `[STEP-4] {✅/❌} Debt: {promotions}, {resolutions}, {blocked}`
-
-5. Review execution patterns. Identify rule gaps or recurring failure patterns from execution logs. Create rule specifications with IDs (OR{n}, AR{n}, {C|H|M|L}{n}).
-   - New AR → assign ID, draft entry and verification script spec for plan body (Executor adds to ARCHITECTURE.md)
-   - New OR → assign ID, draft entry and skill reference for plan body (Executor adds to OR_RULES.md)
-   - New landmine → assign ID, draft entry and detection script spec for plan body (Executor adds to LANDMINES.md)
-   → Emit: `[STEP-5] {✅/❌} Patterns: {new rules}, {new landmines}, {none}`
-
-6. Research. Web search for new tech. Document findings in plan header.
-   → Emit: `[STEP-6] {✅/❌/⏭️} Research: {findings or N/A}`
-
-7. Draft. N plan files + 1 brief (Rev 1 only) + 1 Round Table prompt per rev.
-   - Include debt resolutions in plan body if any debts are being addressed.
-   - Include rule status promotions in brief section 4 if any rules change status.
-   - Include new AR/OR/landmine entries in plan body with explicit executor instructions.
-   → Emit: `[STEP-7] {✅/❌} Drafted: {N} plans, 1 brief, {N} Round Table prompts`
-
-8. Round Table. Runs until clean pass. Apply findings at discretion.
-   → Emit: `[STEP-8] {✅/❌} Round Table: {clean pass / Rev2 needed}`
-
-9. Score panelists. Post inline (GR11).
-   → Emit: `[STEP-9] {✅/❌} Scored: {panelist scores posted inline}`
-
-10. Deliver. User copies to `prompts/plan-{N}.md`.
-    → Emit: `[STEP-10] {✅/❌} Delivered: {N} plans ready for copy`
-
-**Do not deliver plans without emitting all compliance lines.**
+- Plan completion tags: `prompt-{N}` (e.g., `prompt-28`)
+- Scan tags: `scan-{N}` (e.g., `scan-15`)
+- No other tags without explicit plan instruction
 
 ---
 
-## Round Table
 
-See `PRINCIPLES.md` Workflow principles for clean-pass protocol. Severity levels:
-
-**Severity**:
-- **CRITICAL**: Data loss, security, irreversible damage. Blocks.
-- **HIGH**: Executor STOP, test failure, broken build. Blocks.
-- **MEDIUM**: Degraded functionality, tech debt. Address or document.
-- **LOW**: Style, naming. Architect discretion.
-
-**Prompt structure** (per GR10):
-- **Full** (first pass): Roles + Material (brief + plans + dimensions + risks + settled findings) + Answer format (Severity/Evidence/Fix).
-- **Diff** (re-check): Roles + Material (what changed since last rev only) + Answer format.
-
-No host paths inside prompts (GR4).
-
-**Round Table Compliance Lines**:
-When the user posts panelist reviews, the architect must emit one line per finding:
-
-```
-[RT-{finding-id}] {✅/❌} {accepted/rejected} — {reasoning} — {fix applied or documented}
-```
-
-Example:
-```
-[RT-1] ✅ accepted — Plan 28 S3 exceeds 120 lines, trimmed to 118
-[RT-2] ✅ accepted — Missing OR rule reference in Plan 29, added VOR-1
-[RT-3] ❌ rejected — Panelist suggests adding scope to Plan 30; no evidence in execution log, keeping original scope
-[RT-4] ✅ accepted — Brief section 7 missing risk entry, added landmine pre-screen
-```
-
-**Rule**: Every finding from every panelist must have a compliance line.
-Missing lines = finding not addressed. The user verifies all findings are
-processed before approving revised plans.
-
----
-
-## Batch Process
-
-4 plans per batch. 1 shared brief (Rev 1 only). 1 Round Table prompt per rev. Scan every 5 plans (5, 10, 15…).
-
-1. Draft 4 individual plan files + 1 brief (Rev 1) + 1 prompt per rev
-2. Round Table reviews
-3. Architect applies findings → Rev2 if needed
-4. User copies finals to Executor
-
-**Dependency**: If Plan {Xn} STOPs, all plans with `Depends on: {Xn}` also STOP. Binary.
-
----
-
-## Plan Template
-
-Plans ≤120 lines. Executable steps only. See `PRINCIPLES.md` Workflow principles for full guidance.
-
-**Header**:
-```
-Depends on: <prerequisite plan numbers>
-Vision principles: <which of 14 this satisfies/affects>
-AR rules: <AR IDs relevant to this plan, or "none">
-OR rules: <OR IDs relevant to this plan, or "none">
-Open questions resolved: <which Q1-Q34, or "none">
-```
-
-**Executor Manifest** (mandatory, per GR14):
-```
-## Executor Manifest
-Phases: <S0, S1, S2, ... S_close>
-Deliverables:
-  - S<n>: <file-path> (<description>)
-Gates per phase:
-  - S<n>: <check1>, <check2>, ...
-Coverage target: <N>%
-Forbidden actions: <list>
-```
-
-**S0 — Opening**:
-- S0.1: Run `/open`
-- S0.2: Read `AGENTS.md` in full
-- S0.3: Read plan header AR rules from `.agent/executor/ARCHITECTURE.md`. Read plan header OR rules from `.agent/executor/OR_RULES.md`.
-- S0.4: Check `.agent/shared/DEBT.md` for deferred items.
-- S0.5: If new tech stack, add research findings to plan header (per Architect Workflow step 6).
-
-**Plan body (S1-Sn)**: Execute steps. Run `/verify` after each edit. HTML/CSS/JS plans: include "WILL edit" UI element list. Reference operational rules where pertinent (e.g., "Use VOR-2 for test suite execution").
-
-**Closing**: Run `/close`.
-
-**Token budget**: This Handoff + PRINCIPLES.md + plan file = context.
-
----
-
-## Brief Format
-
-One brief per batch. ≤80 lines. 10 sections in order:
-
-1. **Context** — baseline, repo state.
-2. **Plans in this batch** — table: plan #, title, depends on, vision principles, AR rules, OR rules.
-3. **Rules proposed** — AR-ID/OR-ID/M-ID + rule/rejected alternative/consequence.
-4. **Rules carried forward** — AR/OR/M-IDs only, pointer to `.agent/executor/ARCHITECTURE.md` or `.agent/executor/OR_RULES.md` or `.agent/shared/LANDMINES.md`.
-5. **Questions for Round Table** — Q-ID.
-6. **Open questions resolved** — list resolved Q-IDs; "none" if none.
-7. **Risks flagged** — includes landmine pre-screen.
-8. **Coverage target**
-9. **Round Table protocol reminder**
-10. **Superseded rules** — AR/OR/M-ID + pointer to replacement.
-
-Missing/reordered sections block delivery (GR7).
-
----
-
-## Document Relationships
+## Section 2: Document Authority & Relationships
 
 | Document | Responsibility | Content Authority | File Writer |
 |---|---|---|---|
@@ -233,29 +79,543 @@ Missing/reordered sections block delivery (GR7).
 
 ---
 
-## GR Rules (Architect)
 
-GR1. Plan header lists `Vision principles:`, `AR rules:`, `OR rules:`, and `Open questions resolved:`.
-GR2. Panelist responses attributed: `**Panelist**: <name/model>`.
-GR3. Architect accepts/rejects every finding with reasoning.
-GR4. No host-local paths in plans, briefs, prompts. Bare filenames for uploads; repo-relative paths for repo files.
-GR5. New OR/AR rules: rule + rejected alternative + consequence — one line each.
-GR6. Rules get stable IDs (AR{n}, OR{n}, M{n}). Status: Proposed / Accepted / Superseded. Never delete. Accepted → `.agent/executor/ARCHITECTURE.md` or `.agent/executor/OR_RULES.md` (SSOT). Rejected → needs new evidence to re-propose.
-GR7. Briefs: 10 sections in order, ≤80 lines. Missing/reordered sections block delivery.
-GR8. Screen plans against `.agent/shared/LANDMINES.md` before Round Table. BLOCKING landmines fixed before delivery.
-GR9. Majority of panelists must return verdict before delivery. Conditional/block needs GR3 reasoning.
-GR10. First pass per rev: full prompt. Re-checks: diff summary only. Round Table questions get Q-IDs. Answers become rule IDs or stay open.
-GR11. Clean pass: post panelist scorecard inline (1-100, weighted toward accepted findings).
-GR12. UI-change plans: check precedent first. ≤6 unresolved questions per plan, 2-4 options each. Overflow → Proposed rule IDs.
-GR13. All rule changes go through Round Table. No silent edits to `.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, or `.agent/shared/LANDMINES.md`.
-GR14. **Every plan file MUST include an `## Executor Manifest` section after the header.
-    The manifest lists phases, deliverables per phase, gates per phase,
-    coverage target, and forbidden actions. No plan is valid without this section.
-    The executor reads this manifest at `/open` and the user verifies it
-    via `verify_execution.py` after execution.**
+## Section 3: GR Rules (Architect Governance Rules)
+
+**GR1.** Plan header lists `Vision principles:`, `AR rules:`, `OR rules:`, and `Open questions resolved:`.
+
+**GR2.** Panelist responses attributed: `**Panelist**: <name/model>`.
+
+**GR3.** Architect accepts/rejects every finding with reasoning.
+
+**GR4.** No host-local paths in plans, briefs, prompts. Bare filenames for uploads; repo-relative paths for repo files.
+
+**GR5.** New OR/AR rules: rule + rejected alternative + consequence — one line each.
+
+**GR6.** Rules get stable IDs (AR{n}, OR{n}, M{n}). Status: Proposed / Accepted / Superseded. Never delete. Accepted → `.agent/executor/ARCHITECTURE.md` or `.agent/executor/OR_RULES.md` (SSOT). Rejected → needs new evidence to re-propose.
+
+**GR7.** Briefs: 10 sections in order, ≤80 lines. Missing/reordered sections block delivery.
+
+**GR8.** Screen plans against `.agent/shared/LANDMINES.md` before Round Table. BLOCKING landmines fixed before delivery.
+
+**GR9.** Majority of panelists must return verdict before delivery. Majority = >50% of invited panelists, minimum 2 panelists for valid Round Table. Conditional/block needs GR3 reasoning.
+
+**GR10.** First pass per rev: full prompt. Re-checks: diff summary only. Round Table questions get Q-IDs. Answers become rule IDs or stay open.
+
+**GR11.** Clean pass: post panelist scorecard inline (1-100, weighted toward accepted findings).
+
+
+**GR13.** All rule changes go through Round Table. No silent edits to `.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, or `.agent/shared/LANDMINES.md`.
+
+**GR14.** Every plan file MUST include an `## Executor Manifest` section after the header. The manifest lists phases, deliverables per phase, gates per phase, coverage target, and forbidden actions. No plan is valid without this section.
+
+**GR15.** All workflow sections MUST reference applicable GR rules at the top of the section.
+
+**GR16.** Architect MUST re-read governance documents before each new workflow invocation. Do not rely on cached context.
 
 ---
 
-## UR Rules (User Interaction)
 
-UR1. When user asks for a file download, provide the download link immediately without asking follow-up questions. Do not ask "Do you want me to..." — just deliver the file.
+## Section 4: Compliance Artifacts
+
+**Applicable GR Rules**: GR3, GR11, GR15, GR16
+This workflow produces artifacts to prevent scope drift and verify exact procedure compliance. The Architect is an AI web chat — it cannot create files, save state, or persist data between sessions. All Architect compliance evidence exists **only in the chat transcript**. The human verifies by reading the chat history.
+
+### Core Principle: The Chat Transcript IS the Only Audit Log
+
+Every compliance line posted by the Architect becomes part of the permanent chat record. The human verifies by scrolling through the transcript. Missing lines, out-of-order lines, or ❌ without explanation = STOP and fix.
+
+The Architect MUST NOT:
+- Claim to have "saved" or "logged" anything outside the chat
+- Refer to files it created in previous messages
+- Batch compliance lines — each action gets its own gate message
+
+---
+
+### Executor Artifacts (Machine-Produced, File-Based)
+
+| Artifact | Producer | Verified By | Purpose |
+|----------|----------|-------------|---------|
+| `trace-plan-{N}.jsonl` | Executor | `verify_execution.py` | Step-by-step execution log |
+| `execution-attestation-plan-{N}.md` | Executor | `verify_execution.py` | Proves executor followed plan manifest |
+
+**Rule**: No plan execution is merged to `main` until the execution attestation is verified via `verify_execution.py` and returns PASS.
+
+---
+
+### Architect Compliance (Inline Chat Only)
+
+**Responsibility**: The Architect MUST post a compliance line immediately after completing each action. The line IS the proof. There is no other record.
+
+**Format**: Descriptive action statement with ✅/❌/⏭️ prefix.
+
+**Human verification checklist**:
+- [ ] All actions have compliance lines posted as separate messages
+- [ ] Lines are in chronological order
+- [ ] All marks are ✅ or ⏭️
+- [ ] Any ❌ has an explanation in the same or next message
+- [ ] No actions are skipped
+
+**STOP conditions**:
+- Missing compliance line for any action
+- Out-of-order lines
+- ❌ without explanation
+- Actions skipped without ⏭️ justification
+
+---
+
+### Round Table Compliance (Inline Chat Only)
+
+**Responsibility**: The Architect MUST post one compliance line per finding immediately after reading each panelist's review. Each line IS the proof of addressing that finding.
+
+**Format**:
+```
+✅ Accepted Finding RT-{id}: {reasoning} — {fix applied or documented}
+❌ Rejected Finding RT-{id}: {reasoning}
+```
+
+**Human verification checklist**:
+- [ ] Every finding has a compliance line
+- [ ] No finding is unaddressed
+- [ ] Accepted findings have fix documentation
+- [ ] Rejected findings have reasoning
+
+**STOP conditions**:
+- Any finding without a compliance line
+- Accepted finding without documented fix
+- Rejected finding without reasoning
+
+---
+
+### Session Continuity Rule
+
+Because the Architect is a web chat with no persistent state:
+
+**If the session ends before completion**, the human MUST:
+1. Copy the entire chat transcript from this point forward
+2. Paste it into the next session
+3. The next Architect instance reads the transcript to reconstruct context
+
+**The Architect MUST NOT**:
+- Claim to have "saved progress" in a file
+- Refer to state from a previous session without the human pasting the transcript
+- Assume continuity without explicit transcript paste
+
+The human is the state keeper. The chat transcript is the only state.
+
+---
+
+
+## Section 5: Log Reading Workflow
+
+**Applicable GR Rules**: GR1, GR4, GR6, GR8, GR13, GR14, GR15, GR16
+
+
+
+Triggered when user says "Log Pushed" or provides execution log. This workflow is iterative — may produce plan fix iterations (25.1, 25.2, etc.) before proceeding to Round Table or stopping.
+
+---
+
+### Step 1 — Clone, Verify Repo & Diff-Check
+
+1. Clone repo
+2. Post: `✅ Repo cloned: commit {hash}, branch {branch}`
+3. Verify repo state (check key files exist, commit hash)
+4. Post: `✅ Verified Repo: commit {hash}, tag {tag}, key files present`
+5. Diff-check against plan expectations (if applicable)
+6. Post: `✅ Diff-Check: {findings}`
+
+---
+
+### Step 2 — Read Log, CHANGELOG & PLANS.md
+
+1. Read execution log
+2. Post: `✅ Read Log: execution-log-plan-{N}.md, {lines} lines, {tests} tests, {stops} STOPs`
+3. Read CHANGELOG latest entry
+4. Post: `✅ Read CHANGELOG: latest entry {plan}-{rev}, {date}, {tests} tests`
+5. Read PLANS.md current baseline
+6. Post: `✅ Read PLANS.md: baseline {plan}-{rev}, queue: {plans}`
+
+---
+
+### Step 2.5 — File Inspection (If Needed)
+
+If the log shows errors, failures, or anomalies, the Architect MAY read specific source files to diagnose root cause. Each file read gets its own gate.
+
+1. Read relevant source file(s)
+2. Post: `✅ Inspected File: {file-path}, {finding}`
+
+---
+
+### Step 3 — Read Governance (Individual Gates)
+
+1. Read PRINCIPLES.md
+2. Post: `✅ Read PRINCIPLES.md: {N} principles, {N} workflow principles`
+3. Read OR_RULES.md
+4. Post: `✅ Read OR_RULES.md: {N} rules`
+5. Read ARCHITECTURE.md
+6. Post: `✅ Read ARCHITECTURE.md: {N} active, {N} reserved, {N} retired`
+7. Read LANDMINES.md
+8. Post: `✅ Read LANDMINES.md: {N} active landmines`
+9. Read DEBT.md
+10. Post: `✅ Read DEBT.md: {N} open items`
+
+---
+
+### Step 4 — Debt Action (Individual Gates)
+
+1. **Identify** rules eligible for promotion (plan completed successfully). Status remains `Proposed`.
+2. Post: `✅ Promoted Rules: {rule-ids} → Accepted`
+3. Resolve debts if trigger fired or target plan reached
+4. Post: `✅ Resolved Debts: {debt-ids}`
+5. Block debts with justification if needed
+6. Post: `✅ Blocked Debts: {debt-ids}, reason: {justification}`
+7. **Route to Round Table**: Eligible rules are queued for the next Round Table review. Do NOT promote to `Accepted` without Round Table approval.
+8. Post: `⏭️ Routed to Round Table: {rule-ids}`
+
+---
+
+### Step 5 — Review Patterns (Individual Gates)
+
+1. Identify rule gaps from execution log
+2. Post: `✅ Identified Gaps: {gap descriptions}`
+1. **Draft** new AR specifications with status `Proposed`
+4. Post: `✅ Created AR Rules: {AR-ids}`
+3. **Draft** new OR specifications with status `Proposed`
+6. Post: `✅ Created OR Rules: {OR-ids}`
+5. **Draft** new landmine specifications with status `Proposed`
+8. Post: `✅ Created Landmines: {M-ids}`
+7. **Route to Round Table**: All drafted rules are queued for the next Round Table review. Do NOT write to SSOT files without Round Table approval.
+8. Post: `⏭️ Routed to Round Table: {AR-ids}, {OR-ids}, {M-ids}`
+
+---
+
+### Step 5 Gate — Proceed or Ask User
+
+After Step 5, the Architect assesses: are there issues requiring a plan revision?
+
+- **Yes** (issues found): Proceed to Step 6 (Fix Plan Creation)
+- **No** (no issues): Ask user how to proceed — do not auto-loop
+
+**Post**: `✅ Step 5 Complete: {issues found / no issues}. Proceeding to {Step 6 / asking user}.`
+
+---
+
+### Step 6 — Fix Plan Creation
+
+Plan creation under the log workflow produces iterative fixes to address issues found in execution logs. Each iteration increments the sub-version.
+
+#### Plan Iteration Rules
+
+| Iteration | Trigger | Example |
+|-----------|---------|---------|
+| 25.1 | First fix after log analysis | `plan-25.1.md` |
+| 25.2 | Second fix after re-analysis | `plan-25.2.md` |
+| 25.3 | Third fix | `plan-25.3.md` |
+| 25.N | Nth fix | `plan-25.N.md` |
+
+**Naming**: `plan-{N}.{i}.md` where `{N}` is the base plan number and `{i}` is the fix iteration. No Rev number in fix iterations.
+
+**Size Limit**: Plans MUST be ≤120 lines unless user explicitly specifies override.
+
+#### Fix Plan Creation Steps (with Executor Gates)
+
+Each fix plan MUST include an Executor Manifest with gated phases. The Executor MUST verify each gate before proceeding to the next phase.
+
+**6.1 — Assess Scope of Changes**
+
+1. Categorize the delta: bugfix, missing requirement, new feature, architectural adjustment
+2. Post: `✅ Assessed Scope: {category}, {description}`
+
+**6.2 — Route to Appropriate Rework Level**
+
+| Level | Scope | Action |
+|-------|-------|--------|
+| Patch | Small fix, single-file change | 1-3 tasks appended to existing plan |
+| Plan | New tasks, modified requirements | Update plan document, preserve completed tasks |
+| Design | Architectural changes | Scoped re-brainstorm, then plan update |
+
+1. Select rework level based on scope assessment
+2. Post: `✅ Rework Level: {patch/plan/design}, reason: {justification}`
+
+**6.3 — Preserve Context from Previous Cycle**
+
+1. Reference existing design doc and plan
+2. Acknowledge what was implemented successfully
+3. Avoid re-implementing completed tasks
+4. Post: `✅ Preserved Context: {completed tasks acknowledged}`
+
+**6.4 — Draft Fix Plan with Executor Manifest**
+
+The fix plan MUST include an Executor Manifest with phases and gates:
+
+```
+## Executor Manifest
+Phases: S0, S1, S2, ... S_close
+Deliverables:
+  - S<n>: <file-path> (<description>)
+Gates per phase:
+  - S<n>: <check1>, <check2>, ...
+Coverage target: <N>%
+Forbidden actions: <list>
+```
+
+1. Draft plan iteration addressing log issues
+2. Post: `✅ Drafted Plan: plan-{N}.{i}.md, {lines} lines (limit: 120)`
+
+**6.5 — Verify Plan Quality Gates**
+
+Before delivering the fix plan, verify:
+
+- [ ] Plan ≤120 lines (or user override specified)
+- [ ] Executor Manifest present with phases and gates
+- [ ] All referenced AR/OR rules exist in governance docs
+- [ ] Active landmines addressed or documented
+- [ ] No host-local paths in plan body
+
+1. Run quality verification
+2. Post: `✅ Verified Plan Quality: {checks passed}`
+
+**6.6 — Deliver Fix Plan**
+
+1. Present plan to user for review
+2. Post: `✅ Fix Plan Ready: plan-{N}.{i}.md, {lines} lines, awaiting user review`
+
+**User Decision Gate**:
+- **Approve**: Proceed to Executor
+- **Request more fixes**: Increment iteration (25.{i+1}), loop to 6.1
+- **Reject**: Discard iteration, ask user for direction
+
+---
+
+
+## Section 6: Round Table Workflow
+
+**Applicable GR Rules**: GR1, GR2, GR3, GR4, GR6, GR7, GR8, GR9, GR10, GR11, GR13, GR14, GR15, GR16
+
+
+
+Triggered independently — may run while Executor is executing plans in parallel. User may engage this track without ever running the Log Reading Workflow.
+
+---
+
+### Batch Process (Integrated)
+
+4 plans per batch. 1 shared brief (Rev 1 only). 1 Round Table prompt per rev. Scan every 5 plans (5, 10, 15…).
+
+**Batch workflow**:
+1. Draft 4 individual plan files + 1 brief (Rev 1) + 1 prompt per rev
+2. Round Table reviews
+3. Architect applies findings → Rev2 if needed
+4. User copies finals to Executor
+
+**Dependency**: If Plan {Xn} STOPs, all plans with `Depends on: {Xn}` also STOP. Binary.
+
+---
+
+### Brief Format (Rev 1 Only)
+
+One brief per batch. ≤80 lines. 10 sections in order. Rev 2+ does not include brief unless user explicitly requests.
+
+#### Section Order
+
+1. **Context** — baseline, repo state.
+2. **Plans in this batch** — table: plan #, title, depends on, vision principles, AR rules, OR rules.
+3. **Rules proposed** — AR-ID/OR-ID/M-ID + rule/rejected alternative/consequence.
+4. **Rules carried forward** — AR/OR/M-IDs only, pointer to `.agent/executor/ARCHITECTURE.md` or `.agent/executor/OR_RULES.md` or `.agent/shared/LANDMINES.md`.
+5. **Questions for Round Table** — Q-ID.
+6. **Open questions resolved** — list resolved Q-IDs; "none" if none.
+7. **Risks flagged** — includes landmine pre-screen.
+8. **Coverage target**
+9. **Round Table protocol reminder**
+10. **Superseded rules** — AR/OR/M-ID + pointer to replacement.
+
+#### Rules
+
+- Missing/reordered sections block delivery (GR7).
+- Brief is created at Rev 1 only. Rev 2+ does not include brief unless user explicitly requests.
+
+---
+
+### Round Table Revision Rules
+
+Round Table revisions are separate from log-fix iterations. A plan enters Round Table at a specific version (e.g., 25.2) and then goes through Round Table revisions.
+
+| Revision | Includes | Notes |
+|----------|----------|-------|
+| Rev 1 | Plans + Brief + Prompt | First pass with complete material |
+| Rev 2+ | Plans + Prompt | Brief only if user explicitly requests |
+| User override | As specified | User may request full re-review or brief at any rev |
+
+**Naming**: Round Table revisions do not change the plan file name. The plan remains `plan-{N}.{i}.md` throughout Round Table. Only the prompt changes (Rev 1, Rev 2, etc.).
+
+---
+
+### Round Table Prompt Best Practices
+
+The Round Table prompt follows the **Panel-of-Experts** pattern with **Parallel Fan-Out** to multiple panelists:
+
+**Prompt Structure** (per GR10 and research best practices):
+
+```
+## ROLES
+{Panelist role definitions with expertise areas}
+Each panelist is an independent expert. If any panelist realizes they are
+wrong at any point, they must acknowledge it and withdraw that finding.
+
+## MATERIAL
+- Brief: {brief content} (Rev 1 only, unless user requests for Rev 2+)
+- Plans: {plan files}
+- Dimensions: {evaluation dimensions}
+- Risks: {pre-screened risks}
+- Settled findings: {previously accepted findings}
+
+## EVALUATION CRITERIA (Rubric-Based)
+For each plan, evaluate across five dimensions:
+1. Clarity & Specificity — are objectives and success criteria explicit?
+2. Structural Organization — is the plan well-organized with clear sections?
+3. Context Management — are instructions placed strategically around context?
+4. Reasoning & Tool Guidance — does the plan guide the executor's thinking?
+5. Examples & Output Control — are output formats and style rules defined?
+
+## SEVERITY LEVELS (Threshold-Based)
+- CRITICAL (Score 1-3): Data loss, security, irreversible damage. Blocks delivery.
+- HIGH (Score 4-5): Executor STOP, test failure, broken build. Blocks delivery.
+- MEDIUM (Score 6-7): Degraded functionality, tech debt. Address or document.
+- LOW (Score 8-10): Style, naming. Architect discretion.
+
+## ANSWER FORMAT
+For each finding, provide:
+**Finding ID**: RT-{N}
+**Severity**: {CRITICAL|HIGH|MEDIUM|LOW}
+**Dimension**: {which of the 5 criteria}
+**Evidence**: {specific line or section}
+**Fix**: {concrete change required}
+**Confidence**: {1-10, 10 = certain}
+```
+
+---
+
+### Step 1 — Re-Read Relevant Documents (Individual Gates)
+
+Before screening plans, re-read the current governance documents to ensure up-to-date context. Do not rely on cached knowledge from previous steps.
+
+1. Read LANDMINES.md
+2. Post: `✅ Read LANDMINES.md: {N} active landmines`
+3. Read PRINCIPLES.md (workflow principles section)
+4. Post: `✅ Read PRINCIPLES.md: {N} workflow principles`
+5. Read ARCHITECTURE.md (relevant AR rules for this plan)
+6. Post: `✅ Read ARCHITECTURE.md: {N} relevant AR rules`
+7. Read OR_RULES.md (relevant OR rules for this plan)
+8. Post: `✅ Read OR_RULES.md: {N} relevant OR rules`
+
+---
+
+### Step 2 — Prepare Round Table (Individual Gates)
+
+1. Screen plans against LANDMINES.md
+2. Post: `✅ Screened Landmines: {N} blocking, {N} non-blocking`
+3. Assemble brief (Rev 1 only; Rev 2+ brief only if user requests)
+4. Post: `✅ Assembled Brief: {N} sections, {lines} lines`
+5. Assemble plans, dimensions, risks, settled findings
+6. Post: `✅ Assembled Material: {N} plans, {N} dimensions, {N} risks`
+7. Draft Round Table prompt with rubric-based criteria
+8. Post: `✅ Drafted Prompt: Rev {n}, {N} panelists, rubric-based criteria`
+
+---
+
+### Step 3 — User Executes Round Table (User-Completed)
+
+**This step is completed by the user, not the Architect.**
+
+1. User posts plans, brief (if Rev 1), and prompt to Round Table panelists
+2. User collects panelist responses
+3. User posts panelist findings back to the Architect
+
+**Architect waits for user to post findings before proceeding to Step 4.**
+
+---
+
+### Step 4 — Process Findings (Individual Gates)
+
+For each panelist finding posted by the user:
+
+1. Post: `✅ Accepted Finding RT-{id}: {reasoning} — {fix applied or documented}`
+2. Or: `❌ Rejected Finding RT-{id}: {reasoning}`
+
+**Human verification checklist**:
+- [ ] Every finding has a compliance line
+- [ ] No finding is unaddressed
+- [ ] Accepted findings have fix documentation
+- [ ] Rejected findings have reasoning
+
+**STOP conditions**:
+- Any finding without a compliance line
+- Accepted finding without documented fix
+- Rejected finding without reasoning
+
+---
+
+### Step 5 — Score Panelists (Individual Gates)
+
+1. Calculate panelist scores (weighted toward accepted findings)
+2. Post: `✅ Calculated Scores: {panelist} {score}/100, {panelist} {score}/100`
+3. Post scorecard inline
+4. Post: `✅ Posted Scorecard: {N} panelists scored`
+
+---
+
+### Step 6 — Create Round Table Score Document (Final Round Only)
+
+After all Round Table rounds complete for a plan (clean pass achieved), create a persistent score document for long-term tracking of panelist performance across plans.
+
+**Do NOT create this document after each round. Only after the final round.**
+
+1. Compile scores from all rounds for this plan
+2. Post: `✅ Compiled All Scores: {N} rounds, {N} panelists, scores: {details}`
+
+**Score Document Format** (`roundtable-scores-plan-{N}.md`):
+
+```markdown
+# Round Table Scores — Plan {N}
+
+**Date**: {YYYY-MM-DD}
+**Plan**: plan-{N}.{i}.md
+**Total Rounds**: {N}
+
+## Panelist Scores (All Rounds)
+
+| Panelist | Round 1 | Round 2 | ... | Round N | Average | Total Findings | Accepted | Rejected |
+|----------|---------|---------|-----|---------|---------|----------------|----------|----------|
+| {name} | {score} | {score} | ... | {score} | {avg} | {N} | {N} | {N} |
+| {name} | {score} | {score} | ... | {score} | {avg} | {N} | {N} | {N} |
+
+## Summary
+
+- Total findings across all rounds: {N}
+- Critical/High findings: {N}
+- Medium/Low findings: {N}
+- Clean pass achieved: {Yes / No}
+
+## Notes
+
+{any relevant notes about panelist performance or patterns}
+```
+
+3. Post: `✅ Created Score Document: roundtable-scores-plan-{N}.md`
+
+**Purpose**: This document enables long-term tracking of which panelists consistently provide the highest-quality findings. Use historical scores to optimize panel composition over time.
+
+---
+
+### Step 7 — Deliver (Individual Gates)
+
+Gated by Clean Pass criteria (Section 6, Step 5).
+
+1. Finalize plans for delivery
+2. Post: `✅ Finalized Plans: {N} plans ready`
+3. Post delivery confirmation
+4. Post: `✅ Delivered: {N} plans ready for copy`
+
+---
+

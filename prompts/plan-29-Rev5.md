@@ -3,6 +3,24 @@ Vision principles: P3 (Reliability), P8 (UIs are separate processes), P11 (Quali
 Open questions resolved: DD-29.1, DD-29.2, DD-29.3, DD-29.4, DD-29.5
 **Revision**: Rev5
 
+## Executor Manifest
+
+**Plan**: 29
+**Phases**: 7 (S0–S7)
+**Deliverables**:
+| Phase | Deliverable | Verification |
+|-------|-------------|--------------|
+| S1 | `app/sovereignai/model_registry/schema.py` + `NormalizedModelData` + `SyncRun` table | `pytest app/sovereignai/tests/test_model_registry_schema.py -v` passes |
+| S2 | `app/sovereignai/model_registry/sync.py` + provider adapters + `ADAPTER_REGISTRY` | `pytest app/sovereignai/tests/test_model_registry_sync.py -v` passes |
+| S3 | Offline mode with stale threshold logic | `pytest app/sovereignai/tests/test_model_registry_offline.py -v` passes |
+| S4 | SSE endpoint `/api/models/stream` + `models.sync.completed` event | `pytest app/sovereignai/tests/test_model_registry_sse.py -v` passes |
+| S5 | FastAPI routes (`/api/models/*`, `/api/providers/*`) | `pytest app/sovereignai/tests/test_model_registry_api.py -v` passes |
+| S6 | JSON UI data contract (tree + detail views) | `pytest app/sovereignai/tests/test_model_registry_ui_contract.py -v` passes |
+| S7 | AR check scripts + document hygiene | `pytest .agent/executor/tests/test_document_hygiene.py -v` passes |
+
+**Governance files**: Do not modify `AI_HANDOFF.md`, `AGENTS.md`, `PRINCIPLES.md`, `OR_RULES.md`, `PLANS.md`, `DEBT.md`.
+**Commit message**: `feat(model_registry): add provider model sync with offline mode, SSE updates, and adapter registry`
+
 ## S0 — Opening
 
 S0.0: Clone latest repo. Verify Plans 22 and 28 completed.
