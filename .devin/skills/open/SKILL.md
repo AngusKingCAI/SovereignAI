@@ -28,10 +28,11 @@ Run `/open` workflow. STOP on any failure.
 9. Read plan header OR rules from `.agent/executor/OR_RULES.md` (listed rules only).
 10. Read `.agent/shared/CHANGELOG.md` latest entry.
 11. Read `.agent/shared/DEBT.md` for deferred items.
-12. **Initialize execution trace: create `.agent/executor/traces/trace-plan-{N}.jsonl` with manifest hash and timestamp. (Invariant 12)**
-13. **Manually run `.agent/executor/hooks/append_trace.py --skill open --plan {N}` to log /open invocation. (Invariant 12 — fallback if hook fails)**
-14. Organize log files from logs root into numbered subfolders (1-9, 10-19, 20-29, Misc) by running `.agent/executor/scripts/organize_logs.py`.
-15. Identify ambiguities. Ask user. Wait for answers.
-16. Update `.agent/shared/PLANS.md` with new plan entry (mark "In Progress", shift upcoming queue).
-17. Begin Phase 1.
-18. After each phase: run `verify_syntax.py`, `ruff check`, scoped `pytest`. STOP on failure.
+12. **Read execution attestation from previous plan**: Read `logs/execution-attestation-plan-{N-1}.md` if it exists. Verify attestation phases match the previous plan's Executor Manifest phases and that `verify_execution.py --final` result is PASS.
+13. **Read execution trace from previous plan** (if attestation shows issues): Read `.agent/executor/traces/trace-plan-{N-1}.jsonl` to identify any drift.
+14. **Initialize execution trace: create `.agent/executor/traces/trace-plan-{N}.jsonl` with manifest hash and timestamp. (Invariant 12)**
+15. **Manually run `.agent/executor/hooks/append_trace.py --skill open --plan {N}` to log /open invocation. (Invariant 12 — fallback if hook fails)**
+16. Identify ambiguities. Ask user. Wait for answers.
+17. Update `.agent/shared/PLANS.md` with new plan entry (mark "In Progress", shift upcoming queue).
+18. Begin Phase 1.
+19. After each phase: run `verify_syntax.py`, `ruff check`, scoped `pytest`. STOP on failure.
