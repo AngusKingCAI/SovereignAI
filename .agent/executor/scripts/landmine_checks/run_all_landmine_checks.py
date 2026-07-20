@@ -122,7 +122,12 @@ def main() -> int:
     repo_state_hash = get_repo_state_hash(repo_root)
 
     scripts = sorted(landmine_checks_dir.glob("*.py"))
-    scripts = [s for s in scripts if s.name != "run_all.py" and not s.name.startswith("_")]
+    scripts = [
+        s for s in scripts
+        if s.name != "run_all.py" and
+        s.name != "run_all_landmine_checks.py" and
+        not s.name.startswith("_")
+    ]
 
     if not scripts:
         print("No landmine detection scripts found in scripts/landmine_checks/")

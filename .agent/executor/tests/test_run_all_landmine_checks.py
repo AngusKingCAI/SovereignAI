@@ -7,7 +7,10 @@ import pytest
 
 @pytest.fixture
 def check_script():
-    return Path(__file__).parent.parent / "scripts" / "landmine_checks" / "run_all_landmine_checks.py"
+    return (
+        Path(__file__).parent.parent / "scripts" / "landmine_checks" /
+        "run_all_landmine_checks.py"
+    )
 
 
 def test_run_all_landmine_checks_exists(check_script):

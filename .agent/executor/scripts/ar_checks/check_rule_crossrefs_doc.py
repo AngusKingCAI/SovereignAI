@@ -128,9 +128,10 @@ def main(repo_root: Path | None = None):
     if repo_root is None:
         # Check for REPO_ROOT environment variable first
         env_root = os.environ.get('REPO_ROOT')
-        repo_root = Path(env_root) if env_root else Path(__file__).parent.parent.parent.parent.parent
-
-    agents_path = repo_root / 'AGENTS.md'
+        repo_root = (
+            Path(env_root) if env_root
+            else Path(__file__).parent.parent.parent.parent.parent
+        )
 
     # Get plan rules for Just-In-Time filtering
     result = subprocess.run(

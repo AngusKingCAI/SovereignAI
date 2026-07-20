@@ -9,9 +9,9 @@ Full history: `.agent/shared/CHANGELOG.md`.
 
 | Metric | Value | Source Plan |
 |--------|-------|-------------|
-| Tests | 97 passed (model registry) + 845 passed (options) = 942 total | scan-30 |
-| ruff | 0 | scan-30 |
-| mypy | 0 | scan-30 |
+| Tests | 891 passed, 52 skipped | reorganization-fix |
+| ruff | 0 | reorganization-fix |
+| mypy | 37 pre-existing (not blocking) | reorganization-fix |
 
 ## Active Plan
 
@@ -46,6 +46,7 @@ None.
 
 | Plan | Rev | Date | Note |
 |------|-----|------|------|
+| reorganization-fix | — | 2026-07-20 | ✅ Completed: Post-reorganization cleanup, removed stale files, fixed script runners |
 | Plan 30 | Rev 2 | 2026-07-20 | ✅ Completed: Scan fix: AR check paths, SOR-1/M7/M8 added, range review 26-29 |
 | Plan 29 | Rev 5 | 2026-07-20 | Model registry with provider sync, offline mode, SSE updates, and API layer |
 | Plan 28 | Rev 5 | 2026-07-19 | Options Panel persistence with encryption, migrations, and EventBus integration |

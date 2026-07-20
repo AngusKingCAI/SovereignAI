@@ -15,9 +15,9 @@ from pathlib import Path
 def extract_rules():
     """Extract all active rule IDs and minimal metadata."""
     repo_root = Path.cwd()
-    
+
     rules = {}
-    
+
     # Extract AR/OR/UOR/etc rules from AGENTS.md
     agents_path = repo_root / "AGENTS.md"
     if agents_path.exists():
@@ -28,7 +28,7 @@ def extract_rules():
             rule_id = match.group(1)
             if rule_id not in rules:
                 rules[rule_id] = "AGENTS.md"
-    
+
     # Extract from OR_RULES.md
     or_rules_path = repo_root / ".agent/executor/OR_RULES.md"
     if or_rules_path.exists():
@@ -38,7 +38,7 @@ def extract_rules():
             rule_id = match.group(1)
             if rule_id not in rules:
                 rules[rule_id] = "OR_RULES.md"
-    
+
     return rules
 
 
@@ -47,10 +47,10 @@ def main():
         rules = extract_rules()
         cache_path = Path(".agent/executor/.rules-cache.json")
         cache_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         with open(cache_path, 'w') as f:
             json.dump(rules, f)
-        
+
         print(f"Rules cache created: {len(rules)} rules indexed")
         return 0
     except Exception as e:

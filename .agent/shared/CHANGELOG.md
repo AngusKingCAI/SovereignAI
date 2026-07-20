@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## reorganization-fix — Post-Reorganization Cleanup (Commit b9372dc)
+
+**Date**: 2026-07-20
+**Plan**: Infrastructure fix
+**Tests**: 891 passed, 52 skipped
+**Previous Baseline**: scan-30
+**Coverage**: N/A (infrastructure fix)
+**Screenshots**: N/A
+
+**Changes**:
+- Removed stale check_ar7_allowlist.py from ar_checks/ (AR7 retired per ARCHITECTURE.md)
+- Removed orphaned test files: test_check_ar7_allowlist.py, test_run_all.py
+- Updated spec_match.py ALLOWLIST to remove obsolete script references (check_rule_crossrefs.py, check_ar7_allowlist.py)
+- Added new JIT filtering scripts to spec_match.py ALLOWLIST: get_plan_rules.py, generate_rules_cache.py, check_all_lightweight.py
+- Fixed line length violations in sync_workflow_files.py, check_all_lightweight.py, check_rule_crossrefs_doc.py
+- Fixed run_all_landmine_checks.py to exclude itself from script list (was stuck in infinite loop)
+- Fixed run_all_or_checks.py to exclude itself from script list
+- Regenerated .rules-cache.json to include all current rule IDs (13 rules indexed)
+- Fixed test file path resolution for test_check_component_manifest_kwargs_ast.py and test_run_all_landmine_checks.py
+
+**Resolution Status**: All verification steps passed - pytest suite, ruff check, AR checks, landmine checks, OR checks, verify_close.py
+
+---
+
 ## scan-30 — Scan Fix (Plans 26-29 Range Review)
 
 **Date**: 2026-07-20

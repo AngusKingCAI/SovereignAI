@@ -15,11 +15,11 @@ def run_check(script_path, name, args=None):
     """Run check and return exit code."""
     if not script_path.exists():
         return 0  # Skip if script doesn't exist
-    
+
     cmd = [sys.executable, str(script_path)]
     if args:
         cmd.extend(args)
-    
+
     result = subprocess.run(
         cmd,
         capture_output=True,
@@ -36,32 +36,36 @@ def run_check(script_path, name, args=None):
 
 def main():
     file_path = sys.argv[1] if len(sys.argv) > 1 else None
-    repo_root = Path(__file__).parent.parent.parent.parent if Path(__file__).parent.name == "scripts" else Path.cwd()
-    
+    repo_root = (
+        Path(__file__).parent.parent.parent.parent
+        if Path(__file__).parent.name == "scripts"
+        else Path.cwd()
+    )
+
     # Require file argument for meaningful checks
     if not file_path:
         print("Error: file_path argument required", file=sys.stderr)
         return 1
-    
+
     scripts = []
-    
+
     # Always run syntax check if file provided
     if file_path:
         scripts.append(
             (repo_root / ".agent/executor/scripts/verify_syntax.py", "Syntax", [file_path])
         )
-    
+
     # Only run import path check if file is in app/sovereignai/
     if file_path and "app/sovereignai/" in file_path:
         scripts.append(
             (repo_root / ".agent/executor/scripts/check_import_paths.py", "Imports", [file_path])
         )
-    
+
     all_passed = True
     for script, name, args in scripts:
         if run_check(script, name, args) != 0:
             all_passed = False
-    
+
     return 0 if all_passed else 1
 
 

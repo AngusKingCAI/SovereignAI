@@ -97,7 +97,7 @@ def main() -> int:
 
             expected_scripts = script_mapping.get(rule_id, [])
             missing_scripts = [s for s in expected_scripts if s not in existing_scripts]
-            
+
             if missing_scripts:
                 script_list = ', '.join(f'{s}.py' for s in missing_scripts)
                 orphaned_rules.append(f'{rule_id} (missing scripts: {script_list})')
