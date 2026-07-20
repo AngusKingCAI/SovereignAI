@@ -52,12 +52,37 @@ def main():
         workflow_dir,
     )
     sync_file(
+        ".agent/executor/scripts/check_all_lightweight.py",
+        "check_all_lightweight.py",
+        workflow_dir,
+    )
+    sync_file(
+        ".agent/executor/scripts/check_ar4_allowlist.py",
+        "check_ar4_allowlist.py",
+        workflow_dir,
+    )
+    sync_file(
+        ".agent/executor/scripts/generate_rules_cache.py",
+        "generate_rules_cache.py",
+        workflow_dir,
+    )
+    sync_file(
+        ".agent/executor/scripts/get_plan_rules.py",
+        "get_plan_rules.py",
+        workflow_dir,
+    )
+    sync_file(
+        ".agent/executor/scripts/rules_cache_lib.py",
+        "rules_cache_lib.py",
+        workflow_dir,
+    )
+    sync_file(
         ".agent/executor/scripts/check_import_paths.py",
         "check_import_paths.py",
         workflow_dir,
     )
     sync_file(
-        ".agent/executor/scripts/check_rule_crossrefs_doc.py",
+        ".agent/executor/scripts/ar_checks/check_rule_crossrefs_doc.py",
         "check_rule_crossrefs_doc.py",
         workflow_dir,
     )
@@ -72,7 +97,7 @@ def main():
         workflow_dir,
     )
     sync_file(
-        ".agent/executor/scripts/check_component_manifest_kwargs_ast.py",
+        ".agent/executor/scripts/ar_checks/check_component_manifest_kwargs_ast.py",
         "check_component_manifest_kwargs_ast.py",
         workflow_dir,
     )
@@ -107,13 +132,6 @@ def main():
     sync_file(
         ".agent/executor/checks/run_model_registry_ar_checks.py",
         "run_model_registry_ar_checks.py",
-        workflow_dir,
-    )
-
-    # Executor AR checks (root)
-    sync_file(
-        ".agent/executor/ar_checks/check_options_encryption_at_rest.py",
-        "check_options_encryption_at_rest.py",
         workflow_dir,
     )
 
@@ -156,6 +174,11 @@ def main():
     sync_file(
         ".agent/executor/scripts/ar_checks/check_changelog.py",
         "check_changelog.py",
+        workflow_dir,
+    )
+    sync_file(
+        ".agent/executor/scripts/ar_checks/check_options_encryption_at_rest.py",
+        "check_options_encryption_at_rest.py",
         workflow_dir,
     )
     sync_file(
