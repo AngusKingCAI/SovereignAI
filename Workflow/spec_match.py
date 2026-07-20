@@ -124,7 +124,7 @@ ALLOWLIST = {
     ".agent/executor/tests/test_run_all_landmine_checks.py",
     ".agent/executor/tests/test_run_all_or_checks.py",
     ".agent/executor/tests/test_get_current_plan.py",
-    ".agent/executor/tests/test_run_all.py",
+
     ".agent/executor/tests/test_trace_emitter_bounded_queue.py",
     ".agent/executor/tests/test_correlation_id.py",
     ".agent/executor/tests/test_document_hygiene.py",
