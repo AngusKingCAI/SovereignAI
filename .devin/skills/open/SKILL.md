@@ -34,5 +34,6 @@ Run `/open` workflow. STOP on any failure.
 15. **Manually run `.agent/executor/hooks/append_trace.py --skill open --plan {N}` to log /open invocation. (Invariant 12 — fallback if hook fails)**
 16. Identify ambiguities. Ask user. Wait for answers.
 17. Update `.agent/shared/PLANS.md` with new plan entry (mark "In Progress", shift upcoming queue).
-18. Begin Phase 1.
-19. After each phase: run `verify_syntax.py`, `ruff check`, scoped `pytest`. STOP on failure.
+18. **Organize log files**: Run `.agent/executor/scripts/organize_logs.py` to move log files from root to numbered subfolders (0-9, 10-19, 20-29, 30-39, Misc).
+19. Begin Phase 1.
+20. After each phase: run `verify_syntax.py`, `ruff check`, scoped `pytest`. STOP on failure.

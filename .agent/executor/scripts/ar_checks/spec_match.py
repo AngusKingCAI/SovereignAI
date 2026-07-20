@@ -24,7 +24,7 @@ def extract_will_edit_paths(plan_path: Path) -> set[str]:
 
 def get_baseline_tag(plan_path: Path) -> str:
     content = plan_path.read_text()
-    match = re.search(r'Depends on:\s*(.+)', content)
+    match = re.search(r'\*\*Depends on\*\*:\s*(.+)', content)
     if match:
         depends = match.group(1).strip()
         if depends.lower() == "none":

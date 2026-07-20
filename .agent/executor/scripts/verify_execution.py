@@ -206,34 +206,6 @@ def check_attestation(plan_id: str, repo_path: str = ".") -> tuple[bool, str]:
         return False, "Attestation contains failures (❌)"
 
     return True, ""
-    attestation_path = os.path.join(repo_path, f"logs/execution-attestation-plan-{plan_id}.md")
-    if not os.path.exists(attestation_path):
-        return False, f"Missing attestation: {attestation_path}"
-
-    with open(attestation_path) as f:
-        content = f.read()
-
-    required_sections = [
-        "Phase Sequence Verification",
-        "Deliverable Verification",
-        "Gate Results",
-        "Forbidden Action Audit",
-        "Trace Integrity",
-        "Attestation"
-    ]
-
-    missing = []
-    for section in required_sections:
-        if section not in content:
-            missing.append(section)
-
-    if missing:
-        return False, f"Attestation missing sections: {', '.join(missing)}"
-
-    if "❌" in content:
-        return False, "Attestation contains failures (❌)"
-
-    return True, ""
 
 
 def verify_init(plan_id: str, repo_path: str = ".") -> bool:

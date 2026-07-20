@@ -46,7 +46,7 @@ None.
 
 | Plan | Rev | Date | Note |
 |------|-----|------|------|
-| Plan 30 | Rev 2 | 2026-07-20 | Scan fix: AR check paths, SOR-1/M7/M8 added, range review 26-29 |
+| Plan 30 | Rev 2 | 2026-07-20 | ✅ Completed: Scan fix: AR check paths, SOR-1/M7/M8 added, range review 26-29 |
 | Plan 29 | Rev 5 | 2026-07-20 | Model registry with provider sync, offline mode, SSE updates, and API layer |
 | Plan 28 | Rev 5 | 2026-07-19 | Options Panel persistence with encryption, migrations, and EventBus integration |
 | workflow-fix | Rev 1 | 2026-07-19 | Fixed 9 critical/high/medium compliance system issues |
