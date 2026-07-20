@@ -55,3 +55,8 @@ options/backend.py:close
 options/migrations.py:__init__
 options/migrations.py:Migration.__init__
 options/migrations.py:run_migrations
+model_registry/api.py:list_models
+model_registry/sync.py:__init__
+model_registry/sync.py:conn
+model_registry/sync.py:close
+model_registry/sync.py:_emit_sync_event

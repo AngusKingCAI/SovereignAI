@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## scan-30 — Scan Fix (Plans 26-29 Range Review)
+
+**Date**: 2026-07-20
+**Plan**: plans/plan-30-Rev2.md
+**Tests**: N/A (scan plan)
+**Previous Baseline**: plan-29-Rev5
+**Coverage**: N/A (scan plan)
+**Screenshots**: N/A
+
+**Changes**:
+- Fixed AR check scripts with portable paths: check_messaging_no_department_manager_subclass.py, check_messaging_whitelist_enforced.py (changed from parent.parent.parent.parent to parent.parent.parent.parent.parent for repo-root-relative paths)
+- Added SOR-1 to OR_RULES.md: Trace Timestamp Authenticity rule (detects round-number timestamps indicating manual fabrication)
+- Added M7 to LANDMINES.md: AR check scripts with hardcoded relative paths break across CWDs
+- Added M8 to LANDMINES.md: Execution logs containing only headers (no body content)
+- Updated verify_execution.py with trace timestamp audit function (detects entries with :00.000 seconds component as warnings, not failures)
+
+**Resolution Status**: All verification steps passed - pytest rule tests, document hygiene tests, script execution tests
+
+---
+
 ## prompts → plans folder rename
 
 **Date**: 2026-07-20

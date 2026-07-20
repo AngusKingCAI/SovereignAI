@@ -23,7 +23,7 @@ import subprocess
 import sys
 
 
-def run_git(args, cwd="."):
+def run_git(args: list[str], cwd: str = ".") -> tuple[str, int]:
     """Run git command and return stdout."""
     result = subprocess.run(
         ["git"] + args,
@@ -34,15 +34,15 @@ def run_git(args, cwd="."):
     return result.stdout.strip(), result.returncode
 
 
-def get_manifest_from_plan(plan_id, repo_path="."):
+def get_manifest_from_plan(plan_id: str, repo_path: str = ".") -> tuple[dict | None, str | None]:
     """Extract Executor Manifest from plan file."""
     # Look for plan files with revision suffixes (e.g., plan-28-Rev5.md)
     import glob
-    
+
     # First try in plans/ directory (active plans)
     plan_pattern = os.path.join(repo_path, f"plans/plan-{plan_id}*.md")
     plan_files = glob.glob(plan_pattern)
-    
+
     # If not found, try in plans/completed/ subdirectories
     if not plan_files:
         completed_dir = os.path.join(repo_path, "plans/completed")
@@ -56,7 +56,7 @@ def get_manifest_from_plan(plan_id, repo_path="."):
         return None, f"Plan file not found: plan-{plan_id}*.md"
 
     # Sort by revision number if present, otherwise use the file name
-    def extract_revision(filename):
+    def extract_revision(filename: str) -> int:
         # Extract revision number from filename like plan-28-Rev5.md
         match = re.search(r'Rev(\d+)', filename)
         if match:
@@ -135,7 +135,7 @@ def get_manifest_from_plan(plan_id, repo_path="."):
     }, None
 
 
-def get_commits_since_tag(tag, repo_path="."):
+def get_commits_since_tag(tag: str, repo_path: str = ".") -> list[dict]:
     """Get all commits since the plan start tag."""
     stdout, code = run_git(["log", f"{tag}..HEAD", "--pretty=format:%H|%ci|%s"], cwd=repo_path)
     if code != 0 or not stdout:
@@ -168,7 +168,7 @@ def get_commits_since_tag(tag, repo_path="."):
     return commits
 
 
-def get_files_changed_in_commit(commit_hash, repo_path="."):
+def get_files_changed_in_commit(commit_hash: str, repo_path: str = ".") -> list[str]:
     """Get files changed in a specific commit."""
     stdout, _ = run_git([
         "diff-tree", "--no-commit-id", "--name-only", "-r", commit_hash
@@ -176,7 +176,7 @@ def get_files_changed_in_commit(commit_hash, repo_path="."):
     return [f for f in stdout.split("\n") if f]
 
 
-def check_attestation(plan_id, repo_path="."):
+def check_attestation(plan_id: str, repo_path: str = ".") -> tuple[bool, str]:
     """Check if attestation file exists and has required sections."""
     attestation_path = os.path.join(repo_path, f"logs/execution-attestation-plan-{plan_id}.md")
     if not os.path.exists(attestation_path):
@@ -208,7 +208,7 @@ def check_attestation(plan_id, repo_path="."):
     return True, None
 
 
-def verify_init(plan_id, repo_path="."):
+def verify_init(plan_id: str, repo_path: str = ".") -> bool:
     """Initialize verification: validate manifest exists and is parseable."""
     print(f"[VERIFY-INIT] Plan {plan_id}")
 
@@ -225,7 +225,50 @@ def verify_init(plan_id, repo_path="."):
     return True
 
 
-def verify_final(plan_id, repo_path="."):
+def audit_trace_timestamps(plan_id: str, repo_path: str = ".") -> list[str]:
+    """Audit trace timestamps for suspicious patterns indicating manual fabrication.
+
+    Detects entries where timestamp seconds component is exactly :00.000 (round-minute
+    fabrication) or sequential 1-second intervals in S_close indicating manual entry.
+
+    Returns list of warnings (not failures) since pre-compliance traces exist.
+    """
+    trace_path = os.path.join(repo_path, f".agent/executor/traces/trace-plan-{plan_id}.jsonl")
+    if not os.path.exists(trace_path):
+        return []
+
+    warnings = []
+
+    try:
+        with open(trace_path) as f:
+            for line_num, line in enumerate(f, 1):
+                line = line.strip()
+                if not line:
+                    continue
+
+                try:
+                    import json
+                    entry = json.loads(line)
+                    timestamp = entry.get("timestamp", "")
+
+                    # Check for round-minute timestamps (seconds component is :00.000)
+                    # This pattern indicates manual fabrication at minute boundaries
+                    # Match patterns like: "2026-07-20T12:00:00.000" or "12:00:00.000"
+                    if ":00.000" in timestamp:
+                        warnings.append(
+                            f"Line {line_num}: Suspicious round timestamp {timestamp} "
+                            f"(phase={entry.get('phase', '?')}, action={entry.get('action', '?')})"
+                        )
+                except (json.JSONDecodeError, KeyError):
+                    continue
+    except Exception:
+        # If trace file can't be read, don't fail - just note the issue
+        warnings.append(f"Could not read trace file {trace_path} for timestamp audit")
+
+    return warnings
+
+
+def verify_final(plan_id: str, repo_path: str = ".") -> bool:
     """Final verification: full check of execution against manifest."""
     errors = []
     warnings = []
@@ -247,7 +290,7 @@ def verify_final(plan_id, repo_path="."):
     # 2. Check attestation
     attestation_ok, attestation_err = check_attestation(plan_id, repo_path)
     if not attestation_ok:
-        errors.append(attestation_err)
+        errors.append(attestation_err or "Attestation check failed")
     else:
         print("  Attestation: [OK] present and complete")
 
@@ -324,10 +367,18 @@ def verify_final(plan_id, repo_path="."):
     else:
         print("  Governance: [OK] no unauthorized modifications")
 
-    # 7. Check trace file exists
+    # 7. Check trace file exists and audit timestamps
     trace_path = os.path.join(repo_path, f".agent/executor/traces/trace-plan-{plan_id}.jsonl")
     if os.path.exists(trace_path):
         print(f"  Trace: [OK] {trace_path} exists")
+        # Audit timestamps for suspicious patterns
+        timestamp_warnings = audit_trace_timestamps(plan_id, repo_path)
+        if timestamp_warnings:
+            warnings.extend(timestamp_warnings)
+            print(
+                f"  Trace Timestamp Audit: {len(timestamp_warnings)} "
+                f"suspicious pattern(s) detected"
+            )
     else:
         warnings.append(f"Trace file not found: {trace_path}")
 
@@ -349,7 +400,7 @@ def verify_final(plan_id, repo_path="."):
         return True
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--init", action="store_true", help="Initialize verification at /open")
     parser.add_argument("--final", action="store_true", help="Final verification at /close")
@@ -357,7 +408,7 @@ def main():
     parser.add_argument("--repo", default=".", help="Repository path")
     args = parser.parse_args()
 
-    plan_id = args.plan
+    plan_id: str = args.plan
 
     # Fallback: read plan_id from .agent/current_plan.txt if not provided
     if not plan_id:

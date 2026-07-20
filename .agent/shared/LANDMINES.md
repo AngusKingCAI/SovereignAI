@@ -23,6 +23,8 @@ Naming: C{n} = Critical, H{n} = High, M{n} = Medium, L{n} = Low.
 
 | ID | Pattern | Detection | Mitigation |
 |----|---------|-----------|------------|
+| M7 | AR check scripts with hardcoded relative paths break across CWDs | `run_all.py` failures with path-not-found errors referencing drive root (e.g., `C:\app\...`) | All AR check scripts MUST use `Path(__file__).parent` chain for repo-root-relative paths. Audit existing scripts and refactor any using `Path.cwd()` or bare relative paths. |
+| M8 | Execution logs containing only headers (no body content) | `verify_close.py` line-count check on log files | Executor MUST paste full transcript. Empty/incomplete logs = STOP at `/close`. |
 | M1 | Dual import paths break protocol isinstance | Files in app/sovereignai/ using app.sovereignai.* imports instead of sovereignai.* imports | All source files in app/sovereignai/ must use sovereignai.* imports (matches installed package name). Use .agent/executor/scripts/fix_import_paths.py script to standardize. Detection: .agent/executor/scripts/check_import_paths.py script. |
 | M2 | AR4/discovery allowlists must be updated when new sovereignai.* UI imports added | test_ar4_no_core_imports_in_ui.py failures for new imports in app/web, app/tui, etc. | When adding new sovereignai.* imports to UI files, update WEB_MAIN_ALLOWED_IMPORTS and TUI_ALLOWED_IMPORTS in test_ar4_no_core_imports_in_ui.py |
 | M3 | AR check ALLOWLIST must include all legitimate plan artifact paths | spec_match.py failures for valid plan files | Add new plan artifact paths (app/tui, app/web, pyproject.toml, etc.) to ALLOWLIST in scripts/ar_checks/spec_match.py |

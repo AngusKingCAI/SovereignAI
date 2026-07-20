@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 def check_messaging_whitelist_enforced() -> int:
-    sovereignai_dir = Path(__file__).parent.parent.parent.parent / "app/sovereignai"
+    sovereignai_dir = Path(__file__).parent.parent.parent.parent.parent / "app/sovereignai"
     if not sovereignai_dir.exists():
         print("SKIPPED: sovereignai directory not found (AR check disabled for now)")
         return 0
