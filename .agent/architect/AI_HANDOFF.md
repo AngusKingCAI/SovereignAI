@@ -78,7 +78,7 @@ git config --global --add safe.directory $(pwd)
 
 **Rule Creation Mechanism**:
 - Architect drafts new AR/OR/M rules with status `Proposed` during Log Reading Workflow
-- Rules identified in Log Reading go directly to Executor Manifest as write-tasks (valid review path per GR13)
+- Rules identified in Log Reading go directly to Executor Manifest as write-tasks (valid review path per GR12)
 - Executor writes accepted rules to SSOT files (`.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, `.agent/shared/LANDMINES.md`) per plan instruction
 - No rule is written to SSOT without explicit plan instruction
 - **Status transitions**: `Proposed` → `Accepted` occurs when the Executor writes the rule to SSOT per plan instruction. The Architect does not change rule status.
@@ -88,42 +88,42 @@ git config --global --add safe.directory $(pwd)
 
 ## Section 3: GR Rules (Architect Governance Rules)
 
-**GR2.** Plan header lists `Vision principles:`, `AR rules:`, `OR rules:`, and `Open questions resolved:`.
+**GR1.** Plan header lists `Vision principles:`, `AR rules:`, `OR rules:`, and `Open questions resolved:`.
 
-**GR3.** Panelist responses attributed: `**Panelist**: <name/model>`.
+**GR2.** Panelist responses attributed: `**Panelist**: <name/model>`.
 
-**GR4.** Architect accepts/rejects every finding with reasoning.
+**GR3.** Architect accepts/rejects every finding with reasoning.
 
-**GR5.** No host-local paths in plans, briefs, prompts. Bare filenames for uploads; repo-relative paths for repo files.
+**GR4.** No host-local paths in plans, briefs, prompts. Bare filenames for uploads; repo-relative paths for repo files.
 
-**GR6.** New OR/AR rules: rule + rejected alternative + consequence — one line each.
+**GR5.** New OR/AR rules: rule + rejected alternative + consequence — one line each.
 
-**GR7.** Rules get stable IDs (AR{n}, OR{n}, M{n}). Status: Proposed / Accepted / Rejected / Superseded. Never delete. Accepted → `.agent/executor/ARCHITECTURE.md` or `.agent/executor/OR_RULES.md` (SSOT). Rejected → needs new evidence to re-propose.
+**GR6.** Rules get stable IDs (AR{n}, OR{n}, M{n}). Status: Proposed / Accepted / Rejected / Superseded. Never delete. Accepted → `.agent/executor/ARCHITECTURE.md` or `.agent/executor/OR_RULES.md` (SSOT). Rejected → needs new evidence to re-propose.
 
-**GR8.** Briefs: 9 sections in order, ≤80 lines. Missing/reordered sections block delivery.
+**GR7.** Briefs: 9 sections in order, ≤80 lines. Missing/reordered sections block delivery.
 
-**GR9.** Screen plans against `.agent/shared/LANDMINES.md` before Round Table. BLOCKING landmines fixed before delivery.
+**GR8.** Screen plans against `.agent/shared/LANDMINES.md` before Round Table. BLOCKING landmines fixed before delivery.
 
-**GR10.** Majority of panelists must return verdict before delivery. Majority = >50% of invited panelists, minimum 2 panelists for valid Round Table. Conditional/block needs GR4 reasoning.
+**GR9.** Majority of panelists must return verdict before delivery. Majority = >50% of invited panelists, minimum 2 panelists for valid Round Table. Conditional/block needs GR3 reasoning.
 
-**GR11.** First pass per rev: full prompt. Re-checks: diff summary only. Round Table questions get Q-IDs. Answers become rule IDs or stay open.
+**GR10.** First pass per rev: full prompt. Re-checks: diff summary only. Round Table questions get Q-IDs. Answers become rule IDs or stay open.
 
-**GR12.** Clean pass: post panelist scorecard inline (1-100, weighted toward accepted findings).
+**GR11.** Clean pass: post panelist scorecard inline (1-100, weighted toward accepted findings).
 
-**GR13.** All rule changes are reviewed before SSOT write. Valid review path: Log Reading Workflow (execution-driven rule identification). No silent edits to `.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, or `.agent/shared/LANDMINES.md`.
+**GR12.** All rule changes are reviewed before SSOT write. Valid review path: Log Reading Workflow (execution-driven rule identification). No silent edits to `.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, or `.agent/shared/LANDMINES.md`.
 
-**GR14.** Every plan file MUST include an `## Executor Manifest` section after the header. The manifest lists phases, deliverables per phase, gates per phase, coverage target, and forbidden actions. No plan is valid without this section.
+**GR13.** Every plan file MUST include an `## Executor Manifest` section after the header. The manifest lists phases, deliverables per phase, gates per phase, coverage target, and forbidden actions. No plan is valid without this section.
 
-**GR15.** All workflow sections MUST reference applicable GR rules at the top of the section.
+**GR14.** All workflow sections MUST reference applicable GR rules at the top of the section.
 
-**GR16.** Architect MUST re-read governance documents before each new workflow invocation. Do not rely on cached context.
+**GR15.** Architect MUST re-read governance documents before each new workflow invocation. Do not rely on cached context.
 
 ---
 
 
 ## Section 4: Compliance Artifacts
 
-**Applicable GR Rules**: GR4, GR12, GR15, GR16
+**Applicable GR Rules**: GR3, GR11, GR14, GR15
 This workflow produces artifacts to prevent scope drift and verify exact procedure compliance. The Architect is an AI web chat — it cannot create files, save state, or persist data between sessions. All Architect compliance evidence exists **only in the chat transcript**. The human verifies by reading the chat history.
 
 ### Core Principle: The Chat Transcript IS the Only Audit Log
@@ -198,7 +198,7 @@ The human is the state keeper. The chat transcript is the only state.
 
 ## Section 5: Log Reading Workflow
 
-**Applicable GR Rules**: GR2, GR5, GR7, GR9, GR13, GR14, GR15, GR16
+**Applicable GR Rules**: GR1, GR4, GR6, GR8, GR12, GR13, GR14, GR15
 
 Triggered when user says "Log Pushed" or provides execution log. This workflow is iterative — may produce plan fix iterations (25.1, 25.2, etc.) before proceeding to Round Table or stopping.
 
@@ -223,12 +223,16 @@ Triggered when user says "Log Pushed" or provides execution log. This workflow i
 4. Post: `✅ Read CHANGELOG: latest entry {plan}-{rev}, {date}, {tests} tests`
 5. Read PLANS.md current baseline
 6. Post: `✅ Read PLANS.md: baseline {plan}-{rev}, queue: {plans}`
+7. Read `logs/execution-attestation-plan-{N}.md`. Confirm attestation phases match the plan's Executor Manifest phases and that `verify_execution.py --final` result is PASS.
+8. Post: `✅ Read Attestation: plan-{N}, {phases} phases, verify_execution.py {PASS/FAIL}`
+9. If the attestation shows FAIL, phase mismatch, or the log shows errors/anomalies, read `.agent/executor/traces/trace-plan-{N}.jsonl` to identify the exact step where drift occurred.
+10. Post: `✅ Read Trace: plan-{N}, {entries} entries, {finding or "no drift found"}` — or `⏭️ Skipped Trace: attestation clean, no drift indicators`
 
 ---
 
 ### Step 2.5 — File Inspection (If Needed)
 
-If the log shows errors, failures, or anomalies, the Architect MAY read specific source files to diagnose root cause. Each file read gets its own gate.
+If the log or attestation shows errors, failures, or anomalies, the Architect MAY read specific source files to diagnose root cause. Each file read gets its own gate.
 
 1. Read relevant source file(s)
 2. Post: `✅ Inspected File: {file-path}, {finding}`
@@ -258,7 +262,7 @@ If the log shows errors, failures, or anomalies, the Architect MAY read specific
 4. Post: `✅ Resolved Debts: {debt-ids}`
 5. Block debts with justification if needed
 6. Post: `✅ Blocked Debts: {debt-ids}, reason: {justification}`
-7. **Add to Executor Manifest**: Eligible rules are added as write-tasks in the next plan's Executor Manifest (valid review path per GR13).
+7. **Add to Executor Manifest**: Eligible rules are added as write-tasks in the next plan's Executor Manifest (valid review path per GR12).
 8. Post: `✅ Added to Executor Manifest: {rule-ids}`
 
 ---
@@ -273,7 +277,7 @@ If the log shows errors, failures, or anomalies, the Architect MAY read specific
 6. Post: `✅ Created OR Rules: {OR-ids}`
 7. **Draft** new landmine specifications with status `Proposed`
 8. Post: `✅ Created Landmines: {M-ids}`
-9. **Add to Executor Manifest**: All drafted rules are added as write-tasks in the next plan's Executor Manifest (valid review path per GR13).
+9. **Add to Executor Manifest**: All drafted rules are added as write-tasks in the next plan's Executor Manifest (valid review path per GR12).
 10. Post: `✅ Added to Executor Manifest: {AR-ids}, {OR-ids}, {M-ids}`
 
 ---
@@ -379,7 +383,7 @@ Before delivering the fix plan, verify:
 
 ## Section 6: Round Table Workflow
 
-**Applicable GR Rules**: GR2, GR3, GR4, GR5, GR7, GR8, GR9, GR10, GR11, GR12, GR14, GR15, GR16
+**Applicable GR Rules**: GR1, GR2, GR3, GR4, GR6, GR7, GR8, GR9, GR10, GR11, GR13, GR14, GR15
 
 Triggered independently — may run while Executor is executing plans in parallel. User may engage this track without ever running the Log Reading Workflow. Round Table reviews new plans.
 
@@ -417,7 +421,7 @@ One brief per batch. ≤80 lines. 9 sections in order. Rev 2+ does not include b
 
 #### Rules
 
-- Missing/reordered sections block delivery (GR8).
+- Missing/reordered sections block delivery (GR7).
 - Brief is created at Rev 1 only. Rev 2+ does not include brief unless user explicitly requests.
 
 ---
@@ -440,7 +444,7 @@ Round Table revisions are separate from log-fix iterations. A plan enters Round 
 
 The Round Table prompt follows the **Panel-of-Experts** pattern with **Parallel Fan-Out** to multiple panelists:
 
-**Prompt Structure** (per GR11 and research best practices):
+**Prompt Structure** (per GR10 and research best practices):
 
 ```
 ## ROLES
@@ -563,12 +567,12 @@ This gate ensures delivery quality by verifying all critical criteria are met be
 | <70 | BLOCK — requires additional Round Table round |
 
 **Verification Checklist**:
-- [ ] Panelist majority achieved (GR10)
+- [ ] Panelist majority achieved (GR9)
 - [ ] All CRITICAL and HIGH findings addressed
 - [ ] MEDIUM findings addressed or documented
 - [ ] Clean pass score ≥90 OR documented rationale for 70-89 (score = average of all panelist scores from Step 5)
-- [ ] Executor Manifest present in all plans (GR14)
-- [ ] No blocking landmines (GR9)
+- [ ] Executor Manifest present in all plans (GR13)
+- [ ] No blocking landmines (GR8)
 
 **STOP Conditions**:
 - Score <70 without additional Round Table round
