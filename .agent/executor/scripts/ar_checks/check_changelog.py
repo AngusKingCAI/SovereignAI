@@ -14,8 +14,23 @@ Checks:
   5. Exit 0 if all checks pass; exit 1 with diagnostic on any failure.
 """
 
+import subprocess
 import sys
 from pathlib import Path
+
+
+def get_repo_root() -> Path:
+    """Resolve repo root via git, matching the pattern used by
+    verify_close.py, check_dependencies.py, and check_rule_conciseness.py.
+    Falls back to a relative parent walk if git is unavailable.
+    """
+    result = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        capture_output=True, text=True, cwd=Path(__file__).parent,
+    )
+    if result.returncode == 0:
+        return Path(result.stdout.strip())
+    return Path(__file__).resolve().parent.parent.parent.parent
 
 
 def main() -> int:
@@ -24,10 +39,15 @@ def main() -> int:
         return 1
 
     plan_number = sys.argv[1]
-    changelog_path = Path("CHANGELOG.md")
+    # NOTE: previously a bare relative Path("CHANGELOG.md"), which only
+    # resolved correctly if invoked with cwd already inside .agent/shared/.
+    # Every other governance script resolves an absolute path via git
+    # rev-parse; this now does the same.
+    repo_root = get_repo_root()
+    changelog_path = repo_root / ".agent" / "shared" / "CHANGELOG.md"
 
     if not changelog_path.exists():
-        print("ERROR: CHANGELOG.md not found", file=sys.stderr)
+        print(f"ERROR: CHANGELOG.md not found at {changelog_path}", file=sys.stderr)
         return 1
 
     content = changelog_path.read_text()
