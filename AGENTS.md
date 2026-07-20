@@ -13,7 +13,7 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/executor/AR
 4. `/open` → execute → `/verify` after every step (not just edits) → `/close`. No shortcuts.
 5. Follow skill instructions literally. Reference AR IDs, not full text.
 6. Exceptions need plan number. "Deferred" without plan = STOP.
-7. No architect file edits. `.agent/architect/` is read-only unless explicitly authorized by user instruction.
+7. No architect file edits. `.agent/architect/` is read-only unless explicitly authorized by user instruction. Exception: `.agent/architect/ARCHITECT_PATTERNS.md` can be edited by Executor per plan instruction (Architect identifies patterns → adds write-task to Executor Manifest → Executor writes).
 8. Scripts are SSOT. Skills reference scripts by path; no inline commands.
 9. Coverage ≥90% at `/close`. No exemptions.
 10. Never execute workflow steps manually unless explicitly requested by user. Always use skills/workflows as intended.

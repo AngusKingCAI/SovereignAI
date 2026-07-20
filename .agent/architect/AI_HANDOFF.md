@@ -1,6 +1,6 @@
 # AI Handoff — SovereignAI
 
-**Version:** v1.4
+**Version:** v1.5
 **Last Updated:** 2026-07-20
 
 ## Section 1: Repository Setup
@@ -15,7 +15,7 @@
 |------|---------|
 | `plans/` | Active plan files |
 | `plans/completed/` | Executed plan files (moved after `/close`) |
-| `.agent/architect/` | Architect governance: `PRINCIPLES.md`, `AI_HANDOFF.md` |
+| `.agent/architect/` | Architect governance: `PRINCIPLES.md`, `AI_HANDOFF.md`, `ARCHITECT_PATTERNS.md` |
 | `.agent/executor/` | Executor governance: `OR_RULES.md`, `ARCHITECTURE.md`, hooks, scripts, traces |
 | `.agent/shared/` | Shared state: `CHANGELOG.md`, `PLANS.md`, `LANDMINES.md`, `DEBT.md` |
 | `.devin/skills/` | Workflow skills: `open/`, `verify/`, `close/`, `scan/` |
@@ -36,6 +36,7 @@ git config --global --add safe.directory $(pwd)
 
 **Post-clone checklist** — Architect verifies presence of:
 - `.agent/architect/PRINCIPLES.md`
+- `.agent/architect/ARCHITECT_PATTERNS.md`
 - `.agent/shared/PLANS.md`
 - `AGENTS.md`
 - `plans/` directory
@@ -56,6 +57,7 @@ git config --global --add safe.directory $(pwd)
 |---|---|---|---|
 | `.agent/architect/AI_HANDOFF.md` | Process guide | Architect | Architect (user request only) |
 | `PRINCIPLES.md` | Living principles | User + Architect | Architect (user request only) |
+| `.agent/architect/ARCHITECT_PATTERNS.md` | Architect authoring patterns (self-check reference, not execution-affecting) | Architect | Executor (per plan instruction) |
 | `.agent/executor/OR_RULES.md` | Operational rules (UOR/VOR/OOR/COR) | Architect | Executor (per plan instruction) |
 | `.agent/executor/ARCHITECTURE.md` | Architecture constraints | Architect | Executor (per plan instruction) |
 | `PLANS.md` | Dynamic state, baselines, queue | Executor | Executor |
@@ -63,12 +65,14 @@ git config --global --add safe.directory $(pwd)
 | `.agent/shared/CHANGELOG.md` | Per-plan change log | Executor | Executor |
 | `AGENTS.md` | Universal Invariants | Executor | Executor |
 | `.agent/shared/DEBT.md` | Non-rule deferred items | Architect (identification), Executor (resolution) | Executor |
+| `roundtable-scores-plan-{N}.md` | Round Table panelist performance tracking | Architect (compilation) | Executor (per plan instruction) |
 | `.devin/skills/*/SKILL.md` | Workflow skills | Architect | Architect (user request only) |
 
 **SSOT**: Each fact in one document only.
 
 **Read order**:
-- Architect (new chat): `.agent/architect/AI_HANDOFF.md` → PRINCIPLES → `.agent/executor/OR_RULES.md` → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DEBT.md`
+- Architect (new chat, Round Table workflow): `.agent/architect/AI_HANDOFF.md` → PRINCIPLES → `.agent/architect/ARCHITECT_PATTERNS.md` (Active section) → `.agent/executor/OR_RULES.md` → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DEBT.md`
+- Architect (new chat, Log Reading workflow): `.agent/architect/AI_HANDOFF.md` → PRINCIPLES → `.agent/executor/OR_RULES.md` → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DEBT.md`
 - Executor (S0.2): AGENTS.md → plan header AR/OR list → `.agent/executor/ARCHITECTURE.md` (relevant AR only) → `.agent/executor/OR_RULES.md` (relevant OR only)
 
 **Rule References in Plans**:
@@ -82,6 +86,7 @@ git config --global --add safe.directory $(pwd)
 - Executor writes accepted rules to SSOT files (`.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, `.agent/shared/LANDMINES.md`) per plan instruction
 - No rule is written to SSOT without explicit plan instruction
 - **Status transitions**: `Proposed` → `Accepted` occurs when the Executor writes the rule to SSOT per plan instruction. The Architect does not change rule status.
+- **ARCHITECT_PATTERNS.md**: Architect identifies patterns during Round Table Step 5 (finding review). Patterns go to Executor Manifest as write-tasks. Executor writes all ARCHITECT_PATTERNS.md updates per plan instruction.
 
 ---
 
@@ -110,7 +115,7 @@ git config --global --add safe.directory $(pwd)
 
 **GR11.** Clean pass: post panelist scorecard inline (1-100, weighted toward accepted findings).
 
-**GR12.** All rule changes are reviewed before SSOT write. Valid review path: Log Reading Workflow (execution-driven rule identification). No silent edits to `.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, or `.agent/shared/LANDMINES.md`.
+**GR12.** All rule changes are reviewed before SSOT write. Valid review path: Log Reading Workflow (execution-driven rule identification) or Round Table Workflow (pattern identification). No silent edits to `.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, `.agent/shared/LANDMINES.md`, or `.agent/architect/ARCHITECT_PATTERNS.md`. Architect-only documents (PRINCIPLES.md) are written directly by the Architect. ARCHITECT_PATTERNS.md is written by Executor per plan instruction.
 
 **GR13.** Every plan file MUST include an `## Executor Manifest` section after the header. The manifest lists phases, deliverables per phase, gates per phase, coverage target, and forbidden actions. No plan is valid without this section.
 
@@ -125,6 +130,8 @@ git config --global --add safe.directory $(pwd)
 
 **Applicable GR Rules**: GR3, GR11, GR14, GR15
 This workflow produces artifacts to prevent scope drift and verify exact procedure compliance. The Architect is an AI web chat — it cannot create files, save state, or persist data between sessions. All Architect compliance evidence exists **only in the chat transcript**. The human verifies by reading the chat history.
+
+**Terminology Note**: When this workflow says "Draft" or "Create" rules/patterns, it means "prepare the content specification in the chat" — not "write to file". The Executor writes the actual files per plan instruction.
 
 ### Core Principle: The Chat Transcript IS the Only Audit Log
 
@@ -281,7 +288,7 @@ If the log or attestation shows errors, failures, or anomalies, the Architect MA
 
 ---
 
-### Step 5 — Review Patterns (Individual Gates)
+### Step 5 — Draft Rules (Individual Gates)
 
 1. Identify rule gaps from execution log
 2. Post: `✅ Identified Gaps: {gap descriptions}`
@@ -527,6 +534,26 @@ Before screening plans, re-read the current governance documents to ensure up-to
 
 ---
 
+
+### Step 2.5 — Architect Self-Check (Individual Gates)
+
+**Applicable GR Rules**: GR3, GR14, GR15
+
+Before handing material to the user for Round Table, the Architect runs its own draft against the same rubric and finding format the panelists will use, plus the known-pattern checklist from `ARCHITECT_PATTERNS.md`. This is a zero-cost internal pass — no panelist round is spent catching what the Architect can catch itself.
+
+1. Read `ARCHITECT_PATTERNS.md` (Active section only)
+2. Post: `✅ Read ARCHITECT_PATTERNS.md: {N} active patterns`
+3. Apply the 5-dimension rubric (Clarity & Specificity, Structural Organization, Context Management, Reasoning & Tool Guidance, Examples & Output Control) to the plan draft, same as the Round Table Evaluation Criteria
+4. Post: `✅ Self-Check Rubric Pass: {N} self-findings, {N} dimensions clean`
+5. Check the draft against every Active entry in `ARCHITECT_PATTERNS.md`
+6. Post: `✅ Self-Check Patterns Pass: {N} active patterns checked, {N} matches found`
+7. Fix any self-identified CRITICAL/HIGH findings before delivery (same format as Step 4 finding processing: `✅ Self-Fixed Finding SC-{id}: {reasoning} — {fix applied}`)
+8. Post: `✅ Self-Check Complete: {N} findings fixed pre-delivery, {N} deferred to Round Table with reasoning`
+
+**Note**: This pass does not replace the real Round Table or reduce GR9's majority-panelist requirement — it reduces the number of findings the real panel needs to surface, which reduces the odds of needing a Rev 2+.
+
+---
+
 ### Step 3 — User Executes Round Table (User-Completed)
 
 **This step is completed by the user, not the Architect.**
@@ -565,6 +592,9 @@ For each panelist finding posted by the user:
 2. Post: `✅ Calculated Scores: {panelist} {score}/100, {panelist} {score}/100`
 3. Post scorecard inline
 4. Post: `✅ Posted Scorecard: {N} panelists scored`
+5. Check accepted CRITICAL/HIGH findings against existing `ARCHITECT_PATTERNS.md` entries. A matching finding on a second plan — update the entry's recurrence count (add write-task to next plan's Executor Manifest). A novel CRITICAL/HIGH finding with no existing entry — draft new AP entry (add write-task to next plan's Executor Manifest). Executor writes all ARCHITECT_PATTERNS.md updates per plan instruction.
+6. Post: `✅ Reviewed Findings Against ARCHITECT_PATTERNS.md: {N} updated, {N} new entries added`
+
 
 ---
 
@@ -599,12 +629,14 @@ This gate ensures delivery quality by verifying all critical criteria are met be
 
 ### Step 6 — Create Round Table Score Document (Final Round Only)
 
-After all Round Table rounds complete for a plan (clean pass achieved), create a persistent score document for long-term tracking of panelist performance across plans.
+After all Round Table rounds complete for a plan (clean pass achieved), add write-task to next plan's Executor Manifest to create a persistent score document for long-term tracking of panelist performance across plans.
 
 **Do NOT create this document after each round. Only after the final round.**
 
 1. Compile scores from all rounds for this plan
 2. Post: `✅ Compiled All Scores: {N} rounds, {N} panelists, scores: {details}`
+3. **Add to Executor Manifest**: Score document creation added as write-task in the next plan's Executor Manifest.
+4. Post: `✅ Added to Executor Manifest: roundtable-scores-plan-{N}.md`
 
 **Score Document Format** (`roundtable-scores-plan-{N}.md`):
 
@@ -633,8 +665,6 @@ After all Round Table rounds complete for a plan (clean pass achieved), create a
 
 {any relevant notes about panelist performance or patterns}
 ```
-
-3. Post: `✅ Created Score Document: roundtable-scores-plan-{N}.md`
 
 **Purpose**: This document enables long-term tracking of which panelists consistently provide the highest-quality findings. Use historical scores to optimize panel composition over time.
 
