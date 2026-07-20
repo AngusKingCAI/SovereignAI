@@ -1,6 +1,6 @@
 # AI Handoff — SovereignAI
 
-**Version:** v1.1
+**Version:** v1.2
 **Last Updated:** 2026-07-20
 
 Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Windows.
@@ -79,7 +79,8 @@ git config --global --add safe.directory $(pwd)
 
 **Rule Creation Mechanism**:
 - Architect drafts new AR/OR/M rules with status `Proposed` during Log Reading Workflow
-- Rules are included in plan Executor Manifest as write-tasks when approved
+- Rules identified in Log Reading go directly to Executor Manifest as write-tasks (valid review path per GR13)
+- Rules proposed in Round Table plans go to Executor Manifest as write-tasks after Round Table approval
 - Executor writes accepted rules to SSOT files (`.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, `.agent/shared/LANDMINES.md`) per plan instruction
 - No rule is written to SSOT without explicit plan instruction
 
@@ -111,7 +112,7 @@ git config --global --add safe.directory $(pwd)
 **GR11.** Clean pass: post panelist scorecard inline (1-100, weighted toward accepted findings).
 
 
-**GR13.** All rule changes go through Round Table. No silent edits to `.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, or `.agent/shared/LANDMINES.md`.
+**GR13.** All rule changes are reviewed before SSOT write. Valid review paths: Log Reading Workflow (execution-driven rule identification) or Round Table (plan-driven rule proposal). No silent edits to `.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, or `.agent/shared/LANDMINES.md`.
 
 **GR14.** Every plan file MUST include an `## Executor Manifest` section after the header. The manifest lists phases, deliverables per phase, gates per phase, coverage target, and forbidden actions. No plan is valid without this section.
 
@@ -276,8 +277,8 @@ If the log shows errors, failures, or anomalies, the Architect MAY read specific
 4. Post: `✅ Resolved Debts: {debt-ids}`
 5. Block debts with justification if needed
 6. Post: `✅ Blocked Debts: {debt-ids}, reason: {justification}`
-7. **Mark for SSOT Inclusion**: Eligible rules are marked for inclusion in SSOT files by the Executor in the next plan.
-8. Post: `✅ Marked for SSOT Inclusion: {rule-ids}`
+7. **Add to Executor Manifest**: Eligible rules are added as write-tasks in the next plan's Executor Manifest (valid review path per GR13).
+8. Post: `✅ Added to Executor Manifest: {rule-ids}`
 
 ---
 
@@ -291,6 +292,8 @@ If the log shows errors, failures, or anomalies, the Architect MAY read specific
 6. Post: `✅ Created OR Rules: {OR-ids}`
 7. **Draft** new landmine specifications with status `Proposed`
 8. Post: `✅ Created Landmines: {M-ids}`
+9. **Add to Executor Manifest**: All drafted rules are added as write-tasks in the next plan's Executor Manifest (valid review path per GR13).
+10. Post: `✅ Added to Executor Manifest: {AR-ids}, {OR-ids}, {M-ids}`
 
 ---
 
@@ -395,11 +398,11 @@ Before delivering the fix plan, verify:
 
 ## Section 6: Round Table Workflow
 
-**Applicable GR Rules**: GR1, GR2, GR3, GR4, GR6, GR7, GR8, GR9, GR10, GR11, GR13, GR14, GR15, GR16
+**Applicable GR Rules**: GR1, GR2, GR3, GR4, GR6, GR7, GR8, GR9, GR10, GR11, GR14, GR15, GR16
 
 
 
-Triggered independently — may run while Executor is executing plans in parallel. User may engage this track without ever running the Log Reading Workflow.
+Triggered independently — may run while Executor is executing plans in parallel. User may engage this track without ever running the Log Reading Workflow. Round Table reviews new plans only, not rules (rules are reviewed via Log Reading Workflow per GR13).
 
 ---
 
@@ -425,7 +428,7 @@ One brief per batch. ≤80 lines. 10 sections in order. Rev 2+ does not include 
 
 1. **Context** — baseline, repo state.
 2. **Plans in this batch** — table: plan #, title, depends on, vision principles, AR rules, OR rules.
-3. **Rules proposed** — AR-ID/OR-ID/M-ID + rule/rejected alternative/consequence.
+3. **Rules proposed** — AR-ID/OR-ID/M-ID + rule/rejected alternative/consequence (rules proposed in plans, not from Log Reading Workflow).
 4. **Rules carried forward** — AR/OR/M-IDs only, pointer to `.agent/executor/ARCHITECTURE.md` or `.agent/executor/OR_RULES.md` or `.agent/shared/LANDMINES.md`.
 5. **Questions for Round Table** — Q-ID.
 6. **Open questions resolved** — list resolved Q-IDs; "none" if none.
