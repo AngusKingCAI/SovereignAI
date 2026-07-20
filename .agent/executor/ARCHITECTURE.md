@@ -82,7 +82,7 @@ AR14. Web-layer DTOs in `app/web/schemas.py`. Core types never returned directly
 | AR21 | — | — | Retired rule - no check needed |
 | P11 | `no_context_bags.py` | Per-close | No context bags (PRINCIPLES.md) |
 
-*Extend `check_rule_crossrefs.py` to auto-populate this table from script metadata.*
+*Extend `check_rule_crossrefs_ar.py` or `check_rule_crossrefs_doc.py` to auto-populate this table from script metadata.*
 
 ---
 

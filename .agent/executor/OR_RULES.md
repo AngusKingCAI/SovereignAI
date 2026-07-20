@@ -41,6 +41,16 @@ These rules apply to all skills universally. Skills MUST read UOR section first.
 **Applies to**: All skills
 **Trigger**: Before `/close` commits (verify_close.py hard gate)
 
+### UOR-8: Serialization Safety
+**Rule**: All serialization/deserialization must use type-safe libraries (pydantic, dataclasses) with validation. No pickle for untrusted data. Schema versioning required for persistent data.
+**Applies to**: All skills
+**Trigger**: Serialization/deserialization operations
+
+### UOR-9: Optional Type Annotation Consistency
+**Rule**: Use `Optional[T]` or `T | None` consistently within a module. Mix of both styles in same file = lint error. Default to `T | None` for new code (Python 3.10+).
+**Applies to**: All skills
+**Trigger**: Type checking and code review
+
 ## VOR — verify Skill Rules
 
 Rules specific to verify skill only.

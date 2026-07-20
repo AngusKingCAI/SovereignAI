@@ -118,7 +118,6 @@ ALLOWLIST = {
     ".agent/executor/scripts/or_checks/run_all_or_checks.py",
     ".agent/executor/tests/test_verify_syntax.py",
     ".agent/executor/tests/test_check_ar4_allowlist.py",
-    ".agent/executor/tests/test_ar4_no_core_imports_in_ui.py",
     ".agent/executor/tests/test_check_component_manifest_kwargs_ast.py",
     ".agent/executor/tests/test_check_rule_crossrefs_ar.py",
     ".agent/executor/tests/test_check_rule_crossrefs_doc.py",

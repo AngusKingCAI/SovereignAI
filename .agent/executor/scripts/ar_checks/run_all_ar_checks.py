@@ -124,7 +124,7 @@ def main() -> int:
     scripts = sorted(ar_checks_dir.glob("*.py"))
     scripts = [
         s for s in scripts
-        if s.name not in ["run_all.py", "run_all_ar_checks.py"] and not s.name.startswith("_")
+        if s.name != "run_all_ar_checks.py" and not s.name.startswith("_")
     ]
 
     if not scripts:
