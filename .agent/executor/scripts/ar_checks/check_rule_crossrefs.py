@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """AR rule cross-reference check: Verify every AR rule ID has corresponding
-check script OR is marked Design-time."""
+check script(s) OR is marked Design-time. Supports rules with multiple scripts."""
 
 from __future__ import annotations
 
@@ -70,21 +70,25 @@ def main() -> int:
 
         if status == '—' or status == '':
             # Check if there's a corresponding script
-            # Map rule IDs to script names (e.g., AR4 -> no_hardcoded_component_names)
+            # Map rule IDs to script name(s) — rules can have multiple check scripts
+            # AR4 has two scripts: no_hardcoded_component_names.py and check_ar4_allowlist.py
             script_mapping = {
-                'AR4': 'no_hardcoded_component_names',
-                'AR8': 'check_tracing',
-                'AR12': 'ui_does_not_touch_core',
-                'AR15': 'check_component_manifest_kwargs',
-                'P11': 'no_context_bags',
+                'AR4': ['no_hardcoded_component_names', 'check_ar4_allowlist'],
+                'AR8': ['check_tracing'],
+                'AR12': ['ui_does_not_touch_core'],
+                'AR15': ['check_component_manifest_kwargs'],
+                'P11': ['no_context_bags'],
             }
 
-            expected_script = script_mapping.get(rule_id)
-            if expected_script and expected_script not in existing_scripts:
-                orphaned_rules.append(f'{rule_id} (expected script: {expected_script}.py)')
+            expected_scripts = script_mapping.get(rule_id, [])
+            missing_scripts = [s for s in expected_scripts if s not in existing_scripts]
+            
+            if missing_scripts:
+                script_list = ', '.join(f'{s}.py' for s in missing_scripts)
+                orphaned_rules.append(f'{rule_id} (missing scripts: {script_list})')
 
     if orphaned_rules:
-        print('Orphaned AR rules (no corresponding check script):', file=sys.stderr)
+        print('Orphaned AR rules (no corresponding check scripts):', file=sys.stderr)
         for rule in orphaned_rules:
             print(f'  {rule}', file=sys.stderr)
         return 1

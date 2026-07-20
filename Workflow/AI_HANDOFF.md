@@ -42,7 +42,7 @@ git config --global --add safe.directory $(pwd)
 
 ### Tag Convention
 
-- Plan completion tags: `prompt-{N}` (e.g., `prompt-28`)
+- Plan completion tags: `plan-{N}` (e.g., `plan-28`)
 - Scan tags: `scan-{N}` (e.g., `scan-15`) — see Section 5 Scan Trigger for range-review procedure
 - Plans in progress carry no tag until completion
 - No other tags without explicit plan instruction

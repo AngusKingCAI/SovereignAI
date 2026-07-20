@@ -30,9 +30,14 @@ def get_baseline_tag(plan_path: Path) -> str:
         if depends.lower() == "none":
             return "none"
         # Plans write either "plan-N[.M...]", "Plan N[.M...]", or "plan-fix-N-RevX" — accept all.
+        # Also accept legacy "prompt-N[.M...]" for backward-compat with older plans.
         tag_match = re.search(r'plan-[\d.]+', depends)
         if tag_match:
             return tag_match.group(0)
+        # Backward-compat: fall back to prompt-N if plan-N not found
+        prompt_match = re.search(r'prompt-[\d.]+', depends)
+        if prompt_match:
+            return prompt_match.group(0)
         plan_match = re.search(r'Plan\s+([\d.]+)', depends, re.IGNORECASE)
         if plan_match:
             return f"plan-{plan_match.group(1)}"

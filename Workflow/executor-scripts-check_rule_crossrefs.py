@@ -145,7 +145,7 @@ def main(repo_root: Path | None = None):
             check_files.append(skill_file)
 
     # Add all plan files
-    for plan_file in (repo_root / 'prompts').glob('*.md'):
+    for plan_file in (repo_root / 'plans').glob('*.md'):
         check_files.append(plan_file)
 
     # Add all executor scripts

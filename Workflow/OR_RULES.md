@@ -36,6 +36,11 @@ These rules apply to all skills universally. Skills MUST read UOR section first.
 **Applies to**: All skills
 **Trigger**: Every action during execution
 
+### UOR-7: Plan File Immutability During Execution
+**Rule**: Plan files (`plans/plan-*.md`) MUST NOT be modified after a plan enters execution (after `/open`). Modifications during a plan's active window corrupt the manifest and invalidate attestation. The executor runs `check_plan_immutability.py --open-hash <value>` at `/close` to verify no plan files were edited during execution. Violation = STOP, do not commit, do not tag.
+**Applies to**: All skills
+**Trigger**: Before `/close` commits (verify_close.py hard gate)
+
 ## VOR — verify Skill Rules
 
 Rules specific to verify skill only.
@@ -94,6 +99,7 @@ Legacy OR IDs that have been retired or replaced with new naming scheme.
 | OR61 | - | Retired | No equivalent found |
 | OR63 | UOR-3 | Replaced | diskcache CVE Monitoring |
 | OR65 | - | Retired | No equivalent found |
+| OR78 | UOR-7 | Replaced | Plan File Immutability During Execution |
 | OOR-1 | - | Retired | Architect Suggestion Review - removed in governance reorganization |
 
 ## Rule Maintenance
