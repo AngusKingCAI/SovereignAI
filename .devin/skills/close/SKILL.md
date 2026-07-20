@@ -19,7 +19,7 @@ Operational Rules: See .agent/executor/OR_RULES.md
 
 Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothing commits.
 
-Non-HARD-GATE STOP (steps 1–11): fix and retry. HARD-GATE STOP (steps 13, 17): abort, do not commit.
+Non-HARD-GATE STOP (steps 1–9): fix and retry. HARD-GATE STOP (steps 10, 14): abort, do not commit.
 
 0. **Ensure rules cache is valid**: `python .agent/executor/scripts/rules_cache_lib.py invalidate_if_needed` to auto-regenerate if governance files changed during execution.
 1. **Quick trace check: Verify `.agent/executor/traces/trace-plan-{N}.jsonl` exists. If missing: STOP. (Invariant 12 — lightweight check before heavy verification)**
@@ -34,20 +34,17 @@ Non-HARD-GATE STOP (steps 1–11): fix and retry. HARD-GATE STOP (steps 13, 17):
    c. Once all specific tests pass: run `run_failing_tests.py <test_path> --full` for final verification.
    STOP on failure. Coverage is automatically verified by `verify_execution.py --final` against manifest target.
 5. Static analysis: `ruff check .`, `mypy`, `bandit`, `pip-audit`, `vulture`, `detect-secrets`. STOP on any failure.
-6. AR checks: `ar_checks/run_all_ar_checks.py`. STOP on any failure.
-7. Landmine checks: `landmine_checks/run_all_landmine_checks.py`. STOP if exit≠0.
-8. OR checks: `or_checks/run_all_or_checks.py`. STOP if exit≠0.
-9. Placeholders: `check_placeholders.py`. STOP on hit.
-10. Spec match: `spec_match.py`. STOP if exit≠0.
-11. **Plan rule reference validation**: `check_plan_rule_refs.py --plan {N}`. Validates that AR/OR rules referenced in plan header exist in ARCHITECTURE.md and OR_RULES.md. Prevents plans from referencing retired/superseded rules. STOP if invalid references found.
-12. Read `.agent/shared/DEBT.md`. For each debt marked for resolution in plan: verify resolved, update status to "Resolved" or delete entry. Document resolution in CHANGELOG.
-13. HARD GATE — `verify_close.py`. Checks: execution log blank, CHANGELOG position, plan files moved, no uncommitted governance changes. If exit≠0: STOP. Do not commit. Do not tag.
-14. **Verify `.agent/executor/ATTESTATION_TEMPLATE.md` exists. If missing: STOP. (COR-3, Invariant 13)**
-15. **Produce execution attestation: `logs/execution-attestation-plan-{N}.md` using template at `.agent/executor/ATTESTATION_TEMPLATE.md`. Fill Coverage section with actual coverage from manifest target. (Invariant 13, COR-3)**
-16. **Manually run `.agent/executor/hooks/verify_attestation.py --plan {N}` to verify attestation. (Invariant 13, COR-3 — fallback if config.json hook fails)**
-17. HARD GATE — `.agent/executor/scripts/verify_execution.py --final --plan {N}`. Checks: manifest deliverables present in git history, no governance files modified, attestation present/complete, coverage meets target, trace file exists. This performs complete trace integrity verification including hash validation against manifest and automated coverage verification. If FAIL: STOP. Do not commit. (UOR-4, COR-3, Invariant 12)
-18. **Manually run `.agent/executor/hooks/append_trace.py --skill close --plan {N}` to log /close invocation. (Invariant 12 — fallback if config.json hook fails)**
-19. Execution log: create BLANK execution log file at `logs/execution-log-{plan-name}.md` with ONLY the header template. Do NOT populate with chat transcript — user will populate after execution. Template:
+6. **Unified checks**: `run_all_checks.py`. Runs AR, OR, Landmine, and Placeholder checks with single repo-state hash computation. STOP on any failure.
+7. Spec match: `spec_match.py`. STOP if exit≠0.
+8. **Plan rule reference validation**: `check_plan_rule_refs.py --plan {N}`. Validates that AR/OR rules referenced in plan header exist in ARCHITECTURE.md and OR_RULES.md. Prevents plans from referencing retired/superseded rules. STOP if invalid references found.
+9. Read `.agent/shared/DEBT.md`. For each debt marked for resolution in plan: verify resolved, update status to "Resolved" or delete entry. Document resolution in CHANGELOG.
+10. HARD GATE — `verify_close.py`. Checks: execution log blank, CHANGELOG position, plan files moved, no uncommitted governance changes. If exit≠0: STOP. Do not commit. Do not tag.
+11. **Verify `.agent/executor/ATTESTATION_TEMPLATE.md` exists. If missing: STOP. (COR-3, Invariant 13)**
+12. **Produce execution attestation: `logs/execution-attestation-plan-{N}.md` using template at `.agent/executor/ATTESTATION_TEMPLATE.md`. Fill Coverage section with actual coverage from manifest target. (Invariant 13, COR-3)**
+13. **Manually run `.agent/executor/hooks/verify_attestation.py --plan {N}` to verify attestation. (Invariant 13, COR-3 — fallback if config.json hook fails)**
+14. HARD GATE — `.agent/executor/scripts/verify_execution.py --final --plan {N}`. Checks: manifest deliverables present in git history, no governance files modified, attestation present/complete, coverage meets target, trace file exists. This performs complete trace integrity verification including hash validation against manifest and automated coverage verification. If FAIL: STOP. Do not commit. (UOR-4, COR-3, Invariant 12)
+15. **Manually run `.agent/executor/hooks/append_trace.py --skill close --plan {N}` to log /close invocation. (Invariant 12 — fallback if config.json hook fails)**
+16. Execution log: create BLANK execution log file at `logs/execution-log-{plan-name}.md` with ONLY the header template. Do NOT populate with chat transcript — user will populate after execution. Template:
     ```
     # Execution Log: {plan-name}
 
@@ -59,6 +56,6 @@ Non-HARD-GATE STOP (steps 1–11): fix and retry. HARD-GATE STOP (steps 13, 17):
 
     *Populate this file with the chat transcript from the {plan-name} plan execution.*
     ```
-20. **Move completed plan files**: Run `.agent/executor/scripts/move_completed_plans.py {plan-number}` to move the completed plan and all its revisions to `plans/completed/`.
-21. Documentation: prepend CHANGELOG, update PLANS.md (mark "Completed", shift upcoming queue).
-22. Git: `git status` → identify session files only → `git add` specific files → commit → tag `plan-{N}` → push.
+17. **Move completed plan files**: Run `.agent/executor/scripts/move_completed_plans.py {plan-number}` to move the completed plan and all its revisions to `plans/completed/`.
+18. Documentation: prepend CHANGELOG, update PLANS.md (mark "Completed", shift upcoming queue).
+19. Git: `git status` → identify session files only → `git add` specific files → commit → tag `plan-{N}` → push.

@@ -13,10 +13,11 @@ allowed-tools:
 ---
 
 Operational Rules: See .agent/executor/OR_RULES.md
-- Read UOR section (Universal: UOR-1, UOR-2, UOR-3, UOR-4, UOR-5, UOR-6) + VOR section (verify-specific)
+- Read UOR section (Universal: UOR-1, UOR-2, UOR-3, UOR-4, UOR-5, UOR-6) + VOR section (verify-specific) from cache using `.agent/executor/scripts/rules_cache_lib.py`
 
 Run `/verify` workflow after every step, not just file edits. STOP on any failure.
 
+0. **Ensure rules cache is valid**: `python .agent/executor/scripts/rules_cache_lib.py invalidate_if_needed` to auto-regenerate if governance files changed.
 1. **Manually run `.agent/executor/hooks/check_manifest.py --file <file> --plan {N}` before editing. (UOR-5, Invariant 7 — fallback if config.json hook fails)**
 2. **Manually run `.agent/executor/hooks/append_trace.py --action file_edit --file <file> --plan {N}` after file modification. (Invariant 12 — fallback if config.json hook fails)**
 3. Lightweight checks: `python .agent/executor/scripts/check_all_lightweight.py <file>`. STOP on error. (Combines syntax, import paths)

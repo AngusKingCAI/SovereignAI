@@ -11,12 +11,15 @@ Checks:
 2. All manifest deliverables exist in git history since plan start tag
 3. No governance files were modified
 4. Attestation file exists and is complete
-5. Trace file exists (if available)
+5. Coverage meets manifest target (if specified)
+6. Trace file exists (if available)
 
 Exit 0 = PASS, Exit 1 = FAIL
 """
 
 import argparse
+import hashlib
+import json
 import os
 import re
 import subprocess
@@ -123,8 +126,8 @@ def get_manifest_from_plan(plan_id: str, repo_path: str = ".") -> tuple[dict | N
                             for file_path in test_matches:
                                 deliverables.append(file_path)
 
-    # Parse coverage target
-    coverage_match = re.search(r"Coverage target:\s*(\d+)", manifest_text)
+    # Parse coverage target (handles various formats like "≥90%", "90%", etc.)
+    coverage_match = re.search(r"Coverage target.*?(\d+)%", manifest_text)
     if coverage_match:
         coverage_target = int(coverage_match.group(1))
 
@@ -191,6 +194,7 @@ def check_attestation(plan_id: str, repo_path: str = ".") -> tuple[bool, str]:
         "Gate Results",
         "Forbidden Action Audit",
         "Trace Integrity",
+        "Coverage",
         "Attestation"
     ]
 
@@ -206,6 +210,61 @@ def check_attestation(plan_id: str, repo_path: str = ".") -> tuple[bool, str]:
         return False, "Attestation contains failures (❌)"
 
     return True, ""
+
+
+def check_coverage_verification(plan_id: str, repo_path: str = ".") -> tuple[bool, str, float | None]:
+    """Run pytest with coverage and validate against manifest target.
+    
+    Returns:
+        (is_valid, message, actual_coverage) - actual_coverage is None if not available
+    """
+    # Get manifest to extract coverage target
+    manifest, err = get_manifest_from_plan(plan_id, repo_path)
+    if err:
+        return False, f"Failed to load manifest: {err}", None
+    if manifest is None:
+        return False, "Manifest is None", None
+    
+    coverage_target = manifest.get("coverage_target")
+    if not coverage_target:
+        return True, "No coverage target in manifest", None
+    
+    # Run pytest with coverage
+    print(f"  Running coverage check (target: {coverage_target}%)...")
+    
+    try:
+        # Run pytest with coverage to generate JSON report
+        result = subprocess.run(
+            ["pytest", ".agent/executor/tests", "--cov", "--cov-report=json", "--cov-report=term", "-q"],
+            capture_output=True,
+            text=True,
+            cwd=repo_path,
+            timeout=300  # 5 minute timeout
+        )
+        
+        # Parse coverage.json output
+        coverage_file = os.path.join(repo_path, "coverage.json")
+        if not os.path.exists(coverage_file):
+            return False, "Coverage report (coverage.json) not generated", None
+        
+        with open(coverage_file) as f:
+            cov_data = json.load(f)
+        
+        actual_coverage = cov_data.get("totals", {}).get("percent_covered", 0.0)
+        
+        print(f"  Actual coverage: {actual_coverage:.1f}%")
+        
+        if actual_coverage < coverage_target:
+            return False, f"Coverage {actual_coverage:.1f}% < target {coverage_target}%", actual_coverage
+        
+        return True, f"Coverage {actual_coverage:.1f}% meets target {coverage_target}%", actual_coverage
+        
+    except subprocess.TimeoutExpired:
+        return False, "Coverage check timed out (300s)", None
+    except json.JSONDecodeError:
+        return False, "Failed to parse coverage.json", None
+    except Exception as e:
+        return False, f"Coverage check failed: {e}", None
 
 
 def verify_init(plan_id: str, repo_path: str = ".") -> bool:
@@ -241,6 +300,7 @@ def audit_trace_timestamps(plan_id: str, repo_path: str = ".") -> list[str]:
         return []
 
     warnings = []
+    timestamps = []
 
     try:
         with open(trace_path) as f:
@@ -262,13 +322,138 @@ def audit_trace_timestamps(plan_id: str, repo_path: str = ".") -> list[str]:
                             f"Line {line_num}: Suspicious round timestamp {timestamp} "
                             f"(phase={entry.get('phase', '?')}, action={entry.get('action', '?')})"
                         )
+                    
+                    # Collect timestamps for sequential pattern detection
+                    timestamps.append((line_num, timestamp, entry.get('action', '?'), entry.get('phase', '?')))
                 except (json.JSONDecodeError, KeyError):
                     continue
+        
+        # Detect sequential 1-second intervals (indicates manual entry)
+        # Look for 3+ consecutive entries with exactly 1-second gaps
+        if len(timestamps) >= 3:
+            for i in range(len(timestamps) - 2):
+                line1, ts1, action1, phase1 = timestamps[i]
+                line2, ts2, action2, phase2 = timestamps[i + 1]
+                line3, ts3, action3, phase3 = timestamps[i + 2]
+                
+                # Parse timestamps to check for 1-second intervals
+                try:
+                    dt1 = datetime.fromisoformat(ts1.replace('Z', '+00:00'))
+                    dt2 = datetime.fromisoformat(ts2.replace('Z', '+00:00'))
+                    dt3 = datetime.fromisoformat(ts3.replace('Z', '+00:00'))
+                    
+                    gap1 = (dt2 - dt1).total_seconds()
+                    gap2 = (dt3 - dt2).total_seconds()
+                    
+                    # Check for sequential 1-second intervals
+                    if gap1 == 1.0 and gap2 == 1.0:
+                        warnings.append(
+                            f"Lines {line1}-{line3}: Sequential 1-second intervals detected "
+                            f"(actions: {action1}, {action2}, {action3})"
+                        )
+                except (ValueError, KeyError):
+                    continue
+                    
     except Exception:
         # If trace file can't be read, don't fail - just note the issue
         warnings.append(f"Could not read trace file {trace_path} for timestamp audit")
 
     return warnings
+
+
+def validate_trace_integrity(plan_id: str, repo_path: str = ".") -> tuple[bool, str]:
+    """Validate trace file integrity using hash chain.
+
+    Checks:
+    1. Hash chain integrity (each entry's prev_hash matches previous entry's entry_hash)
+    2. Schema version consistency
+    3. Entry hash validity (entry_hash matches computed hash of entry)
+
+    Returns (is_valid, message) - False if integrity violations detected.
+    """
+    trace_path = os.path.join(repo_path, f".agent/executor/traces/trace-plan-{plan_id}.jsonl")
+    if not os.path.exists(trace_path):
+        return True, "Trace file not found (skipping integrity check)"
+
+    try:
+        with open(trace_path) as f:
+            lines = f.readlines()
+        
+        if not lines:
+            return True, "Empty trace file (skipping integrity check)"
+        
+        entries = []
+        for line_num, line in enumerate(lines, 1):
+            line = line.strip()
+            if not line:
+                continue
+            
+            try:
+                entry = json.loads(line)
+                entries.append((line_num, entry))
+            except json.JSONDecodeError:
+                return False, f"Line {line_num}: Invalid JSON in trace"
+        
+        if not entries:
+            return True, "No valid entries in trace (skipping integrity check)"
+        
+        # Check for schema version consistency
+        schema_versions = set()
+        for line_num, entry in entries:
+            schema_version = entry.get("schema_version")
+            if schema_version:
+                schema_versions.add(schema_version)
+        
+        if len(schema_versions) > 1:
+            return False, f"Multiple schema versions in trace: {schema_versions}"
+        
+        # Validate hash chain
+        previous_hash = ""
+        for line_num, entry in entries:
+            entry_hash = entry.get("entry_hash")
+            prev_hash = entry.get("prev_hash")
+            
+            # Check if entry has integrity fields
+            if not entry_hash:
+                # Entry missing entry_hash - might be old format
+                # Don't fail, but skip this entry and continue chain
+                continue
+            
+            # For first entry with empty prev_hash, verify hash is computed correctly
+            if prev_hash == "" and previous_hash == "":
+                # First entry in chain - just verify entry_hash is correct
+                entry_copy = entry.copy()
+                entry_copy.pop("entry_hash", None)
+                entry_str = json.dumps(entry_copy, sort_keys=True)
+                computed_hash = hashlib.sha256(entry_str.encode()).hexdigest()
+                
+                if computed_hash != entry_hash:
+                    return False, f"Line {line_num}: Entry hash mismatch - computed {computed_hash} != stored {entry_hash}"
+                
+                # Update previous_hash for next entry
+                previous_hash = entry_hash
+                continue
+            
+            # For entries with prev_hash, verify the chain
+            if prev_hash and prev_hash != previous_hash:
+                return False, f"Line {line_num}: Hash chain broken - prev_hash {prev_hash} != previous_hash {previous_hash}"
+            
+            # Verify entry_hash is correct
+            entry_copy = entry.copy()
+            entry_copy.pop("entry_hash", None)
+            entry_str = json.dumps(entry_copy, sort_keys=True)
+            computed_hash = hashlib.sha256(entry_str.encode()).hexdigest()
+            
+            if computed_hash != entry_hash:
+                return False, f"Line {line_num}: Entry hash mismatch - computed {computed_hash} != stored {entry_hash}"
+            
+            # Update previous_hash for next entry
+            previous_hash = entry_hash
+        
+        return True, f"Trace integrity validated ({len(entries)} entries, schema {schema_versions.pop() if schema_versions else 'legacy'})"
+        
+    except Exception as e:
+        return False, f"Trace integrity check failed: {e}"
 
 
 def verify_final(plan_id: str, repo_path: str = ".") -> bool:
@@ -300,7 +485,17 @@ def verify_final(plan_id: str, repo_path: str = ".") -> bool:
     else:
         print("  Attestation: [OK] present and complete")
 
-    # 3. Get commits since plan start
+    # 3. Check coverage verification
+    coverage_ok, coverage_err, actual_coverage = check_coverage_verification(plan_id, repo_path)
+    if not coverage_ok:
+        errors.append(coverage_err or "Coverage verification failed")
+    else:
+        if actual_coverage is not None:
+            print(f"  Coverage: [OK] {actual_coverage:.1f}%")
+        else:
+            print("  Coverage: [SKIPPED] no target in manifest")
+
+    # 4. Get commits since plan start
     tag = f"plan-{plan_id}"
     stdout, code = run_git(["tag", "-l", tag], cwd=repo_path)
     if code != 0 or not stdout:
@@ -314,12 +509,12 @@ def verify_final(plan_id: str, repo_path: str = ".") -> bool:
     else:
         print(f"  Commits since {tag}: {len(commits)}")
 
-    # 4. Get all files changed
+    # 5. Get all files changed
     all_files = set()
     for c in commits:
         all_files.update(get_files_changed_in_commit(c["hash"], repo_path))
 
-    # 5. Check deliverables
+    # 6. Check deliverables
     missing_deliverables = []
     for d in manifest["deliverables"]:
         # Skip runtime artifacts like .db files
@@ -356,7 +551,7 @@ def verify_final(plan_id: str, repo_path: str = ".") -> bool:
             f"{len(manifest['deliverables'])} found"
         )
 
-    # 6. Check no governance files modified
+    # 7. Check no governance files modified
     gov_files = [
         ".agent/executor/ARCHITECTURE.md",
         ".agent/executor/OR_RULES.md",
@@ -373,10 +568,18 @@ def verify_final(plan_id: str, repo_path: str = ".") -> bool:
     else:
         print("  Governance: [OK] no unauthorized modifications")
 
-    # 7. Check trace file exists and audit timestamps
+    # 8. Check trace file exists and audit timestamps
     trace_path = os.path.join(repo_path, f".agent/executor/traces/trace-plan-{plan_id}.jsonl")
     if os.path.exists(trace_path):
         print(f"  Trace: [OK] {trace_path} exists")
+        
+        # Validate trace integrity (hash chain, schema version)
+        integrity_ok, integrity_msg = validate_trace_integrity(plan_id, repo_path)
+        if not integrity_ok:
+            errors.append(f"Trace integrity check failed: {integrity_msg}")
+        else:
+            print(f"  Trace Integrity: [OK] {integrity_msg}")
+        
         # Audit timestamps for suspicious patterns
         timestamp_warnings = audit_trace_timestamps(plan_id, repo_path)
         if timestamp_warnings:

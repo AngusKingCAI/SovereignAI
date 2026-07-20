@@ -24,10 +24,10 @@ Run `/open` workflow. STOP on any failure.
 5. **Run `.agent/executor/scripts/verify_execution.py --init --plan {N}`. If FAIL: STOP. (UOR-4)**
 6. **Create `.agent/executor/traces/` directory if it does not exist. (Invariant 12)**
 7. **Create `.agent/executor/hooks/` directory if it does not exist.**
-8. Read plan header AR rules from `.agent/executor/ARCHITECTURE.md` (listed rules only).
-9. Read plan header OR rules from `.agent/executor/OR_RULES.md` (listed rules only).
+8. **Read plan header AR rules from cache** (listed rules only). Use `.agent/executor/scripts/rules_cache_lib.py` to read cached rules with automatic validation.
+9. **Read plan header OR rules from cache** (listed rules only). Use `.agent/executor/scripts/rules_cache_lib.py` to read cached rules with automatic validation.
 10. Read `.agent/shared/CHANGELOG.md` latest entry.
-11. **Generate rules cache: `python .agent/executor/scripts/generate_rules_cache.py`. (Minimize file I/O)**
+11. **Validate and regenerate rules cache if needed**: `python .agent/executor/scripts/rules_cache_lib.py invalidate_if_needed`. This ensures cache is up-to-date when governance files change.
 12. Read `.agent/shared/DEBT.md` for deferred items.
 13. **Read execution attestation from previous plan**: Read `logs/execution-attestation-plan-{N-1}.md` if it exists. Verify attestation phases match the previous plan's Executor Manifest phases and that `verify_execution.py --final` result is PASS.
 14. **Read execution trace from previous plan** (if attestation shows issues): Read `.agent/executor/traces/trace-plan-{N-1}.jsonl` to identify any drift.
