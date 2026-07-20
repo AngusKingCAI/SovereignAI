@@ -43,6 +43,7 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/executor/AR
    - This reduces iteration time from 60s to <5s per fix
 2. Full suite is required at close for final verification - no exceptions
 3. Test failures should be fixed individually with targeted re-runs, not blanket full-suite retries
+4. Deterministic Test Ordering: Tests are sorted deterministically by module path, class name, and function name to prevent flaky tests caused by execution order dependencies. This is configured in `.agent/executor/tests/conftest.py` and ensures consistent test execution order across runs, making failures reproducible and easier to debug.
 
 ---
 

@@ -55,7 +55,8 @@ python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 pythonpath = [".", "app"]
-addopts = "-vvv --timeout=300 --timeout-method=thread"
+addopts = "-vvv --timeout=300 --timeout-method=thread --strict-markers"
+# Deterministic test ordering is configured in .agent/executor/tests/conftest.py
 
 [tool.ruff]
 line-length = 100
