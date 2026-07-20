@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Check that plan files were not modified during execution"
     )
@@ -23,7 +23,7 @@ def main():
 
     changed_files = result.stdout.strip().split("\n") if result.stdout.strip() else []
     modified_plan_files = [
-        f for f in changed_files if f.startswith("prompts/plan-") and f.endswith(".md")
+        f for f in changed_files if f.startswith("plans/plan-") and f.endswith(".md")
     ]
 
     if modified_plan_files:

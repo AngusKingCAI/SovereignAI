@@ -3,7 +3,15 @@
 
 Runs all OR-check scripts in the scripts/or_checks directory and caches
 results to skip unchanged files between runs. Cache is invalidated when
-files are modified or the cache is manually cleared.
+the checker script's own content changes, OR when the repo's tracked
+source changes (committed or uncommitted), or when the cache is manually
+cleared.
+
+NOTE: the cache key previously included only the checker script's own
+hash. That meant a checker whose own file was untouched, but whose target
+source had changed, would return a stale cached PASS/FAIL. The repo-state
+hash below closes that gap without requiring per-checker knowledge of
+which directories it scans.
 """
 
 import hashlib
@@ -21,13 +29,40 @@ def get_file_hash(file_path: Path) -> str:
     return hashlib.sha256(file_path.read_bytes()).hexdigest()
 
 
-def get_cache() -> dict:
+def get_repo_state_hash(repo_root: Path) -> str:
+    """Hash of current repo state (HEAD commit + any uncommitted changes).
+
+    Used as part of the cache key so that source changes invalidate the
+    cache even when the checker script itself hasn't changed. Falls back
+    to a constant if git is unavailable (cache then behaves as before,
+    keyed only on checker script hash).
+    """
+    try:
+        head = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            capture_output=True, text=True, cwd=repo_root,
+        ).stdout.strip()
+        diff = subprocess.run(
+            ["git", "diff", "HEAD"],
+            capture_output=True, text=True, cwd=repo_root,
+        ).stdout
+        status = subprocess.run(
+            ["git", "status", "--porcelain"],
+            capture_output=True, text=True, cwd=repo_root,
+        ).stdout
+        combined = f"{head}\n{diff}\n{status}"
+        return hashlib.sha256(combined.encode("utf-8")).hexdigest()
+    except Exception:
+        return "no-git-state"
+
+
+def get_cache() -> dict[str, str]:
     """Load cached results from disk."""
     if not CACHE_FILE.exists():
         return {}
     try:
         with open(CACHE_FILE, encoding="utf-8") as f:
-            return json.load(f)
+            return json.load(f)  # type: ignore[no-any-return]
     except OSError:
         return {}
 
@@ -42,13 +77,14 @@ def save_cache(cache: dict) -> None:
 def run_check(
     script_path: Path,
     cache: dict,
+    repo_state_hash: str,
     default_args: list[str] | None = None,
 ) -> tuple[int, list[str]]:
     """Run a single OR-check script and return exit code and output."""
     script_name = script_path.name
     script_hash = get_file_hash(script_path)
 
-    cache_key = f"{script_name}:{script_hash}"
+    cache_key = f"{script_name}:{script_hash}:{repo_state_hash}"
     if cache_key in cache:
         print(f"[CACHED] {script_name} (unchanged)")
         return cache[cache_key]["exit_code"], cache[cache_key]["output"]
@@ -82,6 +118,8 @@ def main() -> int:
     """Run all OR-check scripts with caching."""
     cache = get_cache()
     or_checks_dir = Path(__file__).parent
+    repo_root = or_checks_dir.parent.parent.parent
+    repo_state_hash = get_repo_state_hash(repo_root)
 
     scripts = sorted(or_checks_dir.glob("*.py"))
     scripts = [s for s in scripts if s.name != "run_all.py" and not s.name.startswith("_")]
@@ -96,7 +134,7 @@ def main() -> int:
 
     all_passed = True
     for script in scripts:
-        exit_code, output = run_check(script, cache)
+        exit_code, output = run_check(script, cache, repo_state_hash)
         if exit_code != 0:
             all_passed = False
             print(f"[FAILED] {script.name}")

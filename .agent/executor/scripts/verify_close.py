@@ -75,7 +75,17 @@ def check_execution_log_empty() -> tuple[bool, str]:
     return False, f"Execution log for {current_plan} not blank (has {len(content)} chars)"
 
 def check_changelog_position() -> tuple[bool, str]:
-    """Pattern 2: Latest prompt must be at TOP of CHANGELOG (prepend, not append)."""
+    """Pattern 2: Latest prompt must be at TOP of CHANGELOG (prepend, not append).
+
+    Only matches against '## ' entry headers, never body text (e.g. a
+    "**Previous Baseline**: prompt-N" line inside some other entry) — otherwise
+    the check can pass or fail by coincidence based on unrelated text.
+
+    Non-prompt entry types (e.g. "## workflow-fix — ...", or an infra entry like
+    "## prompts -> plans folder rename") are allowed to sit above prompt entries;
+    they simply don't match the prompt-header pattern and are skipped when
+    finding the top-most prompt entry.
+    """
     changelog = REPO_ROOT / ".agent" / "shared" / "CHANGELOG.md"
     if not changelog.exists():
         return False, (
@@ -84,22 +94,34 @@ def check_changelog_position() -> tuple[bool, str]:
         )
 
     content = changelog.read_text()
-    # Find all prompt references (strict pattern to avoid trailing dots)
-    prompts = re.findall(r'prompt-[\d]+(?:\.[\d]+)*', content)
-    if not prompts:
-        return True, "No prompts in CHANGELOG yet"
+    header_pattern = r'^## (prompt-[\d]+(?:\.[\d]+)*)'
+
+    # Only headers count — body text mentioning "prompt-N" elsewhere is ignored.
+    header_prompts = re.findall(header_pattern, content, re.MULTILINE)
+    if not header_prompts:
+        return True, "No prompt-N headers in CHANGELOG yet"
 
     # Extract numeric values for proper sorting (handles 20.9.9, 21, etc.)
-    def prompt_key(p):
+    def prompt_key(p: str) -> tuple[int, ...]:
         parts = p.replace("prompt-", "").split(".")
         return tuple(int(x) for x in parts if x)
 
-    latest = max(prompts, key=prompt_key)
-    first_prompt = re.search(r'prompt-[\d.]+', content)
+    latest = max(header_prompts, key=prompt_key)
 
-    if first_prompt and first_prompt.group() == latest:
-        return True, f"Latest {latest} at top of CHANGELOG"
-    return False, f"Latest {latest} not at top of CHANGELOG. Prepend it."
+    # First prompt-N header found top-to-bottom; non-prompt headers above it
+    # (infra renames, workflow-fix, etc.) don't count against this check.
+    top_prompt_header = re.search(header_pattern, content, re.MULTILINE)
+    top_prompt = top_prompt_header.group(1) if top_prompt_header else None
+
+    if top_prompt == latest:
+        return True, (
+            f"Latest {latest} at top of CHANGELOG "
+            "(non-prompt entries above it, if any, are OK)"
+        )
+    return False, (
+        f"Latest is {latest}, but top-most prompt-N header is "
+        f"{top_prompt or 'none'}. Prepend {latest}."
+    )
 
 def check_plan_files_moved() -> tuple[bool, str]:
     """Pattern 3: Only check plans executed in current session.
@@ -188,7 +210,7 @@ def check_no_uncommitted_governance() -> tuple[bool, str]:
             return False, f"Uncommitted changes in {gf}. Commit before tagging."
     return True, "Governance docs committed"
 
-def main():
+def main() -> None:
     checks = [
         ("Execution log empty", check_execution_log_empty),
         ("CHANGELOG position", check_changelog_position),

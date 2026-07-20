@@ -35,15 +35,15 @@ REQUIRED_DIRS = [
 ]
 
 
-def check_plan_manifest(plan_id):
+def check_plan_manifest(plan_id: str) -> tuple[bool, str | None]:
     """Check plan file has Executor Manifest."""
     # Look for plan files with revision suffixes (e.g., plan-28-Rev5.md)
     import glob
-    
+
     # First try in plans/ directory (active plans)
     plan_pattern = f"plans/plan-{plan_id}*.md"
     plan_files = glob.glob(plan_pattern)
-    
+
     # If not found, try in plans/completed/ subdirectories
     if not plan_files:
         for subdir in ['0-9', '10-19', '20-29', '30-39', 'Misc']:
@@ -56,7 +56,7 @@ def check_plan_manifest(plan_id):
         return False, f"Plan file not found: plan-{plan_id}*.md"
 
     # Sort by revision number if present, otherwise use the file name
-    def extract_revision(filename):
+    def extract_revision(filename: str) -> int:
         # Extract revision number from filename like plan-28-Rev5.md
         import re
         match = re.search(r'Rev(\d+)', filename)
@@ -76,7 +76,7 @@ def check_plan_manifest(plan_id):
     return True, None
 
 
-def main():
+def main() -> bool:
     parser = argparse.ArgumentParser()
     parser.add_argument("--plan", required=True)
     args = parser.parse_args()
@@ -109,7 +109,8 @@ def main():
     if ok:
         print(f"  [OK] Plan {args.plan} has Executor Manifest")
     else:
-        errors.append(err)
+        if err:
+            errors.append(err)
         print(f"  [FAIL] {err}")
 
     print()
