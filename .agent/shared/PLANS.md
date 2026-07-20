@@ -9,15 +9,15 @@ Full history: `.agent/shared/CHANGELOG.md`.
 
 | Metric | Value | Source Plan |
 |--------|-------|-------------|
-| Tests | 845 passed, 52 skipped | plan-28-Rev5 |
-| ruff | 0 | plan-28-Rev5 |
-| mypy | 27 (pre-existing, unrelated to plan) | plan-28-Rev5 |
+| Tests | 97 passed (model registry) + 845 passed (options) = 942 total | plan-29-Rev5 |
+| ruff | 0 | plan-29-Rev5 |
+| mypy | 0 | plan-29-Rev5 |
 
 ## Active Plan
 
 | Plan | Rev | Status | Start Date |
 |------|-----|--------|------------|
-| Plan 29 | Rev 5 | 🔄 In Progress | 2026-07-20 |
+| — | — | — | — |
 
 ## Queue
 
@@ -46,6 +46,7 @@ None.
 
 | Plan | Rev | Date | Note |
 |------|-----|------|------|
+| Plan 29 | Rev 5 | 2026-07-20 | Model registry with provider sync, offline mode, SSE updates, and API layer |
 | Plan 28 | Rev 5 | 2026-07-19 | Options Panel persistence with encryption, migrations, and EventBus integration |
 | workflow-fix | Rev 1 | 2026-07-19 | Fixed 9 critical/high/medium compliance system issues |
 | Plan 27 | Rev 5 | 2026-07-19 | Cross-department messaging with InterDepartmentBus, security, and integration |
