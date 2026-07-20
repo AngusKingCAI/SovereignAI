@@ -43,7 +43,7 @@ git config --global --add safe.directory $(pwd)
 ### Tag Convention
 
 - Plan completion tags: `prompt-{N}` (e.g., `prompt-28`)
-- Scan tags: `scan-{N}` (e.g., `scan-15`)
+- Scan tags: `scan-{N}` (e.g., `scan-15`) — see Section 5 Scan Trigger for range-review procedure
 - Plans in progress carry no tag until completion
 - No other tags without explicit plan instruction
 
@@ -201,6 +201,20 @@ The human is the state keeper. The chat transcript is the only state.
 **Applicable GR Rules**: GR1, GR4, GR6, GR8, GR12, GR13, GR14, GR15
 
 Triggered when user says "Log Pushed" or provides execution log. This workflow is iterative — may produce plan fix iterations (25.1, 25.2, etc.) before proceeding to Round Table or stopping.
+
+---
+
+### Scan Trigger
+
+Every 5th plan (5, 10, 15, 20, 25, 30…) is a scan plan. Before drafting a scan plan, the Architect runs this Log Reading Workflow once per plan in the range since the last scan, not just the most recent plan.
+
+**Range rule**: `scan-{N}` covers all plans completed since `scan-{N-5}` (or since the start, for `scan-5`). Example: while creating Plan 30, the Architect reads the execution logs for Plans 26, 27, 28, and 29 — each gets its own full pass through Steps 1–5 below — before Plan 30 (the fix/new-rules plan) is drafted.
+
+1. Identify range: plans covered = last scan tag (exclusive) through current plan number (exclusive)
+2. Post: `✅ Scan Range Identified: scan-{N}, covers plans {first}-{last}`
+3. For each plan in range, repeat Steps 1–5 below in order, posting each step's compliance line with the plan number included (e.g., `✅ Read Log: execution-log-plan-27.md, ...`)
+4. Post per plan: `✅ Scan Complete: plan-{n} reviewed, {issues found / no issues}`
+5. After all plans in range are reviewed, proceed to Step 6 (Fix Plan Creation) for the scan plan itself, folding in findings from every plan in the range
 
 ---
 
@@ -391,7 +405,7 @@ Triggered independently — may run while Executor is executing plans in paralle
 
 ### Batch Process (Integrated)
 
-4 plans per batch. 1 shared brief (Rev 1 only). 1 Round Table prompt per rev. Scan every 5 plans (5, 10, 15…).
+4 plans per batch. 1 shared brief (Rev 1 only). 1 Round Table prompt per rev. Scan every 5 plans (5, 10, 15…) — see Section 5 Scan Trigger for scan procedure.
 
 **Batch workflow**:
 1. Draft 4 individual plan files + 1 brief (Rev 1) + 1 prompt per rev
