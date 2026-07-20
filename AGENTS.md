@@ -7,10 +7,10 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/executor/AR
 ## Universal Invariants
 
 1. STOP on any failure. Tests, lint, security, AR checks — any exit≠0 = STOP.
-   STOP means: halt current step execution, report failure reason, do not proceed to next step. Executor may fix the failure and retry the same step, but must not skip to subsequent steps without passing the current step. Only verify_close.py HARD GATE is fatal: do not commit or tag if it fails.
+   STOP means: halt current step execution, report failure reason, do not proceed to next step. Executor may fix the failure and retry the same step, but must not skip to subsequent steps without passing the current step. Only the `verify_execution.py --final` HARD GATE is fatal: do not commit or tag if it fails.
 2. Execute plan steps in strict order. No reordering, no skipping.
 3. Never delete or edit governance docs unless plan explicitly instructs. Prepend-only for LANDMINES.md.
-4. `/open` → execute → `/verify` per edit → `/close`. No shortcuts.
+4. `/open` → execute → `/verify` after every step (not just edits) → `/close`. No shortcuts.
 5. Follow skill instructions literally. Reference AR IDs, not full text.
 6. Exceptions need plan number. "Deferred" without plan = STOP.
 7. No architect file edits. `.agent/architect/` is read-only unless explicitly authorized by user instruction.
@@ -48,8 +48,8 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/executor/AR
 
 ## Session Protocol
 
-1. Read plan file → read AR rules and OR rules from plan header → **read Executor Manifest from plan file** → invoke `/open` slash command → STOP on failure
-2. Execute steps → invoke `/verify` slash command after each edit → STOP on failure
+1. Read plan file → read AR rules and OR rules from plan header (scoped list only) → **read Executor Manifest from plan file** → invoke `/open` slash command → STOP on failure
+2. Execute each step → invoke `/verify` slash command after every step, edit or not → STOP on failure
 3. → Invoke `/close` slash command → STOP on failure
 
 Ambiguous → read `.agent/shared/LANDMINES.md`.

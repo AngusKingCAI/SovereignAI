@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check AR7 allowlist diff. Replaces close/SKILL.md Step 11 awk/grep pipeline."""
+"""Check AR4 main.py exemption allowlist diff. Replaces close/SKILL.md Step 11 awk/grep pipeline."""
 
 import re
 import subprocess
@@ -45,7 +45,7 @@ def get_git_file_content(commit: str, file_path: Path) -> str:
 
 def main():
     if len(sys.argv) != 3:
-        print("Usage: check_ar7_allowlist.py <previous_commit> <file_path>", file=sys.stderr)
+        print("Usage: check_ar4_allowlist.py <previous_commit> <file_path>", file=sys.stderr)
         sys.exit(1)
 
     previous_commit = sys.argv[1]
@@ -74,10 +74,10 @@ def main():
     new_entries = current_entries - previous_entries
 
     if new_entries:
-        print(f"ERROR: Unapproved AR7 allowlist additions: {sorted(new_entries)}", file=sys.stderr)
+        print(f"ERROR: Unapproved AR4 allowlist additions: {sorted(new_entries)}", file=sys.stderr)
         sys.exit(1)
     else:
-        print("OK: No unapproved AR7 allowlist additions")
+        print("OK: No unapproved AR4 allowlist additions")
         sys.exit(0)
 
 
