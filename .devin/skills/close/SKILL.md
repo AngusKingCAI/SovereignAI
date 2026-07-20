@@ -58,6 +58,6 @@ Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (steps 11, 15):
     *Populate this file with the chat transcript from the {plan-name} plan execution.*
     ```
 18. **Move completed plan files**: Run `.agent/executor/scripts/move_completed_plans.py {plan-number}` to move the completed plan and all its revisions to `plans/completed/`.
-19. **Organize log files**: Run `.agent/executor/scripts/organize_logs.py` to move log files from root to numbered subfolders (1-9, 10-19, 20-29, Misc).
+19. **Organize log files**: Run `.agent/executor/scripts/organize_logs.py` to move log files from root to numbered subfolders (0-9, 10-19, 20-29, 30-39, Misc).
 20. Documentation: prepend CHANGELOG, update PLANS.md (mark "Completed", shift upcoming queue).
 21. Git: `git status` → identify session files only → `git add` specific files → commit → tag `prompt-{N}` → push.

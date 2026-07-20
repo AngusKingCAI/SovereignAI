@@ -1,7 +1,7 @@
 ---
 name: verify
 authority: AGENTS.md
-description: Run after every file edit during plan execution. All supported file types.
+description: Run after every step during plan execution, not just file edits. All supported file types.
 argument-hint: "[file-path]"
 triggers: ["user", "model"]
 allowed-tools:
@@ -15,7 +15,7 @@ allowed-tools:
 Operational Rules: See .agent/executor/OR_RULES.md
 - Read UOR section (Universal: UOR-1, UOR-2, UOR-3, UOR-4, UOR-5, UOR-6) + VOR section (verify-specific)
 
-Run `/verify` workflow after every file edit. STOP on any failure.
+Run `/verify` workflow after every step, not just file edits. STOP on any failure.
 
 1. **Manually run `.agent/executor/hooks/check_manifest.py --file <file> --plan {N}` before editing. (UOR-5, Invariant 7 — fallback if config.json hook fails)**
 2. **Manually run `.agent/executor/hooks/append_trace.py --action file_edit --file <file> --plan {N}` after file modification. (Invariant 12 — fallback if config.json hook fails)**
