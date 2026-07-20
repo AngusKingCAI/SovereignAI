@@ -3,8 +3,6 @@
 **Version:** v1.4
 **Last Updated:** 2026-07-20
 
-Process guide for the Architect. Vision: `PRINCIPLES.md`. Stack: Python v1, Windows.
-
 ## Section 1: Repository Setup
 
 **Source of truth**: https://github.com/AngusKingCAI/SovereignAI
@@ -112,7 +110,6 @@ git config --global --add safe.directory $(pwd)
 
 **GR11.** Clean pass: post panelist scorecard inline (1-100, weighted toward accepted findings).
 
-
 **GR12.** All rule changes are reviewed before SSOT write. Valid review path: Log Reading Workflow (execution-driven rule identification). No silent edits to `.agent/executor/OR_RULES.md`, `.agent/executor/ARCHITECTURE.md`, or `.agent/shared/LANDMINES.md`.
 
 **GR14.** Every plan file MUST include an `## Executor Manifest` section after the header. The manifest lists phases, deliverables per phase, gates per phase, coverage target, and forbidden actions. No plan is valid without this section.
@@ -203,8 +200,6 @@ The human is the state keeper. The chat transcript is the only state.
 
 **Applicable GR Rules**: GR1, GR4, GR6, GR8, GR12, GR14, GR15, GR16
 
-
-
 Triggered when user says "Log Pushed" or provides execution log. This workflow is iterative — may produce plan fix iterations (25.1, 25.2, etc.) before proceeding to Round Table or stopping.
 
 ---
@@ -291,78 +286,6 @@ After Step 5, the Architect assesses: are there issues requiring a plan revision
 - **No** (no issues): Ask user how to proceed — do not auto-loop
 
 **Post**: `✅ Step 5 Complete: {issues found / no issues}. Proceeding to {Step 6 / asking user}.`
-
----
-
-### Clean Pass Gate
-
-This gate ensures delivery quality by verifying all critical criteria are met before plans are released to the Executor.
-
-**Threshold Table**:
-
-| Score Threshold | Action |
-|----------------|--------|
-| 90-100 | Clean pass — proceed to delivery |
-| 70-89 | Review findings — Architect may proceed with documented rationale |
-| <70 | BLOCK — requires additional Round Table round |
-
-**Verification Checklist**:
-- [ ] Panelist majority achieved (GR9)
-- [ ] All CRITICAL and HIGH findings addressed
-- [ ] MEDIUM findings addressed or documented
-- [ ] Clean pass score ≥90 OR documented rationale for 70-89
-- [ ] Executor Manifest present in all plans (GR14)
-- [ ] No blocking landmines (GR8)
-
-**STOP Conditions**:
-- Score <70 without additional Round Table round
-- CRITICAL or HIGH findings unaddressed
-- Panelist majority not achieved
-- Blocking landmines present
-- Executor Manifest missing from any plan
-
----
-
-### Step 6 — Create Round Table Score Document (Final Round Only)
-
-After all Round Table rounds complete for a plan (clean pass achieved), create a persistent score document for long-term tracking of panelist performance across plans.
-
-**Do NOT create this document after each round. Only after the final round.**
-
-1. Compile scores from all rounds for this plan
-2. Post: `✅ Compiled All Scores: {N} rounds, {N} panelists, scores: {details}`
-
-**Score Document Format** (`roundtable-scores-plan-{N}.md`):
-
-```markdown
-# Round Table Scores — Plan {N}
-
-**Date**: {YYYY-MM-DD}
-**Plan**: plan-{N}.{i}.md
-**Total Rounds**: {N}
-
-## Panelist Scores (All Rounds)
-
-| Panelist | Round 1 | Round 2 | ... | Round N | Average | Total Findings | Accepted | Rejected |
-|----------|---------|---------|-----|---------|---------|----------------|----------|----------|
-| {name} | {score} | {score} | ... | {score} | {avg} | {N} | {N} | {N} |
-| {name} | {score} | {score} | ... | {score} | {avg} | {N} | {N} | {N} |
-
-## Summary
-
-- Total findings across all rounds: {N}
-- Critical/High findings: {N}
-- Medium/Low findings: {N}
-- Clean pass achieved: {Yes / No}
-
-## Notes
-
-{any relevant notes about panelist performance or patterns}
-```
-
-3. Post: `✅ Created Score Document: roundtable-scores-plan-{N}.md`
-
-**Purpose**: This document enables long-term tracking of which panelists consistently provide the highest-quality findings. Use historical scores to optimize panel composition over time.
 
 ---
 
@@ -457,8 +380,6 @@ Before delivering the fix plan, verify:
 ## Section 6: Round Table Workflow
 
 **Applicable GR Rules**: GR1, GR2, GR3, GR4, GR6, GR7, GR8, GR9, GR10, GR11, GR14, GR15, GR16
-
-
 
 Triggered independently — may run while Executor is executing plans in parallel. User may engage this track without ever running the Log Reading Workflow. Round Table reviews new plans.
 
@@ -629,6 +550,78 @@ For each panelist finding posted by the user:
 
 ---
 
+### Clean Pass Gate
+
+This gate ensures delivery quality by verifying all critical criteria are met before plans are released to the Executor.
+
+**Threshold Table**:
+
+| Score Threshold | Action |
+|----------------|--------|
+| 90-100 | Clean pass — proceed to delivery |
+| 70-89 | Review findings — Architect may proceed with documented rationale |
+| <70 | BLOCK — requires additional Round Table round |
+
+**Verification Checklist**:
+- [ ] Panelist majority achieved (GR9)
+- [ ] All CRITICAL and HIGH findings addressed
+- [ ] MEDIUM findings addressed or documented
+- [ ] Clean pass score ≥90 OR documented rationale for 70-89 (score = average of all panelist scores from Step 5)
+- [ ] Executor Manifest present in all plans (GR14)
+- [ ] No blocking landmines (GR8)
+
+**STOP Conditions**:
+- Score <70 without additional Round Table round
+- CRITICAL or HIGH findings unaddressed
+- Panelist majority not achieved
+- Blocking landmines present
+- Executor Manifest missing from any plan
+
+---
+
+### Step 6 — Create Round Table Score Document (Final Round Only)
+
+After all Round Table rounds complete for a plan (clean pass achieved), create a persistent score document for long-term tracking of panelist performance across plans.
+
+**Do NOT create this document after each round. Only after the final round.**
+
+1. Compile scores from all rounds for this plan
+2. Post: `✅ Compiled All Scores: {N} rounds, {N} panelists, scores: {details}`
+
+**Score Document Format** (`roundtable-scores-plan-{N}.md`):
+
+```markdown
+# Round Table Scores — Plan {N}
+
+**Date**: {YYYY-MM-DD}
+**Plan**: plan-{N}.{i}.md
+**Total Rounds**: {N}
+
+## Panelist Scores (All Rounds)
+
+| Panelist | Round 1 | Round 2 | ... | Round N | Average | Total Findings | Accepted | Rejected |
+|----------|---------|---------|-----|---------|---------|----------------|----------|----------|
+| {name} | {score} | {score} | ... | {score} | {avg} | {N} | {N} | {N} |
+| {name} | {score} | {score} | ... | {score} | {avg} | {N} | {N} | {N} |
+
+## Summary
+
+- Total findings across all rounds: {N}
+- Critical/High findings: {N}
+- Medium/Low findings: {N}
+- Clean pass achieved: {Yes / No}
+
+## Notes
+
+{any relevant notes about panelist performance or patterns}
+```
+
+3. Post: `✅ Created Score Document: roundtable-scores-plan-{N}.md`
+
+**Purpose**: This document enables long-term tracking of which panelists consistently provide the highest-quality findings. Use historical scores to optimize panel composition over time.
+
+---
+
 ### Step 7 — Deliver (Individual Gates)
 
 Gated by Clean Pass Gate above.
@@ -639,4 +632,3 @@ Gated by Clean Pass Gate above.
 4. Post: `✅ Delivered: {N} plans ready for copy`
 
 ---
-
