@@ -33,3 +33,14 @@ repos:
         entry: python .agent/executor/scripts/check_component_manifest_kwargs.py
         language: system
         types: [python]
+      - id: sync-workflow-files
+        name: Sync workflow files to /Workflow folder
+        entry: python .agent/executor/scripts/sync_workflow_files.py
+        language: system
+        files: >
+          (?x)^(
+            \.devin/skills/.*|
+            \.agent/executor/.*|
+            \.agent/architect/.*|
+            AGENTS\.md
+          )$
