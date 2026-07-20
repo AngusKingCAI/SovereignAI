@@ -27,15 +27,15 @@ def main():
     workflow_dir.mkdir(exist_ok=True)
     
     # Skills
-    sync_file(".devin/skills/close/SKILL.md", "skills-close-SKILL.md", workflow_dir)
-    sync_file(".devin/skills/open/SKILL.md", "skills-open-SKILL.md", workflow_dir)
-    sync_file(".devin/skills/scan/SKILL.md", "skills-scan-SKILL.md", workflow_dir)
-    sync_file(".devin/skills/verify/SKILL.md", "skills-verify-SKILL.md", workflow_dir)
+    sync_file(".devin/skills/close/SKILL.md", "close-SKILL.md", workflow_dir)
+    sync_file(".devin/skills/open/SKILL.md", "open-SKILL.md", workflow_dir)
+    sync_file(".devin/skills/scan/SKILL.md", "scan-SKILL.md", workflow_dir)
+    sync_file(".devin/skills/verify/SKILL.md", "verify-SKILL.md", workflow_dir)
     
     # Executor framework
-    sync_file(".agent/executor/ARCHITECTURE.md", "executor-ARCHITECTURE.md", workflow_dir)
-    sync_file(".agent/executor/ATTESTATION_TEMPLATE.md", "executor-ATTESTATION_TEMPLATE.md", workflow_dir)
-    sync_file(".agent/executor/OR_RULES.md", "executor-OR_RULES.md", workflow_dir)
+    sync_file(".agent/executor/ARCHITECTURE.md", "ARCHITECTURE.md", workflow_dir)
+    sync_file(".agent/executor/ATTESTATION_TEMPLATE.md", "ATTESTATION_TEMPLATE.md", workflow_dir)
+    sync_file(".agent/executor/OR_RULES.md", "OR_RULES.md", workflow_dir)
     
     # Executor scripts
     sync_file(".agent/executor/scripts/verify_execution.py", "executor-scripts-verify_execution.py", workflow_dir)
@@ -89,8 +89,8 @@ def main():
     sync_file(".agent/executor/scripts/or_checks/run_all.py", "executor-scripts-or_checks-run_all.py", workflow_dir)
     
     # Architect framework
-    sync_file(".agent/architect/PRINCIPLES.md", "architect-PRINCIPLES.md", workflow_dir)
-    sync_file(".agent/architect/AI_HANDOFF.md", "architect-AI_HANDOFF.md", workflow_dir)
+    sync_file(".agent/architect/PRINCIPLES.md", "PRINCIPLES.md", workflow_dir)
+    sync_file(".agent/architect/AI_HANDOFF.md", "AI_HANDOFF.md", workflow_dir)
     
     # Root governance
     sync_file("AGENTS.md", "AGENTS.md", workflow_dir)
