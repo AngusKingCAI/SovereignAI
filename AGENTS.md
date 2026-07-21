@@ -27,6 +27,19 @@ Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/executor/AR
 
 See `.agent/executor/tests/TESTING.md` for: iterative testing (`run_failing_tests.py`), deterministic ordering, organization, coverage requirements.
 
+### Avoid Duplicate Test Names
+
+**CRITICAL**: Never use duplicate test method names in the same test file. When a function or class is defined multiple times in the same scope, the last definition overwrites all previous ones, causing tests to be skipped and creating edit conflicts.
+
+**Solutions**:
+- Use unique, descriptive test method names (e.g., `test_panel_loads_data` vs `test_panel_handles_error`)
+- Use pytest fixtures to reduce code duplication instead of copying test logic
+- Use `@pytest.mark.parametrize` for similar tests with different inputs
+- Create separate test files for different test categories if needed
+- Before editing, check if the test name already exists in the file
+
+**Detection**: If pytest runs but shows fewer tests than expected, or if edit operations fail with "Found 2 occurrences of old_string", check for duplicate test names.
+
 ---
 
 ## Session Protocol
