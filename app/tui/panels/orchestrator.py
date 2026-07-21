@@ -2,78 +2,77 @@ from __future__ import annotations
 
 from typing import Any
 
-from sovereignai.shared.capability_api import CapabilityAPI
-from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import CapabilityCategory, TraceLevel
 from textual.app import ComposeResult
 from textual.containers import Vertical
-from textual.widgets import Button, Input, RichLog, Static
+from textual.widgets import Static
+
+from app.tui.client import TUIWebClient
 
 
 class OrchestratorPanel(Vertical):
+    """Orchestrator status panel showing state, uptime, and task metrics.
+
+    Fetches from /api/orchestrator/status via REST polling (SSE disabled per DEBT-7).
+    """
+
     def __init__(
         self,
-        container: Any,
-        trace: TraceEmitter,
+        client: TUIWebClient,
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self._container = container
-        self._trace = trace
-        self._api = None
+        self._client = client
+        self._status_data: dict[str, Any] = {}
 
     def compose(self) -> ComposeResult:
-        yield Static("Orchestrator", id="orchestrator-title")
-        yield Input(placeholder="Enter your message...", id="message-input")
-        yield Button("Send", id="btn-send")
-        yield RichLog(id="chat-log", auto_scroll=True)
+        yield Static("Orchestrator Status", id="orchestrator-title")
+        yield Static("State: Loading...", id="orchestrator-state")
+        yield Static("Uptime: --", id="orchestrator-uptime")
+        yield Static("Tasks Completed: --", id="orchestrator-completed")
+        yield Static("Tasks Failed: --", id="orchestrator-failed")
 
     def on_mount(self) -> None:
         self.call_after_refresh(self._load_data)
 
-    def _load_data(self) -> None:
+    async def _load_data(self) -> None:
+        """Load orchestrator status from /api/orchestrator/status."""
         try:
-            self._api = self._container.retrieve(CapabilityAPI)
-            self._populate_model_selector()
+            async with self._client as client:
+                response = await client.get("/api/orchestrator/status")
+                if response.status_code == 200:
+                    self._status_data = response.json()
+                    self._update_display()
+                else:
+                    self._update_error(f"HTTP {response.status_code}")
         except Exception as e:
-            import traceback
-            self._trace.emit(
-                component="OrchestratorPanel",
-                level=TraceLevel.ERROR,
-                message=f"OrchestratorPanel load error: {e}",
-            )
-            traceback.print_exc()
+            self._update_error(str(e))
 
-    def _populate_model_selector(self) -> None:
-        pass
-
-    async def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "btn-send":
-            await self._send_message()
-
-    async def _send_message(self) -> None:
-        if self._api is None:
-            return
-        input_widget = self.query_one("#message-input", Input)
-        message = input_widget.value
-        if not message:
-            return
-
-        log = self.query_one("#chat-log", RichLog)
-        log.write(f"You: {message}")
-        input_widget.value = ""
-
+    def _update_display(self) -> None:
+        """Update display with orchestrator status data."""
         try:
-            from sovereignai.shared.auth import AuthMiddleware
+            state_widget = self.query_one("#orchestrator-state", Static)
+            uptime_widget = self.query_one("#orchestrator-uptime", Static)
+            completed_widget = self.query_one("#orchestrator-completed", Static)
+            failed_widget = self.query_one("#orchestrator-failed", Static)
 
-            auth = self._container.retrieve(AuthMiddleware)
-            token = auth.generate_token("test-user")
-            task_id = self._api.submit_task(
-                token,
-                CapabilityCategory.MODEL_INFERENCE,
-                "generate",
-                message
-            )
-            log.write(f"Assistant: Task {task_id} submitted")
-        except Exception as e:
-            log.write(f"[red]Error: {e}[/red]")
+            state = self._status_data.get("state", "unknown")
+            uptime = self._status_data.get("uptime_seconds", 0)
+            completed = self._status_data.get("tasks_completed", 0)
+            failed = self._status_data.get("tasks_failed", 0)
+
+            state_widget.update(f"State: {state}")
+            uptime_widget.update(f"Uptime: {uptime}s")
+            completed_widget.update(f"Tasks Completed: {completed}")
+            failed_widget.update(f"Tasks Failed: {failed}")
+        except Exception:
+            # Widget tree not mounted (e.g., during testing)
+            pass
+
+    def _update_error(self, error_msg: str) -> None:
+        """Update display with error message."""
+        try:
+            state_widget = self.query_one("#orchestrator-state", Static)
+            state_widget.update(f"State: Error - {error_msg}")
+        except Exception:
+            # Widget tree not mounted (e.g., during testing)
+            pass

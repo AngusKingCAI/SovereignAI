@@ -2,25 +2,29 @@ from __future__ import annotations
 
 from typing import Any
 
-from sovereignai.shared.capability_api import CapabilityAPI
-from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import TraceLevel
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, DataTable, Static
 
+from app.tui.client import TUIWebClient
+
 
 class AdaptersPanel(Vertical):
+    """Adapters panel showing adapter subsystems from /api/health.
+
+    Filters subsystems by kind="adapter" and displays name + status badge.
+    Highlights DEGRADED/UNHEALTHY adapters.
+    Uses REST polling (SSE disabled per DEBT-7).
+    """
+
     def __init__(
         self,
-        container: Any,
-        trace: TraceEmitter,
+        client: TUIWebClient,
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self._container = container
-        self._trace = trace
-        self._api = None
+        self._client = client
+        self._health_data: dict[str, Any] = {}
 
     def compose(self) -> ComposeResult:
         yield Static("Adapters", id="adapters-title")
@@ -30,52 +34,65 @@ class AdaptersPanel(Vertical):
     def on_mount(self) -> None:
         self.call_after_refresh(self._load_data)
 
-    def _load_data(self) -> None:
+    async def _load_data(self) -> None:
+        """Load health data from /api/health."""
         try:
-            self._api = self._container.retrieve(CapabilityAPI)
-            self._refresh_adapters()
+            async with self._client as client:
+                response = await client.get("/api/health")
+                if response.status_code == 200:
+                    self._health_data = response.json()
+                    self._update_display()
+                else:
+                    self._update_error(f"HTTP {response.status_code}")
         except Exception as e:
-            import traceback
-            self._trace.emit(
-                component="AdaptersPanel",
-                level=TraceLevel.ERROR,
-                message=f"AdaptersPanel load error: {e}",
-            )
-            traceback.print_exc()
+            self._update_error(str(e))
 
-    def _refresh_adapters(self) -> None:
-        if self._api is None:
-            return
-        table = self.query_one("#adapters-table", DataTable)
-        table.clear(columns=True)
-        table.add_column("Name")
-        table.add_column("Status")
-        table.add_column("Capabilities")
-        table.add_column("Actions")
-
-        from sovereignai.shared.auth import AuthMiddleware
-        from sovereignai.shared.types import CapabilityCategory, CapabilityQuery
-
+    def _update_display(self) -> None:
+        """Update display with adapter subsystems."""
         try:
-            auth = self._container.retrieve(AuthMiddleware)
-            token = auth.generate_token("test-user")
+            table = self.query_one("#adapters-table", DataTable)
+            table.clear(columns=True)
+            table.add_column("Name")
+            table.add_column("Status")
 
-            query = CapabilityQuery(category=CapabilityCategory.MODEL_INFERENCE, name="")
-            response = self._api.query_capabilities(token, query)
+            subsystems = self._health_data.get("subsystems", [])
+            adapters = [s for s in subsystems if s.get("kind") == "adapter"]
 
-            for component_id in response.providers:
-                capabilities = "model_inference"
-                status = "[green]Available[/green]"
+            if not adapters:
+                table.add_row("No adapters registered", "--")
+                return
 
-                table.add_row(
-                    str(component_id),
-                    status,
-                    capabilities,
-                    "[Health Check]"
-                )
+            for adapter in adapters:
+                name = adapter.get("name", "unknown")
+                status = adapter.get("status", "unknown")
+
+                # Color code status with emphasis on DEGRADED/UNHEALTHY
+                if status == "healthy":
+                    status_badge = "[green]Healthy[/green]"
+                elif status == "degraded":
+                    status_badge = "[yellow]Degraded[/yellow]"  # Highlighted per plan
+                elif status == "unhealthy":
+                    status_badge = "[red]Unhealthy[/red]"  # Highlighted per plan
+                else:
+                    status_badge = f"[yellow]{status}[/yellow]"
+
+                table.add_row(name, status_badge)
         except Exception:
-            table.add_row("No adapters registered", "", "", "")
+            # Widget tree not mounted (e.g., during testing)
+            pass
+
+    def _update_error(self, error_msg: str) -> None:
+        """Update display with error message."""
+        try:
+            table = self.query_one("#adapters-table", DataTable)
+            table.clear(columns=True)
+            table.add_column("Name")
+            table.add_column("Status")
+            table.add_row(f"Error: {error_msg}", "--")
+        except Exception:
+            # Widget tree not mounted (e.g., during testing)
+            pass
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-refresh":
-            self._refresh_adapters()
+            self.call_after_refresh(self._load_data)

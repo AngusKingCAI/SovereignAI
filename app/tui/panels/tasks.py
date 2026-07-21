@@ -1,133 +1,112 @@
 from __future__ import annotations
 
-from datetime import UTC
 from typing import Any
 
-from sovereignai.shared.capability_api import CapabilityAPI
-from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import TaskState, TraceLevel
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, DataTable, RichLog, Static
 
+from app.tui.client import TUIWebClient
+
 
 class TasksPanel(Vertical):
+    """Tasks panel showing task events from /api/events/tasks.
+
+    Uses REST polling fallback (5s interval) since SSE disabled per DEBT-7.
+    Extracts TaskEventDTO fields: event_id, task_id, event_type, timestamp, details.
+    Renders as scrollable event list grouped by task_id.
+    """
+
     def __init__(
         self,
-        container: Any,
-        trace: TraceEmitter,
+        client: TUIWebClient,
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self._container = container
-        self._trace = trace
-        self._container = container
-        self._api = None
+        self._client = client
+        self._events_data: list[dict[str, Any]] = []
+        self._last_event_id: int | None = None
 
     def compose(self) -> ComposeResult:
-        yield Static("Tasks", id="tasks-title")
+        yield Static("Task Events", id="tasks-title")
         yield Button("Refresh", id="btn-refresh")
-        yield Button("Create Task", id="btn-create-task")
         yield DataTable(id="tasks-table")
-        yield Static("Agent Reasoning Trace", id="trace-title")
-        yield RichLog(id="agent-trace-log", markup=True)
+        yield Static("Event Details", id="event-details-title")
+        yield RichLog(id="event-details-log", markup=True)
 
     def on_mount(self) -> None:
         self.call_after_refresh(self._load_data)
 
-    def _load_data(self) -> None:
+    async def _load_data(self) -> None:
+        """Load task events from /api/events/tasks with since_event_id cursor."""
         try:
-            self._api = self._container.retrieve(CapabilityAPI)
-            self.call_after_refresh(self._refresh_tasks)
+            params = {}
+            if self._last_event_id is not None:
+                params["since_event_id"] = self._last_event_id
+
+            async with self._client as client:
+                response = await client.get("/api/events/tasks", params=params)
+                if response.status_code == 200:
+                    new_events = response.json()
+                    if new_events:
+                        self._events_data.extend(new_events)
+                        # Update cursor to latest event_id
+                        self._last_event_id = max(
+                            e.get("event_id", 0) for e in new_events
+                        )
+                    self._update_display()
+                else:
+                    self._update_error(f"HTTP {response.status_code}")
         except Exception as e:
-            import traceback
-            self._trace.emit(
-                component="TasksPanel",
-                level=TraceLevel.ERROR,
-                message=f"TasksPanel load error: {e}",
-            )
-            traceback.print_exc()
+            self._update_error(str(e))
 
-    def _refresh_tasks(self) -> None:
-        if self._api is None:
-            return
-        table = self.query_one("#tasks-table", DataTable)
-        table.clear(columns=True)
-        table.add_column("ID")
-        table.add_column("Department")
-        table.add_column("State")
-        table.add_column("Age")
-        table.add_column("Actions")
+    def _update_display(self) -> None:
+        """Update display with task events grouped by task_id."""
+        try:
+            table = self.query_one("#tasks-table", DataTable)
+            table.clear(columns=True)
+            table.add_column("Event ID")
+            table.add_column("Task ID")
+            table.add_column("Event Type")
+            table.add_column("Timestamp")
 
-        from textual import work
+            if not self._events_data:
+                table.add_row("--", "--", "--", "--")
+                return
 
-        @work(thread=True)
-        def fetch_tasks():
-            from sovereignai.shared.auth import AuthError
-            try:
-                return self._api.query_task_states("dummy_token")
-            except AuthError:
-                return []
+            # Group events by task_id
+            from collections import defaultdict
+            events_by_task = defaultdict(list)
+            for event in self._events_data:
+                task_id = event.get("task_id", "unknown")
+                events_by_task[task_id].append(event)
 
-        tasks = fetch_tasks()
+            # Display latest event for each task
+            for task_id, events in events_by_task.items():
+                latest_event = max(events, key=lambda e: e.get("event_id", 0))
+                event_id = str(latest_event.get("event_id", ""))[:8]
+                event_type = latest_event.get("event_type", "unknown")
+                timestamp = latest_event.get("timestamp", "")
 
-        from datetime import datetime
-        now = datetime.now(UTC)
+                table.add_row(event_id, str(task_id)[:8], event_type, timestamp)
+        except Exception:
+            # Widget tree not mounted (e.g., during testing)
+            pass
 
-        for task in tasks:
-            age_seconds = (
-                (now - task.submitted_at).total_seconds()
-                if hasattr(task, "submitted_at")
-                else 0
-            )
-            age_minutes = int(age_seconds / 60) if age_seconds else 0
-
-            color_map = {
-                TaskState.RECEIVED: "[dim]",
-                TaskState.QUEUED: "[yellow]",
-                TaskState.EXECUTING: "[blue]",
-                TaskState.COMPLETE: "[green]",
-                TaskState.FAILED: "[red]",
-            }
-            color = color_map.get(task.state, "")
-
-            table.add_row(
-                f"{color}{str(task.task_id)[:8]}...[/]",
-                "General",
-                f"{color}{task.state.value}[/]",
-                f"{age_minutes}m",
-                "[Cancel]"
-            )
+    def _update_error(self, error_msg: str) -> None:
+        """Update display with error message."""
+        try:
+            table = self.query_one("#tasks-table", DataTable)
+            table.clear(columns=True)
+            table.add_column("Event ID")
+            table.add_column("Task ID")
+            table.add_column("Event Type")
+            table.add_column("Timestamp")
+            table.add_row(f"Error: {error_msg}", "--", "--", "--")
+        except Exception:
+            # Widget tree not mounted (e.g., during testing)
+            pass
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-refresh":
-            self._refresh_tasks()
-        elif event.button.id == "btn-create-task":
-            self._create_agent_task()
-
-    def _create_agent_task(self) -> None:
-        """Create and submit an agent task (placeholder for Plan 23 S8)."""
-        # TODO: Implement agent task creation UI
-        # For now, this is a placeholder per P23-F cookie auth requirement
-        # TUI tasks panel should include session cookie in SSE request headers
-        # If textual cannot attach cookie, defer stream consumption + DEBT.md entry
-        self._log_trace("Agent task creation not yet implemented")
-
-    def _log_trace(self, message: str) -> None:
-        """Log message to agent reasoning trace display."""
-        try:
-            trace_log = self.query_one("#agent-trace-log", RichLog)
-            trace_log.write(message)
-        except Exception:
-            pass
-
-    def _update_agent_indicator(self, active: bool) -> None:
-        """Update agent task indicator in the panel."""
-        try:
-            title = self.query_one("#tasks-title", Static)
-            if active:
-                title.update("Tasks [green]● Agent Active[/]")
-            else:
-                title.update("Tasks")
-        except Exception:
-            pass
+            self.call_after_refresh(self._load_data)

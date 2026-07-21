@@ -2,25 +2,30 @@ from __future__ import annotations
 
 from typing import Any
 
-from sovereignai.shared.capability_api import CapabilityAPI
-from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import TraceLevel
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, RichLog, Static
 
+from app.tui.client import TUIWebClient
+
 
 class LogsPanel(Vertical):
+    """Logs panel showing trace events from /api/trace/logs.
+
+    Uses REST polling fallback (5s interval) since SSE disabled per DEBT-7.
+    Extracts TraceEvent fields: timestamp, level, source, message.
+    Renders as color-coded log view (ERROR=red, WARN=yellow, INFO=default).
+    """
+
     def __init__(
         self,
-        container: Any,
-        trace: TraceEmitter,
+        client: TUIWebClient,
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self._container = container
-        self._trace = trace
-        self._api = None
+        self._client = client
+        self._logs_data: list[dict[str, Any]] = []
+        self._filter_level: str = "all"
 
     def compose(self) -> ComposeResult:
         yield Static("System Logs", id="logs-title")
@@ -37,81 +42,73 @@ class LogsPanel(Vertical):
     def on_mount(self) -> None:
         self.call_after_refresh(self._load_data)
 
-    def _load_data(self) -> None:
+    async def _load_data(self) -> None:
+        """Load trace logs from /api/trace/logs."""
         try:
-            self._api = self._container.retrieve(CapabilityAPI)
-            self._load_logs()
+            async with self._client as client:
+                response = await client.get("/api/trace/logs")
+                if response.status_code == 200:
+                    self._logs_data = response.json()
+                    self._update_display()
+                else:
+                    self._update_error(f"HTTP {response.status_code}")
         except Exception as e:
-            import traceback
-            self._trace.emit(
-                component="LogsPanel",
-                level=TraceLevel.ERROR,
-                message=f"LogsPanel load error: {e}",
-            )
-            traceback.print_exc()
+            self._update_error(str(e))
 
-    def _load_logs(self) -> None:
-        if self._api is None:
-            return
-        from textual import work
+    def _update_display(self) -> None:
+        """Update display with filtered log entries."""
+        try:
+            log = self.query_one("#trace-log", RichLog)
+            log.clear()
 
-        @work(thread=True)
-        def fetch_events():
-            from sovereignai.shared.auth import AuthError
-            try:
-                return self._api.query_logs("dummy_token")
-            except AuthError:
-                return []
+            for event in self._logs_data:
+                level = event.get("level", "info").lower()
 
-        events = fetch_events()
-        log = self.query_one("#trace-log", RichLog)
-        log.clear()
+                # Apply filter
+                if self._filter_level != "all" and level != self._filter_level:
+                    continue
 
-        for event in events:
-            self._append_event(event)
+                self._append_event(event)
+        except Exception:
+            # Widget tree not mounted (e.g., during testing)
+            pass
 
-    def _append_event(self, event: Any) -> None:
-        log = self.query_one("#trace-log", RichLog)
-        level = event.level.value if hasattr(event.level, 'value') else str(event.level)
+    def _append_event(self, event: dict[str, Any]) -> None:
+        """Append a single log event with color coding."""
+        try:
+            log = self.query_one("#trace-log", RichLog)
+            level = event.get("level", "info").lower()
+            source = event.get("source", "unknown")
+            message = event.get("message", "")
+            timestamp = event.get("timestamp", "")
 
-        color_map = {
-            "error": "[red]",
-            "warn": "[yellow]",
-            "info": "[green]",
-            "debug": "[blue]",
-            "trace": "[dim]",
-        }
-        color = color_map.get(level, "")
+            # Color code log levels (ERROR=red, WARN=yellow, INFO=default)
+            color_map = {
+                "error": "[red]",
+                "warn": "[yellow]",
+                "warning": "[yellow]",
+                "info": "",
+                "debug": "[blue]",
+                "trace": "[dim]",
+            }
+            color = color_map.get(level, "")
 
-        log.write(f"{color}[{level.upper()}] {event.component}: {event.message}")
+            log.write(f"{color}[{level.upper()}] {timestamp} {source}: {message}")
+        except Exception:
+            # Widget tree not mounted (e.g., during testing)
+            pass
+
+    def _update_error(self, error_msg: str) -> None:
+        """Update display with error message."""
+        try:
+            log = self.query_one("#trace-log", RichLog)
+            log.clear()
+            log.write(f"[red]Error loading logs: {error_msg}")
+        except Exception:
+            # Widget tree not mounted (e.g., during testing)
+            pass
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if self._api is None:
-            return
-        log = self.query_one("#trace-log", RichLog)
-        log.clear()
-
-        filter_level = event.button.id
-        if filter_level:
-            filter_level = filter_level.replace("btn-", "")
-
-        from textual import work
-
-        @work(thread=True)
-        def fetch_events():
-            from sovereignai.shared.auth import AuthError
-            try:
-                return self._api.query_logs("dummy_token")
-            except AuthError:
-                return []
-
-        events = fetch_events()
-        for trace_event in events:
-            level = (
-                trace_event.level.value
-                if hasattr(trace_event.level, "value")
-                else str(trace_event.level)
-            )
-
-            if filter_level == "all" or level == filter_level:
-                self._append_event(trace_event)
+        if event.button.id.startswith("btn-"):
+            self._filter_level = event.button.id.replace("btn-", "")
+            self._update_display()

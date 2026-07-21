@@ -2,25 +2,28 @@ from __future__ import annotations
 
 from typing import Any
 
-from sovereignai.shared.capability_api import CapabilityAPI
-from sovereignai.shared.trace_emitter import TraceEmitter
-from sovereignai.shared.types import TraceLevel
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.widgets import Button, DataTable, Static
 
+from app.tui.client import TUIWebClient
+
 
 class ModelsPanel(Vertical):
+    """Models panel showing model registry from /api/models.
+
+    Extracts ModelQuery response fields and displays model ID, provider, sync status.
+    Uses REST polling (SSE disabled per DEBT-7).
+    """
+
     def __init__(
         self,
-        container: Any,
-        trace: TraceEmitter,
+        client: TUIWebClient,
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self._container = container
-        self._trace = trace
-        self._api = None
+        self._client = client
+        self._models_data: list[dict[str, Any]] = []
 
     def compose(self) -> ComposeResult:
         yield Static("Models", id="models-title")
@@ -30,52 +33,65 @@ class ModelsPanel(Vertical):
     def on_mount(self) -> None:
         self.call_after_refresh(self._load_data)
 
-    def _load_data(self) -> None:
+    async def _load_data(self) -> None:
+        """Load models from /api/models."""
         try:
-            self._api = self._container.retrieve(CapabilityAPI)
-            self._refresh_models()
+            async with self._client as client:
+                response = await client.get("/api/models")
+                if response.status_code == 200:
+                    self._models_data = response.json()
+                    self._update_display()
+                else:
+                    self._update_error(f"HTTP {response.status_code}")
         except Exception as e:
-            import traceback
-            self._trace.emit(
-                component="ModelsPanel",
-                level=TraceLevel.ERROR,
-                message=f"ModelsPanel load error: {e}",
-            )
-            traceback.print_exc()
+            self._update_error(str(e))
 
-    def _refresh_models(self) -> None:
-        if self._api is None:
-            return
-        table = self.query_one("#models-table", DataTable)
-        table.clear(columns=True)
-        table.add_column("Name")
-        table.add_column("Size")
-        table.add_column("Quantization")
-        table.add_column("Status")
-        table.add_column("Actions")
+    def _update_display(self) -> None:
+        """Update display with model list."""
+        try:
+            table = self.query_one("#models-table", DataTable)
+            table.clear(columns=True)
+            table.add_column("Model ID")
+            table.add_column("Provider")
+            table.add_column("Sync Status")
 
-        from textual import work
+            if not self._models_data:
+                table.add_row("--", "--", "--")
+                return
 
-        @work(thread=True)
-        def fetch_models():
-            from sovereignai.shared.auth import AuthError
-            try:
-                return self._api.query_model_catalog("dummy_token")
-            except AuthError:
-                return []
+            for model in self._models_data[:20]:  # Limit to 20 models for display
+                model_id = model.get("model_id", "unknown")
+                provider = model.get("provider", "unknown")
+                sync_status = model.get("sync_status", "unknown")
 
-        models = fetch_models()
+                # Color code sync status
+                if sync_status == "synced":
+                    status_badge = "[green]Synced[/green]"
+                elif sync_status == "syncing":
+                    status_badge = "[blue]Syncing…[/blue]"
+                elif sync_status == "error":
+                    status_badge = "[red]Error[/red]"
+                else:
+                    status_badge = f"[yellow]{sync_status}[/yellow]"
 
-        for model in models[:20]:
-            size_gb = model.file_size_bytes / (1024**3) if model.file_size_bytes else 0
-            table.add_row(
-                f"{model.org}/{model.family}",
-                f"{size_gb:.1f}GB",
-                model.quant,
-                "Available",
-                "[Pull] [Load]"
-            )
+                table.add_row(model_id, provider, status_badge)
+        except Exception:
+            # Widget tree not mounted (e.g., during testing)
+            pass
+
+    def _update_error(self, error_msg: str) -> None:
+        """Update display with error message."""
+        try:
+            table = self.query_one("#models-table", DataTable)
+            table.clear(columns=True)
+            table.add_column("Model ID")
+            table.add_column("Provider")
+            table.add_column("Sync Status")
+            table.add_row(f"Error: {error_msg}", "--", "--")
+        except Exception:
+            # Widget tree not mounted (e.g., during testing)
+            pass
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-refresh":
-            self._refresh_models()
+            self.call_after_refresh(self._load_data)
