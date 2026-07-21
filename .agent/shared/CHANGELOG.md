@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## plan-33 — Lifecycle Manager with Health Checks, Graceful Shutdown, and Circuit Breakers (Commit TBD)
+## plan-33 — Lifecycle Manager with Health Checks, Graceful Shutdown, and Circuit Breakers (Commit c93540b)
 
 **Date**: 2026-07-21
 **Plan**: plans/plan-33-Rev17.md
@@ -20,6 +20,23 @@
 - Resolved DEBT-7: TUI cookie auth for agent SSE stream
 - Added M9 landmine pattern for auto-fixing tool conflicts
 - Fixed AR checks: added signal to STDLIB_MODULES, removed NotImplementedError from placeholder patterns, added lifecycle tracing allowlist entries
+
+## close-workflow-fix — Log Organization and Script Updates (Commit 9ea7341)
+
+**Date**: 2026-07-21
+**Plan**: Infrastructure fix
+**Tests**: N/A
+**Previous Baseline**: plan-33
+**Coverage**: N/A
+**Screenshots**: N/A
+
+**Changes**:
+- Fixed move_logs_to_folders.py to use proper path resolution instead of hardcoded paths
+- Added plan number detection for execution-log-plan-N and execution-attestation-plan-N files
+- Added current plan detection to skip current plan's logs during execution
+- Updated close workflow to organize logs before creating current plan log
+- Added move_logs_to_folders.py to spec_match allowlist
+- Updated close skill to include log organization step at proper timing
 
 ---
 
