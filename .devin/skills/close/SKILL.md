@@ -62,5 +62,5 @@ Ensure $TEST_SCOPE is used in ALL test commands, not just early phases.
     ```
 17. **Move completed plan files**: Run `.agent/executor/scripts/move_completed_plans.py {plan-number}` to move the completed plan and all its revisions to `plans/completed/`.
 18. Documentation: prepend CHANGELOG, update PLANS.md (mark "Completed", shift upcoming queue).
-19. Git: `git status` → identify session files only → `git add` specific files → commit → tag `plan-{N}` → push.
+19. Git: `git status` → add session files including: trace files (`.agent/executor/traces/trace-plan-{N}.jsonl`), coverage.json, all log files EXCEPT current plan log (user will add after populating), completed plan files (`plans/completed/`), and any other session-specific changes → commit → tag `plan-{N}` → push.
 20. **Generate performance report**: Performance metrics collected throughout /close workflow are saved to `logs/performance/performance-plan-{N}.json`. This includes execution time for each step, git operation overhead, memory usage, and identifies slowest steps for optimization.
