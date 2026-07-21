@@ -76,6 +76,7 @@ git config --global --add safe.directory $(pwd)
 **Read order**:
 - Architect (new chat, Round Table workflow): `.agent/architect/AI_HANDOFF.md` → PRINCIPLES → `.agent/architect/ARCHITECT_PATTERNS.md` (relevant categories) → `.agent/executor/OR_RULES.md` → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DEBT.md`
 - Architect (new chat, Log Reading workflow): `.agent/architect/AI_HANDOFF.md` → PRINCIPLES → `.agent/executor/OR_RULES.md` → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DEBT.md`
+- Architect (new chat, Research workflow): `.agent/architect/AI_HANDOFF.md` → PRINCIPLES → `.agent/executor/OR_RULES.md` → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DEBT.md` → **Section 7: Research Workflow**
 - Executor (S0.2): AGENTS.md → plan header AR/OR list → `.agent/executor/ARCHITECTURE.md` (relevant AR only) → `.agent/executor/OR_RULES.md` (relevant OR only)
 
 **Rule References in Plans**:
@@ -740,5 +741,206 @@ When a Clean Pass identifies new ARCHITECT_PATTERNS entries (Step 5) but no Exec
 **Naming**: `batch{N}-{M}-governance-plan.md` — identifies the batch scope. Not a numbered plan (does not consume plan numbers). Runs before the first plan in the batch.
 
 **Scope**: Governance plans may only modify `.agent/architect/ARCHITECT_PATTERNS.md`, `logs/roundtable/roundtable-scores-batch{N}-{M}.md`, and `AI_HANDOFF.md` (process updates only). They must not modify code, tests, AR/OR rules, or architecture docs.
+
+---
+
+## Section 7: Research Workflow
+
+**Applicable GR Rules**: GR1, GR4, GR12, GR13, GR14, GR15
+
+Triggered when the user says "Use Research Workflow" or similar. The Architect conducts external research (web search, literature review, best practices investigation) to inform plan drafting, rule creation, or workflow optimization. This workflow ensures research is scoped, documented, and traceable — not open-ended exploration.
+
+**Read order addition**: Architect (new chat, Research workflow): `.agent/architect/AI_HANDOFF.md` → PRINCIPLES → `.agent/executor/OR_RULES.md` → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DEBT.md` → **Section 7: Research Workflow**
+
+---
+
+### Step 1 — Define Research Scope (Gate R1)
+
+Before searching, the Architect MUST define:
+
+1. **Research question**: What specific question must be answered?
+2. **Scope boundary**: What is in scope vs out of scope?
+3. **Success criteria**: What would make this research "done"?
+4. **Maximum depth**: How many search rounds? (default: 2)
+5. **Relevance threshold**: What authority level is acceptable? (default: B or higher)
+
+```
+Gate R1 — Research Scope Definition
+Question: <specific question>
+Scope: <in scope> / <out of scope>
+Success: <done when>
+Max depth: <N> rounds
+Min authority: <level>
+
+✅ Gate R1 PASS: Scope defined, proceeding to search
+```
+
+**STOP condition**: Research question is vague or open-ended ("tell me about AI"). Narrow or ask user.
+
+---
+
+### Step 2 — Execute Search (Gate R2)
+
+1. Formulate search queries (1-6 words each, max 2 queries per round)
+2. Execute search
+3. Post: `✅ Search Round {N}: {query count} queries, {result count} results`
+
+```
+Gate R2 — Search Execution
+Queries: <list>
+Results: <N> sources
+Authority distribution: <S: N, A: N, B: N, C: N, NA: N>
+
+✅ Gate R2 PASS: Search executed, sources retrieved
+```
+
+---
+
+### Step 3 — Source Validation (Gate R3)
+
+For each source, validate:
+
+| Check | Pass Criteria |
+|-------|---------------|
+| Authority | Meets minimum authority threshold |
+| Date | Published within relevant timeframe |
+| Relevance | Directly supports research question |
+| Redundancy | Not duplicating already-cited findings |
+
+```
+Gate R3 — Source Validation
+Source: <title>
+Authority: <level> ✅/❌
+Date: <date> ✅/❌
+Relevance: <summary> ✅/❌
+Redundancy: <check> ✅/⏭️
+
+✅ Gate R3 PASS: {N} sources validated, {N} rejected
+```
+
+**STOP condition**: Zero sources pass validation. Broaden query or ask user.
+
+---
+
+### Step 4 — Synthesis (Gate R4)
+
+1. Extract key findings from validated sources
+2. Cross-reference against existing governance documents
+3. Identify conflicts, gaps, or confirmations
+4. Post: `✅ Synthesis Complete: {N} findings, {N} conflicts, {N} confirmations`
+
+```
+Gate R4 — Synthesis
+Findings: <N>
+Conflicts with existing docs: <list or "none">
+Confirmations of existing docs: <list or "none">
+Gaps identified: <list or "none">
+
+✅ Gate R4 PASS: Synthesis complete, findings structured
+```
+
+---
+
+### Step 5 — Apply to SovereignAI Context (Gate R5)
+
+1. Map research findings to SovereignAI governance needs
+2. Draft specific recommendations (not generic advice)
+3. Identify which documents need updating
+4. Post: `✅ Contextualized: {N} recommendations, {N} document changes`
+
+```
+Gate R5 — Contextual Application
+Recommendations: <N>
+Target documents: <list>
+Implementation plan: <brief description>
+
+✅ Gate R5 PASS: Research applied to SovereignAI context
+```
+
+**STOP condition**: Research findings cannot be mapped to SovereignAI context. Research was off-topic. Re-scope or ask user.
+
+---
+
+### Step 6 — Document & Archive (Gate R6)
+
+1. Save research synthesis to `/mnt/agents/output/` with timestamp
+2. Post compliance line with download link
+3. Add research findings to next plan's Executor Manifest as context
+
+```
+Gate R6 — Documentation
+File: <filename>
+Path: /mnt/agents/output/<filename>
+Lines: <N>
+Recommendations: <N>
+
+✅ Gate R6 PASS: Research documented and archived
+```
+
+---
+
+### Research Workflow Compliance Lines
+
+The Architect MUST post a compliance line after each gate:
+
+```
+✅ Gate R1 PASS: Scope defined for <question>
+✅ Gate R2 PASS: Search executed, <N> sources
+✅ Gate R3 PASS: <N> sources validated
+✅ Gate R4 PASS: <N> findings synthesized
+✅ Gate R5 PASS: <N> recommendations contextualized
+✅ Gate R6 PASS: Research archived at <path>
+```
+
+**Human verification checklist:**
+- [ ] All 6 gates have compliance lines
+- [ ] Research question was specific, not open-ended
+- [ ] Sources meet minimum authority threshold
+- [ ] Findings are contextualized to SovereignAI, not generic
+- [ ] Research file is saved and linked
+
+**STOP conditions:**
+- Any gate without compliance line
+- Research question vague after Gate R1
+- Zero sources pass Gate R3
+- Findings cannot be contextualized at Gate R5
+- Research file not saved at Gate R6
+
+---
+
+### Session Continuity Rule (Research)
+
+Because the Architect is a web chat with no persistent state:
+
+**If the session ends before Gate 6 completion**, the human MUST:
+1. Copy the entire chat transcript from this point backward to Gate R1
+2. Paste it into the next session
+3. The next Architect instance reads the transcript to reconstruct context
+
+**The Architect MUST NOT**:
+- Claim to have "saved progress" in a file
+- Refer to state from a previous session without the human pasting the transcript
+- Assume continuity without explicit transcript paste
+
+**The human is the state keeper. The chat transcript is the only state.**
+
+```
+⛔ RESEARCH SESSION END GATE
+
+Status:
+- Research question: <question>
+- Gates completed: <list>
+- Gates pending: <list>
+- File saved: <Yes/No>
+
+HUMAN ACTION REQUIRED (per Session Continuity Rule, Section 4):
+1. Copy chat transcript from this point backward to Gate R1
+2. Paste into next Architect session before continuing
+3. Confirm: "Transcript copied"
+
+Architect MUST NOT proceed until human confirms.
+
+✅ Research Session End Gate posted. Awaiting human confirmation.
+```
 
 ---
