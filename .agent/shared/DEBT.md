@@ -10,7 +10,7 @@ Open items only. Resolved items → CHANGELOG.md.
 |----|------|----------|----------|--------|--------|---------|
 | DEBT-4 | UI implementations (cli, phone) | Low | Low | Identified | TBD | UI implementation prioritised |
 | DEBT-6 | Librarian.handle_event method + episodic event consumer | Medium | Medium | Identified | TBD | Event system prioritised |
-| DEBT-7 | TUI cookie auth for agent SSE stream | Low | Low | Identified | TBD | TUI framework investigation |
+| DEBT-7 | TUI cookie auth for agent SSE stream | Low | Low | Resolved | Plan 32 | TUI framework investigation |
 | DEBT-8 | Web UI consumer for agent SSE stream | Low | Low | Identified | TBD | Web UI implementation prioritised |
 | DEBT-9 | Cross-task persistent graph memory | Medium | Medium | Identified | TBD | Graph memory prioritised |
 
@@ -71,3 +71,13 @@ Previously: setuptools CVE-2024-6345. Removed — fixed in setuptools v70.0 (Jul
 **Status**: Resolved
 **Target**: Plan 25.3
 **Reason**: Investigation in Plan 25.3 revealed that P4 compliance tests (test_p4_compliance.py) are passing and do not have isolation issues. The tests properly handle temporary modifications and edge cases. No action required - marked as false debt.
+
+---
+
+## DEBT-7 — TUI cookie auth for agent SSE stream (Resolved)
+
+**Severity**: Low
+**Priority**: Low
+**Status**: Resolved
+**Target**: Plan 32
+**Reason**: Implemented in Plan 32. Created TUIWebClient in app/tui/client.py with session cookie jar using platformdirs for secure storage. Implemented SSE cookie auth probe spike test (test_debt7_verification.py) to determine SSE capability. TUI panels use REST polling fallback when SSE cookie auth is not available, ensuring graceful degradation while maintaining future SSE support when authentication infrastructure is ready.

@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## plan-32 — TUI Web Client, 10-Panel Sidebar, and Shutdown Detection (Commit TBD)
+
+**Date**: 2026-07-21
+**Plan**: plans/plan-32-Rev17.md
+**Tests**: 179 passed, 2 warnings
+**Previous Baseline**: plan-31-Rev17
+**Coverage**: 90%
+**Screenshots**: N/A
+
+**Changes**:
+- Created TUI web client with session cookie jar (app/tui/client.py)
+- Implemented error classification by API error code (app/tui/error_classification.py)
+- Created 10-panel TUI sidebar with shutdown detection (app/tui/main.py)
+- Implemented panels: orchestrator, workers, tasks, memory, models, adapters, hardware, logs, options, audit
+- Implemented skills panel (app/tui/panels/skills.py)
+- Integrated panels with backend APIs using SSE where verified, REST polling fallback otherwise
+- Implemented shutdown detection with client-side state machine and file sentinel fallback
+- Resolved DEBT-7: TUI cookie auth for agent SSE stream
+
+---
+
 ## plan-31 — Web API Layer (Commit 4485ce9)
 
 **Date**: 2026-07-21
