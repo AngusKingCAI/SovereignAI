@@ -61,6 +61,7 @@ Ensure $TEST_SCOPE is used in ALL test commands, not just early phases.
     *Populate this file with the chat transcript from the {plan-name} plan execution.*
     ```
 17. **Move completed plan files**: Run `.agent/executor/scripts/move_completed_plans.py {plan-number}` to move the completed plan and all its revisions to `plans/completed/`.
-18. Documentation: prepend CHANGELOG, update PLANS.md (mark "Completed", shift upcoming queue).
-19. Git: `git status` → add session files including: trace files (`.agent/executor/traces/trace-plan-{N}.jsonl`), coverage.json, all log files EXCEPT current plan log (user will add after populating), completed plan files (`plans/completed/`), and any other session-specific changes → commit → tag `plan-{N}` → push.
-20. **Generate performance report**: Performance metrics collected throughout /close workflow are saved to `logs/performance/performance-plan-{N}.json`. This includes execution time for each step, git operation overhead, memory usage, and identifies slowest steps for optimization.
+18. **Organize log files**: Run `.agent/executor/scripts/move_logs_to_folders.py` to move log files to their appropriate numbered subdirectories (0-9, 10-19, 20-29, 30-39, etc.).
+19. Documentation: prepend CHANGELOG, update PLANS.md (mark "Completed", shift upcoming queue).
+20. Git: `git status` → add session files including: trace files (`.agent/executor/traces/trace-plan-{N}.jsonl`), coverage.json, all log files EXCEPT current plan log (user will add after populating), completed plan files (`plans/completed/`), and any other session-specific changes → commit → tag `plan-{N}` → push.
+21. **Generate performance report**: Performance metrics collected throughout /close workflow are saved to `logs/performance/performance-plan-{N}.json`. This includes execution time for each step, git operation overhead, memory usage, and identifies slowest steps for optimization.

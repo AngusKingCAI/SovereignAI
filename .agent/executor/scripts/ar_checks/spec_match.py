@@ -192,6 +192,7 @@ ALLOWLIST = {
     ".agent/executor/scripts/ar_checks/check_placeholders.py",
     ".agent/executor/scripts/ar_checks/check_tracing_allowlist.txt",
     ".agent/executor/scripts/ar_checks/check_dependencies.py",
+    ".agent/executor/scripts/move_logs_to_folders.py",
     "app/tui/tests/test_panel_display.py",
     "app/tui/tests/test_push_to_90_percent.py",
     "coverage.json",

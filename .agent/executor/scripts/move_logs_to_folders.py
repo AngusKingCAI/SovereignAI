@@ -11,9 +11,20 @@ from pathlib import Path
 
 def get_folder_for_log(filename):
     """Determine which folder a log file belongs to based on its name."""
-    # Plan logs always go to Misc
-    if 'execution-log-plan-' in filename:
-        return "Misc"
+    # Extract plan number from execution-log-plan-N or execution-attestation-plan-N
+    plan_match = re.search(r'execution-(?:log|attestation)-plan-(\d+)', filename)
+    if plan_match:
+        plan_number = int(plan_match.group(1))
+        if plan_number < 10:
+            return "0-9"
+        elif plan_number < 20:
+            return "10-19"
+        elif plan_number < 30:
+            return "20-29"
+        elif plan_number < 40:
+            return "30-39"
+        else:
+            return "Misc"
 
     # Check for numbered patterns in prompt logs
     match = re.search(r'execution-log-prompt-(\d+)', filename)
@@ -29,8 +40,15 @@ def get_folder_for_log(filename):
     # Default to Misc for non-numbered or out-of-range files
     return "Misc"
 
+
 def move_logs_to_folders():
-    logs_dir = Path("c:/SovereignAI/logs")
+    # Use proper path resolution instead of hardcoded path
+    repo_root = Path(__file__).parent.parent.parent.parent
+    logs_dir = repo_root / "logs"
+
+    if not logs_dir.exists():
+        print(f"Warning: logs directory not found at {logs_dir}")
+        return
 
     for log_file in logs_dir.glob("*.md"):
         # Skip if file is in a subfolder already
@@ -44,6 +62,7 @@ def move_logs_to_folders():
         dest_path = dest_folder / log_file.name
         shutil.move(str(log_file), str(dest_path))
         print(f"Moved: {log_file.name} -> {folder_name}/")
+
 
 if __name__ == "__main__":
     move_logs_to_folders()
