@@ -40,7 +40,7 @@ def pytest_collection_modifyitems(config, items) -> None:
     items.sort(key=get_sort_key)
 
 
-def pytest_report_collectionfinish(config, startdir, items) -> str:
+def pytest_report_collectionfinish(config, start_path, items) -> str:
     """Report deterministic test ordering after collection."""
     total_tests = len(items)
     return f"\n{total_tests} tests collected with deterministic ordering"

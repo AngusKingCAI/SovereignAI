@@ -1,18 +1,18 @@
 {
   "version": "2.0",
-  "generated_at": "2026-07-21T04:51:18.249014+00:00",
+  "generated_at": "2026-07-21T07:19:11.987832+00:00",
   "governance_files": {
     "AGENTS.md": {
-      "hash": "f47f9f26be045c320f9b99641100ee6152a32e4d6b8816e6ed7ea5304e39e852",
-      "last_modified": "2026-07-21T03:13:34.626244+00:00"
+      "hash": "002b1aaedf8984a7d996c00fa87d1c182daab791b6b69d8e1cdf9e965d499d2e",
+      "last_modified": "2026-07-21T07:01:36.088972+00:00"
     },
     "ARCHITECTURE.md": {
       "hash": "3ae2fe85ad72ec1491d2eea9c92d9c78d68b738de60276cb057e82fae6d1cea7",
       "last_modified": "2026-07-20T11:58:15.556053+00:00"
     },
     "OR_RULES.md": {
-      "hash": "85e302c273c3717ac4079e1a18bcb404e1937bfe3de5de63fa10aab49e320473",
-      "last_modified": "2026-07-20T15:32:21.213614+00:00"
+      "hash": "bcd4505d4dce5a1615cfa8b1e229ca6506da8e833534e29fd00b4685334575ed",
+      "last_modified": "2026-07-21T05:45:23.525745+00:00"
     }
   },
   "rules": {
@@ -279,6 +279,12 @@
       "content": "Execution Attestation Required: Before `/close` completes, the executor MUST produce `logs/execution-attestation-plan-{N}.md` using the template at `.agent/executor/ATTESTATION_TEMPLATE.md`. The attestation is verified by running `verify_execution.py --final --plan {N}`. If verification FAILs, do not commit, do not tag, do not push. The attestation is the executor's proof of compliance with the plan manifest. **Applies to**: close skill **Trigger**: Before session end",
       "section": "COR",
       "hash": "be66669fd3e0acac1545a95075328431f9130064b3e12d6e63ea1ea85362f04e"
+    },
+    "COR-4": {
+      "file": "OR_RULES.md",
+      "content": "Scoped Test Execution in All Phases: The test scope determined by get_scoped_tests.py MUST be used in ALL test execution phases (S1, S2, S3+), not just early phases. Full suite is only permitted when COR-1 applies. **Applies to**: close skill, all test execution phases **Trigger**: Any test execution after S0",
+      "section": "COR",
+      "hash": "de0eade09d08fc341311715009cc7053eaf7d2d817e79a490b4509ad19de6f5f"
     },
     "SOR-1": {
       "file": "OR_RULES.md",
