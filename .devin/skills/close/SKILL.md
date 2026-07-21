@@ -48,7 +48,7 @@ Ensure $TEST_SCOPE is used in ALL test commands, not just early phases.
 13. **Manually run `.agent/executor/hooks/verify_attestation.py --plan {N}` to verify attestation. (Invariant 13, COR-3 — fallback if config.json hook fails)**
 14. HARD GATE — `.agent/executor/scripts/verify_execution.py --final --plan {N}`. Checks: manifest deliverables present in git history, no governance files modified, attestation present/complete, coverage meets target, trace file exists. This performs complete trace integrity verification including hash validation against manifest and automated coverage verification. If FAIL: STOP. Do not commit. (UOR-4, COR-3, COR-4, Invariant 12)
 15. **Manually run `.agent/executor/hooks/append_trace.py --skill close --plan {N}` to log /close invocation. (Invariant 12 — fallback if config.json hook fails)**
-16. **Organize log files**: Run `.agent/executor/scripts/move_logs_to_folders.py {plan-number}` to move log files to their appropriate numbered subdirectories (0-9, 10-19, 20-29, 30-39, etc.). Pass the plan number to skip that plan's logs (current plan logs stay in root). This must happen BEFORE moving plan files so current plan can still be detected.
+16. **Organize log files**: Run `.agent/executor/scripts/move_logs_to_folders.py {plan-number}` to move log files to their appropriate numbered subdirectories (0-9, 10-19, 20-29, 30-39, etc.). Pass the plan number to skip that plan's logs (current plan logs stay in root).
 17. Execution log: create BLANK execution log file at `logs/execution-log-{plan-name}.md` with ONLY the header template. Do NOT populate with chat transcript — user will populate after execution. Template:
     ```
     # Execution Log: {plan-name}
