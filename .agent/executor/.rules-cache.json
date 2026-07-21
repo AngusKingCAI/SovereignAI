@@ -1,10 +1,10 @@
 {
   "version": "2.0",
-  "generated_at": "2026-07-21T07:19:11.987832+00:00",
+  "generated_at": "2026-07-21T11:02:46.800058+00:00",
   "governance_files": {
     "AGENTS.md": {
-      "hash": "002b1aaedf8984a7d996c00fa87d1c182daab791b6b69d8e1cdf9e965d499d2e",
-      "last_modified": "2026-07-21T07:01:36.088972+00:00"
+      "hash": "8510ba5e92a0bcb8679b9793c1961d61fc6714adc15c2ca37d8c3c901964800a",
+      "last_modified": "2026-07-21T09:09:44.279575+00:00"
     },
     "ARCHITECTURE.md": {
       "hash": "3ae2fe85ad72ec1491d2eea9c92d9c78d68b738de60276cb057e82fae6d1cea7",
