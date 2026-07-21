@@ -9,6 +9,7 @@ Returns:
     Exit code 0 with test path(s) on stdout
 """
 
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -35,6 +36,50 @@ def get_all_test_paths() -> list[str]:
     return [".agent/executor/tests/"]
 
 
+def validate_scope(scope: str, changed_files: list[str]) -> bool:
+    """Validate that the determined scope matches actual changed files."""
+    if scope == "all":
+        return True
+    expected_prefix = {
+        "architect": [".agent/", ".devin/"],
+        "sovereignai": ["app/"]
+    }
+    # Verify at least one changed file matches the scope prefix
+    prefixes = expected_prefix.get(scope, [])
+    return any(f.startswith(prefix) for f in changed_files for prefix in prefixes)
+
+
+def get_plan_start_commit() -> str | None:
+    """Get the plan start commit from the current plan file."""
+    try:
+        get_current_plan_script = Path(__file__).parent / "get_current_plan.py"
+        if not get_current_plan_script.exists():
+            return None
+
+        result = subprocess.run(
+            ["python", str(get_current_plan_script)],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        plan_path = result.stdout.strip()
+        if not plan_path or not Path(plan_path).exists():
+            return None
+
+        # Read plan file to find start commit
+        with open(plan_path, encoding='utf-8', errors='ignore') as f:
+            content = f.read()
+
+        # Look for start commit in plan metadata
+        start_commit_match = re.search(r'Start Commit[:\s]+([a-f0-9]+)', content, re.IGNORECASE)
+        if start_commit_match:
+            return start_commit_match.group(1)
+
+        return None
+    except Exception:
+        return None
+
+
 def determine_test_scope() -> str:
     """Analyze git changes to determine test scope."""
     try:
@@ -52,12 +97,24 @@ def determine_test_scope() -> str:
             if "plan-fix" in current_plan or "plan-workflow-fix" in current_plan:
                 return "all"  # Fix plans always run full suite
 
-        result = subprocess.run(
-            ["git", "log", "--name-only", "-1", "--pretty=format:"],
-            capture_output=True,
-            text=True,
-            check=True
-        )
+        # Get all files changed since plan start (not just last commit)
+        plan_start_commit = get_plan_start_commit()
+        if plan_start_commit:
+            result = subprocess.run(
+                ["git", "log", "--name-only", "--pretty=format:", f"HEAD...{plan_start_commit}"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+        else:
+            # If plan-start-commit not available, fall back to last 5 commits
+            result = subprocess.run(
+                ["git", "log", "--name-only", "-5", "--pretty=format:"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+
         changed_files = result.stdout.strip().split("\n") if result.stdout.strip() else []
 
         # Check if only test files changed
@@ -83,9 +140,17 @@ def determine_test_scope() -> str:
         elif architect_changed and sovereignai_changed:
             return "all"
         elif architect_changed:
-            return "architect"
+            scope = "architect"
+            # Validate scope matches changed files
+            if not validate_scope(scope, changed_files):
+                return "all"
+            return scope
         elif sovereignai_changed:
-            return "sovereignai"
+            scope = "sovereignai"
+            # Validate scope matches changed files
+            if not validate_scope(scope, changed_files):
+                return "all"
+            return scope
         else:
             return "all"  # Default to all if no changes detected
     except Exception:

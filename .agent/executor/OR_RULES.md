@@ -87,6 +87,11 @@ Rules specific to close skill only.
 **Applies to**: close skill
 **Trigger**: Before session end
 
+### COR-4: Scoped Test Execution in All Phases
+**Rule**: The test scope determined by get_scoped_tests.py MUST be used in ALL test execution phases (S1, S2, S3+), not just early phases. Full suite is only permitted when COR-1 applies.
+**Applies to**: close skill, all test execution phases
+**Trigger**: Any test execution after S0
+
 ## SOR — scan Skill Rules
 
 Rules specific to scan skill only.

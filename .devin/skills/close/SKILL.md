@@ -15,7 +15,7 @@ allowed-tools:
 
 Operational Rules: See .agent/executor/OR_RULES.md
 - Universal: UOR-1, UOR-2, UOR-3, UOR-4, UOR-5, UOR-6 (read from cache using `.agent/executor/scripts/rules_cache_lib.py`)
-- Close-specific: COR-1, COR-2, COR-3 (read from cache using `.agent/executor/scripts/rules_cache_lib.py`)
+- Close-specific: COR-1, COR-2, COR-3, COR-4 (read from cache using `.agent/executor/scripts/rules_cache_lib.py`)
 
 Run `/close` workflow. STOP on any failure. Atomic — all checks pass or nothing commits.
 
@@ -30,10 +30,13 @@ Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (steps 11, 15):
    - Returns: `.agent/executor/tests/app_tests/` (sovereignai only)
    - Returns: `.agent/executor/tests/` (both or all)
 4. Tests: run scoped or full tests with 300s timeout. Use iterative approach:
-   a. First run: `run_failing_tests.py <test_path> --full` to establish baseline and cache failures.
-   b. On retry: `run_failing_tests.py <test_path>` to run only failing tests from cache.
-   c. Once all specific tests pass: run `run_failing_tests.py <test_path> --full` for final verification.
-   STOP on failure. Coverage is automatically verified by `verify_execution.py --final` against manifest target.
+   a. Retrieve scope: `python .agent/executor/scripts/get_scoped_tests.py` → save output to $TEST_SCOPE
+   b. If COR-1 applies (plan title contains "fix" or "test"): $TEST_SCOPE = ".agent/executor/tests/"
+   c. First run: `run_failing_tests.py $TEST_SCOPE --full` to establish baseline
+   d. On retry: `run_failing_tests.py $TEST_SCOPE` to run only cached failing tests
+   e. Once all pass: `run_failing_tests.py $TEST_SCOPE --full` for final verification
+   STOP on failure. Coverage verified by `verify_execution.py --final`.
+Ensure $TEST_SCOPE is used in ALL test commands, not just early phases.
 5. Static analysis: `ruff check .`, `mypy`, `bandit`, `pip-audit`, `vulture`, `detect-secrets`. STOP on any failure.
 6. **Unified checks**: `run_all_checks.py`. Runs AR, OR, Landmine, and Placeholder checks with single repo-state hash computation. STOP on any failure.
 7. Spec match: `ar_checks/spec_match.py`. STOP if exit≠0.
@@ -43,7 +46,7 @@ Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (steps 11, 15):
 11. **Verify `.agent/executor/ATTESTATION_TEMPLATE.md` exists. If missing: STOP. (COR-3, Invariant 13)**
 12. **Produce execution attestation: `logs/execution-attestation-plan-{N}.md` using template at `.agent/executor/ATTESTATION_TEMPLATE.md`. Fill Coverage section with actual coverage from manifest target. (Invariant 13, COR-3)**
 13. **Manually run `.agent/executor/hooks/verify_attestation.py --plan {N}` to verify attestation. (Invariant 13, COR-3 — fallback if config.json hook fails)**
-14. HARD GATE — `.agent/executor/scripts/verify_execution.py --final --plan {N}`. Checks: manifest deliverables present in git history, no governance files modified, attestation present/complete, coverage meets target, trace file exists. This performs complete trace integrity verification including hash validation against manifest and automated coverage verification. If FAIL: STOP. Do not commit. (UOR-4, COR-3, Invariant 12)
+14. HARD GATE — `.agent/executor/scripts/verify_execution.py --final --plan {N}`. Checks: manifest deliverables present in git history, no governance files modified, attestation present/complete, coverage meets target, trace file exists. This performs complete trace integrity verification including hash validation against manifest and automated coverage verification. If FAIL: STOP. Do not commit. (UOR-4, COR-3, COR-4, Invariant 12)
 15. **Manually run `.agent/executor/hooks/append_trace.py --skill close --plan {N}` to log /close invocation. (Invariant 12 — fallback if config.json hook fails)**
 16. Execution log: create BLANK execution log file at `logs/execution-log-{plan-name}.md` with ONLY the header template. Do NOT populate with chat transcript — user will populate after execution. Template:
     ```
