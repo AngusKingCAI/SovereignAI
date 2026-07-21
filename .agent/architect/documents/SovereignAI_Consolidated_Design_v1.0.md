@@ -1,5 +1,7 @@
 # SovereignAI — Consolidated Design Document v1.0
 
+**⚠️ HISTORICAL DOCUMENT — Uses pre-v1.4 GR numbering. Current GR rules in .agent/architect/AI_HANDOFF.md Section 3.**
+
 **Status**: Draft — prepared for Round Table review
 **Date**: 2026-07-03
 **Author**: Architect

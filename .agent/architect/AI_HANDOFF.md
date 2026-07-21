@@ -1,7 +1,7 @@
 # AI Handoff — SovereignAI
 
-**Version:** v1.5
-**Last Updated:** 2026-07-20
+**Version:** v1.6
+**Last Updated:** 2026-07-21
 
 ## Section 1: Repository Setup
 
@@ -25,7 +25,7 @@
 
 ```bash
 # Safe clone with verification
-cd /tmp && rm -rf SovereignAI
+cd <your-workspace> && rm -rf SovereignAI
 git clone --depth 1 https://github.com/AngusKingCAI/SovereignAI.git
 cd SovereignAI
 
@@ -47,6 +47,7 @@ git config --global --add safe.directory $(pwd)
 - Scan tags: `scan-{N}` (e.g., `scan-15`) — see Section 5 Scan Trigger for range-review procedure
 - Plans in progress carry no tag until completion
 - No other tags without explicit plan instruction
+- **Note**: When git tags are not applied, CHANGELOG.md section headers (e.g., `## plan-29 — ...`) serve as the de facto baseline markers. Historical entries may use legacy `prompt-{N}` prefix — these are equivalent to `plan-{N}` for baseline identification purposes.
 
 ---
 
@@ -404,7 +405,7 @@ Before delivering the fix plan, verify:
 
 ## Section 6: Round Table Workflow
 
-**Applicable GR Rules**: GR1, GR2, GR3, GR4, GR6, GR7, GR8, GR9, GR10, GR11, GR13, GR14, GR15
+**Applicable GR Rules**: GR1, GR2, GR3, GR4, GR6, GR7, GR8, GR9, GR10, GR11, GR12, GR13, GR14, GR15
 
 Triggered independently — may run while Executor is executing plans in parallel. User may engage this track without ever running the Log Reading Workflow. Round Table reviews new plans.
 
@@ -481,7 +482,7 @@ wrong at any point, they must acknowledge it and withdraw that finding.
 - Settled findings: {previously accepted findings}
 
 ## EVALUATION CRITERIA (Rubric-Based)
-For each plan, evaluate across five dimensions (aligned with ARCHITECT_PATTERNS.md categories):
+For each plan, evaluate across six dimensions (aligned with ARCHITECT_PATTERNS.md categories):
 1. Clarity & Specificity — are objectives and success criteria explicit?
 2. Structural Organization — is the plan well-organized with clear sections? (See: Plan Structure Patterns)
 3. Context Management — are instructions placed strategically around context? (See: Context Management Patterns)
@@ -499,7 +500,7 @@ For each plan, evaluate across five dimensions (aligned with ARCHITECT_PATTERNS.
 For each finding, provide:
 **Finding ID**: RT-{N}
 **Severity**: {CRITICAL|HIGH|MEDIUM|LOW}
-**Dimension**: {which of the 5 criteria}
+**Dimension**: {which of the 6 criteria}
 **Evidence**: {specific line or section}
 **Fix**: {concrete change required}
 **Confidence**: {1-10, 10 = certain}
@@ -546,10 +547,11 @@ Before handing material to the user for Round Table, the Architect runs its own 
 2. Post: `✅ Read ARCHITECT_PATTERNS.md: {N} total patterns across {N} categories`
 3. Apply the 6-dimension rubric (Clarity & Specificity, Structural Organization, Context Management, Reasoning & Tool Guidance, Examples & Output Control, Executor Manifest) to the plan draft, same as the Round Table Evaluation Criteria
 4. Post: `✅ Self-Check Rubric Pass: {N} self-findings, {N} dimensions clean`
-5. Check the draft against every entry in `ARCHITECT_PATTERNS.md` (all categories)
-6. Post: `✅ Self-Check Patterns Pass: {N} patterns checked, {N} matches found`
-7. Fix any self-identified CRITICAL/HIGH findings before delivery (same format as Step 4 finding processing: `✅ Self-Fixed Finding SC-{id}: {reasoning} — {fix applied}`)
-8. Post: `✅ Self-Check Complete: {N} findings fixed pre-delivery, {N} deferred to Round Table with reasoning`
+5. If `ARCHITECT_PATTERNS.md` has zero entries (all categories show "(none yet)"), skip steps 6-7 (no historical patterns to check against). Proceed to step 8.
+6. Check the draft against every entry in `ARCHITECT_PATTERNS.md` (all categories)
+7. Post: `✅ Self-Check Patterns Pass: {N} patterns checked, {N} matches found`
+8. Fix any self-identified CRITICAL/HIGH findings before delivery (same format as Step 4 finding processing: `✅ Self-Fixed Finding SC-{id}: {reasoning} — {fix applied}`)
+9. Post: `✅ Self-Check Complete: {N} findings fixed pre-delivery, {N} deferred to Round Table with reasoning`
 
 **Note**: This pass does not replace the real Round Table or reduce GR9's majority-panelist requirement — it reduces the number of findings the real panel needs to surface, which reduces the odds of needing a Rev 2+.
 

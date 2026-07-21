@@ -13,8 +13,9 @@ allowed-tools:
 ---
 
 Operational Rules: See .agent/executor/OR_RULES.md
-- Read UOR section (Universal: UOR-1, UOR-2, UOR-3, UOR-4, UOR-5, UOR-6)
+- Read UOR section (Universal: UOR-1, UOR-2, UOR-3, UOR-4, UOR-5, UOR-6, UOR-7, UOR-8, UOR-9)
 - Read COR section (Close-specific: COR-1, COR-2, COR-3) — scan performs same closing checks
+- Read SOR section (Scan-specific: SOR-1) — scan-specific timestamp authenticity check
 
 Run `/scan` workflow. Whole-repo scan. No new features. Fixes only. STOP on failure.
 

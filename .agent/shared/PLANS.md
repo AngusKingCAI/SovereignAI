@@ -37,10 +37,10 @@ None.
 
 | Check | Status | Last Verified |
 |-------|--------|---------------|
-| Executor Manifest present (GR13) | ✅ | plan-27-Rev5 |
-| Execution attestation produced | ✅ | plan-27-Rev5 |
-| verify_execution.py PASS | ✅ | plan-27-Rev5 |
-| Trace file complete | ✅ | plan-27-Rev5 |
+| Executor Manifest present (GR13) | ✅ | reorganization-fix |
+| Execution attestation produced | ✅ | reorganization-fix |
+| verify_execution.py PASS | ✅ | reorganization-fix |
+| Trace file complete | ✅ | reorganization-fix |
 
 ## Recent History (last 5)
 

@@ -1,5 +1,7 @@
 # SovereignAI — Round Table Prompt v1.0 (Design Review)
 
+**⚠️ HISTORICAL DOCUMENT — Uses pre-v1.4 GR numbering. Current GR rules in .agent/architect/AI_HANDOFF.md Section 3.**
+
 **Date**: 2026-07-03
 **Type**: Full prompt (first pass per GR14)
 **Material**: `SovereignAI_Consolidated_Design_v1.0.md` (~485KB, ~9,000 lines — full text of 25 source documents) + `SovereignAI_Design_Review_Brief_v1.0.md`
