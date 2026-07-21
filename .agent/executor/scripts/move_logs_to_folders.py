@@ -2,6 +2,7 @@
 """
 Move log files from root back to their appropriate numbered folders.
 This organizes logs after plan execution is complete.
+Skips the current plan's logs to keep them accessible during execution.
 """
 
 import re
@@ -41,6 +42,25 @@ def get_folder_for_log(filename):
     return "Misc"
 
 
+def get_current_plan_number():
+    """Get the current plan number from get_current_plan.py."""
+    try:
+        result = subprocess.run(
+            ["python", ".agent/executor/scripts/get_current_plan.py"],
+            capture_output=True,
+            text=True,
+            cwd=Path(__file__).parent.parent.parent.parent
+        )
+        if result.returncode == 0:
+            # Extract plan number from output like "plans/plan-33-Rev17.md"
+            match = re.search(r'plan-(\d+)', result.stdout)
+            if match:
+                return int(match.group(1))
+    except Exception:
+        pass
+    return None
+
+
 def move_logs_to_folders():
     # Use proper path resolution instead of hardcoded path
     repo_root = Path(__file__).parent.parent.parent.parent
@@ -50,10 +70,20 @@ def move_logs_to_folders():
         print(f"Warning: logs directory not found at {logs_dir}")
         return
 
+    # Get current plan number to skip its logs
+    current_plan = get_current_plan_number()
+
     for log_file in logs_dir.glob("*.md"):
         # Skip if file is in a subfolder already
         if log_file.parent != logs_dir:
             continue
+
+        # Skip current plan's logs - they should stay in root during execution
+        if current_plan:
+            plan_match = re.search(r'execution-(?:log|attestation)-plan-(\d+)', log_file.name)
+            if plan_match and int(plan_match.group(1)) == current_plan:
+                print(f"Skipped: {log_file.name} (current plan log)")
+                continue
 
         folder_name = get_folder_for_log(log_file.name)
         dest_folder = logs_dir / folder_name
@@ -65,4 +95,5 @@ def move_logs_to_folders():
 
 
 if __name__ == "__main__":
+    import subprocess
     move_logs_to_folders()
