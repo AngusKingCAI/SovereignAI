@@ -1,10 +1,10 @@
 {
   "version": "2.0",
-  "generated_at": "2026-07-20T15:32:24.336836+00:00",
+  "generated_at": "2026-07-21T04:51:18.249014+00:00",
   "governance_files": {
     "AGENTS.md": {
-      "hash": "1fc9aaa4853f493f924b6b145af1ae3e4a0ef3550b65206ea704b1c4ff59aff6",
-      "last_modified": "2026-07-20T13:40:39.677966+00:00"
+      "hash": "f47f9f26be045c320f9b99641100ee6152a32e4d6b8816e6ed7ea5304e39e852",
+      "last_modified": "2026-07-21T03:13:34.626244+00:00"
     },
     "ARCHITECTURE.md": {
       "hash": "3ae2fe85ad72ec1491d2eea9c92d9c78d68b738de60276cb057e82fae6d1cea7",
@@ -18,9 +18,9 @@
   "rules": {
     "INVARIANT-1": {
       "file": "AGENTS.md",
-      "content": "STOP on any failure. Tests, lint, security, AR checks \u00e2\u20ac\u201d any exit\u00e2\u2030\u00a00 = STOP. STOP means: halt current step execution, report failure reason, do not proceed to next step. Executor may fix the failure and retry the same step, but must not skip to subsequent steps without passing the current step. Two HARD GATES are fatal and block commit/tag: `verify_close.py` and `verify_execution.py --final`. Both must PASS before git tag creation.",
+      "content": "STOP on any failure (exit\u00e2\u2030\u00a00). Halt execution, report reason, fix/retry. No skipping steps. HARD GATES: `verify_close.py` and `verify_execution.py --final` must PASS before commit/tag.",
       "section": "Universal Invariants",
-      "hash": "d4ec603d4df6d2516531647164ca921065913fb134f15ab8e99bfb1f5ee6c75e"
+      "hash": "4b5ce2156b1eba6e89c53524ab85e3041a307acfc4df1ed22e2b7efa0b917031"
     },
     "INVARIANT-2": {
       "file": "AGENTS.md",
@@ -30,69 +30,75 @@
     },
     "INVARIANT-3": {
       "file": "AGENTS.md",
-      "content": "Never delete or edit governance docs unless plan explicitly instructs. Prepend-only for LANDMINES.md.",
+      "content": "Never delete/edit governance docs unless plan instructs. Prepend-only for LANDMINES.md.",
       "section": "Universal Invariants",
-      "hash": "6c8cbbbe7ff3c49393a7793be89e2a4cf1ca92ea69b7115e049a3d13aefe3815"
+      "hash": "5cd0abf9cc7a69f09d493d188a0ca8c4dd21ff0028f0f00ddea79d831574ac63"
     },
     "INVARIANT-4": {
       "file": "AGENTS.md",
-      "content": "`/open` \u00e2\u2020\u2019 execute \u00e2\u2020\u2019 `/verify` after every step (not just edits) \u00e2\u2020\u2019 `/close`. No shortcuts.",
+      "content": "Never delete plan files. Move only (e.g., to plans/completed/).",
       "section": "Universal Invariants",
-      "hash": "6f768d54efbd83a1a942f431a06fb050f68120876face31430ee0423cd09de58"
+      "hash": "f614cfee4cb7b334446cf60cc01a1ebd9d72d34d175db2afb57ffd3f178424ed"
     },
     "INVARIANT-5": {
+      "file": "AGENTS.md",
+      "content": "`/open` \u00e2\u2020\u2019 execute \u00e2\u2020\u2019 `/verify` after every step \u00e2\u2020\u2019 `/close`. No shortcuts.",
+      "section": "Universal Invariants",
+      "hash": "7da8b8351af10265d1758db33dba4c410fda93793edee616eb8e3ffde69702dc"
+    },
+    "INVARIANT-6": {
       "file": "AGENTS.md",
       "content": "Follow skill instructions literally. Reference AR IDs, not full text.",
       "section": "Universal Invariants",
       "hash": "b0a40ca11bf35b753cfe0f0f5ee5b8abe84fce5c6db3bc10b10994e600f0a437"
     },
-    "INVARIANT-6": {
+    "INVARIANT-7": {
       "file": "AGENTS.md",
       "content": "Exceptions need plan number. \"Deferred\" without plan = STOP.",
       "section": "Universal Invariants",
       "hash": "853a89f37ac3b604f0db5e87ae8b5233f40d97a0bfbaae60d4d1bbe9fa849788"
     },
-    "INVARIANT-7": {
-      "file": "AGENTS.md",
-      "content": "No architect file edits. `.agent/architect/` is read-only unless explicitly authorized by user instruction. Exception: `.agent/architect/ARCHITECT_PATTERNS.md` can be edited by Executor per plan instruction (Architect identifies patterns \u00e2\u2020\u2019 adds write-task to Executor Manifest \u00e2\u2020\u2019 Executor writes).",
-      "section": "Universal Invariants",
-      "hash": "fab358cd6a6a133d1b525061f19954b607912445cf57038c8d279bf27409a3b9"
-    },
     "INVARIANT-8": {
+      "file": "AGENTS.md",
+      "content": "No architect file edits. `.agent/architect/` is read-only unless authorized. Exception: `.agent/architect/ARCHITECT_PATTERNS.md` per plan instruction.",
+      "section": "Universal Invariants",
+      "hash": "c82b1d86adbab661603b962595e80b497a041798d05568ee98534d56042cfc94"
+    },
+    "INVARIANT-9": {
       "file": "AGENTS.md",
       "content": "Scripts are SSOT. Skills reference scripts by path; no inline commands.",
       "section": "Universal Invariants",
       "hash": "3d376a76b17264932b990e27c5921cad65f9aa4e1fc65221b0cdb0ac63be3fa9"
     },
-    "INVARIANT-9": {
+    "INVARIANT-10": {
       "file": "AGENTS.md",
       "content": "Coverage \u00e2\u2030\u00a590% at `/close`. No exemptions.",
       "section": "Universal Invariants",
       "hash": "5edd85a2adc8d9b47ce4ea9a50d513d82963f3b6aea638417ef8ec7398cf374d"
     },
-    "INVARIANT-10": {
-      "file": "AGENTS.md",
-      "content": "Never execute workflow steps manually unless explicitly requested by user. Always use skills/workflows as intended.",
-      "section": "Universal Invariants",
-      "hash": "03a711c717ff401dc14766b0a707ea2715bb61b38749960197d4b2bae5736453"
-    },
     "INVARIANT-11": {
       "file": "AGENTS.md",
-      "content": "Skill invocation failure: If `/open`, `/verify`, or `/close` cannot be invoked via skill tool (skill not found, permission denied, or other invocation error), STOP completely. Skill tool failures indicate environment/tooling issues that should be reported.",
+      "content": "Never execute workflow steps manually unless requested. Use skills/workflows as intended.",
       "section": "Universal Invariants",
-      "hash": "9347f6448ad114302e8664c518587cdc21f12f0d32e0df3733019996749cfdcd"
+      "hash": "d8425827ad387d7b7874826c9c5ad75b73f56a669fc8d3c15c3f81195f697ae3"
     },
     "INVARIANT-12": {
       "file": "AGENTS.md",
-      "content": "**Execution Trace: After every action (file edit, command run, skill invocation), append a structured entry to `.agent/executor/traces/trace-plan-{N}.jsonl`. Required fields: timestamp, phase, step, action, file (if any), result. The trace is the immutable record of execution. Missing trace entries = STOP condition. The executor reads the Executor Manifest from the plan file at `/open` and uses it to validate that every phase produces its declared deliverables before proceeding.**",
+      "content": "Skill invocation failure (`/open`, `/verify`, `/close`) = STOP completely. Report environment/tooling issues.",
       "section": "Universal Invariants",
-      "hash": "630d42cd09d3e40b4ff0f268333f26ea7aecf2449b769131b7b0751c9b078153"
+      "hash": "d4b12e7e737efdd79c458f4b7a322042fb676201c470ef718127d29b658a49cc"
     },
     "INVARIANT-13": {
       "file": "AGENTS.md",
-      "content": "**Execution Attestation: Before `/close` completes, produce `logs/execution-attestation-plan-{N}.md` using the template at `.agent/executor/ATTESTATION_TEMPLATE.md`. This attestation is verified by the user via `verify_execution.py`. If attestation is missing, incomplete, or incorrect, do not commit, do not tag, do not push. The attestation is the executor's signed proof of compliance with the plan manifest.** ---",
+      "content": "**Execution Trace: After every action, append entry to `.agent/executor/traces/trace-plan-{N}.jsonl` (timestamp, phase, step, action, file, result). Missing entries = STOP. Executor reads Manifest at `/open` to validate phase deliverables.**",
       "section": "Universal Invariants",
-      "hash": "1382bb664ab55386fb60344bd3b25d45cc04e54d367298c3f976f31d1d87e45a"
+      "hash": "5d3e661b93811e523b98c5b1fa265ac397d83b4b60f68ad3c1e6de3bdb0589c6"
+    },
+    "INVARIANT-14": {
+      "file": "AGENTS.md",
+      "content": "**Execution Attestation: Before `/close`, produce `logs/execution-attestation-plan-{N}.md` using `.agent/executor/ATTESTATION_TEMPLATE.md`. Verified by `verify_execution.py`. Missing/incomplete/incorrect = no commit/tag/push.** ---",
+      "section": "Universal Invariants",
+      "hash": "82dc5ed3944cf0c64c592b288391b5301943ef636434136f67e0c4370c6ddcc8"
     },
     "AR1": {
       "file": "ARCHITECTURE.md",

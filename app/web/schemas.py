@@ -1,9 +1,11 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Generic, TypeVar
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 if TYPE_CHECKING:
     pass
+
+T = TypeVar("T")
 
 
 class CapabilityResponseDTO(BaseModel):
@@ -224,3 +226,239 @@ class OptionsDeleteResponseDTO(BaseModel):
 
     deleted: bool
 
+
+# Plan 31 DTOs
+
+
+class OrchestratorResponse(BaseModel):
+    task_id: str
+    status: str
+    response_text: str
+    error: str | None = None
+    created_at: str  # ISO 8601
+
+
+class MessageRequest(BaseModel):
+    content: str
+    session_id: str | None = None
+
+
+class CircuitState(BaseModel):
+    worker_id: str
+    state: str
+    error_count: int
+    last_error: str | None = None
+
+
+class CircuitStateList(BaseModel):
+    circuits: list[CircuitState]
+
+
+class SubsystemHealth(BaseModel):
+    name: str
+    kind: str = Field(..., pattern="^(worker|adapter|hardware|core)$")
+    status: str = Field(..., pattern="^(HEALTHY|DEGRADED|UNHEALTHY)$")
+    details: str | None = None
+
+
+class HealthSnapshot(BaseModel):
+    status: str = Field(..., pattern="^(READY|DEGRADED)$")
+    subsystems: list[SubsystemHealth]
+    cache_age_ms: int
+
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+    setup_token: str | None = None
+
+
+class LoginResponse(BaseModel):
+    expires_at: str  # ISO 8601
+    username: str
+
+
+class OptionsUpdate(BaseModel):
+    key: str
+    value: str
+
+
+class ModelQuery(BaseModel):
+    model_id: str | None = None
+    provider: str | None = None
+
+
+class SyncTrigger(BaseModel):
+    model_id: str
+
+
+class TraceEvent(BaseModel):
+    timestamp: str
+    level: str
+    source: str
+    message: str
+    event_type: str | None = None
+
+
+class GraphNodeDTO(BaseModel):
+    uuid: str
+    name: str
+    type: str
+    attributes: dict
+
+
+class GraphEdgeDTO(BaseModel):
+    src_id: str
+    dst_id: str
+    type: str
+    attributes: dict
+
+
+class GraphQueryRequest(BaseModel):
+    query_type: str = Field(..., pattern="^(entity_search|relation_traversal)$")
+    entity_name: str | None = None
+    entity_type: str | None = None
+    relation_type: str | None = None
+    max_depth: int = 1
+
+
+class GraphQueryResponse(BaseModel):
+    nodes: list[GraphNodeDTO]
+    edges: list[GraphEdgeDTO]
+
+
+class EpisodicEventDTO(BaseModel):
+    id: int
+    event_type: str
+    timestamp: str
+    correlation_id: str | None = None
+    summary: str
+
+
+class EpisodicQueryRequest(BaseModel):
+    event_type: str | None = None
+    since: str | None = None  # ISO 8601
+    until: str | None = None  # ISO 8601
+    offset: int = 0
+    limit: int = 500
+
+
+class EpisodicQueryResponse(BaseModel):
+    events: list[EpisodicEventDTO]
+    total_count: int
+    offset: int
+    limit: int
+
+
+class TaskEventDTO(BaseModel):
+    event_id: int
+    task_id: str
+    event_type: str
+    timestamp: str
+    details: dict | None = None
+
+
+class TaskListResponse(BaseModel):
+    events: list[TaskEventDTO]
+    total_count: int
+    next_event_id: int | None = None
+    page_size: int
+
+
+class LifecycleEventDTO(BaseModel):
+    event_type: str
+    timestamp: str
+    server_pid: int | None = None
+    instance_uuid: str | None = None
+    drain_timeout_seconds: int | None = None
+
+
+class TraceLogRequest(BaseModel):
+    event_type: str | None = None
+    since: str | None = None
+    until: str | None = None
+    offset: int = 0
+    limit: int = 500
+
+
+class TraceLogResponse(BaseModel):
+    events: list[TraceEvent]
+    total_count: int
+    offset: int
+    limit: int
+
+
+class LifecycleReadyResponse(BaseModel):
+    ready: bool
+    server_pid: int
+    instance_uuid: str
+
+
+class MemoryNotReadyResponse(BaseModel):
+    error_code: str = Field(default="memory_not_ready", pattern="^memory_not_ready$")
+    message: str = "Memory subsystem still loading"
+    retry_after_seconds: int = 5
+
+
+class MergeConflictDTO(BaseModel):
+    conflict_id: str
+    entity_name: str
+    entity_type: str
+    canonical_uuid: str
+    candidate_uuids: list[str]
+    first_observed_at: str  # ISO 8601
+    resolution_status: str = Field(..., pattern="^(unresolved|suppressed_by_dedup)$")
+
+
+class MergeConflictPage(BaseModel):
+    items: list[MergeConflictDTO]
+    total_count: int
+    offset: int
+    limit: int
+
+
+class ModelSummary(BaseModel):
+    model_id: str
+    provider: str
+    sync_status: str
+
+
+class ModelListResponse(BaseModel):
+    models: list[ModelSummary]
+    total_count: int
+
+
+class MessagingAuditEntryDTO(BaseModel):
+    id: str
+    source_department: str
+    target_department: str
+    content_preview: str
+    timestamp: str  # ISO 8601
+
+
+class AuditEntry(BaseModel):
+    id: str
+    timestamp: str
+    event_type: str
+    details: dict
+
+
+class AuditPage(BaseModel, Generic[T]):
+    items: list[T]
+    total_count: int
+    offset: int
+    limit: int
+
+
+class OrchestratorStatus(BaseModel):
+    state: str
+    uptime_seconds: float
+    tasks_completed: int
+    tasks_failed: int
+
+
+class CrossDepartmentMessage(BaseModel):
+    source_department: str
+    target_department: str
+    content: str
+    correlation_id: str

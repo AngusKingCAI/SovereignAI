@@ -17,7 +17,7 @@ Full history: `.agent/shared/CHANGELOG.md`.
 
 | Plan | Rev | Status | Start Date |
 |------|-----|--------|------------|
-| batch-governance | — | Completed | 2026-07-21 |
+| Plan 31 | Rev 17 | In Progress | 2026-07-21 |
 
 ## Queue
 
@@ -46,6 +46,7 @@ None.
 
 | Plan | Rev | Date | Note |
 |------|-----|------|------|
+| Plan 31 | Rev 17 | 2026-07-21 | 🔄 In Progress: Web API layer with SSE broker, auth, and DTOs |
 | batch-governance | — | 2026-07-21 | ✅ Completed: Add batch governance plan and batch RT score document support (v1.6) |
 | reorganization-fix | — | 2026-07-20 | ✅ Completed: Post-reorganization cleanup, removed stale files, fixed script runners |
 | Plan 30 | Rev 2 | 2026-07-20 | ✅ Completed: Scan fix: AR check paths, SOR-1/M7/M8 added, range review 26-29 |
