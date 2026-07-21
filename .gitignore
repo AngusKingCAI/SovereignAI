@@ -51,3 +51,6 @@ Thumbs.db
 # Application runtime (logs, settings)
 app/logs/
 app/settings/
+
+# Debug output
+debug_output.txt
