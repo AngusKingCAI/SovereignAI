@@ -32,6 +32,20 @@ Naming: C{n} = Critical, H{n} = High, M{n} = Medium, L{n} = Low.
 | M6 | Test scope confusion between architect/executor and sovereignai tests | Running wrong test suite for changes made | Tests are now separated: .agent/executor/tests/ for architect/executor, .agent/executor/tests/app_tests/ for sovereignai. Use .agent/executor/scripts/get_scoped_tests.py to auto-detect correct scope based on git changes. |
 | M7 | Environment-specific tests failing due to missing external dependencies | Tests requiring GPU, external services, or specific binaries failing | Per S7.4, use pytest.skip with clear condition descriptions for environment-specific tests, not pytest.mark.skip. |
 | M8 | Namespace package collision — test directory shadows installed package | Test directory named after installed package (e.g., sovereignai/) creates namespace package that shadows app/sovereignai/, breaking isinstance() on all dataclasses/protocols | Never create test directory matching package name. Use non-conflicting names (e.g., app_tests instead of sovereignai). Update pyproject.toml testpaths accordingly. |
+| M9 | Edit conflicts after auto-fixing tools modify files | "Tool 'edit' validation failed: String not found in file" errors after running ruff check --fix or other auto-fixing tools | **CRITICAL WORKFLOW:**
+1. Run auto-fixing tool (ruff, mypy, etc.)
+2. **Read the current state of the file** (this is critical)
+3. Attempt manual edits only after reading current state
+4. Verify edits work with subsequent tool runs
+
+**For ruff + mypy:**
+1. Run `ruff check --fix --unsafe-fixes` (let it auto-fix everything)
+2. Read the current state of all modified files
+3. Apply mypy-related type annotation fixes
+4. Run `mypy` to verify type fixes
+5. Run `ruff check --fix --unsafe-fixes` again to catch new issues
+
+**Detection:** If you get "String not found in file" error, STOP and read the file first before attempting another edit. |
 
 ### Low — Architect discretion.
 

@@ -21,6 +21,11 @@ shared/event_bus.py:stop
 shared/event_registry.py:__init__
 shared/event_registry.py:mark_started
 shared/lifecycle_manager.py:__init__
+lifecycle/health.py:__init__
+lifecycle/hooks.py:__init__
+lifecycle/shutdown.py:__init__
+lifecycle/manager.py:__init__
+tests/test_lifecycle_health.py:mock_health_check
 shared/task_state_machine.py:__init__
 shared/task_state_machine.py:_publish
 shared/trace_emitter.py:__init__

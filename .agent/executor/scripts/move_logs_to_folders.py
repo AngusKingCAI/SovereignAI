@@ -20,7 +20,7 @@ def get_folder_for_log(filename):
     if match:
         number = int(match.group(1))
         if number < 10:
-            return "1-9"
+            return "0-9"
         elif 10 <= number < 20:
             return "10-19"
         elif 20 <= number < 30:

@@ -10,7 +10,6 @@ Open items only. Resolved items → CHANGELOG.md.
 |----|------|----------|----------|--------|--------|---------|
 | DEBT-4 | UI implementations (cli, phone) | Low | Low | Identified | TBD | UI implementation prioritised |
 | DEBT-6 | Librarian.handle_event method + episodic event consumer | Medium | Medium | Identified | TBD | Event system prioritised |
-| DEBT-7 | TUI cookie auth for agent SSE stream | Low | Low | Resolved | Plan 32 | TUI framework investigation |
 | DEBT-8 | Web UI consumer for agent SSE stream | Low | Low | Identified | TBD | Web UI implementation prioritised |
 | DEBT-9 | Cross-task persistent graph memory | Medium | Medium | Identified | TBD | Graph memory prioritised |
 

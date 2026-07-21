@@ -17,7 +17,7 @@ STDLIB_MODULES = {
     "secrets", "hashlib", "subprocess", "shutil", "platform", "enum", "contextvars",
     "tempfile", "ctypes", "traceback", "gc", "ast", "io", "logging", "warnings",
     "inspect", "textwrap", "copy", "decimal", "fractions", "string", "types",
-    "sysctl", "mimetypes", "base64", "platformdirs",
+    "sysctl", "mimetypes", "base64", "platformdirs", "signal",
 }
 
 LOCAL_PACKAGES = {

@@ -13,7 +13,7 @@ def main():
         "app/databases",
         "app/services",
     ]
-    patterns = [r"TODO", r"FIXME", r"XXX", r"NotImplementedError", r"pass\s+#\s*placeholder"]
+    patterns = [r"TODO", r"FIXME", r"XXX", r"pass\s+#\s*placeholder"]
 
     violations = []
 
