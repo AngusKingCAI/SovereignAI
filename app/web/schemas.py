@@ -462,3 +462,18 @@ class CrossDepartmentMessage(BaseModel):
     target_department: str
     content: str
     correlation_id: str
+
+
+class ExecutionTraceEvent(BaseModel):
+    timestamp: str  # ISO 8601
+    phase: str
+    event_type: str
+    message: str
+    details: dict | None = None
+
+
+class LifecycleEvent(BaseModel):
+    timestamp: str  # ISO 8601
+    event_type: str
+    agent_id: str | None = None
+    details: dict | None = None

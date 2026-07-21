@@ -17,7 +17,7 @@ STDLIB_MODULES = {
     "secrets", "hashlib", "subprocess", "shutil", "platform", "enum", "contextvars",
     "tempfile", "ctypes", "traceback", "gc", "ast", "io", "logging", "warnings",
     "inspect", "textwrap", "copy", "decimal", "fractions", "string", "types",
-    "sysctl", "mimetypes",
+    "sysctl", "mimetypes", "base64", "platformdirs",
 }
 
 LOCAL_PACKAGES = {
@@ -60,6 +60,7 @@ PACKAGE_ALIASES = {
     "llama_cpp": "llama-cpp-python",
     "httpx": "httpx2",
     "tree_sitter_python": "tree-sitter-python",
+    "uvicorn": "uvicorn[standard]",
 }
 
 TRANSITIVE_DEPENDENCIES = {

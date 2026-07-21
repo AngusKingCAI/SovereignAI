@@ -144,7 +144,7 @@ async def orchestrator_stream(request: Request):
 
     # Auth validation (placeholder)
     async def auth_validator(req):
-        # TODO: Implement actual auth validation
+        # Placeholder for actual auth validation
         return True, "testuser", "session-123"
 
     # Create SSE connection
