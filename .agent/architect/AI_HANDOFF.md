@@ -67,6 +67,8 @@ git config --global --add safe.directory $(pwd)
 | `AGENTS.md` | Universal Invariants | Executor | Executor |
 | `.agent/shared/DEBT.md` | Non-rule deferred items | Architect (identification), Executor (resolution) | Executor |
 | `roundtable-scores-plan-{N}.md` | Round Table panelist performance tracking | Architect (compilation) | Executor (per plan instruction) |
+| `roundtable-scores-batch{N}-{M}.md` | Round Table batch panelist performance tracking | Architect (compilation) | Executor (per plan instruction) |
+| `batch{N}-{M}-governance-plan.md` | Pre-execution governance setup for a plan batch | Architect | Executor (per plan instruction) |
 | `.devin/skills/*/SKILL.md` | Workflow skills | Architect | Architect (user request only) |
 
 **SSOT**: Each fact in one document only.
@@ -632,16 +634,19 @@ This gate ensures delivery quality by verifying all critical criteria are met be
 
 ### Step 6 — Create Round Table Score Document (Final Round Only)
 
-After all Round Table rounds complete for a plan (clean pass achieved), add write-task to next plan's Executor Manifest to create a persistent score document for long-term tracking of panelist performance across plans.
+After all Round Table rounds complete for a plan or plan batch (clean pass achieved), add write-task to next plan's Executor Manifest to create a persistent score document for long-term tracking of panelist performance.
 
 **Do NOT create this document after each round. Only after the final round.**
 
-1. Compile scores from all rounds for this plan
-2. Post: `✅ Compiled All Scores: {N} rounds, {N} panelists, scores: {details}`
-3. **Add to Executor Manifest**: Score document creation added as write-task in the next plan's Executor Manifest.
-4. Post: `✅ Added to Executor Manifest: roundtable-scores-plan-{N}.md`
+**Single-plan review**: Score document named `roundtable-scores-plan-{N}.md`.
+**Batch review** (multiple plans reviewed together): Score document named `roundtable-scores-batch{N}-{M}.md` containing per-plan and per-reviewer breakdowns across all rounds.
 
-**Score Document Format** (`roundtable-scores-plan-{N}.md`):
+1. Compile scores from all rounds
+2. Post: `✅ Compiled All Scores: {N} rounds, {N} panelists, scores: {details}`
+3. **Add to Executor Manifest**: Score document creation added as write-task in the next plan's Executor Manifest (or in the batch's governance plan).
+4. Post: `✅ Added to Executor Manifest: {score-doc-filename}`
+
+**Score Document Format (single plan)** (`roundtable-scores-plan-{N}.md`):
 
 ```markdown
 # Round Table Scores — Plan {N}
@@ -654,7 +659,6 @@ After all Round Table rounds complete for a plan (clean pass achieved), add writ
 
 | Panelist | Round 1 | Round 2 | ... | Round N | Average | Total Findings | Accepted | Rejected |
 |----------|---------|---------|-----|---------|---------|----------------|----------|----------|
-| {name} | {score} | {score} | ... | {score} | {avg} | {N} | {N} | {N} |
 | {name} | {score} | {score} | ... | {score} | {avg} | {N} | {N} | {N} |
 
 ## Summary
@@ -669,7 +673,42 @@ After all Round Table rounds complete for a plan (clean pass achieved), add writ
 {any relevant notes about panelist performance or patterns}
 ```
 
-**Purpose**: This document enables long-term tracking of which panelists consistently provide the highest-quality findings. Use historical scores to optimize panel composition over time.
+**Score Document Format (batch)** (`roundtable-scores-batch{N}-{M}.md`):
+
+```markdown
+# Round Table Scores — Batch {N}-{M}
+
+**Date**: {YYYY-MM-DD}
+**Plans**: plan-{N} through plan-{M}
+**Total Rounds**: {N}
+**Total Reviews**: {N}
+
+## Per-Review Verdicts
+
+| Review | Verdict | CRITICAL | HIGH | MEDIUM | LOW | Notes |
+|--------|---------|----------|------|--------|-----|-------|
+
+## Per-Plan Verdicts
+
+| Plan | Best Verdict | Worst Verdict | Findings |
+|------|-------------|---------------|----------|
+
+## Cross-Reviewer Comparison
+
+{analysis of where reviewers agreed/disagreed, uncorroborated findings, partial-excerpt reviews}
+
+## Summary
+
+- Total findings across all rounds: {N}
+- Clean pass achieved: {Yes / No}
+- Architect patterns identified: {list}
+
+## Notes
+
+{panelist performance notes, process observations}
+```
+
+**Purpose**: These documents enable long-term tracking of which panelists consistently provide the highest-quality findings. Use historical scores to optimize panel composition over time.
 
 ---
 
@@ -681,5 +720,25 @@ Gated by Clean Pass Gate above.
 2. Post: `✅ Finalized Plans: {N} plans ready`
 3. Post delivery confirmation
 4. Post: `✅ Delivered: {N} plans ready for copy`
+
+---
+
+### Step 8 — Governance Amendment (Post-Clean-Pass, When Needed)
+
+When a Clean Pass identifies new ARCHITECT_PATTERNS entries (Step 5) but no Executor has yet executed the reviewed batch, the Architect creates a governance plan that runs before the batch.
+
+**Trigger**: Clean Pass achieved AND ARCHITECT_PATTERNS.md has new entries to write AND no prior Executor execution exists for the batch.
+
+1. Architect creates `plans/batch{N}-{M}-governance-plan.md` following standard plan format (header, Executor Manifest, phases)
+2. Governance plan includes write-tasks for:
+   - ARCHITECT_PATTERNS.md entries (Step 5 output)
+   - Round Table score document (Step 6 output)
+   - Any handoff process updates (if needed)
+3. Post: `✅ Created Governance Plan: batch{N}-{M}-governance-plan.md`
+4. Executor runs governance plan before executing the batch (Phase 0 — runs first, no code changes)
+
+**Naming**: `batch{N}-{M}-governance-plan.md` — identifies the batch scope. Not a numbered plan (does not consume plan numbers). Runs before the first plan in the batch.
+
+**Scope**: Governance plans may only modify `.agent/architect/ARCHITECT_PATTERNS.md`, `logs/roundtable/roundtable-scores-batch{N}-{M}.md`, and `AI_HANDOFF.md` (process updates only). They must not modify code, tests, AR/OR rules, or architecture docs.
 
 ---
