@@ -32,7 +32,7 @@ Note: Log organization not required in scan mode — logs are organized at sessi
 9. Dependency check: `check_dependencies.py`. STOP on failure.
 10. Rule conciseness: `check_rule_conciseness.py`. STOP on failure.
 11. Changelog: `check_changelog.py`. STOP on failure.
-12. Spec match: `spec_match.py`. STOP if exit!=0. No new features.
+12. Spec match: `ar_checks/spec_match.py`. STOP if exit!=0. No new features.
 13. Read `.agent/shared/DEBT.md`. Verify trigger conditions for external debts. Document status.
 14. HARD GATE - `verify_close.py`. Checks: execution log blank, CHANGELOG position, plan files moved, no uncommitted governance changes. If exit!=0: STOP. Do not commit.
 15. **Trace integrity check: Verify `.agent/executor/traces/trace-plan-{N}.jsonl` exists and contains entries for all phases declared in Executor Manifest. If gaps found: STOP. (Invariant 12)**

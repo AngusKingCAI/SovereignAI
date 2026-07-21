@@ -36,7 +36,7 @@ Non-HARD-GATE STOP (steps 1–10): fix and retry. HARD-GATE STOP (steps 11, 15):
    STOP on failure. Coverage is automatically verified by `verify_execution.py --final` against manifest target.
 5. Static analysis: `ruff check .`, `mypy`, `bandit`, `pip-audit`, `vulture`, `detect-secrets`. STOP on any failure.
 6. **Unified checks**: `run_all_checks.py`. Runs AR, OR, Landmine, and Placeholder checks with single repo-state hash computation. STOP on any failure.
-7. Spec match: `spec_match.py`. STOP if exit≠0.
+7. Spec match: `ar_checks/spec_match.py`. STOP if exit≠0.
 8. **Plan rule reference validation**: `check_plan_rule_refs.py --plan {N}`. Validates that AR/OR rules referenced in plan header exist in ARCHITECTURE.md and OR_RULES.md. Prevents plans from referencing retired/superseded rules. STOP if invalid references found.
 9. Read `.agent/shared/DEBT.md`. For each debt marked for resolution in plan: verify resolved, update status to "Resolved" or delete entry. Document resolution in CHANGELOG.
 10. HARD GATE — `verify_close.py`. Checks: execution log blank, CHANGELOG position, plan files moved, no uncommitted governance changes. If exit≠0: STOP. Do not commit. Do not tag.
