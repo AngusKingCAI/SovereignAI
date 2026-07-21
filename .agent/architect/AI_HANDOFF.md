@@ -749,6 +749,11 @@ When a Clean Pass identifies new ARCHITECT_PATTERNS entries (Step 5) but no Exec
 **Applicable GR Rules**: GR1, GR4, GR12, GR13, GR14, GR15
 
 Triggered when the user says "Use Research Workflow" or similar. The Architect conducts external research (web search, literature review, best practices investigation) to inform plan drafting, rule creation, or workflow optimization. This workflow ensures research is scoped, documented, and traceable — not open-ended exploration.
+**Research Log**: All research findings are appended to `SovereignAI-Research-Log.md` (single document, updated in-place). The Architect reads this file at the start of each research session to reconstruct context. New research is appended with timestamp — never overwrite existing entries.
+
+**Gating Discipline Note**: The first two research requests in this session (Round Table optimization, Executor optimization) were conducted BEFORE Section 7 was added to AI_HANDOFF.md. Those requests did not follow the gated Research Workflow. All subsequent research MUST follow Section 7 gates (R1-R6).
+
+
 
 **Read order addition**: Architect (new chat, Research workflow): `.agent/architect/AI_HANDOFF.md` → PRINCIPLES → `.agent/executor/OR_RULES.md` → `.agent/executor/ARCHITECTURE.md` → PLANS → `.agent/shared/LANDMINES.md` → `.agent/shared/DEBT.md` → **Section 7: Research Workflow**
 
