@@ -9,22 +9,20 @@ Full history: `.agent/shared/CHANGELOG.md`.
 
 | Metric | Value | Source Plan |
 |--------|-------|-------------|
-| Tests | 63 passed, 5 warnings | plan-31 |
-| ruff | 0 | plan-31 |
-| mypy | N/A | plan-31 |
+| Tests | 179 passed, 2 warnings | plan-32 |
+| ruff | 0 | plan-32 |
+| mypy | N/A | plan-32 |
 
 ## Active Plan
 
-| Plan | Rev | Status | Start Date |
-|------|-----|--------|------------|
-| Plan 32 | Rev 17 | In Progress | 2026-07-21 |
+None
 
 ## Queue
 
 | Slot | Plan | Status | Depends On |
 |------|------|--------|------------|
-| 1 | Plan 33 | Pending | Plan 32 |
-| 2 | Plan 34 | Pending | Plan 32 |
+| 1 | Plan 33 | Pending | None |
+| 2 | Plan 34 | Pending | None |
 | 3 | — | — | — |
 | 4 | — | — | — |
 | 5 | — | — | — |
@@ -46,6 +44,7 @@ None.
 
 | Plan | Rev | Date | Note |
 |------|-----|------|------|
+| Plan 32 | Rev 17 | 2026-07-21 | ✅ Completed: TUI web client, 10-panel sidebar, and shutdown detection |
 | Plan 31 | Rev 17 | 2026-07-21 | ✅ Completed: Web API layer with SSE broker, auth, and DTOs |
 | batch-governance | — | 2026-07-21 | ✅ Completed: Add batch governance plan and batch RT score document support (v1.6) |
 | reorganization-fix | — | 2026-07-20 | ✅ Completed: Post-reorganization cleanup, removed stale files, fixed script runners |
