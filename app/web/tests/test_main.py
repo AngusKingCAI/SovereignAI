@@ -1,9 +1,9 @@
-"""Tests for app/web/plan31_main.py DI composition."""
+"""Tests for app/web/main.py DI composition."""
 
 import pytest
 from fastapi.testclient import TestClient
 
-from app.web.plan31_main import create_app
+from app.web.main import create_app
 
 
 @pytest.fixture
@@ -48,7 +48,7 @@ def test_all_routers_mounted(client):
 
 def test_dependency_injection_wired():
     """Test that dependencies are properly wired."""
-    from app.web.plan31_main import app
+    from app.web.main import app
     
     # Check that the app has the lifespan function
     assert app.router.lifespan_context is not None

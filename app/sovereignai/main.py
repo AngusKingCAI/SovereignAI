@@ -73,6 +73,26 @@ def build_container(dev_mode: bool = False, config: Config | None = None) -> DIC
     lifecycle = LifecycleManager(trace=trace)
     container.register_singleton(LifecycleManager, lifecycle)
 
+    # 4.5. AgentLifecycleManager — depends on EventBus + TraceEmitter, singleton (Plan 33)
+    from sovereignai.lifecycle import AgentLifecycleManager
+    agent_lifecycle = AgentLifecycleManager(event_bus=bus, trace=trace)
+    container.register_singleton(AgentLifecycleManager, agent_lifecycle)
+
+    # 4.6. LifecycleHookRegistry — depends on EventBus + TraceEmitter, singleton (Plan 33)
+    from sovereignai.lifecycle import LifecycleHookRegistry
+    hook_registry = LifecycleHookRegistry(event_bus=bus, trace=trace)
+    container.register_singleton(LifecycleHookRegistry, hook_registry)
+
+    # 4.7. HealthAggregator — depends on TraceEmitter, singleton (Plan 33)
+    from sovereignai.lifecycle import HealthAggregator
+    health_aggregator = HealthAggregator(trace=trace)
+    container.register_singleton(HealthAggregator, health_aggregator)
+
+    # 4.8. GracefulShutdown — depends on AgentLifecycleManager + TraceEmitter, singleton (Plan 33)
+    from sovereignai.lifecycle import GracefulShutdown
+    graceful_shutdown = GracefulShutdown(lifecycle_manager=agent_lifecycle, trace=trace)
+    container.register_singleton(GracefulShutdown, graceful_shutdown)
+
     # 5. RoutingEngine — depends on ICapabilityIndex + LifecycleManager + TraceEmitter
     from sovereignai.shared.routing_engine import RoutingEngine
     router = RoutingEngine(

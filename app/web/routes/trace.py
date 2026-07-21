@@ -12,20 +12,25 @@ from app.web.sse_broker import SSEBroker
 
 
 router = APIRouter(prefix="/api/trace", tags=["trace"])
+health_router = APIRouter(prefix="/api", tags=["health"])
 
 
 # Placeholder for dependencies - will be injected via DI
 trace_producer = None
 lifecycle_producer = None
 sse_broker = None
+health_aggregator = None
+lifecycle_manager = None
 
 
-def set_dependencies(trace_producer_dep=None, lifecycle_producer_dep=None, sse_broker_dep=None):
+def set_dependencies(trace_producer_dep=None, lifecycle_producer_dep=None, sse_broker_dep=None, health_aggregator_dep=None, lifecycle_manager_dep=None):
     """Set injected dependencies for trace routes."""
-    global trace_producer, lifecycle_producer, sse_broker
+    global trace_producer, lifecycle_producer, sse_broker, health_aggregator, lifecycle_manager
     trace_producer = trace_producer_dep
     lifecycle_producer = lifecycle_producer_dep
     sse_broker = sse_broker_dep
+    health_aggregator = health_aggregator_dep
+    lifecycle_manager = lifecycle_manager_dep
 
 
 @router.get("/stream")
@@ -94,5 +99,35 @@ async def publish_lifecycle_event(event: LifecycleEvent):
     try:
         await sse_broker.publish("lifecycle", event.model_dump())
         return {"status": "published"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@health_router.get("/health")
+async def get_health():
+    """Get aggregated health status of all components."""
+    if health_aggregator is None:
+        raise HTTPException(status_code=503, detail="Health aggregator not available")
+
+    try:
+        return health_aggregator.get_health_status()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@health_router.get("/lifecycle/ready")
+async def get_lifecycle_ready():
+    """Get lifecycle ready status."""
+    if lifecycle_manager is None:
+        raise HTTPException(status_code=503, detail="Lifecycle manager not available")
+
+    try:
+        from sovereignai.lifecycle.types import LifecycleState
+        
+        state = lifecycle_manager.state
+        return {
+            "ready": state in (LifecycleState.READY, LifecycleState.DEGRADED),
+            "state": state.value,
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

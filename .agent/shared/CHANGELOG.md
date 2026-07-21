@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## plan-33 — Lifecycle Manager with Health Checks, Graceful Shutdown, and Circuit Breakers (Commit TBD)
+
+**Date**: 2026-07-21
+**Plan**: plans/plan-33-Rev17.md
+**Tests**: 44 passed, 2 warnings
+**Previous Baseline**: plan-32-Rev17
+**Coverage**: 100%
+**Screenshots**: N/A
+
+**Changes**:
+- Created AgentLifecycleManager with lifecycle states (INITIALIZING, READY, DEGRADED, FAILED, SHUTDOWN) and startup sequence (app/sovereignai/lifecycle/manager.py)
+- Implemented LifecycleHookRegistry with hook phases (REGISTRATION_OPEN, STARTUP, RUNNING, SHUTDOWN, CLOSED) and timeout rules (app/sovereignai/lifecycle/hooks.py)
+- Created HealthAggregator with health check polling, caching, and overall status calculation (app/sovereignai/lifecycle/health.py)
+- Implemented GracefulShutdown with SIGTERM/SIGINT signal handlers and sentinel file monitoring (app/sovereignai/lifecycle/shutdown.py)
+- Integrated lifecycle components into DI composition in app/sovereignai/main.py
+- Integrated circuit breaker functionality with lifecycle manager
+- Created AR check script for shutdown hook limits (check_max_shutdown_hooks.py)
+- Resolved DEBT-7: TUI cookie auth for agent SSE stream
+- Added M9 landmine pattern for auto-fixing tool conflicts
+- Fixed AR checks: added signal to STDLIB_MODULES, removed NotImplementedError from placeholder patterns, added lifecycle tracing allowlist entries
+
+---
+
 ## plan-32 — TUI Web Client, 10-Panel Sidebar, and Shutdown Detection (Commit TBD)
 
 **Date**: 2026-07-21
