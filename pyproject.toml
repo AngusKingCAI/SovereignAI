@@ -56,6 +56,10 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 pythonpath = [".", "app"]
 addopts = "-vvv --timeout=300 --timeout-method=thread --strict-markers"
+markers = [
+    "small_scale: Small scale benchmark tests (10k entities, 50k relations)",
+    "benchmark: Performance benchmark tests",
+]
 # Deterministic test ordering is configured in .agent/executor/tests/conftest.py
 
 [tool.ruff]
