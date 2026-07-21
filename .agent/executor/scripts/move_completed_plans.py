@@ -37,6 +37,28 @@ def get_brief_plan_numbers(filename: str) -> list[int] | None:
     return None
 
 
+def get_governance_plan_numbers(filename: str) -> list[int] | None:
+    """Extract plan numbers from governance filename like 'batch31-34-governance-plan.md'."""
+    match = re.search(r'batch(\d+)-(\d+)-governance', filename)
+    if match:
+        start = int(match.group(1))
+        end = int(match.group(2))
+        return list(range(start, end + 1))
+    return None
+
+
+def get_executor_prompt_plan_numbers(filename: str) -> list[int] | None:
+    """Extract plan numbers from executor prompt filename like 'executor-prompt-batch31-34-governance.md'."""
+    match = re.search(r'executor-prompt-batch(\d+)-(\d+)-governance', filename)
+    if match:
+        start = int(match.group(1))
+        end = int(match.group(2))
+        return list(range(start, end + 1))
+    # Handle pattern without numbers: executor-prompt-batch-governance.md
+    # This is a general governance file, return empty list (move manually if needed)
+    return None
+
+
 def get_target_folder(plan_number: int) -> str:
     """Determine the target folder for a plan number based on numbered ranges."""
     if plan_number < 10:
@@ -80,8 +102,28 @@ def move_completed_plans(plan_number: int) -> None:
         if plan_numbers and plan_number in plan_numbers:
             matching_briefs.append(brief_file)
 
+    # Find associated governance files (batch{N}-{M}-governance*.md, executor-prompt-batch*governance*.md)
+    governance_files = list(plans_dir.glob("*governance*.md"))
+
+    # Filter governance files that include this plan number in their range
+    matching_governance = []
+    for governance_file in governance_files:
+        plan_numbers = get_governance_plan_numbers(governance_file.name)
+        if plan_numbers and plan_number in plan_numbers:
+            matching_governance.append(governance_file)
+
+    # Find associated executor prompt files (executor-prompt-batch{N}-{M}-governance*.md)
+    executor_prompt_files = list(plans_dir.glob("executor-prompt-batch*governance*.md"))
+
+    # Filter executor prompt files that include this plan number in their range
+    matching_executor_prompts = []
+    for executor_prompt_file in executor_prompt_files:
+        plan_numbers = get_executor_prompt_plan_numbers(executor_prompt_file.name)
+        if plan_numbers and plan_number in plan_numbers:
+            matching_executor_prompts.append(executor_prompt_file)
+
     # Combine all files to move
-    all_files = plan_files + matching_briefs
+    all_files = plan_files + matching_briefs + matching_governance + matching_executor_prompts
 
     # Remove duplicates and filter out files that don't exist
     all_files = list(set(all_files))
@@ -106,7 +148,16 @@ def move_completed_plans(plan_number: int) -> None:
 
         try:
             shutil.move(str(file_path), str(dest_path))
-            file_type = "plan file" if "plan-" in file_path.name else "brief file"
+            if "plan-" in file_path.name:
+                file_type = "plan file"
+            elif "brief-" in file_path.name:
+                file_type = "brief file"
+            elif "executor-prompt-" in file_path.name:
+                file_type = "executor prompt file"
+            elif "governance" in file_path.name:
+                file_type = "governance file"
+            else:
+                file_type = "file"
             print(f"Moved: {file_path.name} -> completed/{target_folder}/ ({file_type})")
             moved_count += 1
         except Exception as e:
