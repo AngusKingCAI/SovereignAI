@@ -17,14 +17,14 @@ Full history: `.agent/shared/CHANGELOG.md`.
 
 | Plan | Rev | Status | Start Date |
 |------|-----|--------|------------|
-| — | — | — | — |
+| Plan 32 | Rev 17 | In Progress | 2026-07-21 |
 
 ## Queue
 
 | Slot | Plan | Status | Depends On |
 |------|------|--------|------------|
-| 1 | — | — | — |
-| 2 | — | — | — |
+| 1 | Plan 33 | Pending | Plan 32 |
+| 2 | Plan 34 | Pending | Plan 32 |
 | 3 | — | — | — |
 | 4 | — | — | — |
 | 5 | — | — | — |
