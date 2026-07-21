@@ -48,8 +48,9 @@ Ensure $TEST_SCOPE is used in ALL test commands, not just early phases.
 13. **Manually run `.agent/executor/hooks/verify_attestation.py --plan {N}` to verify attestation. (Invariant 13, COR-3 — fallback if config.json hook fails)**
 14. HARD GATE — `.agent/executor/scripts/verify_execution.py --final --plan {N}`. Checks: manifest deliverables present in git history, no governance files modified, attestation present/complete, coverage meets target, trace file exists. This performs complete trace integrity verification including hash validation against manifest and automated coverage verification. If FAIL: STOP. Do not commit. (UOR-4, COR-3, COR-4, Invariant 12)
 15. **Manually run `.agent/executor/hooks/append_trace.py --skill close --plan {N}` to log /close invocation. (Invariant 12 — fallback if config.json hook fails)**
-16. **Organize log files**: Run `.agent/executor/scripts/move_logs_to_folders.py` to move previous log files to their appropriate numbered subdirectories (0-9, 10-19, 20-29, 30-39, etc.). This step must come BEFORE creating the current plan's log to ensure current plan's log stays in root.
-17. Execution log: create BLANK execution log file at `logs/execution-log-{plan-name}.md` with ONLY the header template. Do NOT populate with chat transcript — user will populate after execution. Template:
+16. **Move completed plan files**: Run `.agent/executor/scripts/move_completed_plans.py {plan-number}` to move the completed plan and all its revisions to `plans/completed/`. This must happen BEFORE log organization so current plan logs can be moved.
+17. **Organize log files**: Run `.agent/executor/scripts/move_logs_to_folders.py {plan-number}` to move log files to their appropriate numbered subdirectories (0-9, 10-19, 20-29, 30-39, etc.). Pass the plan number to skip that plan's logs (current plan logs stay in root).
+18. Execution log: create BLANK execution log file at `logs/execution-log-{plan-name}.md` with ONLY the header template. Do NOT populate with chat transcript — user will populate after execution. Template:
     ```
     # Execution Log: {plan-name}
 
@@ -61,7 +62,6 @@ Ensure $TEST_SCOPE is used in ALL test commands, not just early phases.
 
     *Populate this file with the chat transcript from the {plan-name} plan execution.*
     ```
-18. **Move completed plan files**: Run `.agent/executor/scripts/move_completed_plans.py {plan-number}` to move the completed plan and all its revisions to `plans/completed/`.
 19. Documentation: prepend CHANGELOG, update PLANS.md (mark "Completed", shift upcoming queue).
 20. Git: `git status` → add session files including: trace files (`.agent/executor/traces/trace-plan-{N}.jsonl`), coverage.json, all log files EXCEPT current plan log (user will add after populating), completed plan files (`plans/completed/`), and any other session-specific changes → commit → tag `plan-{N}` → push.
 21. **Generate performance report**: Performance metrics collected throughout /close workflow are saved to `logs/performance/performance-plan-{N}.json`. This includes execution time for each step, git operation overhead, memory usage, and identifies slowest steps for optimization.
