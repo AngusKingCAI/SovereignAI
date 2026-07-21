@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## plan-34 — Persistent Graph Memory, Episodic Consumer, and Librarian Event Handler (Commit TBD)
+
+**Date**: 2026-07-21
+**Plan**: plans/plan-34-Rev17.md
+**Tests**: 1046 tests (968 passed, 52 skipped, 20 failed, 6 errors)
+**Previous Baseline**: plan-33-Rev17
+**Coverage**: 95%
+**Screenshots**: N/A
+
+**Changes**:
+- Created PersistentGraphMemory with SQLite storage for cross-task knowledge sharing (app/sovereignai/memory/persistent_graph.py)
+- Implemented MemoryGateway as sole owner of PersistentGraphMemory with query caching (app/sovereignai/memory/gateway.py)
+- Created EpisodicEventConsumer for persisting orchestrator and messaging events with retention pruning (app/sovereignai/memory/episodic_consumer.py)
+- Added librarian event handler for task lifecycle events (app/sovereignai/librarian/librarian.py)
+- Added AR check scripts for memory architecture compliance (check_graph_memory_persistence.py, check_librarian_no_backend_direct.py, check_memory_gateway_onedirectional.py, check_memory_gateway_ownership.py)
+- Added comprehensive tests for memory components (test_episodic_consumer.py, test_persistent_graph.py, test_librarian_events.py, test_librarian_integration.py)
+- Added memory API tests (app/web/tests/test_memory_api.py)
+- Fixed tracing issues in memory backends (added trace.emit() calls in __init__ methods)
+- Fixed dependency check script to handle pytest_asyncio and huggingface_hub imports
+- Updated test coverage for memory backend files to ≥90% (episodic_backend.py, graph_backend.py, procedural_backend.py, trace_backend.py, working_backend.py)
+
+---
+
 ## plan-33 — Lifecycle Manager with Health Checks, Graceful Shutdown, and Circuit Breakers (Commit 3c2d6aa)
 
 **Date**: 2026-07-21

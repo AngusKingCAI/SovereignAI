@@ -17,7 +17,7 @@ STDLIB_MODULES = {
     "secrets", "hashlib", "subprocess", "shutil", "platform", "enum", "contextvars",
     "tempfile", "ctypes", "traceback", "gc", "ast", "io", "logging", "warnings",
     "inspect", "textwrap", "copy", "decimal", "fractions", "string", "types",
-    "sysctl", "mimetypes", "base64", "platformdirs", "signal",
+    "sysctl", "mimetypes", "base64", "platformdirs", "signal", "statistics",
 }
 
 LOCAL_PACKAGES = {
@@ -61,6 +61,8 @@ PACKAGE_ALIASES = {
     "httpx": "httpx2",
     "tree_sitter_python": "tree-sitter-python",
     "uvicorn": "uvicorn[standard]",
+    "pytest_asyncio": "pytest-asyncio",
+    "statistics": "statistics",  # Python stdlib
 }
 
 TRANSITIVE_DEPENDENCIES = {
@@ -80,6 +82,8 @@ TRANSITIVE_DEPENDENCIES = {
 OPTIONAL_IMPORTS = {
     "torch",
     "tree_sitter",
+    "pytest_asyncio",
+    "huggingface_hub",
 }
 
 
@@ -93,7 +97,7 @@ def parse_pyproject_dev_deps(pyproject_path: Path) -> set[str]:
 
     dev_deps = data.get("project", {}).get("optional-dependencies", {}).get("dev", [])
     for dep in dev_deps:
-        pkg_name = dep.split(">=")[0].split("==")[0].split("<")[0].strip()
+        pkg_name = dep.split(">=")[0].split("==")[0].split("<")[0].split(">")[0].strip()
         if pkg_name:
             deps.add(pkg_name)
 
@@ -184,7 +188,11 @@ def main():
                     missing_deps.append(f"{file_path}: local package '{imp}' not found in repo")
                 continue
 
-            normalized_imp = PACKAGE_ALIASES.get(imp, imp)
+            normalized_imp = PACKAGE_ALIASES.get(imp, imp.replace('_', '-'))
+            
+            # Check if the normalized import is also a stdlib module
+            if normalized_imp in STDLIB_MODULES:
+                continue
 
             if normalized_imp in TRANSITIVE_DEPENDENCIES:
                 parent = TRANSITIVE_DEPENDENCIES[normalized_imp]
@@ -197,8 +205,13 @@ def main():
 
             if is_test_file:
                 if normalized_imp not in dev_deps and normalized_imp not in requirements_deps:
+                    # Debug output
+                    print(f"DEBUG: File: {file_path}", file=sys.stderr)
+                    print(f"DEBUG: Import: {imp}, Normalized: {normalized_imp}", file=sys.stderr)
+                    print(f"DEBUG: dev_deps: {dev_deps}", file=sys.stderr)
+                    print(f"DEBUG: normalized_imp in dev_deps: {normalized_imp in dev_deps}", file=sys.stderr)
                     missing_deps.append(
-                        f"{file_path}: '{imp}' not in pyproject.toml "
+                        f"{file_path}: '{imp}' (normalized: '{normalized_imp}') not in pyproject.toml "
                         f"[project.optional-dependencies] dev or app/txt/requirements.txt"
                     )
             else:

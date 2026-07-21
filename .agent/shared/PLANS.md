@@ -44,6 +44,7 @@ None.
 
 | Plan | Rev | Date | Note |
 |------|-----|------|------|
+| Plan 34 | Rev 17 | 2026-07-21 | ✅ Completed: Persistent graph memory, episodic consumer, and librarian event handler |
 | Plan 33 | Rev 17 | 2026-07-21 | ✅ Completed: Lifecycle manager with health checks, graceful shutdown, and circuit breakers |
 | Plan 32 | Rev 17 | 2026-07-21 | ✅ Completed: TUI web client, 10-panel sidebar, and shutdown detection |
 | Plan 31 | Rev 17 | 2026-07-21 | ✅ Completed: Web API layer with SSE broker, auth, and DTOs |

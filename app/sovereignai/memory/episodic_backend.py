@@ -20,6 +20,11 @@ class EpisodicMemoryBackend:
         self._db_path = db_path if db_path else os.path.expanduser("~/.sovereignai/episodic.db")
         self._conn: sqlite3.Connection | None = None
         self._initialize_db()
+        self._trace.emit(
+            component="episodic_memory",
+            level=TraceLevel.DEBUG,
+            message="EpisodicMemoryBackend initialized",
+        )
 
     def _initialize_db(self) -> None:
         if self._db_path != ":memory:":
