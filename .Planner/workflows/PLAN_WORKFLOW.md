@@ -92,10 +92,14 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 
 **Note**: Phase 0 (Plan Batch Creation) is optional - only triggered when user provides requirements for multiple related plans. Single plans skip Phase 0 and start at Phase 1.
 
+**Gate Design Note**: Phase 0 is deliberately un-gated (no hard gates) because it is an optional batch optimization phase rather than a core plan creation phase. Quality gates are applied in subsequent phases (Phase 1-6) where actual plan validation occurs.
+
 ## Phase 0: Plan Batch Creation
 
 **Trigger**: User provides requirements for multiple related plans  
 **Goal**: Create plan batch with grouped plans for efficient Round Table review
+
+**Gate Design**: Phase 0 is deliberately un-gated (no hard gates) because it is an optional batch optimization phase rather than a core plan creation phase. Quality gates are applied in subsequent phases (Phase 1-6) where actual plan validation occurs.
 
 **Steps**:
 1. **Batch Requirements Analysis**: Analyze requirements to identify related plans that can be batched

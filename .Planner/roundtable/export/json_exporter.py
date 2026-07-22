@@ -62,7 +62,7 @@ class JSONExporter:
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(findings_data, f, indent=2)
         
-        print(f"✅ Exported findings to {filepath}")
+        safe_print(f"✅ Exported findings to {filepath}")
         return str(filepath)
     
     def export_rules(self) -> str:
@@ -82,7 +82,7 @@ class JSONExporter:
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(rules_data, f, indent=2)
         
-        print(f"✅ Exported rules to {filepath}")
+        safe_print(f"✅ Exported rules to {filepath}")
         return str(filepath)
     
     def export_audit_log(self, limit: int = 1000) -> str:
@@ -112,7 +112,7 @@ class JSONExporter:
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(export_data, f, indent=2)
         
-        print(f"✅ Exported audit log to {filepath}")
+        safe_print(f"✅ Exported audit log to {filepath}")
         return str(filepath)
     
     def git_commit_findings(self, batch_id: str, filepath: str):
@@ -174,14 +174,14 @@ Generated with Devin RoundTable workflow"""
             # Commit with message (local commit only - no push per Gate A10)
             subprocess.run(['git', 'commit', '-m', commit_message], check=True, capture_output=True)
             
-            print(f"✅ Committed {filepath} to git (local commit, not pushed per Gate A10)")
+            safe_print(f"✅ Committed {filepath} to git (local commit, not pushed per Gate A10)")
         except subprocess.CalledProcessError as e:
-            print(f"⚠️  Git commit failed: {e}")
-            print(f"   File staged but not committed: {filepath}")
+            safe_print(f"⚠️  Git commit failed: {e}")
+            safe_print(f"   File staged but not committed: {filepath}")
     
     def export_full_batch(self, batch_id: str, commit_to_git: bool = True):
         """Export all data for a batch (findings, rules, audit) and optionally commit to git."""
-        print(f"Exporting full batch {batch_id}...")
+        safe_print(f"Exporting full batch {batch_id}...")
         
         # Export findings
         findings_file = self.export_findings(batch_id)
@@ -193,19 +193,19 @@ Generated with Devin RoundTable workflow"""
         audit_file = self.export_audit_log()
         
         if commit_to_git:
-            print("Committing to git...")
+            safe_print("Committing to git...")
             self.git_commit_findings(batch_id, findings_file)
             self.git_commit_rules(rules_file)
             self.git_commit_audit(audit_file)
         
-        print(f"✅ Full batch {batch_id} export complete")
+        safe_print(f"✅ Full batch {batch_id} export complete")
 
 def main():
     """Test JSON export operations."""
     exporter = JSONExporter()
     
     # Test export operations
-    print("Testing JSON export operations...")
+    safe_print("Testing JSON export operations...")
     
     # Export findings
     findings_file = exporter.export_findings("test-batch-1")
@@ -216,10 +216,10 @@ def main():
     # Export audit log
     audit_file = exporter.export_audit_log()
     
-    print(f"✅ JSON export test complete")
-    print(f"   Findings: {findings_file}")
-    print(f"   Rules: {rules_file}")
-    print(f"   Audit: {audit_file}")
+    safe_print(f"✅ JSON export test complete")
+    safe_print(f"   Findings: {findings_file}")
+    safe_print(f"   Rules: {rules_file}")
+    safe_print(f"   Audit: {audit_file}")
 
 if __name__ == "__main__":
     main()

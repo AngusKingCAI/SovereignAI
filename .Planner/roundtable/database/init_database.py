@@ -12,11 +12,13 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
-# Set UTF-8 encoding for Windows console compatibility
-if sys.platform == 'win32':
-    import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+# UTF-8 print helper for Windows console compatibility
+def safe_print(text):
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        # Fallback for console encoding issues
+        print(text.encode('ascii', 'ignore').decode('ascii'))
 
 def create_database_schema(db_path):
     """
@@ -49,7 +51,7 @@ def create_database_schema(db_path):
     
     conn.commit()
     conn.close()
-    print(f"✅ Database schema created at {db_path}")
+    safe_print(f"Database schema created at {db_path}")
 
 def create_panelists_table(cursor):
     """Create panelists table for panelist metadata and scoring information."""
@@ -383,26 +385,27 @@ def create_audit_triggers(cursor):
 
 def main():
     """Main database initialization function."""
-    # Set up database directory
-    db_dir = Path(".Planner/roundtable/database")
+    # Set up database directory - resolve from script location for cross-platform compatibility
+    script_dir = Path(__file__).parent
+    db_dir = script_dir  # Use the script's directory as the database directory
     db_dir.mkdir(parents=True, exist_ok=True)
     
     db_path = db_dir / "roundtable.db"
     
-    print(f"Initializing Round Table database at {db_path}")
+    safe_print(f"Initializing Round Table database at {db_path}")
     
     # Check if database already exists
     if db_path.exists():
-        print("⚠️  Database already exists. Backup existing database...")
+        safe_print("Database already exists. Backup existing database...")
         backup_path = db_dir / f"roundtable_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db"
         import shutil
         shutil.copy2(db_path, backup_path)
-        print(f"✅ Backup created at {backup_path}")
+        safe_print(f"Backup created at {backup_path}")
     
     # Create database schema
     create_database_schema(db_path)
     
-    print("✅ Round Table database initialization complete")
+    safe_print("Round Table database initialization complete")
 
 if __name__ == "__main__":
     main()

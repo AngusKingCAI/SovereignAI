@@ -20,7 +20,9 @@ class RoundTableDatabase:
     def __init__(self, db_path: str = None):
         """Initialize database connection."""
         if db_path is None:
-            db_dir = Path(".Planner/roundtable/database")
+            # Use script directory for cross-platform compatibility
+            script_dir = Path(__file__).parent
+            db_dir = script_dir
             db_dir.mkdir(parents=True, exist_ok=True)
             db_path = db_dir / "roundtable.db"
         
@@ -53,80 +55,80 @@ class RoundTableDatabase:
     # Batch Operations
     def create_batch(self, batch_number: str, brief_file: str, plan_count: int) -> int:
         """Create a new batch."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO batches (batch_number, brief_file, plan_count)
-                VALUES (?, ?, ?)
-            """, (batch_number, brief_file, plan_count))
-            conn.commit()
-            return cursor.lastrowid
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO batches (batch_number, brief_file, plan_count)
+            VALUES (?, ?, ?)
+        """, (batch_number, brief_file, plan_count))
+        conn.commit()
+        return cursor.lastrowid
     
     def get_batch_by_number(self, batch_number: str) -> Optional[Dict]:
         """Get batch by batch number."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM batches WHERE batch_number = ?", (batch_number,))
-            row = cursor.fetchone()
-            return dict(row) if row else None
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM batches WHERE batch_number = ?", (batch_number,))
+        row = cursor.fetchone()
+        return dict(row) if row else None
     
     # Plan Operations
     def create_plan(self, batch_id: int, plan_number: str, title: str, file_path: str) -> int:
         """Create a new plan."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO plans (batch_id, plan_number, title, file_path)
-                VALUES (?, ?, ?, ?)
-            """, (batch_id, plan_number, title, file_path))
-            conn.commit()
-            return cursor.lastrowid
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO plans (batch_id, plan_number, title, file_path)
+            VALUES (?, ?, ?, ?)
+        """, (batch_id, plan_number, title, file_path))
+        conn.commit()
+        return cursor.lastrowid
     
     def update_plan_status(self, plan_id: int, status: str):
         """Update plan review status."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                UPDATE plans SET review_status = ?, updated_at = strftime('%s', 'now')
-                WHERE id = ?
-            """, (status, plan_id))
-            conn.commit()
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE plans SET review_status = ?, updated_at = strftime('%s', 'now')
+            WHERE id = ?
+        """, (status, plan_id))
+        conn.commit()
     
     def get_plan_by_number(self, plan_number: str) -> Optional[Dict]:
         """Get plan by plan number."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM plans WHERE plan_number = ?", (plan_number,))
-            row = cursor.fetchone()
-            return dict(row) if row else None
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM plans WHERE plan_number = ?", (plan_number,))
+        row = cursor.fetchone()
+        return dict(row) if row else None
     
     # Panelist Operations
     def create_panelist(self, name: str, model: str, specialty: str = None) -> int:
         """Create a new panelist."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO panelists (name, model, specialty)
-                VALUES (?, ?, ?)
-            """, (name, model, specialty))
-            conn.commit()
-            return cursor.lastrowid
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO panelists (name, model, specialty)
+            VALUES (?, ?, ?)
+        """, (name, model, specialty))
+        conn.commit()
+        return cursor.lastrowid
     
     def get_panelist_by_name(self, name: str) -> Optional[Dict]:
         """Get panelist by name."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM panelists WHERE name = ?", (name,))
-            row = cursor.fetchone()
-            return dict(row) if row else None
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM panelists WHERE name = ?", (name,))
+        row = cursor.fetchone()
+        return dict(row) if row else None
     
     def get_active_panelists(self) -> List[Dict]:
         """Get all active panelists."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM panelists WHERE active = 1")
-            rows = cursor.fetchall()
-            return [dict(row) for row in rows]
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM panelists WHERE active = 1")
+        rows = cursor.fetchall()
+        return [dict(row) for row in rows]
     
     # Panelist Review Operations
     def create_panelist_review(self, plan_id: int, panelist_id: int, review_content: str,
@@ -134,118 +136,118 @@ class RoundTableDatabase:
                              confidence_score: int = None, panelist_score: int = None,
                              web_search_used: bool = False, web_search_citations: str = None) -> int:
         """Create a new panelist review."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO panelist_reviews (
-                    plan_id, panelist_id, review_content, summary, findings_json,
-                    verdict, confidence_score, panelist_score, web_search_used, web_search_citations
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (plan_id, panelist_id, review_content, summary, findings_json,
-                  verdict, confidence_score, panelist_score, web_search_used, web_search_citations))
-            conn.commit()
-            return cursor.lastrowid
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO panelist_reviews (
+                plan_id, panelist_id, review_content, summary, findings_json,
+                verdict, confidence_score, panelist_score, web_search_used, web_search_citations
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (plan_id, panelist_id, review_content, summary, findings_json,
+              verdict, confidence_score, panelist_score, web_search_used, web_search_citations))
+        conn.commit()
+        return cursor.lastrowid
     
     def get_reviews_by_plan(self, plan_id: int) -> List[Dict]:
         """Get all reviews for a plan."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                SELECT pr.*, p.name as panelist_name, p.model as panelist_model
-                FROM panelist_reviews pr
-                JOIN panelists p ON pr.panelist_id = p.id
-                WHERE pr.plan_id = ?
-            """, (plan_id,))
-            rows = cursor.fetchall()
-            return [dict(row) for row in rows]
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT pr.*, p.name as panelist_name, p.model as panelist_model
+            FROM panelist_reviews pr
+            JOIN panelists p ON pr.panelist_id = p.id
+            WHERE pr.plan_id = ?
+        """, (plan_id,))
+        rows = cursor.fetchall()
+        return [dict(row) for row in rows]
     
     # Findings Operations
     def create_finding(self, review_id: int, category: str, severity: str, description: str,
                       context: str = None, plan_impact: str = None) -> int:
         """Create a new finding."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO findings (review_id, category, severity, description, context, plan_impact)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (review_id, category, severity, description, context, plan_impact))
-            conn.commit()
-            return cursor.lastrowid
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO findings (review_id, category, severity, description, context, plan_impact)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (review_id, category, severity, description, context, plan_impact))
+        conn.commit()
+        return cursor.lastrowid
     
     def get_findings_by_review(self, review_id: int) -> List[Dict]:
         """Get all findings for a review."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM findings WHERE review_id = ?", (review_id,))
-            rows = cursor.fetchall()
-            return [dict(row) for row in rows]
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM findings WHERE review_id = ?", (review_id,))
+        rows = cursor.fetchall()
+        return [dict(row) for row in rows]
     
     def get_findings_by_status(self, status: str) -> List[Dict]:
         """Get all findings by status."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM findings WHERE status = ?", (status,))
-            rows = cursor.fetchall()
-            return [dict(row) for row in rows]
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM findings WHERE status = ?", (status,))
+        rows = cursor.fetchall()
+        return [dict(row) for row in rows]
     
     def update_finding_status(self, finding_id: int, status: str):
         """Update finding status."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                UPDATE findings SET status = ?, updated_at = strftime('%s', 'now')
-                WHERE id = ?
-            """, (status, finding_id))
-            conn.commit()
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE findings SET status = ?, updated_at = strftime('%s', 'now')
+            WHERE id = ?
+        """, (status, finding_id))
+        conn.commit()
     
     # Rules Operations
     def create_rule(self, rule_id: str, title: str, description: str, category: str,
                    trigger_conditions: str = None, pattern_source: str = None,
                    enforcement_level: str = 'guideline') -> int:
         """Create a new rule."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO rules (rule_id, title, description, category, trigger_conditions, pattern_source, enforcement_level)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (rule_id, title, description, category, trigger_conditions, pattern_source, enforcement_level))
-            conn.commit()
-            return cursor.lastrowid
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO rules (rule_id, title, description, category, trigger_conditions, pattern_source, enforcement_level)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (rule_id, title, description, category, trigger_conditions, pattern_source, enforcement_level))
+        conn.commit()
+        return cursor.lastrowid
     
     def get_active_rules(self) -> List[Dict]:
         """Get all active rules."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM rules WHERE active = 1")
-            rows = cursor.fetchall()
-            return [dict(row) for row in rows]
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM rules WHERE active = 1")
+        rows = cursor.fetchall()
+        return [dict(row) for row in rows]
     
     def get_rules_by_category(self, category: str) -> List[Dict]:
         """Get rules by category."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM rules WHERE category = ? AND active = 1", (category,))
-            rows = cursor.fetchall()
-            return [dict(row) for row in rows]
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM rules WHERE category = ? AND active = 1", (category,))
+        rows = cursor.fetchall()
+        return [dict(row) for row in rows]
     
     # Export Operations
     def export_findings_json(self, batch_id: str = None) -> Dict:
         """Export findings as JSON."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            
-            # Build export metadata
-            export_metadata = {
-                "export_timestamp": datetime.utcnow().isoformat() + "Z",
-                "export_version": "1.0",
-                "batch_id": batch_id or "all"
-            }
-            
-            # Get findings from view
-            cursor.execute("SELECT finding_json FROM v_findings_export")
-            rows = cursor.fetchall()
-            
-            findings = [json.loads(row[0]) for row in rows]
+        conn = self.connect()
+        cursor = conn.cursor()
+        
+        # Build export metadata
+        export_metadata = {
+            "export_timestamp": datetime.now(datetime.timezone.utc).isoformat() + "Z",
+            "export_version": "1.0",
+            "batch_id": batch_id or "all"
+        }
+        
+        # Get findings from view
+        cursor.execute("SELECT finding_json FROM v_findings_export")
+        rows = cursor.fetchall()
+        
+        findings = [json.loads(row[0]) for row in rows]
             
             export_metadata["total_findings"] = len(findings)
             
@@ -273,29 +275,29 @@ class RoundTableDatabase:
     
     def export_rules_json(self) -> Dict:
         """Export rules as JSON."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            
-            # Build export metadata
-            export_metadata = {
-                "export_timestamp": datetime.utcnow().isoformat() + "Z",
-                "export_version": "1.0"
-            }
-            
-            # Get rules from view
-            cursor.execute("SELECT rule_json FROM v_rules_export")
-            rows = cursor.fetchall()
-            
-            rules = [json.loads(row[0]) for row in rows]
-            
-            export_metadata["total_rules"] = len(rules)
-            export_metadata["active_rules"] = len([r for r in rules if r.get("active", True)])
-            
-            # Calculate summary statistics
-            summary = {
-                "by_category": {},
-                "by_enforcement": {}
-            }
+        conn = self.connect()
+        cursor = conn.cursor()
+        
+        # Build export metadata
+        export_metadata = {
+            "export_timestamp": datetime.now(datetime.timezone.utc).isoformat() + "Z",
+            "export_version": "1.0"
+        }
+        
+        # Get rules from view
+        cursor.execute("SELECT rule_json FROM v_rules_export")
+        rows = cursor.fetchall()
+        
+        rules = [json.loads(row[0]) for row in rows]
+        
+        export_metadata["total_rules"] = len(rules)
+        export_metadata["active_rules"] = len([r for r in rules if r.get("active", True)])
+        
+        # Calculate summary statistics
+        summary = {
+            "by_category": {},
+            "by_enforcement": {}
+        }
             
             for rule in rules:
                 category = rule["category"]
@@ -313,29 +315,29 @@ class RoundTableDatabase:
     # Audit Operations
     def get_audit_events(self, source: str = None, event_type: str = None, limit: int = 100) -> List[Dict]:
         """Get audit events with optional filtering."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            
-            query = "SELECT * FROM audit_log"
-            params = []
-            
+        conn = self.connect()
+        cursor = conn.cursor()
+        
+        query = "SELECT * FROM audit_log"
+        params = []
+        
+        if source:
+            query += " WHERE source = ?"
+            params.append(source)
+        
+        if event_type:
             if source:
-                query += " WHERE source = ?"
-                params.append(source)
-            
-            if event_type:
-                if source:
-                    query += " AND event_type = ?"
-                else:
-                    query += " WHERE event_type = ?"
-                params.append(event_type)
-            
-            query += " ORDER BY event_time DESC LIMIT ?"
-            params.append(limit)
-            
-            cursor.execute(query, params)
-            rows = cursor.fetchall()
-            return [dict(row) for row in rows]
+                query += " AND event_type = ?"
+            else:
+                query += " WHERE event_type = ?"
+            params.append(event_type)
+        
+        query += " ORDER BY event_time DESC LIMIT ?"
+        params.append(limit)
+        
+        cursor.execute(query, params)
+        rows = cursor.fetchall()
+        return [dict(row) for row in rows]
 
 def main():
     """Test database operations."""
