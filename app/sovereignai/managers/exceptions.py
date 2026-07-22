@@ -1,2 +1,0 @@
-class SymbolMapUnavailableError(Exception):
-    pass

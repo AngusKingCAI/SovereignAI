@@ -18,14 +18,18 @@ dist/
 
 # Test / lint caches
 .pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.agent/executor/htmlcov/
+Cache/.mypy_cache/
+Cache/.pytest_cache/
+Cache/.ruff_cache/
+Cache/.hypothesis/
+Agents/executor/htmlcov/
 .coverage
 .coverage.*
 .tox/
 .agent/executor/scripts/**/.cache/
 **/.rules-cache.json
+Cache/*.egg-info/
+*.egg-info/
 
 # IDE
 .vscode/
@@ -54,3 +58,6 @@ app/settings/
 
 # Debug output
 debug_output.txt
+
+# Workflow and config folders
+Old Workflow/

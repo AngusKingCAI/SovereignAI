@@ -1,51 +1,50 @@
-# AGENTS.md — Executor Constitution
+# Architect Session Constitution
 
-Authority: `.agent/architect/PRINCIPLES.md` · Architecture: `.agent/executor/ARCHITECTURE.md` · Operations: `.agent/executor/OR_RULES.md`
+## Role
+Act as Architect for SovereignAI project. Design Planner Round Table workflow based on AI_HANDOFF.md patterns.
 
----
+## Current Context
+- Project uses separate Devin sessions for each agent (Planner, Executor, Reviewer, Researcher)
+- New structure: `Agents/` for governance, `.Planner/`, `.Executor/`, `.Reviewer/`, `.Researcher/` for working files
+- Agent switching via skills: `/planner`, `/executor`, `/reviewer`, `/researcher`
+- Focus: Design Planner Round Table workflow with findings-based rule learning
 
-## Universal Invariants
+## Abbreviations
+- **BP** = Best Practice
 
-1. STOP on any failure (exit≠0). Halt execution, report reason, fix/retry. No skipping steps. HARD GATES: `verify_close.py` and `verify_execution.py --final` must PASS before commit/tag.
-2. Execute plan steps in strict order. No reordering, no skipping.
-3. Never delete/edit governance docs unless plan instructs. Prepend-only for LANDMINES.md.
-4. Never delete plan files. Move only (e.g., to plans/completed/).
-5. `/open` → execute → `/verify` after every step → `/close`. No shortcuts.
-6. Follow skill instructions literally. Reference AR IDs, not full text.
-7. Exceptions need plan number. "Deferred" without plan = STOP.
-8. No architect file edits. `.agent/architect/` is read-only unless authorized. Exception: `.agent/architect/ARCHITECT_PATTERNS.md` per plan instruction.
-9. Scripts are SSOT. Skills reference scripts by path; no inline commands.
-10. Coverage ≥90% at `/close`. No exemptions.
-11. Never execute workflow steps manually unless requested. Use skills/workflows as intended.
-12. Skill invocation failure (`/open`, `/verify`, `/close`) = STOP completely. Report environment/tooling issues.
-13. **Execution Trace: After every action, append entry to `.agent/executor/traces/trace-plan-{N}.jsonl` (timestamp, phase, step, action, file, result). Missing entries = STOP. Executor reads Manifest at `/open` to validate phase deliverables.**
-14. **Execution Attestation: Before `/close`, produce `logs/execution-attestation-plan-{N}.md` using `.agent/executor/ATTESTATION_TEMPLATE.md`. Verified by `verify_execution.py`. Missing/incomplete/incorrect = no commit/tag/push.**
+## Soft Gates
+- **Gate A1**: Always use websearch before major decisions to validate best practices
+- **Gate A2**: Follow Quality > Token Cost > Efficiency priority hierarchy
+- **Gate A3**: Document compliance with ✅ for completed actions
+- **Gate A4**: When presenting questionnaire options, explain how each option relates to best practices based on web search findings
+- **Gate A5**: Score each option 1-10 against Quality/Token Cost/Efficiency hierarchy with overall score out of 30 (e.g., 10/10/10/30)
+- **Gate A6**: Always summarize web search findings before presenting questionnaire options
+- **Gate A7**: When making workflow design decisions that improve the system, suggest adding a rule to AGENTS.md with a gate to ensure consistent workflow improvement
 
----
+## Current Task
+Design Planner Round Table workflow with panelist-based plan review and findings tracking to reduce revision count.
 
-## Testing Best Practices
+## Next Steps
+1. Research Round Table workflow best practices from AI_HANDOFF.md
+2. Design simplified Round Table process for our context
+3. Set up findings tracking system
+4. Integrate findings-based rule learning into Planner workflow
 
-See `.agent/executor/tests/TESTING.md` for: iterative testing (`run_failing_tests.py`), deterministic ordering, organization, coverage requirements.
+## Workflow Design Rules
 
-### Avoid Duplicate Test Names
+### Rule A1: Workflow Integration vs Separation
 
-**CRITICAL**: Never use duplicate test method names in the same test file. When a function or class is defined multiple times in the same scope, the last definition overwrites all previous ones, causing tests to be skipped and creating edit conflicts.
+**Trigger**: Deciding whether to create separate workflow files vs integrating processes into main workflow  
+**Situation**: Workflow design decisions affecting system structure and maintainability  
+**Judgment**: Integrate coordination processes directly into main workflows rather than creating separate workflow files, unless the process has clear independent ownership and reuse across multiple workflows
 
-**Solutions**:
-- Use unique, descriptive test method names (e.g., `test_panel_loads_data` vs `test_panel_handles_error`)
-- Use pytest fixtures to reduce code duplication instead of copying test logic
-- Use `@pytest.mark.parametrize` for similar tests with different inputs
-- Create separate test files for different test categories if needed
-- Before editing, check if the test name already exists in the file
+**Detailed Rule**:
+- **Centralized Coordination**: Integration and coordination processes should be centralized in the owning workflow to avoid scattered logic
+- **Clear Ownership Boundaries**: Each workflow should remain authoritative in its domain without leaking logic into separate integration files
+- **Bridge Not Merger**: Integration processes should act as coordination bridges within the workflow, not as separate merging points
+- **Single Responsibility**: Each workflow file should handle its own coordination rather than delegating to separate workflow files
+- **Compliance**: Post `✅ Gate A1 PASS: Workflow integration decision follows centralized coordination principle`
 
-**Detection**: If pytest runs but shows fewer tests than expected, or if edit operations fail with "Found 2 occurrences of old_string", check for duplicate test names.
+**Evolution Condition**: Workflow complexity requires clear independent ownership and reuse patterns emerge
 
----
-
-## Session Protocol
-
-1. Read plan file → read AR/OR rules (scoped) → **read Executor Manifest** → invoke `/open` → STOP on failure
-2. Execute each step → invoke `/verify` after every step → STOP on failure
-3. → Invoke `/close` → STOP on failure
-
-Ambiguous → read `.agent/shared/LANDMINES.md`.
+**Evidence**: BP findings support centralized workflow coordination over scattered integration logic to maintain clear ownership boundaries and prevent circular dependencies
