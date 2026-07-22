@@ -144,7 +144,7 @@ def main():
     print("=" * 60)
     print(f"Branch: {current_branch}")
     print(f"Remote: {remote}")
-    print(f"Version: {current_version} → {new_version}")
+    print(f"Version: {current_version} -> {new_version}")
     print(f"Tag: {new_version}")
     print("=" * 60)
     
