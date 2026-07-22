@@ -183,6 +183,14 @@ def main():
     
     # Create tag
     print(f"\n[INFO] Creating tag: {new_version}")
+    
+    # Check if tag already exists
+    stdout, stderr = run_command(f"git tag -l {new_version}", check=False)
+    if stdout:
+        print(f"[ERROR] Tag {new_version} already exists")
+        print("[INFO] Delete existing tag first: git tag -d {new_version}")
+        sys.exit(1)
+    
     stdout, stderr = run_command(f"git tag -a {new_version} -m 'Release {new_version}'")
     if stderr:
         print(f"[ERROR] Failed to create tag: {stderr}")
