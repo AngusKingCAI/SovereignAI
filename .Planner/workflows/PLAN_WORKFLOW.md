@@ -1,6 +1,6 @@
 # Plan Workflow
 
-**Version**: 1.2  
+**Version**: 1.3  
 **Last Updated**: 2026-07-22  
 **Status**: Active
 
@@ -20,6 +20,7 @@ Create original plans for the SovereignAI project based on Researcher design doc
 | W7 | Hierarchical goal decomposition | §7 | 129 |
 | W8 | Runtime guardrail hooks | §8 | 148 |
 | W9 | Durable execution & checkpointing | §9 | 167 |
+| W10 | Competency-based subagent validation | §10 | 186 |
 
 ## Workflow Design Rules
 
@@ -181,6 +182,25 @@ Create original plans for the SovereignAI project based on Researcher design doc
 - **Compliance**: Post `✅ Gate W9 PASS: Checkpoint created at Phase X.Y, state persisted for recovery`
 
 **Evidence**: Galileo's Strategy #8 emphasizes durable execution with checkpointing for reliability and recovery
+
+### §10 - Competency-Based Subagent Validation (W10)
+
+**Trigger**: Pre-Round Table validation, domain expertise, specialized evaluation  
+**Situation**: Plans require domain expertise validation beyond Planner self-check to catch 80% of issues before expensive Round Table  
+**Judgment**: Implement 5 specialized competency subagents for parallel domain expert validation before Round Table
+
+**Detailed Rule**:
+- **Phase 5.5 Integration**: Run as Phase 5.5 between Phase 5 (Plan Finalization) and Phase 6 (Round Table Review)
+- **Specialized Subagents**: 5 domain expert subagents (Technical Architecture, Domain Relevance, Communication Quality, Cross-Team Impact, Governance Compliance)
+- **Competency Framework**: Each subagent evaluates per COMPETENCY_ASSIGNMENT_FRAMEWORK.md with specific criteria and scoring
+- **Parallel Execution**: All 5 subagents run simultaneously with isolated context windows for efficiency
+- **Model Optimization**: Use expensive models (Opus) for critical competencies (Architecture, Governance), mid-tier (Claude) for others, cost-effective (SWE) for clarity
+- **Findings Collection**: Planner collects JSON evaluations from all subagents with scored criteria and severity-ranked findings
+- **Self-Fix Priority**: Fix CRITICAL/HIGH findings before Round Table, defer MEDIUM/LOW strategic issues to panelists
+- **Round Table Efficiency**: Makes Round Table more efficient by focusing on strategic issues rather than obvious defects
+- **Compliance**: Post `✅ Gate W10 PASS: Competency self-check complete, {N} findings fixed, {N} findings deferred to Round Table`
+
+**Evidence**: Anthropic's multi-agent research shows subagents with separate context windows outperform single agents by 90% on breadth-first queries; AWS prescriptive guidance recommends domain expertise validation before stakeholder review
 
 ## Workflow Overview
 ```
@@ -391,28 +411,75 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 
 ---
 
+### Phase 5.5: Competency Self-Check (Specialized Subagent Validation)
+
+**Trigger**: Plan finalized, before Round Table preparation  
+**Goal**: Run 5 specialized competency subagents to catch issues from domain expert perspectives before expensive Round Table
+
+**Gate Design**: Parallel subagent validation catches 80% of issues upfront, making Round Table more efficient by focusing on strategic issues rather than obvious defects.
+
+**Specialized Subagents**:
+- **Technical Architecture Specialist**: COMP-001 (Architecture Soundness, Implementation Feasibility, Security Considerations)
+- **Domain Relevance Specialist**: COMP-002 (Domain Knowledge Accuracy, User Impact Assessment, Business Value Alignment)  
+- **Communication Quality Specialist**: COMP-003 (Plan Clarity, Documentation Quality)
+- **Cross-Team Impact Specialist**: COMP-004 (Integration Feasibility, Dependency Management)
+- **Governance Compliance Specialist**: COMP-005 (Rule Adherence, Process Compliance, Governance Alignment)
+
+**Steps**:
+1. **Subagent Invocation**: Planner spawns 5 specialized subagents in parallel with isolated context windows
+   - Each subagent receives competency-specific prompt and evaluation criteria
+   - Each subagent runs with model optimization (Opus for critical competencies, others mid-tier)
+   - Each subagent has web search access for evidence gathering per competency topics
+2. **Competency Evaluation**: Each subagent evaluates plan against their assigned competency using COMPETENCY_ASSIGNMENT_FRAMEWORK.md
+   - Technical Architecture: Opus model, architecture/security focus
+   - Domain Relevance: Claude model, business/user impact focus
+   - Communication Quality: SWE model, clarity/documentation focus
+   - Cross-Team Impact: Claude model, integration/dependency focus
+   - Governance Compliance: Opus model, rule/process/governance focus
+3. **Findings Collection**: Planner collects findings from all 5 subagents
+   - Each subagent provides scored evaluation (1-4 scale) per criterion
+   - Subagents identify CRITICAL/HIGH/MEDIUM/LOW findings with specific recommendations
+   - Cross-reference findings across competencies for systemic issues
+4. **Self-Fix**: Planner fixes CRITICAL/HIGH findings before Round Table
+   - Fix architecture issues, governance violations, communication problems
+   - Address integration concerns, domain relevance gaps
+   - Update plan with fixes and re-validate against hard gates
+5. **Compliance**: Post `✅ Gate PLAN-5.5 PASS: Competency self-check complete, {N} findings fixed, {N} findings deferred to Round Table`
+
+**Subagent Model Optimization**:
+- **Opus (Critical)**: Technical Architecture, Governance Compliance (complex decisions, rule interpretation)
+- **Claude (Mid-tier)**: Domain Relevance, Cross-Team Impact (business alignment, integration complexity)
+- **SWE (Cost-effective)**: Communication Quality (clarity checking, documentation review)
+
+**Exit Gate**: Plan passes 5-competency validation, CRITICAL/HIGH findings fixed, ready for strategic Round Table review
+
+**Note**: This catches domain-specific issues that Planner self-check would miss (e.g., architecture expertise, business alignment, rule interpretation) while still avoiding expensive Round Table revisions for obvious defects.
+
+---
+
 ## Phase 6: Round Table Review
 
 **Trigger**: Plan finalized  
 **Goal**: Conduct Round Table review with 6 Chathub panelists following BP-based evaluation process
 
-### Phase 6.0: Architect Self-Check (Restored from Old Workflow)
+### Phase 6.0: Architect Self-Check (Complementary to Phase 5.5)
 
-**Trigger**: Plan finalized, before Round Table preparation  
-**Goal**: Self-identify and fix issues the Planner can catch itself before expensive panelist rounds
+**Trigger**: Competency self-check complete, before Round Table preparation  
+**Goal**: Final Planner self-identify and fix issues using pattern recognition and rubric self-evaluation
 
-**Gate Design**: Self-check is a zero-cost internal pass that catches issues the Planner could catch itself, reducing the number of findings the real panel needs to surface. This saves panelist resources and reduces Rev 2+ rounds.
+**Gate Design**: Phase 5.5 handles domain expertise validation; Phase 6.0 handles pattern recognition and Planner-specific self-checks that don't require specialized domain knowledge.
 
 **Steps**:
 1. **Rubric Self-Check**: Planner applies the 4-point rubric to its own draft, per competency
    - Self-evaluate plan against the same rubric used by panelists
    - Identify areas where plan falls below 3/4 on any competency
+   - Cross-reference with Phase 5.5 findings for consistency
    - Post: `✅ Gate PLAN-6.0-RUBRIC PASS: Rubric self-check complete, {N} competencies below threshold`
 2. **Pattern Self-Check**: Planner checks draft against known patterns from PATTERN_LIBRARY.md
    - Compare plan structure and content against known anti-patterns
    - Identify common issues that have been flagged in previous reviews
    - Post: `✅ Gate PLAN-6.0-PATTERN PASS: Pattern self-check complete, {N} anti-patterns detected`
-3. **Self-Fix**: Planner fixes any self-identified CRITICAL/HIGH findings before delivering to Round Table
+3. **Self-Fix**: Planner fixes any self-identified CRITICAL/HIGH findings not already addressed in Phase 5.5
    - Fix structural issues, missing sections, compliance violations
    - Update plan with fixes and re-validate against hard gates
    - Post: `✅ Gate PLAN-6.0-FIX PASS: Self-fix complete, {N} findings self-fixed`

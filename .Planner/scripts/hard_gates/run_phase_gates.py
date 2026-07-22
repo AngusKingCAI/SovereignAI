@@ -40,6 +40,7 @@ PHASE_HARD_GATES = {
     "4": ["hg4_sections_complete.py", "hg5_language_clear.py", "hg6_landmines_screened.py"],
     "4.5": ["hg19_spec_diff_clean.py"],  # Spec-diff validation
     "5": ["hg7_compliance_lines_present.py", "hg8_paths_valid.py", "hg9_manifest_complete.py"],
+    "5.5": [],  # Competency self-check - no hard gates (subagent validation)
     "6": ["hg10_critical_findings_addressed.py", "hg11_high_findings_addressed.py", "hg12_no_blocking_landmines.py", "hg13_manifest_present.py"]
 }
 

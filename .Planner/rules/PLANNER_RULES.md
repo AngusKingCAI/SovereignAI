@@ -1,6 +1,6 @@
-# Planner Rules (PR1-PR21)
+# Planner Rules (PR1-PR22)
 
-**Version**: 1.2  
+**Version**: 1.3  
 **Last Updated**: 2026-07-22  
 **Status**: Active
 
@@ -29,6 +29,7 @@
 | PR19 | Hierarchical goal decomposition | §19 | 364 |
 | PR20 | Runtime guardrail hooks | §20 | 385 |
 | PR21 | Durable execution & checkpointing | §21 | 405 |
+| PR22 | Competency-based subagent validation | §22 | 425 |
 
 ---
 
@@ -421,3 +422,26 @@
 **Evidence**: Galileo's Strategy #8 emphasizes durable execution with checkpointing for reliability and recovery
 
 **Evolution Condition**: Checkpointing requirements change or recovery patterns evolve
+
+---
+
+## §22 - Competency-Based Subagent Validation (PR22)
+
+**Trigger**: `subagent`, `competency validation`, `domain expertise`, `specialized evaluation`  
+**Situation**: Plans require domain expertise validation beyond Planner self-check to catch 80% of issues before expensive Round Table  
+**Judgment**: Implement 5 specialized competency subagents for parallel domain expert validation before Round Table
+
+**Detailed Rule**:
+- **Specialized Subagents**: 5 domain expert subagents (Technical Architecture, Domain Relevance, Communication Quality, Cross-Team Impact, Governance Compliance)
+- **Competency Framework**: Each subagent evaluates per COMPETENCY_ASSIGNMENT_FRAMEWORK.md with specific criteria and scoring
+- **Parallel Execution**: All 5 subagents run simultaneously with isolated context windows for efficiency
+- **Model Optimization**: Use expensive models (Opus) for critical competencies (Architecture, Governance), mid-tier (Claude) for others, cost-effective (SWE) for clarity
+- **Phase Integration**: Run as Phase 5.5 between Phase 5 (Plan Finalization) and Phase 6 (Round Table Review)
+- **Findings Collection**: Planner collects JSON evaluations from all subagents with scored criteria and severity-ranked findings
+- **Self-Fix Priority**: Fix CRITICAL/HIGH findings before Round Table, defer MEDIUM/LOW strategic issues to panelists
+- **Round Table Efficiency**: Makes Round Table more efficient by focusing on strategic issues rather than obvious defects
+- **Compliance**: Post `✅ Gate PR22 PASS: Competency self-check complete, {N} findings fixed, {N} findings deferred to Round Table`
+
+**Evidence**: Anthropic's multi-agent research shows subagents with separate context windows outperform single agents by 90% on breadth-first queries; AWS prescriptive guidance recommends domain expertise validation before stakeholder review
+
+**Evolution Condition**: Subagent capabilities evolve or competency framework changes
