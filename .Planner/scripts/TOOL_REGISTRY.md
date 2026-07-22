@@ -16,10 +16,12 @@ Registry of all hard gate scripts with standardized tool descriptions per Anthro
 | HG-2 | Scope Defined Validation | Phase 1 | After requirements assessment, before plan drafting | None (auto-discovers latest plan) | Exit 0: scope defined, Exit 1: scope issues | Add scope section, re-run, don't proceed to Phase 2 |
 | HG-3 | Dependencies Feasible Validation | Phase 1 | After requirements assessment, before plan drafting | None (auto-discovers latest plan) | Exit 0: dependencies feasible, Exit 1: dependency issues | Fix dependency issues, re-run, don't proceed to Phase 2 |
 | HG-14 | Plan Structure PR6 Validation | Phase 2 | After plan structure design, before plan drafting | None (auto-discovers latest plan) | Exit 0: structure follows PR6, Exit 1: structure issues | Fix structure issues, re-run, don't proceed to Phase 3 |
+| HG-18 | Spec Approved Validation | Phase 2.5 | After spec generation, before plan drafting | None (auto-discovers latest plan) | Exit 0: spec approved, Exit 1: spec not approved | Get spec approval, re-run, don't proceed to Phase 3 |
 | HG-15 | Path Verification PR2 Validation | Phase 3 | After plan drafting, before plan finalization | None (auto-discovers latest plan) | Exit 0: paths repo-relative, Exit 1: path issues | Fix path references, re-run, don't proceed to Phase 4 |
 | HG-4 | Sections Complete Validation | Phase 4 | After plan drafting, before quality gates | None (auto-discovers latest plan) | Exit 0: sections complete, Exit 1: missing sections | Add/expand sections, re-run, don't proceed to Phase 5 |
 | HG-5 | Language Clear Validation | Phase 4 | After plan drafting, before quality gates | None (auto-discovers latest plan) | Exit 0: language clear, Exit 1: clarity issues | Improve language, re-run, don't proceed to Phase 5 |
 | HG-6 | Landmines Screened Validation | Phase 4 | After plan drafting, before quality gates | None (auto-discovers latest plan) | Exit 0: no landmines, Exit 1: landmines detected | Address landmines, re-run, don't proceed to Phase 5 |
+| HG-19 | Spec Diff Clean Validation | Phase 4.5 | After quality gates, before plan finalization | None (auto-discovers latest plan) | Exit 0: spec diff clean, Exit 1: structural drift | Fix drift or get approval, re-run, don't proceed to Phase 5 |
 | HG-7 | Compliance Lines Present Validation | Phase 5 | After plan finalization, before Round Table | None (auto-discovers latest plan) | Exit 0: compliance lines present, Exit 1: missing lines | Add compliance lines, re-run, don't proceed to Phase 6 |
 | HG-8 | Paths Valid Validation | Phase 5 | After plan finalization, before Round Table | None (auto-discovers latest plan) | Exit 0: paths valid, Exit 1: path issues | Fix path references, re-run, don't proceed to Phase 6 |
 | HG-9 | Manifest Complete Validation | Phase 5 | After plan finalization, before Round Table | None (auto-discovers latest plan) | Exit 0: manifest complete, Exit 1: missing components | Complete manifest, re-run, don't proceed to Phase 6 |
@@ -36,8 +38,10 @@ Registry of all hard gate scripts with standardized tool descriptions per Anthro
 | Phase 0 | HG-16 | Yes |
 | Phase 1 | HG-1, HG-2, HG-3 | Yes |
 | Phase 2 | HG-14 | Yes |
+| Phase 2.5 | HG-18 | Yes |
 | Phase 3 | HG-15 | Yes |
 | Phase 4 | HG-4, HG-5, HG-6 | Yes |
+| Phase 4.5 | HG-19 | Yes |
 | Phase 5 | HG-7, HG-8, HG-9 | Yes |
 | Phase 6 | HG-10, HG-11, HG-12, HG-13, HG-17 | Yes |
 

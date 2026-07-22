@@ -26,8 +26,10 @@ PHASE_HARD_GATES = {
     0: ["hg16_brief_token_budget.py"],  # Brief token budget for batch creation
     1: ["hg1_requirements_complete.py", "hg2_scope_defined.py", "hg3_dependencies_feasible.py"],
     2: ["hg14_plan_structure_pr6.py"],
+    "2.5": ["hg18_spec_approved.py"],  # Spec review gate
     3: ["hg15_path_verification_pr2.py"],
     4: ["hg4_sections_complete.py", "hg5_language_clear.py", "hg6_landmines_screened.py"],
+    "4.5": ["hg19_spec_diff_clean.py"],  # Spec-diff validation
     5: ["hg7_compliance_lines_present.py", "hg8_paths_valid.py", "hg9_manifest_complete.py"],
     6: ["hg10_critical_findings_addressed.py", "hg11_high_findings_addressed.py", "hg12_no_blocking_landmines.py", "hg13_manifest_present.py"]
 }

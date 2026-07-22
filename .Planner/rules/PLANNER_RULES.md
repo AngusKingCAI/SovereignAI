@@ -24,6 +24,7 @@
 | PR14 | Stop conditions | §14 |
 | PR15 | Token awareness | §15 |
 | PR16 | Universal rules | §16 |
+| PR17 | Spec-first plan creation | §17 |
 
 ---
 
@@ -308,3 +309,22 @@
 - **Override**: Agent-specific rules may add to but not override universal rules
 
 **Evolution Condition**: Universal rules change or new universal patterns emerge
+
+---
+
+## §17 - Spec-First Plan Creation (PR17)
+
+**Trigger**: `plan structure`, `spec validation`, `spec approval`  
+**Situation**: Plan creation must follow spec-first validation pattern (Kerno-inspired)  
+**Judgment**: Plan structure must be validated before detailed drafting to catch structural defects early
+
+**Detailed Rule**:
+- **Spec generation**: Generate plan spec (header + Executor Manifest shell + phase list + deliverable names + gate names) before detailed drafting
+- **Spec validation**: Architect/Reviewer validates spec against PR1, PR2, PR5, PR6 rules before proceeding
+- **Spec approval**: Get spec approval before detailed drafting (Phase 2.5 compliance line required)
+- **Spec-diff validation**: After drafting, regenerate spec from final plan and diff against approved spec (Phase 4.5)
+- **Drift detection**: Identify structural changes (phases added/removed, deliverables changed, gates modified)
+- **Drift resolution**: Either get approval for changes or revert to approved spec
+- **Compliance**: Post `✅ Gate PR17 PASS: Spec-first validation completed, no structural drift`
+
+**Evolution Condition**: Spec validation process changes or Kerno pattern evolves

@@ -16,6 +16,7 @@ Create original plans for the SovereignAI project based on Researcher design doc
 | W3 | Panelist web search integration | §3 |
 | W4 | Soft vs hard gate implementation | §4 |
 | W5 | Context budgeting for token limits | §5 |
+| W6 | Spec-first validation pattern | §6 |
 
 ## Workflow Design Rules
 
@@ -104,6 +105,24 @@ Create original plans for the SovereignAI project based on Researcher design doc
 
 **Evidence**: Anthropic research shows context budgeting is the single most important factor for agent reliability, with optimal context windows at 50-70% of maximum capacity for best results
 
+### §6 - Spec-First Validation Pattern (W6)
+
+**Trigger**: Plan structure design and plan drafting phases  
+**Situation**: Validating plan structure before detailed drafting to catch structural defects early  
+**Judgment**: Implement spec-first validation pattern (Kerno-inspired) to separate plan spec from plan body
+
+**Detailed Rule**:
+- **Spec Generation**: Generate plan spec (header + Executor Manifest shell + phase list + deliverable names + gate names) before detailed drafting
+- **Spec Review Gate**: Add Phase 2.5 between structure design and drafting for spec validation
+- **Spec Approval**: Architect/Reviewer validates spec against PR1, PR2, PR5, PR6 rules before proceeding
+- **Spec-Diff Validation**: Add Phase 4.5 after quality gates to compare final plan against approved spec
+- **Drift Detection**: Identify structural changes (phases added/removed, deliverables changed, gates modified)
+- **Drift Resolution**: Either get approval for changes or revert to approved spec
+- **Early Defect Detection**: Catches structural defects at cheapest intervention point (before body drafting)
+- **Compliance**: Post `✅ Gate W6 PASS: Spec-first validation pattern implemented, structural drift prevented`
+
+**Evidence**: Kerno research shows spec-first validation catches abstraction leaks in 2 minutes of review that would have cost hours to fix post-implementation
+
 ## Workflow Overview
 ```
 Requirements → Plan Batch Creation → Individual Plan Creation → Brief Assembly → Panelist Prompt Creation → Round Table Review → Reviewer Pattern Analysis → Executor
@@ -185,6 +204,30 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 
 ---
 
+## Phase 2.5: Spec Review Gate (Spec-First Validation)
+
+**Trigger**: Plan structure design complete
+**Goal**: Validate plan spec before detailed drafting (Kerno-inspired spec-first validation)
+
+**Steps**:
+1. **Spec Generation**: Generate plan spec (header + Executor Manifest shell + phase list + deliverable names + gate names)
+2. **Spec Validation**: Architect/Reviewer validates spec against PR1, PR2, PR5, PR6 rules
+3. **Spec Approval**: Get spec approval before proceeding to detailed drafting
+4. **Hard Gate Validation**: Run validation script per AGENTS.md enforcement mechanism
+   ```bash
+   python .Planner/scripts/hard_gates/run_phase_gates.py --phase 2.5
+   ```
+5. **Compliance**: Post `✅ Gate PLAN-2.5 PASS: Plan spec approved, {N} phases, {N} deliverables`
+
+**Hard Gates Enforcement**:
+- **HG-18**: Plan spec not approved (Phase 2.5 compliance line missing) BLOCKS plan drafting (enforced by validation script)
+
+**Exit Gate**: Plan spec approved, ready for detailed drafting
+
+**Note**: This catches structural defects at the cheapest intervention point (before body drafting), per Kerno research.
+
+---
+
 ## Phase 3: Plan Drafting
 
 **Trigger**: Plan structure designed  
@@ -223,6 +266,31 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 - **HG-6**: Blocking landmines BLOCK plan delivery (enforced by validation script)
 
 **Exit Gate**: Plan passes all quality gates and hard gates
+
+---
+
+## Phase 4.5: Spec-Diff Validation (Spec-First Validation)
+
+**Trigger**: Quality gates verified
+**Goal**: Validate final plan structure matches approved spec (catches structural drift)
+
+**Steps**:
+1. **Spec Regeneration**: Regenerate spec from final plan (header + Executor Manifest + phase list + deliverables + gates)
+2. **Spec Comparison**: Compare regenerated spec against approved spec from Phase 2.5
+3. **Drift Detection**: Identify structural changes (phases added/removed, deliverables changed, gates modified)
+4. **Drift Resolution**: Either get approval for changes or revert to approved spec
+5. **Hard Gate Validation**: Run validation script per AGENTS.md enforcement mechanism
+   ```bash
+   python .Planner/scripts/hard_gates/run_phase_gates.py --phase 4.5
+   ```
+6. **Compliance**: Post `✅ Gate PLAN-4.5 PASS: Spec diff clean, no structural drift detected`
+
+**Hard Gates Enforcement**:
+- **HG-19**: Spec diff violations (structural drift detected) BLOCKS plan finalization (enforced by validation script)
+
+**Exit Gate**: Final plan structure matches approved spec, ready for finalization
+
+**Note**: This catches drift that occurred during drafting (e.g., phases added that weren't in approved spec), per Kerno research.
 
 ---
 
