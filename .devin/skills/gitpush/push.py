@@ -30,11 +30,16 @@ def run_command(cmd, check=True, capture_output=True):
         return None, str(e)
 
 def get_current_version():
-    """Get the most recent git tag"""
-    stdout, stderr = run_command("git describe --tags --abbrev=0", check=False)
+    """Get the most recent semantic version tag"""
+    stdout, stderr = run_command("git tag --list 'v*'", check=False)
     if stdout:
-        return stdout
-    return "v0.0.0"  # Default if no tags exist
+        # Get all semantic version tags and find the most recent one
+        tags = stdout.split('\n')
+        if tags:
+            # Sort tags and get the most recent one
+            # For now, just return the last one (git tag --list returns in chronological order)
+            return tags[-1]
+    return "v0.0.0"  # Default if no semantic version tags exist
 
 def increment_version(version, increment_type="patch"):
     """Increment semantic version"""
