@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-3: Dependencies Feasible Validation
+Tool: HG-3 Dependencies Feasible Validation
 
-Validates that dependencies are technically feasible.
-Blocks plan creation if dependencies are infeasible.
+WHEN TO USE: Phase 1, after requirements assessment, before plan drafting
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: Plan dependencies are feasible, no circular dependencies, no impossible 
+requirements, and dependencies can be satisfied with available resources.
+
+INPUTS: None (auto-discovers latest plan in plans/ directory)
+
+OUTPUTS:
+- Exit 0: Gate HG-3 PASS: Dependencies are feasible
+- Exit 1: Gate HG-3 FAIL: {list of dependency issues}
+
+FAILURE RECOVERY: Fix dependency issues, remove circular dependencies, re-run this script.
+Do NOT proceed to Phase 2 until exit 0.
+
+DEPENDENCIES: plans/ directory must exist with at least one plan-*.md file
 """
 
 import sys

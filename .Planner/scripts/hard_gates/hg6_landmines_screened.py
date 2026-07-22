@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-6: Landmines Screened Validation
+Tool: HG-6 Landmines Screened Validation
 
-Validates that blocking landmines are addressed.
-Blocks plan delivery if blocking landmines are present.
+WHEN TO USE: Phase 4, after plan drafting, before quality gates
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: Plan is screened against governance landmines (security, architecture, 
+process, compliance) from PATTERN_LIBRARY.md. No blocking landmines present.
+
+INPUTS: None (auto-discovers latest plan in plans/ directory)
+
+OUTPUTS:
+- Exit 0: Gate HG-6 PASS: No blocking landmines present
+- Exit 1: Gate HG-6 FAIL: {list of blocking landmines detected}
+
+FAILURE RECOVERY: Address blocking landmines, add mitigation strategies, re-run this script.
+Do NOT proceed to Phase 5 until exit 0.
+
+DEPENDENCIES: plans/ directory must exist with at least one plan-*.md file, PATTERN_LIBRARY.md
 """
 
 import sys

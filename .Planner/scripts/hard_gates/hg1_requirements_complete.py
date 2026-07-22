@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-1: Requirements Complete Validation
+Tool: HG-1 Requirements Complete Validation
 
-Validates that requirements are complete and unambiguous.
-Blocks plan creation if requirements are incomplete or ambiguous.
+WHEN TO USE: Phase 1, after requirements are assessed, before plan drafting
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: Latest plan file has dependencies, vision principles, context section, 
+no vague terms (TBD/TBA/TODO), specific step sections (S1, S2...), and compliance indicators.
+
+INPUTS: None (auto-discovers latest plan in plans/ directory)
+
+OUTPUTS:
+- Exit 0: Gate HG-1 PASS: {plan_name} requirements complete
+- Exit 1: Gate HG-1 FAIL: {list of specific issues}
+
+FAILURE RECOVERY: Fix listed issues in plan file, re-run this script.
+Do NOT proceed to Phase 2 until exit 0.
+
+DEPENDENCIES: plans/ directory must exist with at least one plan-*.md file
 """
 
 import sys

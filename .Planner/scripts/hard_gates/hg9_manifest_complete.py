@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-9: Manifest Complete Validation
+Tool: HG-9 Manifest Complete Validation
 
-Validates that Executor Manifest is complete.
-Blocks plan delivery if Executor Manifest is incomplete.
+WHEN TO USE: Phase 5, after plan finalization, before Round Table
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: Executor Manifest is complete with all required components (Success Criteria, 
+Exit Conditions, Phase definitions, Deliverable definitions, Gate definitions).
+
+INPUTS: None (auto-discovers latest plan in plans/ directory)
+
+OUTPUTS:
+- Exit 0: Gate HG-9 PASS: Executor Manifest is complete
+- Exit 1: Gate HG-9 FAIL: {list of missing manifest components}
+
+FAILURE RECOVERY: Complete missing manifest components, re-run this script.
+Do NOT proceed to Phase 6 until exit 0.
+
+DEPENDENCIES: plans/ directory must exist with at least one plan-*.md file
 """
 
 import sys

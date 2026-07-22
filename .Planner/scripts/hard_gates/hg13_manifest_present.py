@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-13: Manifest Present Validation
+Tool: HG-13 Manifest Present Validation
 
-Validates that Executor Manifest is present in the plan.
-Blocks plan delivery if Executor Manifest is missing.
+WHEN TO USE: Phase 6, after Round Table review, before plan delivery
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: Executor Manifest section exists in plan and is present.
+This is different from HG-9 which checks completeness - this checks existence.
+
+INPUTS: None (auto-discovers latest plan in plans/ directory)
+
+OUTPUTS:
+- Exit 0: Gate HG-13 PASS: Executor Manifest is present
+- Exit 1: Gate HG-13 FAIL: Executor Manifest is missing
+
+FAILURE RECOVERY: Add Executor Manifest section to plan, re-run this script.
+Do NOT deliver plan until exit 0.
+
+DEPENDENCIES: plans/ directory must exist with at least one plan-*.md file
 """
 
 import sys

@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-4: Sections Complete Validation
+Tool: HG-4 Sections Complete Validation
 
-Validates that all required sections are present in the plan.
-Blocks plan delivery if required sections are missing.
+WHEN TO USE: Phase 4, after plan drafting, before quality gates
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: Plan has all required sections (Context, Architecture, Dependencies, 
+Implementation, Testing, Deployment, Rollback, Maintenance) with sufficient content.
+
+INPUTS: None (auto-discovers latest plan in plans/ directory)
+
+OUTPUTS:
+- Exit 0: Gate HG-4 PASS: All required sections present and complete
+- Exit 1: Gate HG-4 FAIL: {list of missing or incomplete sections}
+
+FAILURE RECOVERY: Add missing sections or expand incomplete sections, re-run this script.
+Do NOT proceed to Phase 5 until exit 0.
+
+DEPENDENCIES: plans/ directory must exist with at least one plan-*.md file
 """
 
 import sys

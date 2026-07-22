@@ -1,10 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-15: Path Verification PR2 Validation
+Tool: HG-15 Path Verification PR2 Validation
 
-Validates that all paths are repo-relative per PR2 requirements.
-Blocks plan delivery if paths are invalid or non-repo-relative.
-Returns exit code 0 (pass) or 1 (fail)
+WHEN TO USE: Phase 3, after plan drafting, before plan finalization
+
+WHAT IT CHECKS: All paths are repo-relative per PR2 requirements. No absolute paths, 
+no invalid path references, consistent path separators.
+
+INPUTS: None (auto-discovers latest plan in plans/ directory)
+
+OUTPUTS:
+- Exit 0: Gate HG-15 PASS: All paths are repo-relative per PR2
+- Exit 1: Gate HG-15 FAIL: {list of path verification issues}
+
+FAILURE RECOVERY: Fix path references to be repo-relative, re-run this script.
+Do NOT proceed to Phase 4 until exit 0.
+
+DEPENDENCIES: plans/ directory must exist with at least one plan-*.md file
 """
 
 import sys

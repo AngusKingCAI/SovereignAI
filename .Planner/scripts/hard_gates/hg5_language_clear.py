@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-5: Language Clear Validation
+Tool: HG-5 Language Clear Validation
 
-Validates that plan language is clear and unambiguous.
-Blocks plan delivery if language is ambiguous or unclear.
+WHEN TO USE: Phase 4, after plan drafting, before quality gates
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: Plan uses clear, unambiguous language per technical writing best practices.
+No vague terms, weak verbs, or ambiguous phrasing that could lead to misinterpretation.
+
+INPUTS: None (auto-discovers latest plan in plans/ directory)
+
+OUTPUTS:
+- Exit 0: Gate HG-5 PASS: Plan language is clear and unambiguous
+- Exit 1: Gate HG-5 FAIL: {list of language clarity issues}
+
+FAILURE RECOVERY: Improve language clarity, remove vague terms, re-run this script.
+Do NOT proceed to Phase 5 until exit 0.
+
+DEPENDENCIES: plans/ directory must exist with at least one plan-*.md file
 """
 
 import sys

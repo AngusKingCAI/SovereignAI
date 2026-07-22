@@ -1,10 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-14: Plan Structure PR6 Validation
+Tool: HG-14 Plan Structure PR6 Validation
 
-Validates that plan structure follows PR6 requirements.
-Blocks plan delivery if structure violates PR6.
-Returns exit code 0 (pass) or 1 (fail)
+WHEN TO USE: Phase 2, after plan structure design, before plan drafting
+
+WHAT IT CHECKS: Plan structure follows PR6 requirements (header, manifest, phases, 
+deliverables, proper section ordering, PR rule references, compliance indicators).
+
+INPUTS: None (auto-discovers latest plan in plans/ directory)
+
+OUTPUTS:
+- Exit 0: Gate HG-14 PASS: Plan structure follows PR6 requirements
+- Exit 1: Gate HG-14 FAIL: {list of structure validation issues}
+
+FAILURE RECOVERY: Fix plan structure issues, re-run this script.
+Do NOT proceed to Phase 3 until exit 0.
+
+DEPENDENCIES: plans/ directory must exist with at least one plan-*.md file
 """
 
 import sys

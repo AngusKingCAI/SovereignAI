@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-12: No Blocking Landmines Validation
+Tool: HG-12 No Blocking Landmines Validation
 
-Validates that no blocking landmines are present in the plan.
-Blocks plan delivery if blocking landmines are present.
+WHEN TO USE: Phase 6, after Round Table review, before plan delivery
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: No blocking landmine findings from Round Table database exist.
+Blocking landmines would prevent plan execution.
+
+INPUTS: None (queries Round Table database for blocking landmine findings)
+
+OUTPUTS:
+- Exit 0: Gate HG-12 PASS: No blocking landmines present
+- Exit 1: Gate HG-12 FAIL: {list of blocking landmines detected}
+
+FAILURE RECOVERY: Address blocking landmines, add mitigation strategies, re-run this script.
+Do NOT deliver plan until exit 0.
+
+DEPENDENCIES: Round Table database with findings data, database_manager.py
 """
 
 import sys

@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-11: High Findings Addressed Validation
+Tool: HG-11 High Findings Addressed Validation
 
-Validates that HIGH findings from Round Table are addressed.
-Blocks plan delivery if HIGH findings are unaddressed.
+WHEN TO USE: Phase 6, after Round Table review, before plan delivery
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: All HIGH severity findings from Round Table database are addressed.
+No unaddressed HIGH findings exist in the database.
+
+INPUTS: None (queries Round Table database for unaddressed HIGH findings)
+
+OUTPUTS:
+- Exit 0: Gate HG-11 PASS: All HIGH findings are addressed
+- Exit 1: Gate HG-11 FAIL: {list of unaddressed HIGH findings}
+
+FAILURE RECOVERY: Address HIGH findings in plan, update database status, re-run this script.
+Do NOT deliver plan until exit 0.
+
+DEPENDENCIES: Round Table database with findings data, database_manager.py
 """
 
 import sys

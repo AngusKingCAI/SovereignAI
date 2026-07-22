@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-2: Scope Defined Validation
+Tool: HG-2 Scope Defined Validation
 
-Validates that scope boundaries are clearly defined with explicit boundaries.
-Blocks plan creation if scope boundaries are undefined.
+WHEN TO USE: Phase 1, after requirements assessment, before plan drafting
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: Plan has clear scope boundaries (in-scope paths, out-of-scope items, 
+forbidden actions), no scope creep, and explicit scope limitations.
+
+INPUTS: None (auto-discovers latest plan in plans/ directory)
+
+OUTPUTS:
+- Exit 0: Gate HG-2 PASS: Plan scope clearly defined
+- Exit 1: Gate HG-2 FAIL: {list of scope issues}
+
+FAILURE RECOVERY: Add scope section with clear boundaries, re-run this script.
+Do NOT proceed to Phase 2 until exit 0.
+
+DEPENDENCIES: plans/ directory must exist with at least one plan-*.md file
 """
 
 import sys

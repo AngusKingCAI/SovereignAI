@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-10: Critical Findings Addressed Validation
+Tool: HG-10 Critical Findings Addressed Validation
 
-Validates that CRITICAL findings from Round Table are addressed.
-Blocks plan delivery if CRITICAL findings are unaddressed.
+WHEN TO USE: Phase 6, after Round Table review, before plan delivery
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: All CRITICAL severity findings from Round Table database are addressed.
+No unaddressed CRITICAL findings exist in the database.
+
+INPUTS: None (queries Round Table database for unaddressed CRITICAL findings)
+
+OUTPUTS:
+- Exit 0: Gate HG-10 PASS: All CRITICAL findings are addressed
+- Exit 1: Gate HG-10 FAIL: {list of unaddressed CRITICAL findings}
+
+FAILURE RECOVERY: Address CRITICAL findings in plan, update database status, re-run this script.
+Do NOT deliver plan until exit 0.
+
+DEPENDENCIES: Round Table database with findings data, database_manager.py
 """
 
 import sys

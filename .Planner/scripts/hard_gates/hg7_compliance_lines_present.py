@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-7: Compliance Lines Present Validation
+Tool: HG-7 Compliance Lines Present Validation
 
-Validates that all compliance lines are present in the plan.
-Blocks plan delivery if compliance lines are missing.
+WHEN TO USE: Phase 5, after plan finalization, before Round Table
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: Plan has compliance indicators for all major sections and phases.
+Each phase and deliverable has corresponding compliance line.
+
+INPUTS: None (auto-discovers latest plan in plans/ directory)
+
+OUTPUTS:
+- Exit 0: Gate HG-7 PASS: All compliance lines present
+- Exit 1: Gate HG-7 FAIL: {list of missing compliance lines}
+
+FAILURE RECOVERY: Add missing compliance lines to plan sections, re-run this script.
+Do NOT proceed to Phase 6 until exit 0.
+
+DEPENDENCIES: plans/ directory must exist with at least one plan-*.md file
 """
 
 import sys

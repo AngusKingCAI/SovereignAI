@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """
-Hard Gate HG-8: Paths Valid Validation
+Tool: HG-8 Paths Valid Validation
 
-Validates that all paths are repo-relative and valid.
-Blocks plan delivery if paths are invalid or non-repo-relative.
+WHEN TO USE: Phase 5, after plan finalization, before Round Table
 
-Returns exit code 0 (pass) or 1 (fail)
+WHAT IT CHECKS: All paths are repo-relative (per PR2), no absolute paths, no invalid 
+path references, and path separators are consistent (forward slashes).
+
+INPUTS: None (auto-discovers latest plan in plans/ directory)
+
+OUTPUTS:
+- Exit 0: Gate HG-8 PASS: All paths are repo-relative and valid
+- Exit 1: Gate HG-8 FAIL: {list of path validation issues}
+
+FAILURE RECOVERY: Fix path references to be repo-relative, re-run this script.
+Do NOT proceed to Phase 6 until exit 0.
+
+DEPENDENCIES: plans/ directory must exist with at least one plan-*.md file
 """
 
 import sys
