@@ -131,18 +131,24 @@ Reviewer Findings → Scan Plan Creation → Scan Plan Delivery → Round Table 
 - **ER1-ER5**: Universal editing rules (file editing best practices, large changes, failure recovery)
 - **PR1-PR15**: Planner-specific rules (plan creation, structure, quality gates)
 - **PR16**: Universal rules integration
+- **G6**: Gate enforcement mechanisms (hard gates blocking, soft gates non-blocking per AGENTS.md)
 
 ---
 
 ## Stop Conditions
 
-**Halt execution if**:
+**Halt execution if** (Hard Gates):
 - Missing compliance line for any gate
 - Scan plan fails to address critical Reviewer findings
 - Root cause analysis incomplete for critical findings
 - Fix strategy lacks risk assessment
 - Plan fails quality gates (PR7)
 - Plan contains governance landmines (PR8)
+
+**Soft Gate Warnings** (Non-Blocking):
+- Quality score <70 with documented rationale may proceed
+- Quality score 70-89 with documented rationale may proceed
+- Scan triggers similar soft gates as main workflow per G6
 
 ---
 

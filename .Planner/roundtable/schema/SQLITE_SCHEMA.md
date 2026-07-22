@@ -67,7 +67,7 @@ CREATE INDEX idx_plans_status ON plans (review_status);
 ```
 
 ### panelist_reviews
-Individual panelist review responses.
+Individual panelist review responses with web search integration.
 
 ```sql
 CREATE TABLE panelist_reviews (
@@ -79,6 +79,9 @@ CREATE TABLE panelist_reviews (
     findings_json TEXT, -- Structured findings as JSON
     verdict TEXT, -- Pass/Conditional/Block
     confidence_score INTEGER, -- 1-10
+    panelist_score INTEGER, -- 1-100 (BP-based panelist performance scoring)
+    web_search_used BOOLEAN DEFAULT 0, -- Whether panelist used web search
+    web_search_citations TEXT, -- JSON array of citation URLs from web search
     created_at INTEGER DEFAULT (strftime('%s', 'now')),
     FOREIGN KEY (plan_id) REFERENCES plans(id),
     FOREIGN KEY (panelist_id) REFERENCES panelists(id)
@@ -86,6 +89,7 @@ CREATE TABLE panelist_reviews (
 
 CREATE INDEX idx_reviews_plan ON panelist_reviews (plan_id);
 CREATE INDEX idx_reviews_panelist ON panelist_reviews (panelist_id);
+CREATE INDEX idx_reviews_web_search ON panelist_reviews (web_search_used);
 ```
 
 ### findings

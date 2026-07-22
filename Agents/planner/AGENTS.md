@@ -16,7 +16,6 @@ This AGENTS.md defines the governing structure for the Planner agent. All rules 
 - **Planner Rules**: See `../../.Planner/rules/PLANNER_RULES.md` (PR1-PR16) - indexed planner-specific rules
 - **Plan Workflow**: See `../../.Planner/workflows/PLAN_WORKFLOW.md` (original plan creation from requirements/design, includes Phase 6 Round Table Review with integrated panelist capture)
 - **Scan Workflow**: See `../../.Planner/workflows/SCAN_WORKFLOW.md` (fix/scan plan creation from reviewer findings)
-- **Rule Integration Workflow**: See `../../.Planner/workflows/RULE_INTEGRATION_WORKFLOW.md` (integrates Reviewer rule suggestions into PLANNER_RULES.md)
 - **Round Table Schema**: See `../../.Planner/roundtable/schema/SQLITE_SCHEMA.md` (SQLite schema for findings tracking)
 - **Round Table Export**: See `../../.Planner/roundtable/export/JSON_EXPORT_FORMAT.md` (JSON export format for git persistence)
 

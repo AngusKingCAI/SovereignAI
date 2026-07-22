@@ -22,6 +22,7 @@
 | ER3 | Editing | Edit failure recovery | §8 |
 | ER4 | Editing | Whitespace handling | §9 |
 | ER5 | Editing | IDE conflicts | §10 |
+| G6 | Governance | Soft vs Hard Gates | §11 |
 
 ---
 
@@ -196,3 +197,24 @@
 - **Compliance**: Post `✅ Gate ER5 PASS: IDE files saved, no conflicts`
 
 **Evolution Condition**: IDE behavior changes or auto-save patterns evolve
+
+---
+
+## §11 - Soft vs Hard Gates (G6)
+
+**Trigger**: `soft gates`, `hard gates`, `blocking constraints`, `non-blocking recommendations`  
+**Situation**: Designing gate mechanisms for different agent roles and processes  
+**Judgment**: Implement appropriate gate types based on process type (review vs execution) and consequence level
+
+**Detailed Rule**:
+- **Hard Gates**: Blocking constraints that cannot be overridden - used for execution, state changes, system modifications where safety critical
+- **Soft Gates**: Non-blocking recommendations with documented rationale - used for evaluation, recommendations, quality guidance where human judgment needed
+- **Hard Gate Use Cases**: Tool-level constraints, state modifications, system changes, execution safety, blocking conditions
+- **Soft Gate Use Cases**: Review processes, quality recommendations, evaluation guidance, flexible decision points
+- **Implementation**: Hard gates at tool level (cannot be bypassed), soft gates in context (allow override with reasoning)
+- **Dual-Gate Governance**: Policy enforcement at both decision-time (authority, scope) and commit-time (parameters, runtime state)
+- **Compliance**: Post `✅ Gate G6 PASS: Appropriate gate type implemented based on process and consequence level`
+
+**Evolution Condition**: Agent role responsibilities change or new safety requirements emerge
+
+**Evidence**: BP research shows hard-gated verification catches 100% of corrupt episodes with zero false positives, while soft-only approach has 100% false positive rate

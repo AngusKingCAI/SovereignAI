@@ -363,6 +363,33 @@ def generate_findings_analysis_report(findings_data):
 - **Gate PA-6**: Rule suggestion report must include clear integration instructions for Planner
 - **Gate PA-7**: Findings analysis report must include actionable recommendations
 
+## Gate Enforcement (Per G6)
+
+**Hard Gates** (Blocking):
+- **PA-1**: Findings data collection required with complete metadata
+- **PA-2**: High-frequency pattern identification required (≥3 patterns, occurrence ≥2)
+- **PA-3**: ML clustering quality threshold required (silhouette score ≥0.5)
+- **PA-4**: Rule evidence inclusion required (affected plans, occurrence count)
+- **PA-5**: Rule uniqueness required (no duplicates or conflicts)
+- **PA-6**: Integration instructions required in rule suggestion report
+- **PA-7**: Actionable recommendations required in findings analysis report
+
+**Soft Gates** (Non-Blocking):
+- **Pattern Count**: Fewer than 3 high-frequency patterns may proceed with documented rationale
+- **Cluster Quality**: Silhouette score <0.5 may proceed with documented justification
+- **Evidence Strength**: Weak evidence (single occurrence) may proceed with documented rationale
+- **Rule Priority**: Low-priority rules may be suggested with documented justification
+
+**Soft Gate Enforcement Mechanism**:
+- **Non-Blocking**: Soft gate violations allow proceeding with documented rationale
+- **Rationale Documentation**: Document justification for proceeding despite soft gate violation
+- **Monitoring**: Track soft gate violations for pattern analysis and potential hard gate conversion
+- **Per AGENTS.md G6**: Soft gate enforcement defined in AGENTS.md with script-based implementation
+- **Validation Scripts**: Soft gates enforced by Python scripts in `Agents/reviewer/scripts/soft_gates/`
+  - `sg_pattern_count.py`: Warns if <3 high-frequency patterns identified
+  - `sg_cluster_quality.py`: Warns if silhouette score <0.5
+  - `sg_evidence_quality.py`: Warns if rule evidence is weak (<2 affected plans)
+
 ## Handoff to Planner
 
 **Trigger**: Pattern analysis reports complete  
@@ -380,6 +407,8 @@ def generate_findings_analysis_report(findings_data):
 - Integration instructions for PLANNER_RULES.md
 - Evidence documentation for each suggested rule
 
-## Integration with Plan Workflow
+## Integration with Rule Integration Workflow
 
-This workflow is Phase 7 of PLAN_WORKFLOW.md, executed by Reviewer after Round Table review (Phase 6) to ensure continuous learning and rule improvement. Reviewer analyzes patterns and suggests rules, then Planner integrates validated suggestions (Phase 8) per GR3 single-responsibility principle.
+This workflow is followed by RULE_INTEGRATION_WORKFLOW.md, both executed by Reviewer. This follows GR3 single-responsibility principle:
+- **Reviewer**: Analyzes findings patterns, suggests rules, and integrates approved rules
+- **Planner**: Uses updated PLANNER_RULES.md for future plan creation

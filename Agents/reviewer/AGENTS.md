@@ -16,6 +16,7 @@ This AGENTS.md defines the governing structure for the Reviewer agent. All rules
 - **Log Review Workflow**: See `../../.Reviewer/workflows/LOG_REVIEW.md` (execution log analysis)
 - **Rule Checking Workflow**: See `../../.Reviewer/workflows/RULE_CHECKING.md` (rules and gates verification)
 - **Pattern Analysis Workflow**: See `workflows/PATTERN_ANALYSIS_WORKFLOW.md` (Round Table findings pattern analysis and rule suggestions)
+- **Rule Integration Workflow**: See `workflows/RULE_INTEGRATION_WORKFLOW.md` (rule suggestions integration into PLANNER_RULES.md)
 - **Round Table Schema**: See `../../.Planner/roundtable/schema/SQLITE_SCHEMA.md` (SQLite schema for findings tracking)
 - **Round Table Export**: See `../../.Planner/roundtable/export/JSON_EXPORT_FORMAT.md` (JSON export format for git persistence)
 

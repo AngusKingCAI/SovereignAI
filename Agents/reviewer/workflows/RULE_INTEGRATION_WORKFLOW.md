@@ -2,18 +2,28 @@
 
 **Version**: 1.0  
 **Last Updated**: 2026-07-22  
-**Status**: Design Phase
+**Status**: Active
 
 ## Purpose
-Integrate rule suggestions from Reviewer pattern analysis into PLANNER_RULES.md. This is Phase 8 of PLAN_WORKFLOW.md, following GR3 single-responsibility principle (Reviewer analyzes, Planner integrates).
+Integrate rule suggestions from Reviewer pattern analysis into PLANNER_RULES.md. This follows GR3 single-responsibility principle (Reviewer analyzes findings, suggests rules, and integrates them).
+
+## Workflow Rule Index
+
+| Rule ID | Trigger | Section |
+|---------|---------|---------|
+| RI-1 | Rule suggestion review | §1 |
+| RI-2 | User approval | §2 |
+| RI-3 | Rule formatting | §3 |
+| RI-4 | Rule integration | §4 |
+| RI-5 | JSON export | §5 |
 
 ## Workflow Overview
 
 ```
-Reviewer Rule Suggestions → Rule Review → User Approval → Rule Formatting → Rule Integration → JSON Export
+Reviewer Pattern Analysis → Rule Suggestions → Rule Review → User Approval → Rule Formatting → Rule Integration → JSON Export
 ```
 
-## Phase 1: Rule Suggestion Review
+## Phase 1: Rule Suggestion Review (RI-1)
 
 **Trigger**: Reviewer provides rule suggestion report  
 **Goal**: Review and validate rule suggestions from Reviewer
@@ -32,7 +42,7 @@ Reviewer Rule Suggestions → Rule Review → User Approval → Rule Formatting 
 - Enforcement level appropriateness
 - Category alignment with PLANNER_RULES.md structure
 
-## Phase 2: User Approval
+## Phase 2: User Approval (RI-2)
 
 **Trigger**: Rule suggestions reviewed  
 **Goal**: Get user approval for rule integration
@@ -74,7 +84,7 @@ Integrate this rule? (yes/no)
     return approved_rules
 ```
 
-## Phase 3: Rule Formatting
+## Phase 3: Rule Formatting (RI-3)
 
 **Trigger**: User approval obtained  
 **Goal**: Format approved rules according to PLANNER_RULES.md structure
@@ -113,7 +123,7 @@ def format_rule_for_integration(suggestion, section_number):
     return formatted_rule
 ```
 
-## Phase 4: Rule Integration
+## Phase 4: Rule Integration (RI-4)
 
 **Trigger**: Rules formatted  
 **Goal**: Integrate formatted rules into PLANNER_RULES.md
@@ -160,7 +170,7 @@ def integrate_rules_into_planner_rules(approved_rules, planner_rules_path):
     return approved_rules
 ```
 
-## Phase 5: JSON Export
+## Phase 5: JSON Export (RI-5)
 
 **Trigger**: Rules integrated  
 **Goal**: Export findings and updated rules to JSON for git persistence
@@ -211,11 +221,31 @@ Generated with Devin RoundTable workflow"""
 - **Gate RI-4**: Rule index must be updated with new rule entries
 - **Gate RI-5**: JSON exports must pass schema validation before git commit
 
-## Integration with Plan Workflow
+## Gate Enforcement (Per G6)
 
-This workflow is Phase 8 of PLAN_WORKFLOW.md, executed by Planner after receiving rule suggestions from Reviewer (Phase 7). This follows GR3 single-responsibility principle:
-- **Reviewer**: Analyzes findings patterns and suggests rules (Phase 7)
-- **Planner**: Reviews suggestions and integrates approved rules (Phase 8)
+**Hard Gates** (Blocking):
+- **RI-1**: Evidence review and compatibility check required before rule integration
+- **RI-2**: User explicit approval required for each rule before integration
+- **RI-3**: Rule formatting compliance required per PLANNER_RULES.md structure
+- **RI-4**: Rule index update required for discoverability and governance
+- **RI-5**: JSON schema validation required before git commit
+
+**Soft Gates** (Non-Blocking):
+- **Evidence Quality**: Rules with weak evidence may be integrated with documented rationale
+- **Priority Score**: Rules with priority score <5 may be integrated with documented justification
+- **Enforcement Level**: Soft gate rules may be integrated with documented rationale
+
+**Soft Gate Enforcement Mechanism**:
+- **Non-Blocking**: Soft gate violations allow proceeding with documented rationale
+- **Rationale Documentation**: Document justification for proceeding despite soft gate violation
+- **Monitoring**: Track soft gate violations for pattern analysis and potential hard gate conversion
+- **Per AGENTS.md G6**: Soft gate enforcement defined in AGENTS.md with script-based implementation
+
+## Integration with Reviewer Workflow
+
+This workflow is executed by Reviewer after pattern analysis (PATTERN_ANALYSIS_WORKFLOW.md). This follows GR3 single-responsibility principle:
+- **Reviewer**: Analyzes findings patterns, suggests rules, and integrates approved rules
+- **Planner**: Uses updated PLANNER_RULES.md for future plan creation
 
 ## Stop Conditions
 
