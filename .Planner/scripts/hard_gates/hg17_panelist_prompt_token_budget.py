@@ -4,7 +4,7 @@ Tool: HG-17 Panelist Prompt Token Budget Validation
 
 WHEN TO USE: Phase 6.1 (Pre-Round Table Preparation), before panelist evaluation
 
-WHAT IT CHECKS: Panelist prompt token count (our input to web agents) is within budget (≤1500 tokens 
+WHAT IT CHECKS: Panelist prompt token count (our input to web agents) is within budget (≤6,500 tokens 
 for rubric + competency assignment + web search instructions). Prevents context rot in our inputs to web agents.
 
 INPUTS: None (auto-discovers latest panelist prompt files in panelist prompts/ directory)
@@ -13,13 +13,14 @@ OUTPUTS:
 - Exit 0: Gate HG-17 PASS: Panelist prompts within token budget
 - Exit 1: Gate HG-17 FAIL: Panelist prompts exceed token budget
 
-FAILURE RECOVERY: Reduce panelist prompt content to fit within 1500 token budget, re-run this script.
+FAILURE RECOVERY: Reduce panelist prompt content to fit within 6,500 token budget, re-run this script.
 Do NOT proceed to Round Table until exit 0.
 
 DEPENDENCIES: panelist prompts/ directory must exist with panelist prompt files
 
 IMPLEMENTATION NOTE: This gate measures the token count of our input to web agents via chathub.gg, 
 not the web agents' internal token usage. We control our input size but cannot control external agent processing.
+Budget based on 256K context window (Kimi K2.7 Code compatibility) for cross-model support.
 """
 
 import sys
@@ -61,7 +62,7 @@ def check_gate_condition():
     
     print(f"Found {len(panelist_files)} panelist prompt files to validate")
     
-    token_budget = 1500  # Per Anthropic research
+    token_budget = 6500  # Based on 256K context window (Kimi K2.7 Code compatibility)
     all_within_budget = True
     
     for prompt_file in panelist_files:

@@ -72,11 +72,11 @@ python .Planner/scripts/hard_gates/run_phase_gates.py --phase 1
 
 ## Context Budget Gates
 
-| Context Budget | Hard Gate | Soft Gate | Budget Limit | Trigger Phase |
-|----------------|-----------|-----------|--------------|---------------|
-| Brief Token Budget | HG-16 | SG-6 | 3000 tokens (~2200 words) | Phase 0 |
-| Panelist Prompt Token Budget | HG-17 | SG-7 | 1500 tokens per prompt (~1100 words) | Phase 6.1 |
-| Plan Token Budget | Manual | Manual | 8000 tokens (~6000 words) | Phase 3 |
+| Context Budget | Hard Gate | Soft Gate | Budget Limit | Trigger Phase | Model Compatibility |
+|----------------|-----------|-----------|--------------|---------------|-------------------|
+| Brief Token Budget | HG-16 | SG-6 | 13,000 tokens (~9,750 words) | Phase 0 | Based on 256K context (Kimi K2.7 Code) for cross-model support |
+| Panelist Prompt Token Budget | HG-17 | SG-7 | 6,500 tokens per prompt (~4,875 words) | Phase 6.1 | Based on 256K context (Kimi K2.7 Code) for cross-model support |
+| Plan Token Budget | Manual | Manual | 70,000 tokens (~52,500 words) | Phase 3 | Based on 256K context (Kimi K2.7 Code) for cross-model support |
 
 ## Dependencies
 

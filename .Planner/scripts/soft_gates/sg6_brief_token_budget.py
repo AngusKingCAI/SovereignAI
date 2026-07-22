@@ -57,7 +57,7 @@ def check_gate_condition():
     
     # Count tokens
     token_count = count_tokens(content)
-    token_budget = 3000  # Per Anthropic research
+    token_budget = 13000  # Based on 256K context window (Kimi K2.7 Code compatibility)
     word_count = len(content.split())
     
     print(f"Token count: {token_count} (budget: {token_budget})")

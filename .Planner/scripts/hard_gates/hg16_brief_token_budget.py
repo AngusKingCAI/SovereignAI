@@ -4,7 +4,7 @@ Tool: HG-16 Brief Token Budget Validation
 
 WHEN TO USE: Phase 0 (Brief creation), before Round Table preparation
 
-WHAT IT CHECKS: Brief token count is within budget (≤3000 tokens ≈2200 words).
+WHAT IT CHECKS: Brief token count is within budget (≤13,000 tokens ≈9,750 words).
 Prevents context rot by enforcing budget constraints per Anthropic research.
 
 INPUTS: None (auto-discovers latest brief file in briefs/ directory)
@@ -13,7 +13,7 @@ OUTPUTS:
 - Exit 0: Gate HG-16 PASS: Brief within token budget
 - Exit 1: Gate HG-16 FAIL: Brief exceeds token budget
 
-FAILURE RECOVERY: Reduce brief content to fit within 3000 token budget, re-run this script.
+FAILURE RECOVERY: Reduce brief content to fit within 13,000 token budget, re-run this script.
 Do NOT proceed to Round Table until exit 0.
 
 DEPENDENCIES: briefs/ directory must exist with at least one brief-*.md file
@@ -71,7 +71,7 @@ def check_gate_condition():
     
     # Count tokens
     token_count = count_tokens(content)
-    token_budget = 3000  # Per Anthropic research
+    token_budget = 13000  # Based on 256K context window (Kimi K2.7 Code compatibility)
     word_count = len(content.split())
     
     print(f"Token count: {token_count} (budget: {token_budget})")

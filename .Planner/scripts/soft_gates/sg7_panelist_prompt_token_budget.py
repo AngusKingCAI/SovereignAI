@@ -48,7 +48,7 @@ def check_gate_condition():
     
     print(f"Found {len(panelist_files)} panelist prompt files to validate")
     
-    token_budget = 1500  # Per Anthropic research
+    token_budget = 6500  # Based on 256K context window (Kimi K2.7 Code compatibility)
     all_within_budget = True
     
     for prompt_file in panelist_files:

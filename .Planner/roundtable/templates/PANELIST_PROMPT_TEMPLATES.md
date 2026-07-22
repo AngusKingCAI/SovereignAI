@@ -1,25 +1,12 @@
 # Panelist Prompt Templates
 
 **Version**: 1.0  
-**Last Updated**: 2026-07-22  
 **Status**: Active
 
 ## Purpose
-Provide competency-specific prompt templates for panelists following BP-based best practices for Round Table evaluation.
+Competency-specific prompt templates for panelists following BP-based Round Table evaluation.
 
-## BP-Based Prompt Design Principles
-
-### Core Principles (Per Research)
-
-1. **Competency-Specific**: Each prompt tailored to specific competency evaluation
-2. **Web Search Integration**: Explicit instructions for web search usage (per Rule W3)
-3. **Independent Scoring**: Clear instructions for independent scoring before group discussion
-4. **Evidence-Based**: Emphasis on evidence-based findings with citations
-5. **Rubric-Referenced**: Clear references to scoring rubrics with behavioral indicators
-
-## Prompt Template Structure
-
-### General Prompt Template
+## General Template
 
 ```markdown
 ## Panelist {Name} - {Model} Evaluation Prompt
@@ -29,9 +16,9 @@ Provide competency-specific prompt templates for panelists following BP-based be
 **Panelist Role**: {evaluator|moderator|subject_matter_expert}
 
 **Evaluation Instructions**:
-1. Review the plan focusing on your assigned competencies: {competency1}, {competency2}
+1. Review the plan focusing on your assigned competencies
 2. Use web search to validate technical assumptions and best practices when relevant
-3. Score the plan on your assigned competencies using the 4-point rubric provided
+3. Score the plan using the 4-point rubric provided
 4. Submit your score independently before seeing other panelists' feedback
 5. Provide specific findings with severity levels (CRITICAL, HIGH, MEDIUM, LOW)
 
@@ -50,7 +37,6 @@ Provide competency-specific prompt templates for panelists following BP-based be
 Submit your scores (1-4 for each assigned competency) before reviewing other panelists' feedback to prevent groupthink.
 
 **Findings Format**:
-Provide findings in the following format:
 - **Category**: {category}
 - **Severity**: {CRITICAL|HIGH|MEDIUM|LOW}
 - **Description**: {specific finding}
@@ -59,9 +45,9 @@ Provide findings in the following format:
 - **Citations**: [Source](URL) if web search used
 ```
 
-## Competency-Specific Prompt Templates
+## Competency Templates
 
-### COMP-001: Technical Architecture Prompt
+### COMP-001: Technical Architecture
 
 ```markdown
 ## Panelist Architecture Reviewer - Technical Architecture Evaluation Prompt
@@ -92,15 +78,6 @@ Provide findings in the following format:
 - Use web search for: System architecture best practices, Security implementation patterns, Performance optimization techniques, Scalability patterns
 - Include citations in format: [Title](URL)
 - Prioritize authoritative sources: official documentation, architecture guides, security frameworks
-- Search for specific patterns mentioned in the plan to validate their appropriateness
-
-**Specific Focus Areas**:
-- Are architectural patterns appropriate for the problem domain?
-- Is scalability considered adequately?
-- Are edge cases and failure modes addressed?
-- Are security best practices integrated proactively?
-- Is the implementation timeline realistic given complexity?
-- Are dependencies clearly identified and manageable?
 
 **Independent Scoring Requirement**:
 Submit your Technical Architecture score (1-4) before reviewing other panelists' feedback to prevent groupthink.
@@ -114,7 +91,7 @@ Submit your Technical Architecture score (1-4) before reviewing other panelists'
 - **Citations**: [Architecture Guide](URL) if web search used
 ```
 
-### COMP-002: Domain Relevance Prompt
+### COMP-002: Domain Relevance
 
 ```markdown
 ## Panelist Domain Specialist - Domain Relevance Evaluation Prompt
@@ -145,15 +122,6 @@ Submit your Technical Architecture score (1-4) before reviewing other panelists'
 - Use web search for: Industry trends and standards, User research methodologies, Business value frameworks, Competitive analysis
 - Include citations in format: [Title](URL)
 - Prioritize authoritative sources: industry reports, user research studies, business case studies
-- Search for current industry standards to validate domain assumptions
-
-**Specific Focus Areas**:
-- Is domain terminology used accurately and appropriately?
-- Does the plan demonstrate understanding of current industry trends?
-- Are user needs and impacts considered comprehensively?
-- Is the solution aligned with business objectives and value proposition?
-- Are domain-specific examples and evidence provided?
-- Is there consideration of competitive landscape and industry standards?
 
 **Independent Scoring Requirement**:
 Submit your Domain Relevance score (1-4) before reviewing other panelists' feedback to prevent groupthink.
@@ -167,7 +135,7 @@ Submit your Domain Relevance score (1-4) before reviewing other panelists' feedb
 - **Citations**: [Industry Report](URL) if web search used
 ```
 
-### COMP-003: Communication Quality Prompt
+### COMP-003: Communication Quality
 
 ```markdown
 ## Panelist Communication Specialist - Communication Quality Evaluation Prompt
@@ -184,197 +152,124 @@ Submit your Domain Relevance score (1-4) before reviewing other panelists' feedb
 5. Provide specific findings with severity levels focusing on communication aspects
 
 **Scoring Rubric - Communication Quality**:
-- **4 (Excellent)**: Clear unambiguous language, excellent logical structure, comprehensive documentation with examples, stakeholder-tailored, maintainable format
-- **3 (Good)**: Clear language with minor ambiguities, good logical structure, good documentation with examples, appropriate for main stakeholders, maintainable format
-- **2 (Fair)**: Some ambiguities, structure needs improvement, basic documentation with limited examples, generic communication, format needs improvement
-- **1 (Poor)**: Ambiguous confusing language, poor structure, incomplete documentation, no stakeholder consideration, unmaintainable format
+- **4 (Excellent)**: Clear unambiguous language, comprehensive documentation, stakeholder-appropriate communication, actionable steps, excellent formatting
+- **3 (Good)**: Clear language, good documentation, appropriate communication, mostly actionable, good formatting
+- **2 (Fair)**: Some ambiguity, basic documentation, inconsistent communication, limited actionability, basic formatting
+- **1 (Poor)**: Ambiguous language, inadequate documentation, poor communication, not actionable, poor formatting
 
 **Evaluation Criteria**:
-- **Plan Clarity**: Clarity of plan language and structure
-- **Documentation Quality**: Quality and completeness of documentation
+- **Plan Clarity**: Clarity and precision of plan language and structure
+- **Documentation Quality**: Completeness and quality of technical documentation
+- **Stakeholder Communication**: Appropriateness of communication for different stakeholders
 
 **Web Search Integration**:
-- Use web search for: Technical writing best practices, Documentation standards, Communication frameworks, User guide standards
+- Use web search for: Technical writing best practices, Documentation standards, Communication frameworks, Clarity guidelines
 - Include citations in format: [Title](URL)
 - Prioritize authoritative sources: style guides, documentation standards, communication research
-- Search for specific documentation formats mentioned in the plan
-
-**Specific Focus Areas**:
-- Is the language clear and unambiguous throughout?
-- Is the structure logical and easy to follow?
-- Are instructions and requirements specific and actionable?
-- Is documentation comprehensive with relevant examples?
-- Is the communication tailored to different stakeholder audiences?
-- Is the documentation format maintainable and consistent?
 
 **Independent Scoring Requirement**:
 Submit your Communication Quality score (1-4) before reviewing other panelists' feedback to prevent groupthink.
 
 **Findings Format**:
-- **Category**: clarity|structure|documentation|stakeholder-communication
+- **Category**: communication|documentation|clarity|stakeholder
 - **Severity**: {CRITICAL|HIGH|MEDIUM|LOW}
 - **Description**: {specific communication finding}
-- **Context**: {relevant plan section or communication element}
-- **Plan Impact**: {how this affects communication effectiveness}
+- **Context**: {relevant plan section or communication aspect}
+- **Plan Impact**: {how this affects communication quality}
 - **Citations**: [Style Guide](URL) if web search used
 ```
 
-### COMP-004: Cross-Team Impact Prompt
+### COMP-004: Implementation Planning
 
 ```markdown
-## Panelist Integration Expert - Cross-Team Impact Evaluation Prompt
+## Panelist Implementation Expert - Implementation Planning Evaluation Prompt
 
-**Assigned Competencies**: Cross-Team Impact (COMP-004)
-**Expertise Area**: Systems Integration and Project Management
+**Assigned Competencies**: Implementation Planning (COMP-004)
+**Expertise Area**: Software Engineering and Project Management
 **Panelist Role**: evaluator
 
 **Evaluation Instructions**:
-1. Review the plan focusing on cross-team impact: integration feasibility, dependency management, team coordination
-2. Use web search to validate integration patterns and dependency management strategies
-3. Score the plan using the 4-point Cross-Team Impact rubric
+1. Review the plan focusing on implementation planning: timeline, resource allocation, risk management
+2. Use web search to validate implementation best practices and project management methodologies
+3. Score the plan using the 4-point Implementation Planning rubric
 4. Submit your score independently before seeing other panelists' feedback
-5. Provide specific findings with severity levels focusing on integration aspects
+5. Provide specific findings with severity levels focusing on implementation aspects
 
-**Scoring Rubric - Cross-Team Impact**:
-- **4 (Excellent)**: Clear integration path, minimal disruption, well-defined interfaces, clear dependencies, realistic requirements, comprehensive risk mitigation
-- **3 (Good)**: Good integration path, manageable disruption, defined interfaces, clear dependencies, realistic requirements, basic risk mitigation
-- **2 (Fair)**: Basic integration path, some disruption, partially defined interfaces, some dependencies unclear, some requirements unrealistic, limited risk mitigation
-- **1 (Poor)**: Unclear integration, high disruption, undefined interfaces, unclear dependencies, unrealistic requirements, no risk mitigation
+**Scoring Rubric - Implementation Planning**:
+- **4 (Excellent)**: Realistic timeline, adequate resources, comprehensive risk management, clear dependencies, measurable milestones
+- **3 (Good)**: Reasonable timeline, sufficient resources, good risk management, clear dependencies, defined milestones
+- **2 (Fair)**: Basic timeline, limited resources, basic risk management, some dependencies, basic milestones
+- **1 (Poor)**: Unrealistic timeline, insufficient resources, no risk management, unclear dependencies, no milestones
 
 **Evaluation Criteria**:
-- **Integration Feasibility**: Feasibility of integration with existing systems and teams
-- **Dependency Management**: Management of dependencies and external requirements
+- **Timeline Realism**: Feasibility of implementation timeline and milestones
+- **Resource Allocation**: Adequacy of resource allocation and capacity planning
+- **Risk Management**: Comprehensiveness of risk identification and mitigation strategies
 
 **Web Search Integration**:
-- Use web search for: Integration patterns and best practices, Dependency management strategies, Team coordination frameworks, Migration strategies
+- Use web search for: Project management best practices, Implementation methodologies, Risk management frameworks, Estimation techniques
 - Include citations in format: [Title](URL)
-- Prioritize authoritative sources: integration guides, best practice documentation, case studies
-- Search for specific integration approaches mentioned in the plan
-
-**Specific Focus Areas**:
-- Is the integration path clear and well-defined?
-- What is the expected disruption to existing systems and teams?
-- Are interfaces between components well-defined?
-- Are dependencies clearly identified and manageable?
-- Are external requirements realistic and achievable?
-- Is there a risk mitigation strategy for integration challenges?
-- How will team coordination be managed during integration?
+- Prioritize authoritative sources: PMBOK, Agile methodologies, project management research
 
 **Independent Scoring Requirement**:
-Submit your Cross-Team Impact score (1-4) before reviewing other panelists' feedback to prevent groupthink.
+Submit your Implementation Planning score (1-4) before reviewing other panelists' feedback to prevent groupthink.
 
 **Findings Format**:
-- **Category**: integration|dependencies|coordination|disruption
+- **Category**: implementation|timeline|resources|risk-management
 - **Severity**: {CRITICAL|HIGH|MEDIUM|LOW}
-- **Description**: {specific integration finding}
-- **Context**: {relevant plan section or integration aspect}
-- **Plan Impact**: {how this affects integration feasibility}
-- **Citations**: [Integration Guide](URL) if web search used
+- **Description**: {specific implementation finding}
+- **Context**: {relevant plan section or implementation aspect}
+- **Plan Impact**: {how this affects implementation feasibility}
+- **Citations**: [PM Guide](URL) if web search used
 ```
 
-### COMP-005: Governance Compliance Prompt
+### COMP-005: Governance Compliance
 
 ```markdown
 ## Panelist Governance Specialist - Governance Compliance Evaluation Prompt
 
 **Assigned Competencies**: Governance Compliance (COMP-005)
-**Expertise Area**: Governance Frameworks and Process Management
+**Expertise Area**: Compliance and Security Governance
 **Panelist Role**: evaluator
 
 **Evaluation Instructions**:
-1. Review the plan focusing on governance compliance: rule adherence, process compliance, governance alignment
-2. Use web search to validate governance frameworks and compliance standards
+1. Review the plan focusing on governance compliance: security, compliance, regulatory requirements
+2. Use web search to validate governance frameworks, security standards, and regulatory requirements
 3. Score the plan using the 4-point Governance Compliance rubric
 4. Submit your score independently before seeing other panelists' feedback
 5. Provide specific findings with severity levels focusing on governance aspects
 
 **Scoring Rubric - Governance Compliance**:
-- **4 (Excellent)**: Follows all rules completely, respects governance frameworks, proactive compliance, consistent process adherence, clear governance alignment
-- **3 (Good)**: Follows major rules, respects governance, reactive compliance, mostly consistent process, good governance alignment
-- **2 (Fair)**: Follows some rules, limited governance respect, partial compliance, inconsistent process, partial alignment
-- **1 (Poor)**: Violates rules, ignores governance, no compliance, inconsistent process, misaligned
+- **4 (Excellent)**: Comprehensive security, full compliance coverage, regulatory alignment, clear audit trails, governance best practices
+- **3 (Good)**: Good security, good compliance coverage, regulatory awareness, audit trail planning, good governance practices
+- **2 (Fair)**: Basic security, limited compliance, basic regulatory consideration, limited audit planning, basic governance
+- **1 (Poor)**: No security, no compliance, no regulatory consideration, no audit planning, no governance
 
 **Evaluation Criteria**:
-- **Rule Adherence**: Compliance with established rules and governance frameworks
-- **Process Alignment**: Alignment with established processes and workflows
+- **Security Compliance**: Integration of security best practices and compliance requirements
+- **Regulatory Alignment**: Alignment with relevant regulatory frameworks and standards
+- **Governance Practices**: Implementation of governance best practices and auditability
 
 **Web Search Integration**:
-- Use web search for: Governance frameworks and standards, Compliance best practices, Process management methodologies, Regulatory requirements
+- Use web search for: Security frameworks, Compliance standards, Regulatory requirements, Governance best practices
 - Include citations in format: [Title](URL)
-- Prioritize authoritative sources: governance standards, compliance frameworks, regulatory guidelines
-- Search for specific governance requirements mentioned in the plan
-
-**Specific Focus Areas**:
-- Does the plan follow all established rules (AR rules, OR rules)?
-- Are there any violations of governance frameworks?
-- Is compliance proactive or reactive?
-- Does the plan align with established processes and workflows?
-- Are there clear governance checkpoints and approvals?
-- Is there consideration of regulatory or compliance requirements?
-- How are governance exceptions handled?
+- Prioritize authoritative sources: security standards, regulatory documents, governance frameworks
 
 **Independent Scoring Requirement**:
 Submit your Governance Compliance score (1-4) before reviewing other panelists' feedback to prevent groupthink.
 
 **Findings Format**:
-- **Category**: governance|compliance|process|regulatory
+- **Category**: security|compliance|regulatory|governance
 - **Severity**: {CRITICAL|HIGH|MEDIUM|LOW}
 - **Description**: {specific governance finding}
 - **Context**: {relevant plan section or governance aspect}
 - **Plan Impact**: {how this affects governance compliance}
-- **Citations**: [Governance Standard](URL) if web search used
+- **Citations**: [Security Standard](URL) if web search used
 ```
 
-## Prompt Customization Guidelines
+## References
 
-### Panelist-Specific Customization
-
-1. **Expertise Alignment**: Customize focus areas based on panelist's specific expertise
-2. **Experience Level**: Adjust depth of evaluation based on panelist experience
-3. **Panel Type**: Customize prompts for different panel types (evaluator, moderator, SME)
-4. **Batch Context**: Tailor prompts to specific batch context and objectives
-
-### Competency Combination
-
-For panelists assigned multiple competencies:
-- Combine evaluation criteria from multiple competencies
-- Provide separate scoring for each competency
-- Ensure focus areas cover all assigned competencies
-- Maintain independent scoring for each competency
-
-### Plan-Specific Customization
-
-- Customize specific focus areas based on plan type
-- Adjust web search topics based on plan domain
-- Tailor findings format to plan structure
-- Include plan-specific evaluation criteria
-
-## Prompt Quality Checks
-
-### Completeness
-- All required sections present
-- Evaluation instructions complete
-- Scoring rubric included
-- Web search instructions included
-- Independent scoring requirement included
-
-### Clarity
-- Language clear and unambiguous
-- Instructions specific and actionable
-- Examples provided where helpful
-- Format consistent and readable
-
-### Relevance
-- Content relevant to assigned competency
-- Focus areas aligned with competency definition
-- Web search topics relevant to competency
-- Evaluation criteria appropriate for competency
-
-## Compliance
-
-Post compliance line after prompt creation:
-`✅ Gate PROMPT-CREATION PASS: Panelist prompt created for {competency} following BP principles with web search integration and independent scoring requirements`
-
-## Evolution Condition
-
-Prompt templates evolve when competencies are updated, BP research changes prompt structure, or feedback indicates need for improvement.
+- **BP Research**: Structured panels reach r = .57 predictive validity with .74 interrater reliability
+- **Rule W3**: Panelist web search integration for grounding and accuracy
+- **Rule W4**: Soft gates for Round Table review, hard gates for execution
+- **CONTEXT_BUDGET_POLICY.md**: Token budget limits for panelist prompts (≤1500 tokens)
