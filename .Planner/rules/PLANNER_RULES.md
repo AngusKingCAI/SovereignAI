@@ -29,7 +29,7 @@
 | PR19 | Hierarchical goal decomposition | §19 | 364 |
 | PR20 | Runtime guardrail hooks | §20 | 385 |
 | PR21 | Durable execution & checkpointing | §21 | 405 |
-| PR22 | Competency-based subagent validation | §22 | 425 |
+| PR22 | Competency-based subagent validation | §22 | 428 |
 
 ---
 

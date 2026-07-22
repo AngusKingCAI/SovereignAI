@@ -18,8 +18,8 @@ Create original plans for the SovereignAI project based on Researcher design doc
 | W5 | Context budgeting for token limits | §5 | 93 |
 | W6 | Spec-first validation pattern | §6 | 111 |
 | W7 | Hierarchical goal decomposition | §7 | 129 |
-| W8 | Runtime guardrail hooks | §8 | 148 |
-| W9 | Durable execution & checkpointing | §9 | 167 |
+| W8 | Runtime guardrail hooks | §8 | 149 |
+| W9 | Durable execution & checkpointing | §9 | 168 |
 | W10 | Competency-based subagent validation | §10 | 186 |
 
 ## Workflow Design Rules
@@ -194,7 +194,7 @@ Create original plans for the SovereignAI project based on Researcher design doc
 - **Specialized Subagents**: 5 domain expert subagents (Technical Architecture, Domain Relevance, Communication Quality, Cross-Team Impact, Governance Compliance)
 - **Competency Framework**: Each subagent evaluates per COMPETENCY_ASSIGNMENT_FRAMEWORK.md with specific criteria and scoring
 - **Parallel Execution**: All 5 subagents run simultaneously with isolated context windows for efficiency
-- **Model Optimization**: Use expensive models (Opus) for critical competencies (Architecture, Governance), mid-tier (Claude) for others, cost-effective (SWE) for clarity
+- **Model Optimization**: All subagents use SWE-1.6 (desktop IDE built-in model) for consistency; specialized prompts provide domain expertise instead of model diversity
 - **Findings Collection**: Planner collects JSON evaluations from all subagents with scored criteria and severity-ranked findings
 - **Self-Fix Priority**: Fix CRITICAL/HIGH findings before Round Table, defer MEDIUM/LOW strategic issues to panelists
 - **Round Table Efficiency**: Makes Round Table more efficient by focusing on strategic issues rather than obvious defects
@@ -280,7 +280,7 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 ## Phase 2: Plan Structure Design
 
 **Trigger**: Input assessment complete  
-**Goal**: Design plan structure following PR1-PR21 and GR1-GR5
+**Goal**: Design plan structure following PR1-PR22 and GR1-GR5
 
 **Steps**:
 1. **Header Design**: Create plan header with Vision principles, PR rules reference
@@ -290,7 +290,7 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 5. **Runtime Guardrail**: PreToolUse hook automatically validates plan structure (HG-14) on file write
 6. **Compliance**: Post `✅ Gate PLAN-2 PASS: Plan structure designed, gates defined, runtime guardrail active`
 
-**Exit Gate**: Plan structure follows PR1-PR21 requirements
+**Exit Gate**: Plan structure follows PR1-PR22 requirements
 
 ---
 
@@ -740,7 +740,7 @@ Submit your scores (1-4 for each assigned competency) before reviewing other pan
 **All phases must follow**:
 - **GR1-GR5**: Universal governance rules (agent responsibilities, single-responsibility, handoff boundaries)
 - **ER1-ER5**: Universal editing rules (file editing best practices, large changes, failure recovery)
-- **PR1-PR21**: Planner-specific rules (plan creation, structure, quality gates, runtime guardrails, checkpointing)
+- **PR1-PR22**: Planner-specific rules (plan creation, structure, quality gates, runtime guardrails, checkpointing, competency validation)
 - **PR16**: Universal rules integration
 - **PR17**: Spec-first plan creation
 - **PR18**: Confidence-weighted consensus
