@@ -158,18 +158,19 @@ def main():
     print("=" * 60)
     
     # User confirmation (Gate A10)
-    # Check if running in interactive mode
+    # Check if running in interactive mode or has auto-confirm
     is_interactive = sys.stdin.isatty()
     
-    if is_interactive:
+    if auto_confirm:
+        confirmation = "yes"
+        print("[INFO] Auto-confirmed via --confirm flag")
+    elif is_interactive:
         print("\n[CONFIRM] Do you want to proceed with push? (yes/no)")
         try:
             confirmation = input().strip().lower()
         except EOFError:
             print("[ERROR] No input received, cancelling push")
             sys.exit(0)
-    elif auto_confirm:
-        confirmation = "yes"
     else:
         # Non-interactive mode without auto-confirm
         print("[ERROR] Non-interactive mode requires --confirm flag")
