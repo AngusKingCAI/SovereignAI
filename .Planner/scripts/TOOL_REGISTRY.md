@@ -12,6 +12,7 @@ Registry of all hard gate scripts with standardized tool descriptions per Anthro
 | Tool ID | Tool Name | Trigger Phase | Trigger Condition | Inputs | Outputs | Failure Recovery |
 |---------|-----------|---------------|-------------------|--------|---------|------------------|
 | HG-16 | Brief Token Budget Validation | Phase 0 | After brief creation, before Round Table preparation | None (auto-discovers latest brief) | Exit 0: brief within budget, Exit 1: brief exceeds budget | Reduce brief content, re-run, don't proceed to Round Table |
+| HG-20 | Goal Tree Present Validation | Phase 0 | After goal tree creation, before batch execution | None (auto-discovers goal tree file) | Exit 0: goal tree present, Exit 1: goal tree missing | Create goal tree artifact, re-run, don't proceed to batch execution |
 | HG-1 | Requirements Complete Validation | Phase 1 | After requirements assessment, before plan drafting | None (auto-discovers latest plan) | Exit 0: requirements complete, Exit 1: specific issues | Fix listed issues, re-run, don't proceed to Phase 2 |
 | HG-2 | Scope Defined Validation | Phase 1 | After requirements assessment, before plan drafting | None (auto-discovers latest plan) | Exit 0: scope defined, Exit 1: scope issues | Add scope section, re-run, don't proceed to Phase 2 |
 | HG-3 | Dependencies Feasible Validation | Phase 1 | After requirements assessment, before plan drafting | None (auto-discovers latest plan) | Exit 0: dependencies feasible, Exit 1: dependency issues | Fix dependency issues, re-run, don't proceed to Phase 2 |
@@ -35,7 +36,7 @@ Registry of all hard gate scripts with standardized tool descriptions per Anthro
 
 | Phase | Hard Gates | Blocking? |
 |-------|------------|-----------|
-| Phase 0 | HG-16 | Yes |
+| Phase 0 | HG-16, HG-20 | Yes |
 | Phase 1 | HG-1, HG-2, HG-3 | Yes |
 | Phase 2 | HG-14 | Yes |
 | Phase 2.5 | HG-18 | Yes |
@@ -45,13 +46,14 @@ Registry of all hard gate scripts with standardized tool descriptions per Anthro
 | Phase 5 | HG-7, HG-8, HG-9 | Yes |
 | Phase 6 | HG-10, HG-11, HG-12, HG-13, HG-17 | Yes |
 
-## Tool Distinction Notes
-
+| Tool Distinction Notes:
 - **HG-9 vs HG-13**: HG-9 checks Executor Manifest completeness (all components present), HG-13 checks Executor Manifest existence (section exists). This distinction prevents false positives.
 - **HG-7 vs HG-8**: HG-7 checks compliance indicators presence, HG-8 checks path validity. Both run in Phase 5 but check different aspects.
 - **HG-10 vs HG-11**: HG-10 checks CRITICAL findings, HG-11 checks HIGH findings. Both query Round Table database but with different severity filters.
 - **HG-16 vs SG-6**: HG-16 is hard gate (blocks) for brief token budget, SG-6 is soft gate (warns) for brief token budget. Same budget, different enforcement.
 - **HG-17 vs SG-7**: HG-17 is hard gate (blocks) for panelist prompt token budget, SG-7 is soft gate (warns) for panelist prompt token budget. Same budget, different enforcement.
+- **HG-18 vs HG-19**: HG-18 checks spec approval (Phase 2.5), HG-19 checks spec-diff validation (Phase 4.5). Both relate to spec-first validation but different phases.
+- **HG-20**: HG-20 checks goal tree presence (Phase 0) for hierarchical goal decomposition.
 
 ## Tool Testing
 

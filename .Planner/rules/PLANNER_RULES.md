@@ -26,6 +26,7 @@
 | PR16 | Universal rules | §16 |
 | PR17 | Spec-first plan creation | §17 |
 | PR18 | Confidence-weighted consensus | §18 |
+| PR19 | Hierarchical goal decomposition | §19 |
 
 ---
 
@@ -355,3 +356,24 @@
 - **Compliance**: Post `✅ Gate PR18 PASS: Confidence-weighted consensus achieved, weighted support {percentage}% (internal calculation)`
 
 **Evolution Condition**: Consensus algorithm changes or panelist scoring system evolves
+
+---
+
+## §19 - Hierarchical Goal Decomposition (PR19)
+
+**Trigger**: `batch creation`, `goal tree`, `sub-goal`, `hierarchical planning`  
+**Situation**: Plan batches must use hierarchical goal decomposition instead of flat dependency graphs  
+**Judgment**: Implement hierarchical goal trees with inheritance and blocking propagation per Galileo research
+
+**Detailed Rule**:
+- **Goal tree per batch**: Create hierarchical goal tree with main goal, sub-goals, and sub-tasks
+- **Tree structure**: Main goal → Sub-goals → Sub-tasks with parent-child relationships
+- **Inheritance**: Each sub-goal inherits vision principles, AR rules, and OR rules from its parent
+- **Goal tree artifact**: Generate goal tree artifact in `plans/goal-tree-batch{N}.md` during Phase 0
+- **Blocking propagation**: If parent plan STOPs, all descendant plans in goal tree also STOP (binary blocking)
+- **Coverage tracking per goal**: Each sub-goal has its own coverage target (≥90%), batch coverage is weighted average
+- **Goal tree JSON**: Store goal tree structure in `batches.goal_tree_json` column for programmatic access
+- **Dependency mapping**: Map dependencies between plans in goal tree (parent-child relationships)
+- **Compliance**: Post `✅ Gate PR19 PASS: Hierarchical goal decomposition completed, {N} sub-goals, {N} levels`
+
+**Evolution Condition**: Goal decomposition patterns change or Galileo strategy evolves

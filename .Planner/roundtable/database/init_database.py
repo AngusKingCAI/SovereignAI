@@ -77,6 +77,7 @@ def create_batches_table(cursor):
             batch_number TEXT NOT NULL UNIQUE,
             brief_file TEXT NOT NULL,
             plan_count INTEGER NOT NULL,
+            goal_tree_json TEXT,
             created_at INTEGER DEFAULT (strftime('%s', 'now')),
             updated_at INTEGER DEFAULT (strftime('%s', 'now'))
         )

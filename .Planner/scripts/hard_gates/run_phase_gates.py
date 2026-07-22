@@ -23,7 +23,7 @@ def safe_print(text):
 # Hard gate mappings for each phase (blocking)
 # Note: Phase 0 is deliberately un-gated (optional batch optimization phase)
 PHASE_HARD_GATES = {
-    0: ["hg16_brief_token_budget.py"],  # Brief token budget for batch creation
+    0: ["hg16_brief_token_budget.py", "hg20_goal_tree_present.py"],  # Brief token budget + goal tree for batch creation
     1: ["hg1_requirements_complete.py", "hg2_scope_defined.py", "hg3_dependencies_feasible.py"],
     2: ["hg14_plan_structure_pr6.py"],
     "2.5": ["hg18_spec_approved.py"],  # Spec review gate

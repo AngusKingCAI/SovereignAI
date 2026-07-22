@@ -17,6 +17,7 @@ Create original plans for the SovereignAI project based on Researcher design doc
 | W4 | Soft vs hard gate implementation | §4 |
 | W5 | Context budgeting for token limits | §5 |
 | W6 | Spec-first validation pattern | §6 |
+| W7 | Hierarchical goal decomposition | §7 |
 
 ## Workflow Design Rules
 
@@ -123,6 +124,25 @@ Create original plans for the SovereignAI project based on Researcher design doc
 
 **Evidence**: Kerno research shows spec-first validation catches abstraction leaks in 2 minutes of review that would have cost hours to fix post-implementation
 
+### §7 - Hierarchical Goal Decomposition (W7)
+
+**Trigger**: Plan batch creation and dependency mapping  
+**Situation**: Plan batches must use hierarchical goal decomposition instead of flat dependency graphs  
+**Judgment**: Implement hierarchical goal trees with inheritance and blocking propagation per Galileo research
+
+**Detailed Rule**:
+- **Goal tree per batch**: Create hierarchical goal tree with main goal, sub-goals, and sub-tasks
+- **Tree structure**: Main goal → Sub-goals → Sub-tasks with parent-child relationships
+- **Inheritance**: Each sub-goal inherits vision principles, AR rules, and OR rules from its parent
+- **Goal tree artifact**: Generate goal tree artifact in `plans/goal-tree-batch{N}.md` during Phase 0
+- **Blocking propagation**: If parent plan STOPs, all descendant plans in goal tree also STOP (binary blocking)
+- **Coverage tracking per goal**: Each sub-goal has its own coverage target (≥90%), batch coverage is weighted average
+- **Goal tree JSON**: Store goal tree structure in `batches.goal_tree_json` column for programmatic access
+- **Dependency mapping**: Map dependencies between plans in goal tree (parent-child relationships)
+- **Compliance**: Post `✅ Gate W7 PASS: Hierarchical goal decomposition completed, {N} sub-goals, {N} levels`
+
+**Evidence**: Galileo's Strategy #2 emphasizes hierarchical goal decomposition for complex task coordination and blocking propagation for cascade failure prevention
+
 ## Workflow Overview
 ```
 Requirements → Plan Batch Creation → Individual Plan Creation → Brief Assembly → Panelist Prompt Creation → Round Table Review → Reviewer Pattern Analysis → Executor
@@ -141,18 +161,22 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 
 **Steps**:
 1. **Batch Requirements Analysis**: Analyze requirements to identify related plans that can be batched
-2. **Dependency Mapping**: Map dependencies between plans to determine optimal batch order
-3. **Batch Structure Design**: Design batch structure with parent plans and sub-plans
-4. **Vision Principles Assignment**: Assign vision principles to each plan in batch
-5. **Rule Mapping**: Map AR and OR rules to each plan in batch
-6. **Context Budget Validation**: Run brief token budget validation per CONTEXT_BUDGET_POLICY.md
+2. **Hierarchical Goal Decomposition**: Create goal tree with main goal, sub-goals, sub-tasks (per PR19)
+3. **Goal Tree Artifact**: Generate goal tree artifact in `plans/goal-tree-batch{N}.md` with hierarchical structure
+4. **Inheritance Mapping**: Map vision principles, AR rules, and OR rules inheritance from parent to sub-goals
+5. **Dependency Mapping**: Map dependencies between plans in goal tree (parent-child relationships)
+6. **Batch Structure Design**: Design batch structure with parent plans and sub-plans
+7. **Vision Principles Assignment**: Assign vision principles to each plan in batch (inherited from parent)
+8. **Rule Mapping**: Map AR and OR rules to each plan in batch (inherited from parent)
+9. **Context Budget Validation**: Run brief token budget validation per CONTEXT_BUDGET_POLICY.md
    ```bash
    python .Planner/scripts/hard_gates/run_phase_gates.py --phase 0
    ```
-7. **Compliance**: Post `✅ Gate PLAN-0 PASS: Plan batch created, {N} plans in batch, context budget validated`
+10. **Compliance**: Post `✅ Gate PLAN-0 PASS: Plan batch created, {N} plans in batch, goal tree hierarchical, context budget validated`
 
 **Hard Gates Enforcement**:
 - **HG-16**: Brief token budget violation (≤13,000 tokens) BLOCKS brief creation (enforced by validation script)
+- **HG-20**: Goal tree missing or incomplete BLOCKS batch execution (enforced by validation script)
 
 **Soft Gates Enforcement**:
 - **SG-6**: Brief token budget warning (≤13,000 tokens) - warns if budget exceeded, non-blocking
