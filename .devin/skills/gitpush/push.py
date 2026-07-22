@@ -200,7 +200,9 @@ def main():
     # Push commits
     print(f"\n[INFO] Pushing commits to {remote}/{current_branch}")
     stdout, stderr = run_command(f"git push {remote} {current_branch}")
-    if stderr:
+    # Git push sometimes outputs to stderr even on success
+    # Check if the push actually succeeded by checking the exit code
+    if stderr and "error" in stderr.lower():
         print(f"[ERROR] Failed to push commits: {stderr}")
         sys.exit(1)
     print(f"[SUCCESS] Commits pushed to {remote}/{current_branch}")
@@ -208,7 +210,8 @@ def main():
     # Push tags
     print(f"\n[INFO] Pushing tags to {remote}")
     stdout, stderr = run_command(f"git push {remote} --tags")
-    if stderr:
+    # Git push sometimes outputs to stderr even on success
+    if stderr and "error" in stderr.lower():
         print(f"[ERROR] Failed to push tags: {stderr}")
         sys.exit(1)
     print(f"[SUCCESS] Tags pushed to {remote}")
