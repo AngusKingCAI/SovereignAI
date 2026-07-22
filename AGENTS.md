@@ -22,6 +22,24 @@ Act as Architect for SovereignAI project. Design Planner Round Table workflow ba
 - **Gate A7**: When making workflow design decisions that improve the system, suggest adding a rule to workflow files (not AGENTS.md) for consistent workflow improvement
 - **Gate A8**: When asking user questions about implementing features, always provide BP research summary with Quality/Token Cost/Efficiency/Overall scoring before asking for decision
 - **Gate A9**: When user says "Scan", read line for line, not just read the file
+- **Gate A10**: Never run `git push` without explicit user confirmation - commits are allowed but pushing requires user approval
+
+## Architect Session Rules
+
+### Rule A10: Git Push Confirmation (Git Safety)
+
+**Trigger**: `git push`, `push to remote`, `publish changes`  
+**Situation**: Attempting to push changes to remote repository  
+**Judgment**: Never push without explicit user confirmation - commits are allowed but pushing requires approval
+
+**Detailed Rule**:
+- **Commit Allowed**: Local git commits are allowed for version control
+- **Push Blocked**: Never run `git push` without explicit user confirmation
+- **User Confirmation Required**: Must ask user before pushing to remote repository
+- **Reasoning**: Prevents accidental publication of incomplete or unreviewed changes
+- **Exception**: Explicit user instruction to push (user request "git push")
+- **Compliance**: Post `✅ Gate A10 PASS: Git push blocked pending user confirmation`
+- **Gate A10**: Never run `git push` without explicit user confirmation - commits are allowed but pushing requires user approval
 
 ## Gate Enforcement Mechanisms
 
@@ -48,7 +66,7 @@ Act as Architect for SovereignAI project. Design Planner Round Table workflow ba
 
 **Per BP**: Rule documents must include comprehensive indexing for discoverability and governance
 
-**Architect Session Gates (A1-A7)**:
+**Architect Session Gates (A1-A10)**:
 - **A1**: Websearch before major decisions
 - **A2**: Quality > Token Cost > Efficiency priority
 - **A3**: Compliance documentation with ✅
@@ -56,6 +74,9 @@ Act as Architect for SovereignAI project. Design Planner Round Table workflow ba
 - **A5**: Option scoring (Quality/Token Cost/Efficiency/Overall)
 - **A6**: Web search findings summary
 - **A7**: Workflow file rule suggestions
+- **A8**: BP research summary before feature questions
+- **A9**: Line-by-line reading when user says "Scan"
+- **A10**: Git push blocked without user confirmation
 
 **Universal Governance Rules (GR1-GR5, ER1-ER5, G6)**:
 - See `Agents/UNIVERSAL_RULES.md` for indexed universal rules
@@ -150,3 +171,4 @@ Design Planner Round Table workflow with panelist-based plan review and findings
 - ✅ Proper indexing throughout
 - ✅ Soft gate scripts in `.Planner/scripts/soft_gates/` (non-blocking validation)
 - ✅ Soft gate scripts in `Agents/reviewer/scripts/soft_gates/` (non-blocking validation)
+- ✅ Gate A10 added: Git push blocked without user confirmation
