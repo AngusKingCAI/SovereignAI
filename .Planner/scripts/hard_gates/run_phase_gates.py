@@ -33,7 +33,7 @@ PHASE_HARD_GATES = {
 
 # Soft gate mappings for each phase (non-blocking)
 PHASE_SOFT_GATES = {
-    6: ["sg1_score_below_70.py", "sg2_score_70_89.py", "sg3_panelist_majority.py"]
+    6: ["sg1_score_below_70.py", "sg2_score_70_89.py", "sg3_panelist_majority.py", "sg5_self_check_complete.py"]
 }
 
 def run_gate(gate_script, scripts_dir, gate_type="hard", soft_gates_dir=None):
@@ -105,11 +105,10 @@ def run_phase_gates(phase, scripts_dir, soft_gates_dir=None):
     
     if not all_hard_passed:
         safe_print(f"Phase {phase} hard gates failed - blocking execution")
-        return False
+    else:
+        safe_print(f"All Phase {phase} hard gates passed")
     
-    safe_print(f"All Phase {phase} hard gates passed")
-    
-    # Run soft gates (non-blocking)
+    # Run soft gates (non-blocking) - run even if hard gates failed
     if phase in PHASE_SOFT_GATES:
         soft_gates = PHASE_SOFT_GATES[phase]
         safe_print(f"Running {len(soft_gates)} soft gates for Phase {phase} (non-blocking)...")
@@ -119,7 +118,7 @@ def run_phase_gates(phase, scripts_dir, soft_gates_dir=None):
         
         safe_print(f"Phase {phase} soft gates completed (warnings do not block execution)")
     
-    return True
+    return all_hard_passed
 
 def main():
     parser = argparse.ArgumentParser(description="Run gates for a specific phase (hard gates blocking, soft gates non-blocking)")

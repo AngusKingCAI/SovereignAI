@@ -17,6 +17,9 @@
 - `sg2_score_70_89.py` - Warn if Round Table score 70-89, require documented rationale
 - `sg3_panelist_majority.py` - Warn if panelist majority not achieved, require documented rationale
 
+### Self-Check Soft Gates (Phase 6.0)
+- `sg5_self_check_complete.py` - Warn if Phase 6.0 self-check compliance line is missing
+
 ## Usage Pattern
 
 ```bash

@@ -5,6 +5,8 @@ OR rules: UOR-1, VOR-1
 Open questions resolved: DD-35.4.1, DD-35.4.2, DD-35.4.3
 **Revision**: Rev1
 
+Gate PLAN-6.0 PASS: Self-check complete, 0 findings self-fixed, 0 deferred to Round Table
+
 ## Executor Manifest
 
 **Plan**: 35.4

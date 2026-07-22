@@ -227,6 +227,38 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 **Trigger**: Plan finalized  
 **Goal**: Conduct Round Table review with 6 Chathub panelists following BP-based evaluation process
 
+### Phase 6.0: Architect Self-Check (Restored from Old Workflow)
+
+**Trigger**: Plan finalized, before Round Table preparation  
+**Goal**: Self-identify and fix issues the Planner can catch itself before expensive panelist rounds
+
+**Gate Design**: Self-check is a zero-cost internal pass that catches issues the Planner could catch itself, reducing the number of findings the real panel needs to surface. This saves panelist resources and reduces Rev 2+ rounds.
+
+**Steps**:
+1. **Rubric Self-Check**: Planner applies the 4-point rubric to its own draft, per competency
+   - Self-evaluate plan against the same rubric used by panelists
+   - Identify areas where plan falls below 3/4 on any competency
+   - Post: `✅ Gate PLAN-6.0-RUBRIC PASS: Rubric self-check complete, {N} competencies below threshold`
+2. **Pattern Self-Check**: Planner checks draft against known patterns from PATTERN_LIBRARY.md
+   - Compare plan structure and content against known anti-patterns
+   - Identify common issues that have been flagged in previous reviews
+   - Post: `✅ Gate PLAN-6.0-PATTERN PASS: Pattern self-check complete, {N} anti-patterns detected`
+3. **Self-Fix**: Planner fixes any self-identified CRITICAL/HIGH findings before delivering to Round Table
+   - Fix structural issues, missing sections, compliance violations
+   - Update plan with fixes and re-validate against hard gates
+   - Post: `✅ Gate PLAN-6.0-FIX PASS: Self-fix complete, {N} findings self-fixed`
+4. **Defer-with-Reasoning**: Document deferred findings with reasoning for panel validation
+   - Findings that are self-identified but kept for panel validation with reasoning
+   - Example: "Self-identified but kept for panel validation because complexity requires expert review"
+   - Post: `Gate PLAN-6.0 PASS: Self-check complete, {N} findings self-fixed, {N} deferred to Round Table`
+
+**Soft Gate Enforcement**:
+- **SG-5**: Warn if Phase 6.0 compliance line missing (non-blocking but alerts to skipped self-check)
+
+**Exit Gate**: Plan with self-identified issues resolved, ready for Round Table preparation
+
+---
+
 ### Phase 6.1: Pre-Round Table Preparation (BP-Based)
 
 **Steps**:
