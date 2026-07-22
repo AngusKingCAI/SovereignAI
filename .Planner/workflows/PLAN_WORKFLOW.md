@@ -90,6 +90,8 @@ Create original plans for the SovereignAI project based on Researcher design doc
 Requirements → Plan Batch Creation → Individual Plan Creation → Brief Assembly → Panelist Prompt Creation → Round Table Review → Reviewer Pattern Analysis → Executor
 ```
 
+**Note**: Phase 0 (Plan Batch Creation) is optional - only triggered when user provides requirements for multiple related plans. Single plans skip Phase 0 and start at Phase 1.
+
 ## Phase 0: Plan Batch Creation
 
 **Trigger**: User provides requirements for multiple related plans  
@@ -109,7 +111,7 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 
 ## Phase 1: Input Assessment
 
-**Trigger**: User provides requirements or Researcher provides design documents  
+**Trigger**: User provides requirements or Researcher provides design documents (single plan) OR Phase 0 complete (batch plan)  
 **Goal**: Understand the scope and requirements for the plan
 
 **Steps**:
@@ -129,6 +131,8 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 - **HG-3**: Infeasible dependencies BLOCK plan creation (enforced by validation script)
 
 **Exit Gate**: Requirements fully understood and documented, hard gates passed
+
+**Note**: For batch plans, this phase is executed for each individual plan in the batch after Phase 0 completes.
 
 ---
 
@@ -472,11 +476,11 @@ Submit your scores (1-4 for each assigned competency) before reviewing other pan
 - **User Decision**: Soft gates provide recommendations but allow user override with proper documentation
 - **Validation Scripts**: Soft gates enforced by Python scripts in `.Planner/scripts/soft_gates/`
 - **Monitoring**: Track soft gate violations for pattern analysis and potential hard gate conversion
-- **A1-A4**: Architect workflow design rules (workflow integration, panelist scoring, web search, soft/hard gates)
+- **W1-W4**: Workflow design rules (workflow integration, panelist scoring, web search, soft/hard gates)
 
 ## Hard Gates Summary
 
-**Planner Hard Gates** (blocking constraints per Rule A4):
+**Planner Hard Gates** (blocking constraints per Rule W4):
 - **HG-1**: Incomplete or ambiguous requirements BLOCK plan creation
 - **HG-2**: Undefined scope boundaries BLOCK plan creation
 - **HG-3**: Infeasible dependencies BLOCK plan creation
@@ -491,7 +495,7 @@ Submit your scores (1-4 for each assigned competency) before reviewing other pan
 - **HG-12**: Blocking landmines present BLOCK plan delivery
 - **HG-13**: Executor Manifest missing BLOCK plan delivery
 
-**Round Table Soft Gates** (non-blocking recommendations per Rule A4):
+**Round Table Soft Gates** (non-blocking recommendations per Rule W4):
 - **SG-1**: Score <70 with documented rationale may proceed with user approval (enforced by `.Planner/scripts/soft_gates/sg1_score_below_70.py`)
 - **SG-2**: Score 70-89 with documented rationale may proceed (enforced by `.Planner/scripts/soft_gates/sg2_score_70_89.py`)
 - **SG-3**: Panelist majority not achieved may proceed with documented rationale (enforced by `.Planner/scripts/soft_gates/sg3_panelist_majority.py`)

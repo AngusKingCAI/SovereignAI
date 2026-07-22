@@ -156,15 +156,15 @@ Generated with Devin RoundTable workflow"""
         self._git_commit(filepath, commit_message)
     
     def _git_commit(self, filepath: str, commit_message: str):
-        """Internal git commit method."""
+        """Internal git commit method (local commit only, does not push per Gate A10)."""
         try:
             # Add file to git
             subprocess.run(['git', 'add', filepath], check=True, capture_output=True)
             
-            # Commit with message
+            # Commit with message (local commit only - no push per Gate A10)
             subprocess.run(['git', 'commit', '-m', commit_message], check=True, capture_output=True)
             
-            print(f"✅ Committed {filepath} to git")
+            print(f"✅ Committed {filepath} to git (local commit, not pushed per Gate A10)")
         except subprocess.CalledProcessError as e:
             print(f"⚠️  Git commit failed: {e}")
             print(f"   File staged but not committed: {filepath}")

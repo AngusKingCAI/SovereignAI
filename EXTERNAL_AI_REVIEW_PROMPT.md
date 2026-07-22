@@ -6,7 +6,7 @@ Evaluate the SovereignAI Planner workflow to determine if it is **100% complete 
 ## Setup Instructions
 1. **Clone the repository**: 
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:AngusKingCAI/SovereignAI.git
    cd SovereignAI
    ```
 2. **Navigate to workflow directory**:
