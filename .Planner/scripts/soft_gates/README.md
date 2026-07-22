@@ -16,13 +16,16 @@
 - `sg1_score_below_70.py` - Warn if Round Table score <70, require documented rationale
 - `sg2_score_70_89.py` - Warn if Round Table score 70-89, require documented rationale
 - `sg3_panelist_majority.py` - Warn if panelist majority not achieved, require documented rationale
+- `sg4_panelist_calibration.py` - Warn if panelist calibration divergence >2 points from consensus (INTERNAL-ONLY, panelists never see scores)
+
+**Security Principle**: All panelist scoring and calibration tracking is INTERNAL-ONLY to prevent gaming the system. Panelists never see their own scores, calibration status, or other panelists' performance.
 
 ### Self-Check Soft Gates (Phase 6.0)
 - `sg5_self_check_complete.py` - Warn if Phase 6.0 self-check compliance line is missing
 
 ### Context Budget Soft Gates (Phase 0, Phase 6.1)
-- `sg6_brief_token_budget.py` - Warn if brief exceeds token budget (≤3000 tokens), recommend content reduction
-- `sg7_panelist_prompt_token_budget.py` - Warn if panelist prompts exceed token budget (≤1500 tokens), recommend prompt reduction
+- `sg6_brief_token_budget.py` - Warn if brief exceeds token budget (≤13,000 tokens), recommend content reduction
+- `sg7_panelist_prompt_token_budget.py` - Warn if panelist prompts exceed token budget (≤6,500 tokens), recommend prompt reduction
 
 ## Usage Pattern
 

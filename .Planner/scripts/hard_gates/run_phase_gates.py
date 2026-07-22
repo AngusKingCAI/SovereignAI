@@ -37,7 +37,7 @@ PHASE_HARD_GATES = {
 # Soft gate mappings for each phase (non-blocking)
 PHASE_SOFT_GATES = {
     0: ["sg6_brief_token_budget.py"],  # Warn if brief exceeds token budget
-    6: ["sg1_score_below_70.py", "sg2_score_70_89.py", "sg3_panelist_majority.py", "sg5_self_check_complete.py", "sg7_panelist_prompt_token_budget.py"]
+    6: ["sg1_score_below_70.py", "sg2_score_70_89.py", "sg3_panelist_majority.py", "sg5_self_check_complete.py", "sg7_panelist_prompt_token_budget.py", "sg4_panelist_calibration.py"]
 }
 
 def run_gate(gate_script, scripts_dir, gate_type="hard", soft_gates_dir=None):

@@ -25,6 +25,7 @@
 | PR15 | Token awareness | §15 |
 | PR16 | Universal rules | §16 |
 | PR17 | Spec-first plan creation | §17 |
+| PR18 | Confidence-weighted consensus | §18 |
 
 ---
 
@@ -328,3 +329,29 @@
 - **Compliance**: Post `✅ Gate PR17 PASS: Spec-first validation completed, no structural drift`
 
 **Evolution Condition**: Spec validation process changes or Kerno pattern evolves
+
+---
+
+## §18 - Confidence-Weighted Consensus (PR18)
+
+**Trigger**: `panelist consensus`, `weighted voting`, `confidence scoring`  
+**Situation**: Round Table consensus must use confidence-weighted voting, not binary majority  
+**Judgment**: Replace binary majority with confidence-weighted consensus (Galileo-inspired)
+
+**Security Principle**: All panelist scoring and consensus calculation is INTERNAL-ONLY. Panelists never see their own scores, other panelists' scores, or consensus results. This prevents gaming the system and ensures honest evaluation.
+
+**Detailed Rule**:
+- **Weighted vote per panelist**: panelist_weight = (confidence_score / 10) × (expertise_match_score / 4) × (historical_accuracy / 100)
+- **Confidence score**: panelist self-reports 1-10 (already in schema)
+- **Expertise match score**: 1-4 from competency rubric (already in schema)
+- **Historical accuracy**: 1-100 from past Round Table scorecard (tracked in panelist_reviews.panelist_score)
+- **Consensus threshold**: weighted support ≥70% of total possible weight AND no CRITICAL finding with confidence ≥8 from any panelist
+- **Conditional threshold**: weighted support 50-70%
+- **Block threshold**: weighted support <50% OR any CRITICAL finding with confidence ≥8
+- **Internal calculation**: All consensus calculations are internal-only, post-hoc by Planner after panelists submit reviews
+- **Panelist visibility**: Panelists only see Planner's responses (updated plans), never their own scores or other panelists' scores
+- **Dissent surfacing**: when panelists diverge significantly (e.g., one gives score 4, another gives score 1), automatically flag for internal review
+- **Panelist calibration tracking**: maintain rolling 10-evaluation window per panelist. If divergence >2 points, flag for recalibration (internal-only)
+- **Compliance**: Post `✅ Gate PR18 PASS: Confidence-weighted consensus achieved, weighted support {percentage}% (internal calculation)`
+
+**Evolution Condition**: Consensus algorithm changes or panelist scoring system evolves

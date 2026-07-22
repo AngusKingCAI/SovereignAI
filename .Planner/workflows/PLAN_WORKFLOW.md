@@ -457,6 +457,7 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 - **Soft Gates**: Round Table recommendations are non-blocking (per Rule W4) - allow flexible evaluation with documented rationale
 - **Web Search Quality**: Citations must be structured, verifiable URLs (per Rule W3) - ensures evidence-based findings
 - **Context Budget**: Panelist prompts must respect token budget (≤6,500 tokens) per CONTEXT_BUDGET_POLICY.md (HG-17 + SG-7)
+- **Evaluation Integrity**: Panelists never see their own scores or other panelists' scores (security principle)
 
 **Exit Gate**: All panelist reviews captured, scored, and stored in database
 
@@ -472,8 +473,16 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 
 ### Phase 6.4: Clean Pass Gate (BP-Based Soft Gates with Hard Gate Enforcement)
 
+**Evaluation Integrity Principle**: Panelists never see their own scores or other panelists' scores. All scoring is internal-only to prevent gaming the system and ensure honest evaluation.
+
 **Steps**:
-1. **Quality Gate Evaluation**: Apply threshold-based quality gates per BP (soft gates per Rule W4)
+1. **Consensus Calculation**: Calculate confidence-weighted consensus from individual panelist reviews (internal, post-hoc by Planner)
+   - **Weighted vote per panelist**: panelist_weight = (confidence_score / 10) × (expertise_match_score / 4) × (historical_accuracy / 100)
+   - **Consensus threshold**: weighted support ≥70% of total possible weight AND no CRITICAL finding with confidence ≥8
+   - **Conditional threshold**: weighted support 50-70%
+   - **Block threshold**: weighted support <50% OR any CRITICAL finding with confidence ≥8
+   - **Security**: All calculations are internal - panelists never see scores or consensus results
+2. **Quality Gate Evaluation**: Apply threshold-based quality gates per BP (soft gates per Rule W4)
    - **90-100**: Clean pass — proceed to delivery (soft recommendation)
    - **70-89**: Review findings — proceed with documented rationale (soft recommendation)
    - **<70**: Recommend additional Round Table round (soft recommendation)

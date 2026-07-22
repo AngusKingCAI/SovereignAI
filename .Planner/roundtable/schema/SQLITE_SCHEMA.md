@@ -23,6 +23,8 @@ CREATE TABLE panelists (
     name TEXT NOT NULL,
     model TEXT NOT NULL,
     specialty TEXT,
+    calibration_score REAL DEFAULT 1.0, -- Panelist calibration factor (0.5-1.5)
+    historical_accuracy REAL DEFAULT 100.0, -- Panelist historical accuracy (0-100)
     created_at INTEGER DEFAULT (strftime('%s', 'now')),
     updated_at INTEGER DEFAULT (strftime('%s', 'now')),
     active BOOLEAN DEFAULT 1
@@ -79,7 +81,9 @@ CREATE TABLE panelist_reviews (
     findings_json TEXT, -- Structured findings as JSON
     verdict TEXT, -- Pass/Conditional/Block
     confidence_score INTEGER, -- 1-10
+    rubric_score INTEGER, -- 1-4 (BP-based 4-point rubric scoring)
     panelist_score INTEGER, -- 1-100 (BP-based panelist performance scoring)
+    weighted_vote REAL, -- Confidence-weighted consensus vote (computed)
     web_search_used BOOLEAN DEFAULT 0, -- Whether panelist used web search
     web_search_citations TEXT, -- JSON array of citation URLs from web search
     created_at INTEGER DEFAULT (strftime('%s', 'now')),
@@ -245,6 +249,31 @@ CREATE INDEX idx_rules_history_rowid ON _rules_history (_rowid);
 ```
 
 ## JSON Export Views
+
+### v_panelist_calibration
+Panelist calibration tracking view (last-10 evaluations per panelist).
+
+```sql
+CREATE VIEW v_panelist_calibration AS
+SELECT 
+    p.id as panelist_id,
+    p.name as panelist_name,
+    p.model,
+    p.specialty,
+    p.calibration_score,
+    p.historical_accuracy,
+    COUNT(pr.id) as evaluation_count,
+    AVG(pr.rubric_score) as avg_rubric_score,
+    AVG(pr.confidence_score) as avg_confidence_score,
+    MAX(pr.created_at) as last_evaluation_date
+FROM panelists p
+LEFT JOIN panelist_reviews pr ON p.id = pr.panelist_id 
+    AND pr.created_at >= datetime('now', '-30 days')
+WHERE p.active = 1
+GROUP BY p.id, p.name, p.model, p.specialty, p.calibration_score, p.historical_accuracy
+HAVING COUNT(pr.id) >= 3
+ORDER BY p.id;
+```
 
 ### v_findings_export
 JSON export format for git persistence.
