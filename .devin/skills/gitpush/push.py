@@ -94,15 +94,12 @@ def main():
     
     # Parse arguments
     increment_type = "patch"
-    auto_confirm = False
     
     i = 1
     while i < len(sys.argv):
         arg = sys.argv[i]
         if arg in ["major", "minor", "patch"]:
             increment_type = arg
-        elif arg == "--confirm":
-            auto_confirm = True
         i += 1
     
     if increment_type not in ["major", "minor", "patch"]:
@@ -158,13 +155,10 @@ def main():
     print("=" * 60)
     
     # User confirmation (Gate A10)
-    # Check if running in interactive mode or has auto-confirm
+    # Always require explicit user confirmation before pushing
     is_interactive = sys.stdin.isatty()
     
-    if auto_confirm:
-        confirmation = "yes"
-        print("[INFO] Auto-confirmed via --confirm flag")
-    elif is_interactive:
+    if is_interactive:
         print("\n[CONFIRM] Do you want to proceed with push? (yes/no)")
         try:
             confirmation = input().strip().lower()
@@ -172,9 +166,10 @@ def main():
             print("[ERROR] No input received, cancelling push")
             sys.exit(0)
     else:
-        # Non-interactive mode without auto-confirm
-        print("[ERROR] Non-interactive mode requires --confirm flag")
-        print("[INFO] Run with: python push.py [major|minor|patch] --confirm")
+        # Non-interactive mode not allowed per Gate A10
+        print("[ERROR] Non-interactive mode not allowed for git push")
+        print("[INFO] Gate A10: Git push requires explicit user confirmation")
+        print("[INFO] Please run in interactive mode to confirm push")
         sys.exit(1)
     
     if confirmation not in ["yes", "y"]:

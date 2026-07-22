@@ -11,13 +11,13 @@ Create original plans for the SovereignAI project based on Researcher design doc
 
 | Rule ID | Trigger | Section | Line |
 |---------|---------|---------|------|
-| W1 | Workflow integration vs separation | §1 | 26 |
-| W2 | Round Table quality gates and panelist scoring | §2 | 41 |
-| W3 | Panelist web search integration | §3 | 59 |
-| W4 | Soft vs hard gate implementation | §4 | 76 |
-| W5 | Context budgeting for token limits | §5 | 93 |
-| W6 | Spec-first validation pattern | §6 | 111 |
-| W7 | Hierarchical goal decomposition | §7 | 129 |
+| W1 | Workflow integration vs separation | §1 | 27 |
+| W2 | Round Table quality gates and panelist scoring | §2 | 42 |
+| W3 | Panelist web search integration | §3 | 60 |
+| W4 | Soft vs hard gate implementation | §4 | 77 |
+| W5 | Context budgeting for token limits | §5 | 94 |
+| W6 | Spec-first validation pattern | §6 | 112 |
+| W7 | Hierarchical goal decomposition | §7 | 130 |
 | W8 | Runtime guardrail hooks | §8 | 149 |
 | W9 | Durable execution & checkpointing | §9 | 168 |
 | W10 | Competency-based subagent validation | §10 | 186 |
@@ -428,14 +428,14 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 **Steps**:
 1. **Subagent Invocation**: Planner spawns 5 specialized subagents in parallel with isolated context windows
    - Each subagent receives competency-specific prompt and evaluation criteria
-   - Each subagent runs with model optimization (Opus for critical competencies, others mid-tier)
+   - Each subagent runs with SWE-1.6 model (desktop IDE built-in) for consistency
    - Each subagent has web search access for evidence gathering per competency topics
 2. **Competency Evaluation**: Each subagent evaluates plan against their assigned competency using COMPETENCY_ASSIGNMENT_FRAMEWORK.md
-   - Technical Architecture: Opus model, architecture/security focus
-   - Domain Relevance: Claude model, business/user impact focus
-   - Communication Quality: SWE model, clarity/documentation focus
-   - Cross-Team Impact: Claude model, integration/dependency focus
-   - Governance Compliance: Opus model, rule/process/governance focus
+   - Technical Architecture: SWE-1.6 model, architecture/security focus (specialized prompts)
+   - Domain Relevance: SWE-1.6 model, business/user impact focus (specialized prompts)
+   - Communication Quality: SWE-1.6 model, clarity/documentation focus (specialized prompts)
+   - Cross-Team Impact: SWE-1.6 model, integration/dependency focus (specialized prompts)
+   - Governance Compliance: SWE-1.6 model, rule/process/governance focus (specialized prompts)
 3. **Findings Collection**: Planner collects findings from all 5 subagents
    - Each subagent provides scored evaluation (1-4 scale) per criterion
    - Subagents identify CRITICAL/HIGH/MEDIUM/LOW findings with specific recommendations
@@ -446,10 +446,11 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
    - Update plan with fixes and re-validate against hard gates
 5. **Compliance**: Post `✅ Gate PLAN-5.5 PASS: Competency self-check complete, {N} findings fixed, {N} findings deferred to Round Table`
 
-**Subagent Model Optimization**:
-- **Opus (Critical)**: Technical Architecture, Governance Compliance (complex decisions, rule interpretation)
-- **Claude (Mid-tier)**: Domain Relevance, Cross-Team Impact (business alignment, integration complexity)
-- **SWE (Cost-effective)**: Communication Quality (clarity checking, documentation review)
+**Subagent Model Strategy**:
+- **SWE-1.6 (All subagents)**: All 5 subagents use SWE-1.6 (desktop IDE built-in model) for consistency
+- **Specialized prompts**: Domain expertise comes from specialized prompts, not model diversity
+- **Context isolation**: Each subagent has isolated context window for focused evaluation
+- **Parallel execution**: All 5 subagents run simultaneously for efficiency
 
 **Exit Gate**: Plan passes 5-competency validation, CRITICAL/HIGH findings fixed, ready for strategic Round Table review
 
@@ -747,7 +748,7 @@ Submit your scores (1-4 for each assigned competency) before reviewing other pan
 - **PR19**: Hierarchical goal decomposition
 - **PR20**: Runtime guardrail hooks
 - **PR21**: Durable execution & checkpointing
-- **W1-W9**: Plan workflow design rules (workflow integration, panelist scoring, web search, soft/hard gates, context budgeting, spec-first validation, hierarchical decomposition, runtime guardrails, checkpointing)
+- **W1-W10**: Plan workflow design rules (workflow integration, panelist scoring, web search, soft/hard gates, context budgeting, spec-first validation, hierarchical decomposition, runtime guardrails, checkpointing, competency validation)
 
 ## Planner Hard Gates (Blocking Constraints per Rule W4)
 
@@ -779,7 +780,7 @@ Submit your scores (1-4 for each assigned competency) before reviewing other pan
 - **User Decision**: Soft gates provide recommendations but allow user override with proper documentation
 - **Validation Scripts**: Soft gates enforced by Python scripts in `.Planner/scripts/soft_gates/`
 - **Monitoring**: Track soft gate violations for pattern analysis and potential hard gate conversion
-- **W1-W4**: Workflow design rules (workflow integration, panelist scoring, web search, soft/hard gates)
+- **W1-W10**: Workflow design rules (workflow integration, panelist scoring, web search, soft/hard gates, context budgeting, spec-first validation, hierarchical decomposition, runtime guardrails, checkpointing, competency validation)
 
 ## Hard Gates Summary
 

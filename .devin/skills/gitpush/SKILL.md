@@ -1,8 +1,8 @@
 ---
 name: gitpush
 authority: AGENTS.md
-description: Automated git tagging and push. Creates semantic version tag and pushes all changes to remote repository.
-argument-hint: "[major|minor|patch]"
+description: Automated git tagging and push. Creates semantic version tag and pushes all changes to remote repository. Requires interactive user confirmation per Gate A10.
+argument-hint: "[major|minor|patch] (interactive confirmation required)"
 triggers: ["user", "model"]
 allowed-tools:
   - read
@@ -19,8 +19,9 @@ Run `/gitpush` workflow. Creates semantic version tag and pushes all changes inc
 ## Safety Checks (per Gate A10)
 1. **Uncommitted changes check**: Aborts if uncommitted changes detected
 2. **Remote availability check**: Aborts if no git remote configured
-3. **User confirmation**: Requires explicit "yes" confirmation before push
+3. **User confirmation**: Requires explicit "yes" confirmation before push (interactive mode only)
 4. **Tag conflict prevention**: Checks for existing tags before creating new ones
+5. **Gate A10 enforcement**: Non-interactive mode is not allowed for git push
 
 ## Version Management
 - Tag format: v{major}.{minor}.{patch}
@@ -34,7 +35,7 @@ Run `/gitpush` workflow. Creates semantic version tag and pushes all changes inc
 3. Get current branch and version
 4. Calculate new version based on increment type
 5. Display push summary (branch, remote, version change, commits)
-6. Request user confirmation (Gate A10)
+6. Request user confirmation (Gate A10) - interactive mode only
 7. Create annotated tag with release message
 8. Push commits to remote
 9. Push tags to remote
@@ -46,6 +47,8 @@ Run `/gitpush` workflow. Creates semantic version tag and pushes all changes inc
 - `/gitpush minor` - Increment minor version (v1.0.0 → v1.1.0)
 - `/gitpush major` - Increment major version (v1.0.0 → v2.0.0)
 
+Note: All git push operations require interactive user confirmation per Gate A10.
+
 ## Error Handling
 - Uncommitted changes: Aborts with error message
 - No remote configured: Aborts with error message
@@ -53,3 +56,4 @@ Run `/gitpush` workflow. Creates semantic version tag and pushes all changes inc
 - Tag creation failure: Aborts with error message
 - Push failure: Aborts with error message
 - User cancellation: Graceful exit with cancellation message
+- Non-interactive mode: Aborts with error message (Gate A10 enforcement)

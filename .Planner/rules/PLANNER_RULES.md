@@ -8,27 +8,27 @@
 
 | Rule ID | Trigger | Section | Line |
 |---------|---------|---------|------|
-| PR1 | Plan creation | §1 | 35 |
-| PR2 | Path convention | §2 | 52 |
-| PR3 | Design doc integration | §3 | 69 |
-| PR4 | Devin integration | §4 | 86 |
-| PR5 | Executor Manifest | §5 | 103 |
-| PR6 | Plan structure | §6 | 121 |
-| PR7 | Quality gates | §7 | 139 |
-| PR8 | Landmine screening | §8 | 157 |
-| PR9 | Reviewer integration | §9 | 175 |
-| PR10 | Workflow integration | §10 | 193 |
-| PR11 | Compliance posting | §11 | 211 |
-| PR12 | Rule creation | §12 | 229 |
-| PR13 | Rule lifecycle | §13 | 247 |
-| PR14 | Stop conditions | §14 | 265 |
-| PR15 | Token awareness | §15 | 283 |
-| PR16 | Universal rules | §16 | 301 |
-| PR17 | Spec-first plan creation | §17 | 319 |
-| PR18 | Confidence-weighted consensus | §18 | 338 |
-| PR19 | Hierarchical goal decomposition | §19 | 364 |
-| PR20 | Runtime guardrail hooks | §20 | 385 |
-| PR21 | Durable execution & checkpointing | §21 | 405 |
+| PR1 | Plan creation | §1 | 36 |
+| PR2 | Path convention | §2 | 53 |
+| PR3 | Design doc integration | §3 | 70 |
+| PR4 | Devin integration | §4 | 87 |
+| PR5 | Executor Manifest | §5 | 104 |
+| PR6 | Plan structure | §6 | 122 |
+| PR7 | Quality gates | §7 | 140 |
+| PR8 | Landmine screening | §8 | 158 |
+| PR9 | Reviewer integration | §9 | 176 |
+| PR10 | Workflow integration | §10 | 194 |
+| PR11 | Compliance posting | §11 | 212 |
+| PR12 | Rule creation | §12 | 230 |
+| PR13 | Rule lifecycle | §13 | 248 |
+| PR14 | Stop conditions | §14 | 266 |
+| PR15 | Token awareness | §15 | 284 |
+| PR16 | Universal rules | §16 | 302 |
+| PR17 | Spec-first plan creation | §17 | 320 |
+| PR18 | Confidence-weighted consensus | §18 | 339 |
+| PR19 | Hierarchical goal decomposition | §19 | 365 |
+| PR20 | Runtime guardrail hooks | §20 | 386 |
+| PR21 | Durable execution & checkpointing | §21 | 406 |
 | PR22 | Competency-based subagent validation | §22 | 428 |
 
 ---
@@ -435,7 +435,7 @@
 - **Specialized Subagents**: 5 domain expert subagents (Technical Architecture, Domain Relevance, Communication Quality, Cross-Team Impact, Governance Compliance)
 - **Competency Framework**: Each subagent evaluates per COMPETENCY_ASSIGNMENT_FRAMEWORK.md with specific criteria and scoring
 - **Parallel Execution**: All 5 subagents run simultaneously with isolated context windows for efficiency
-- **Model Optimization**: Use expensive models (Opus) for critical competencies (Architecture, Governance), mid-tier (Claude) for others, cost-effective (SWE) for clarity
+- **Model Strategy**: All 5 subagents use SWE-1.6 (desktop IDE built-in model) for consistency; domain expertise comes from specialized prompts, not model diversity
 - **Phase Integration**: Run as Phase 5.5 between Phase 5 (Plan Finalization) and Phase 6 (Round Table Review)
 - **Findings Collection**: Planner collects JSON evaluations from all subagents with scored criteria and severity-ranked findings
 - **Self-Fix Priority**: Fix CRITICAL/HIGH findings before Round Table, defer MEDIUM/LOW strategic issues to panelists

@@ -248,30 +248,30 @@ class RoundTableDatabase:
         rows = cursor.fetchall()
         
         findings = [json.loads(row[0]) for row in rows]
+        
+        export_metadata["total_findings"] = len(findings)
+        
+        # Calculate summary statistics
+        summary = {
+            "by_severity": {},
+            "by_category": {},
+            "by_status": {}
+        }
+        
+        for finding in findings:
+            severity = finding["severity"]
+            category = finding["category"]
+            status = finding["status"]
             
-            export_metadata["total_findings"] = len(findings)
-            
-            # Calculate summary statistics
-            summary = {
-                "by_severity": {},
-                "by_category": {},
-                "by_status": {}
-            }
-            
-            for finding in findings:
-                severity = finding["severity"]
-                category = finding["category"]
-                status = finding["status"]
-                
-                summary["by_severity"][severity] = summary["by_severity"].get(severity, 0) + 1
-                summary["by_category"][category] = summary["by_category"].get(category, 0) + 1
-                summary["by_status"][status] = summary["by_status"].get(status, 0) + 1
-            
-            return {
-                "export_metadata": export_metadata,
-                "findings": findings,
-                "summary": summary
-            }
+            summary["by_severity"][severity] = summary["by_severity"].get(severity, 0) + 1
+            summary["by_category"][category] = summary["by_category"].get(category, 0) + 1
+            summary["by_status"][status] = summary["by_status"].get(status, 0) + 1
+        
+        return {
+            "export_metadata": export_metadata,
+            "findings": findings,
+            "summary": summary
+        }
     
     def export_rules_json(self) -> Dict:
         """Export rules as JSON."""
@@ -298,19 +298,19 @@ class RoundTableDatabase:
             "by_category": {},
             "by_enforcement": {}
         }
+        
+        for rule in rules:
+            category = rule["category"]
+            enforcement = rule["enforcement_level"]
             
-            for rule in rules:
-                category = rule["category"]
-                enforcement = rule["enforcement_level"]
-                
-                summary["by_category"][category] = summary["by_category"].get(category, 0) + 1
-                summary["by_enforcement"][enforcement] = summary["by_enforcement"].get(enforcement, 0) + 1
-            
-            return {
-                "export_metadata": export_metadata,
-                "rules": rules,
-                "summary": summary
-            }
+            summary["by_category"][category] = summary["by_category"].get(category, 0) + 1
+            summary["by_enforcement"][enforcement] = summary["by_enforcement"].get(enforcement, 0) + 1
+        
+        return {
+            "export_metadata": export_metadata,
+            "rules": rules,
+            "summary": summary
+        }
     
     # Audit Operations
     def get_audit_events(self, source: str = None, event_type: str = None, limit: int = 100) -> List[Dict]:

@@ -64,7 +64,7 @@ def main():
             content = f.read()
     except Exception as e:
         print(f"Error reading plan file: {e}")
-        sys.exit(1)  # Allow operation on new files
+        sys.exit(2)  # Block operation if file cannot be read
     
     # Basic validation checks
     validation_passed = True

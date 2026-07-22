@@ -2,17 +2,14 @@
 """
 Competency Subagent Runner
 
-Runs 5 specialized competency subagents in parallel for plan validation.
-Invoked by Planner during Phase 5.5 for internal pre-Round Table validation.
-Uses Devin CLI subagent system with custom AGENT.md profiles.
+Provides configuration and validation for the Phase 5.5 competency self-check.
+This is a MANUAL step - the Planner must invoke each subagent using the run_subagent tool.
 """
 
 import sys
 import json
-import asyncio
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, Any, List
 
 # Subagent configuration for Devin CLI
 SUBAGENTS = {
@@ -56,7 +53,7 @@ def main():
         sys.exit(1)
     
     print("=" * 60)
-    print("Competency Subagent Runner")
+    print("Phase 5.5: Competency Self-Check (MANUAL STEP)")
     print("=" * 60)
     print(f"Plan: {plan_file}")
     print(f"Timestamp: {datetime.now().isoformat()}")
@@ -71,21 +68,33 @@ def main():
         print(f"    Criteria: {', '.join(config['criteria'])}")
     
     print("\n" + "=" * 60)
-    print("Phase 5.5: Competency Self-Check")
+    print("MANUAL INSTRUCTIONS FOR PLANNER")
     print("=" * 60)
-    print("[INFO] This script provides configuration for manual subagent invocation")
-    print("[INFO] The Planner should use run_subagent tool to invoke each subagent")
-    print("[INFO] Subagent profiles are located in .devin/agents/{name}/AGENT.md")
-    print("\n[INFO] Example invocation for Planner:")
-    print("  run_subagent(profile='technical-architecture', task='Evaluate {plan_file} against COMP-001 criteria')")
-    print("  run_subagent(profile='domain-relevance', task='Evaluate {plan_file} against COMP-002 criteria')")
-    print("  run_subagent(profile='communication-quality', task='Evaluate {plan_file} against COMP-003 criteria')")
-    print("  run_subagent(profile='cross-team-impact', task='Evaluate {plan_file} against COMP-004 criteria')")
-    print("  run_subagent(profile='governance-compliance', task='Evaluate {plan_file} against COMP-005 criteria')")
+    print("This is a MANUAL step - you must invoke each subagent individually.")
+    print("Use the run_subagent tool for each competency:")
+    print("\n1. Technical Architecture:")
+    print(f"   run_subagent(profile='technical-architecture', task='Evaluate {plan_file} against COMP-001 criteria and return JSON evaluation')")
+    print("\n2. Domain Relevance:")
+    print(f"   run_subagent(profile='domain-relevance', task='Evaluate {plan_file} against COMP-002 criteria and return JSON evaluation')")
+    print("\n3. Communication Quality:")
+    print(f"   run_subagent(profile='communication-quality', task='Evaluate {plan_file} against COMP-003 criteria and return JSON evaluation')")
+    print("\n4. Cross-Team Impact:")
+    print(f"   run_subagent(profile='cross-team-impact', task='Evaluate {plan_file} against COMP-004 criteria and return JSON evaluation')")
+    print("\n5. Governance Compliance:")
+    print(f"   run_subagent(profile='governance-compliance', task='Evaluate {plan_file} against COMP-005 criteria and return JSON evaluation')")
     
-    print("\n[INFO] All subagents use SWE-1.6 model (desktop IDE built-in)")
+    print("\n" + "=" * 60)
+    print("COMPLIANCE REQUIREMENTS")
+    print("=" * 60)
+    print("After running all 5 subagents:")
+    print("1. Collect all JSON evaluations")
+    print("2. Fix all CRITICAL/HIGH findings")
+    print("3. Defer MEDIUM/LOW strategic issues to Round Table")
+    print("4. Post compliance: ✅ Gate PLAN-5.5 PASS: Competency self-check complete, {N} findings fixed, {N} findings deferred to Round Table")
+    
+    print("\n[WARNING] Phase 5.5 requires manual subagent invocation.")
+    print("[INFO] All subagents use SWE-1.6 model (desktop IDE built-in)")
     print("[INFO] Each subagent has specialized prompts for their competency domain")
-    print("[INFO] Planner should collect JSON evaluations and fix CRITICAL/HIGH findings")
     
     sys.exit(0)
 
