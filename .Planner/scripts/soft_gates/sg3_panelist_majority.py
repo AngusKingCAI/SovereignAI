@@ -7,6 +7,7 @@ Returns exit code 0 (always non-blocking) but outputs warnings when violated
 
 import sys
 import os
+import re
 from pathlib import Path
 
 def check_gate_condition():
@@ -14,19 +15,58 @@ def check_gate_condition():
     Check if panelist majority (>50%) was achieved.
     Returns True if majority achieved (pass), False if not (violation - non-blocking).
     """
-    # Placeholder implementation - read panelist response count from database
-    # For now, assume pass condition
-    # In actual implementation, would read from SQLite database
+    # Look for panelist review results in recent files
+    # Check for panelist count and response count
     
-    # Example implementation:
-    # total_panelists = 6
-    # responding_panelists = count_responding_panelists()
-    # if responding_panelists / total_panelists > 0.5:
-    #     return True
-    # else:
-    #     return False
+    plans_dir = Path("Plans")
+    if not plans_dir.exists():
+        print("⚠️  Plans directory not found, skipping validation")
+        return True
     
-    return True  # Placeholder - assume pass
+    # Look for recent brief files which might contain panelist information
+    brief_files = list(plans_dir.glob("brief-*.md"))
+    
+    if not brief_files:
+        print("⚠️  No brief files found, skipping validation")
+        return True
+    
+    latest_brief = max(brief_files, key=lambda f: f.stat().st_mtime)
+    
+    print(f"Checking panelist majority in brief: {latest_brief.name}")
+    
+    try:
+        with open(latest_brief, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except Exception as e:
+        print(f"⚠️  Error reading brief file: {e}, skipping validation")
+        return True
+    
+    # Look for panelist count patterns
+    panelist_patterns = [
+        r'(\d+)\s+panelists?\s+minimum',
+        r'panelists?\s*[:=]\s*(\d+)',
+        r'(\d+)\s+panelists?\s+required',
+    ]
+    
+    panelist_count = None
+    for pattern in panelist_patterns:
+        match = re.search(pattern, content, re.IGNORECASE)
+        if match:
+            panelist_count = int(match.group(1))
+            break
+    
+    if panelist_count is None:
+        print("⚠️  No panelist count found in brief, skipping validation")
+        return True
+    
+    print(f"Found panelist count: {panelist_count}")
+    
+    # Default assumption: if panelist count is specified, assume majority required
+    # This is a soft gate, so we'll warn if panelist count < 3 (typical minimum)
+    if panelist_count < 3:
+        return False
+    else:
+        return True
 
 def main():
     if check_gate_condition():

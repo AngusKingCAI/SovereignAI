@@ -10,6 +10,7 @@ Returns exit code 0 (pass) or 1 (fail)
 
 import sys
 import os
+import re
 from pathlib import Path
 
 def check_gate_condition():
@@ -17,23 +18,83 @@ def check_gate_condition():
     Check that scope boundaries are clearly defined.
     Returns True if gate passes, False otherwise.
     """
-    # Placeholder validation logic
-    # In actual implementation, this would:
-    # 1. Read the plan file
-    # 2. Check scope section exists
-    # 3. Validate in-scope deliverables are clearly defined
-    # 4. Validate out-of-scope items are explicitly listed
-    # 5. Validate no vague boundaries (no "and related items", "etc.", "as needed")
+    # Find the most recent plan file
+    plans_dir = Path("Plans")
+    if not plans_dir.exists():
+        print("⚠️  Plans directory not found, skipping validation")
+        return True
     
-    # For now, return True as placeholder
-    return True
+    plan_files = []
+    for pattern in ["plan-*.md", "plan-*.Rev*.md"]:
+        plan_files.extend(plans_dir.glob(pattern))
+    
+    plan_files = [f for f in plan_files if "completed" not in str(f)]
+    
+    if not plan_files:
+        print("⚠️  No plan files found, skipping validation")
+        return True
+    
+    latest_plan = max(plan_files, key=lambda f: f.stat().st_mtime)
+    
+    print(f"Validating plan: {latest_plan.name}")
+    
+    try:
+        with open(latest_plan, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except Exception as e:
+        print(f"❌ Error reading plan file: {e}")
+        return False
+    
+    issues = []
+    
+    # Check for scope indicators
+    scope_indicators = [
+        r'\bin scope\b',
+        r'\bout of scope\b',
+        r'\bscope\b.*\bboundar',
+        r'\bwhat this plan does\b',
+        r'\bwhat this plan does not do\b',
+        r'\blocked scope\b',
+        r'\bscope adjudication\b'
+    ]
+    
+    scope_found = False
+    for pattern in scope_indicators:
+        if re.search(pattern, content, re.IGNORECASE):
+            scope_found = True
+            break
+    
+    if not scope_found:
+        issues.append("No clear scope boundaries defined")
+    
+    # Check for in-scope/out-of-scope delineation
+    if not re.search(r'\bin[- ]scope\b', content, re.IGNORECASE):
+        issues.append("Missing in-scope delineation")
+    
+    if not re.search(r'\bout[- ]scope\b', content, re.IGNORECASE):
+        issues.append("Missing out-of-scope delineation")
+    
+    # Check for what's NOT included (good scope practice)
+    if not re.search(r'\bwhat this plan does not\b', content, re.IGNORECASE):
+        issues.append("Missing statement of what plan does not do")
+    
+    # Check for open questions section (indicates scope boundaries)
+    if not re.search(r'\bopen questions?\b', content, re.IGNORECASE):
+        issues.append("Missing open questions section (helps define scope)")
+    
+    if issues:
+        print(f"❌ Gate HG-2 FAIL: Scope boundaries validation failed")
+        for issue in issues:
+            print(f"   - {issue}")
+        return False
+    else:
+        print(f"✅ Gate HG-2 PASS: Scope boundaries are clearly defined")
+        return True
 
 def main():
     if check_gate_condition():
-        print("✅ Gate HG-2 PASS: Scope boundaries are clearly defined")
         sys.exit(0)
     else:
-        print("❌ Gate HG-2 FAIL: Scope boundaries are undefined")
         sys.exit(1)
 
 if __name__ == "__main__":

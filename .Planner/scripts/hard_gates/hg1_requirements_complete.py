@@ -10,6 +10,7 @@ Returns exit code 0 (pass) or 1 (fail)
 
 import sys
 import os
+import re
 from pathlib import Path
 
 def check_gate_condition():
@@ -17,26 +18,89 @@ def check_gate_condition():
     Check that requirements are complete and unambiguous.
     Returns True if gate passes, False otherwise.
     """
-    # This is a template - actual implementation would read plan files
-    # and validate requirements section for completeness and clarity
+    # Find the most recent plan file
+    plans_dir = Path("Plans")
+    if not plans_dir.exists():
+        print("⚠️  Plans directory not found, skipping validation")
+        return True
     
-    # Placeholder validation logic
-    # In actual implementation, this would:
-    # 1. Read the plan file
-    # 2. Check requirements section exists
-    # 3. Validate requirements are not vague (no "to be determined", "TBD", etc.)
-    # 4. Validate requirements are specific and actionable
-    # 5. Validate no contradictory requirements
+    # Look for plan files (excluding completed directory)
+    plan_files = []
+    for pattern in ["plan-*.md", "plan-*.Rev*.md"]:
+        plan_files.extend(plans_dir.glob(pattern))
     
-    # For now, return True as placeholder
-    return True
+    # Filter out completed plans
+    plan_files = [f for f in plan_files if "completed" not in str(f)]
+    
+    if not plan_files:
+        print("⚠️  No plan files found, skipping validation")
+        return True
+    
+    # Get the most recently modified plan file
+    latest_plan = max(plan_files, key=lambda f: f.stat().st_mtime)
+    
+    print(f"Validating plan: {latest_plan.name}")
+    
+    try:
+        with open(latest_plan, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except Exception as e:
+        print(f"❌ Error reading plan file: {e}")
+        return False
+    
+    # Check for key requirement indicators
+    issues = []
+    
+    # Check for dependencies section
+    if "Depends on:" not in content and "depends on" not in content.lower():
+        issues.append("Missing dependencies information")
+    
+    # Check for vision principles
+    if "Vision principles:" not in content and "vision principles" not in content.lower():
+        issues.append("Missing vision principles")
+    
+    # Check for architectural context or context section
+    if "Architectural Context" not in content and "Context" not in content:
+        issues.append("Missing architectural context or context section")
+    
+    # Check for vague terms
+    vague_patterns = [
+        r'\bTBD\b',
+        r'\bto be determined\b',
+        r'\bTBA\b',
+        r'\bto be announced\b',
+        r'\bTBC\b',
+        r'\bto be confirmed\b',
+        r'\bTODO\b(?!\s*:)',  # Allow TODO: but not standalone TODO
+        r'\bfuture work\b',
+        r'\blater\b(?!\s*phase)',  # Allow "later phase" but not standalone "later"
+    ]
+    
+    for pattern in vague_patterns:
+        if re.search(pattern, content, re.IGNORECASE):
+            issues.append(f"Found vague term: {pattern}")
+    
+    # Check for specific step sections (S1, S2, etc.)
+    if not re.search(r'## S\d+\s*—', content):
+        issues.append("Missing specific step sections (S1, S2, etc.)")
+    
+    # Check for compliance lines
+    if not re.search(r'✅', content):
+        issues.append("Missing compliance indicators")
+    
+    if issues:
+        print(f"❌ Gate HG-1 FAIL: Requirements validation failed")
+        for issue in issues:
+            print(f"   - {issue}")
+        return False
+    else:
+        print(f"✅ Gate HG-1 PASS: Requirements are complete and unambiguous")
+        return True
 
 def main():
     if check_gate_condition():
-        print("✅ Gate HG-1 PASS: Requirements are complete and unambiguous")
         sys.exit(0)
     else:
-        print("❌ Gate HG-1 FAIL: Requirements are incomplete or ambiguous")
         sys.exit(1)
 
 if __name__ == "__main__":
