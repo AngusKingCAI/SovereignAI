@@ -12,6 +12,15 @@ import subprocess
 import argparse
 from pathlib import Path
 
+# Add parent directory to path for checkpoint manager import
+scripts_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(scripts_dir))
+
+try:
+    from checkpoint_manager import CheckpointManager
+except ImportError:
+    CheckpointManager = None
+
 # UTF-8 print helper for Windows console compatibility
 def safe_print(text):
     try:
@@ -23,21 +32,21 @@ def safe_print(text):
 # Hard gate mappings for each phase (blocking)
 # Note: Phase 0 is deliberately un-gated (optional batch optimization phase)
 PHASE_HARD_GATES = {
-    0: ["hg16_brief_token_budget.py", "hg20_goal_tree_present.py"],  # Brief token budget + goal tree for batch creation
-    1: ["hg1_requirements_complete.py", "hg2_scope_defined.py", "hg3_dependencies_feasible.py"],
-    2: ["hg14_plan_structure_pr6.py"],
+    "0": ["hg16_brief_token_budget.py", "hg20_goal_tree_present.py"],  # Brief token budget + goal tree for batch creation
+    "1": ["hg1_requirements_complete.py", "hg2_scope_defined.py", "hg3_dependencies_feasible.py"],
+    "2": ["hg14_plan_structure_pr6.py"],
     "2.5": ["hg18_spec_approved.py"],  # Spec review gate
-    3: ["hg15_path_verification_pr2.py"],
-    4: ["hg4_sections_complete.py", "hg5_language_clear.py", "hg6_landmines_screened.py"],
+    "3": ["hg15_path_verification_pr2.py"],
+    "4": ["hg4_sections_complete.py", "hg5_language_clear.py", "hg6_landmines_screened.py"],
     "4.5": ["hg19_spec_diff_clean.py"],  # Spec-diff validation
-    5: ["hg7_compliance_lines_present.py", "hg8_paths_valid.py", "hg9_manifest_complete.py"],
-    6: ["hg10_critical_findings_addressed.py", "hg11_high_findings_addressed.py", "hg12_no_blocking_landmines.py", "hg13_manifest_present.py"]
+    "5": ["hg7_compliance_lines_present.py", "hg8_paths_valid.py", "hg9_manifest_complete.py"],
+    "6": ["hg10_critical_findings_addressed.py", "hg11_high_findings_addressed.py", "hg12_no_blocking_landmines.py", "hg13_manifest_present.py"]
 }
 
 # Soft gate mappings for each phase (non-blocking)
 PHASE_SOFT_GATES = {
-    0: ["sg6_brief_token_budget.py"],  # Warn if brief exceeds token budget
-    6: ["sg1_score_below_70.py", "sg2_score_70_89.py", "sg3_panelist_majority.py", "sg5_self_check_complete.py", "sg7_panelist_prompt_token_budget.py", "sg4_panelist_calibration.py"]
+    "0": ["sg6_brief_token_budget.py"],  # Warn if brief exceeds token budget
+    "6": ["sg1_score_below_70.py", "sg2_score_70_89.py", "sg3_panelist_majority.py", "sg5_self_check_complete.py", "sg7_panelist_prompt_token_budget.py", "sg4_panelist_calibration.py"]
 }
 
 def run_gate(gate_script, scripts_dir, gate_type="hard", soft_gates_dir=None):
@@ -91,15 +100,18 @@ def run_gate(gate_script, scripts_dir, gate_type="hard", soft_gates_dir=None):
 
 def run_phase_gates(phase, scripts_dir, soft_gates_dir=None):
     """Run all hard gates (blocking) and soft gates (non-blocking) for a specific phase."""
-    if phase not in PHASE_HARD_GATES:
-        if phase == 0:
+    # Convert phase to string for dictionary lookup
+    phase_str = str(phase)
+    
+    if phase_str not in PHASE_HARD_GATES:
+        if phase_str == "0":
             safe_print(f"Phase 0 is deliberately un-gated (optional batch optimization phase)")
             return True
         safe_print(f"Invalid phase: {phase}")
         return False
     
     # Run hard gates first (blocking)
-    hard_gates = PHASE_HARD_GATES[phase]
+    hard_gates = PHASE_HARD_GATES[phase_str]
     safe_print(f"Running {len(hard_gates)} hard gates for Phase {phase}...")
     
     all_hard_passed = True
@@ -109,12 +121,41 @@ def run_phase_gates(phase, scripts_dir, soft_gates_dir=None):
     
     if not all_hard_passed:
         safe_print(f"Phase {phase} hard gates failed - blocking execution")
+        # Don't create checkpoint when gates fail
     else:
         safe_print(f"All Phase {phase} hard gates passed")
+        
+        # Create checkpoint after successful phase completion (PR21)
+        if CheckpointManager:
+            try:
+                project_root = Path.cwd()
+                checkpoint_manager = CheckpointManager(project_root)
+                
+                execution_metadata = {
+                    "phase_completion": True,
+                    "phase": str(phase),
+                    "completion_timestamp": __import__('datetime').datetime.now().isoformat(),
+                    "trigger": "phase_gates_passed",
+                    "hard_gates_passed": len(hard_gates)
+                }
+                
+                checkpoint_manager.create_checkpoint(
+                    phase=f"Phase {phase}",
+                    pending_items=[],
+                    compliance_lines=[],
+                    plan_files=[],
+                    execution_metadata=execution_metadata
+                )
+                
+                safe_print(f"Checkpoint created after Phase {phase} completion")
+            except Exception as e:
+                safe_print(f"Checkpoint creation failed: {e}")
+        else:
+            safe_print("Checkpoint manager not available, skipping checkpoint creation")
     
     # Run soft gates (non-blocking) - run even if hard gates failed
-    if phase in PHASE_SOFT_GATES:
-        soft_gates = PHASE_SOFT_GATES[phase]
+    if phase_str in PHASE_SOFT_GATES:
+        soft_gates = PHASE_SOFT_GATES[phase_str]
         safe_print(f"Running {len(soft_gates)} soft gates for Phase {phase} (non-blocking)...")
         
         for gate_script in soft_gates:
@@ -126,7 +167,7 @@ def run_phase_gates(phase, scripts_dir, soft_gates_dir=None):
 
 def main():
     parser = argparse.ArgumentParser(description="Run gates for a specific phase (hard gates blocking, soft gates non-blocking)")
-    parser.add_argument("--phase", type=int, required=True, help="Phase number (1, 2, 3, 4, 5, or 6). Note: Phase 0 is deliberately un-gated (optional batch optimization phase).")
+    parser.add_argument("--phase", type=str, required=True, help="Phase number (0, 1, 2, 2.5, 3, 4, 4.5, 5, or 6). Note: Phase 0 is deliberately un-gated (optional batch optimization phase).")
     parser.add_argument("--scripts-dir", type=str, default=".Planner/scripts/hard_gates", help="Directory containing hard gate scripts")
     parser.add_argument("--soft-gates-dir", type=str, default=".Planner/scripts/soft_gates", help="Directory containing soft gate scripts")
     
@@ -134,7 +175,13 @@ def main():
     scripts_dir = Path(args.scripts_dir)
     soft_gates_dir = Path(args.soft_gates_dir) if args.soft_gates_dir else None
     
-    if run_phase_gates(args.phase, scripts_dir, soft_gates_dir):
+    # Convert phase to appropriate type (int or str)
+    try:
+        phase_arg = int(args.phase)
+    except ValueError:
+        phase_arg = args.phase  # Keep as string for phases like "2.5" or "4.5"
+    
+    if run_phase_gates(phase_arg, scripts_dir, soft_gates_dir):
         sys.exit(0)
     else:
         sys.exit(1)

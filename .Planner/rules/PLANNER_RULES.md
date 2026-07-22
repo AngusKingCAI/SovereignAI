@@ -1,32 +1,34 @@
-# Planner Rules (PR1-PR16)
+# Planner Rules (PR1-PR21)
 
-**Version**: 1.1  
+**Version**: 1.2  
 **Last Updated**: 2026-07-22  
 **Status**: Active
 
 ## Rule Index
 
-| Rule ID | Trigger | Section |
-|---------|---------|---------|
-| PR1 | Plan creation | §1 |
-| PR2 | Path convention | §2 |
-| PR3 | Design doc integration | §3 |
-| PR4 | Devin integration | §4 |
-| PR5 | Executor Manifest | §5 |
-| PR6 | Plan structure | §6 |
-| PR7 | Quality gates | §7 |
-| PR8 | Landmine screening | §8 |
-| PR9 | Reviewer integration | §9 |
-| PR10 | Workflow integration | §10 |
-| PR11 | Compliance posting | §11 |
-| PR12 | Rule creation | §12 |
-| PR13 | Rule lifecycle | §13 |
-| PR14 | Stop conditions | §14 |
-| PR15 | Token awareness | §15 |
-| PR16 | Universal rules | §16 |
-| PR17 | Spec-first plan creation | §17 |
-| PR18 | Confidence-weighted consensus | §18 |
-| PR19 | Hierarchical goal decomposition | §19 |
+| Rule ID | Trigger | Section | Line |
+|---------|---------|---------|------|
+| PR1 | Plan creation | §1 | 35 |
+| PR2 | Path convention | §2 | 52 |
+| PR3 | Design doc integration | §3 | 69 |
+| PR4 | Devin integration | §4 | 86 |
+| PR5 | Executor Manifest | §5 | 103 |
+| PR6 | Plan structure | §6 | 121 |
+| PR7 | Quality gates | §7 | 139 |
+| PR8 | Landmine screening | §8 | 157 |
+| PR9 | Reviewer integration | §9 | 175 |
+| PR10 | Workflow integration | §10 | 193 |
+| PR11 | Compliance posting | §11 | 211 |
+| PR12 | Rule creation | §12 | 229 |
+| PR13 | Rule lifecycle | §13 | 247 |
+| PR14 | Stop conditions | §14 | 265 |
+| PR15 | Token awareness | §15 | 283 |
+| PR16 | Universal rules | §16 | 301 |
+| PR17 | Spec-first plan creation | §17 | 319 |
+| PR18 | Confidence-weighted consensus | §18 | 338 |
+| PR19 | Hierarchical goal decomposition | §19 | 364 |
+| PR20 | Runtime guardrail hooks | §20 | 385 |
+| PR21 | Durable execution & checkpointing | §21 | 405 |
 
 ---
 
@@ -377,3 +379,45 @@
 - **Compliance**: Post `✅ Gate PR19 PASS: Hierarchical goal decomposition completed, {N} sub-goals, {N} levels`
 
 **Evolution Condition**: Goal decomposition patterns change or Galileo strategy evolves
+
+---
+
+## §20 - Runtime Guardrail Hooks (PR20)
+
+**Trigger**: `hook`, `guardrail`, `enforcement`, `automatic validation`  
+**Situation**: Hard gates must be unbypassable via runtime hooks instead of manual invocation  
+**Judgment**: Implement Devin hooks for automatic enforcement of validation gates per AWS and Galileo research
+
+**Detailed Rule**:
+- **PreToolUse hook**: Before any file write to `plans/`, automatically run validation gates (HG-7, HG-8, HG-9). If any fails, block the write.
+- **PostToolUse hook**: After any plan file modification, automatically update workflow state and re-run phase gates for current phase.
+- **SessionStart hook**: On session start, query workflow state and print "Resuming from Phase X.Y" for state awareness.
+- **SessionEnd hook**: On session end, write checkpoint with current phase, pending items, and unposted compliance lines.
+- **Unbypassable enforcement**: Hooks execute deterministically on every matching tool call - agent cannot skip validation.
+- **Hook configuration**: Configure in `.devin/hooks.v1.json` following Claude Code compatible format.
+- **Exit code blocking**: Exit code 0 = allow, exit code 2 = block, exit code 1 = warn but allow.
+- **Compliance**: Post `✅ Gate PR20 PASS: Runtime guardrail hooks configured and active`
+
+**Evolution Condition**: Hook system changes or platform requirements evolve
+
+---
+
+## §21 - Durable Execution & Checkpointing (PR21)
+
+**Trigger**: `checkpoint`, `recovery`, `state persistence`, `resumption`  
+**Situation**: Long-running plan execution may be interrupted and must be resumable from last checkpoint  
+**Judgment**: Implement checkpointing system that saves workflow state, phase progress, and pending items for session resumption
+
+**Detailed Rule**:
+- **Checkpoint format**: JSON checkpoint file with current phase, pending items, compliance lines, and execution state
+- **Checkpoint location**: `.Planner/checkpoints/checkpoint-{timestamp}.json` in project directory
+- **Checkpoint triggers**: Automatic checkpoint after each phase completion, session end, and on demand
+- **State restoration**: SessionStart hook reads latest checkpoint and prints "Resuming from Phase X.Y"
+- **Checkpoint content**: Include phase progress, pending items, compliance lines, plan file references, and execution metadata
+- **Recovery validation**: On resumption, validate checkpoint integrity and consistency with current file state
+- **Rollback support**: Support rollback to previous checkpoint if execution state is corrupted
+- **Compliance**: Post `✅ Gate PR21 PASS: Checkpoint created at Phase X.Y, state persisted for recovery`
+
+**Evidence**: Galileo's Strategy #8 emphasizes durable execution with checkpointing for reliability and recovery
+
+**Evolution Condition**: Checkpointing requirements change or recovery patterns evolve

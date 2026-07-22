@@ -1,0 +1,46 @@
+{
+  "PreToolUse": [
+    {
+      "matcher": "write|edit",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python .Planner/scripts/hooks/pretooluse_plan_write.py"
+        }
+      ]
+    }
+  ],
+  "PostToolUse": [
+    {
+      "matcher": "write|edit",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python .Planner/scripts/hooks/posttooluse_plan_write.py"
+        }
+      ]
+    }
+  ],
+  "SessionStart": [
+    {
+      "matcher": ".*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python .Planner/scripts/hooks/session_start.py"
+        }
+      ]
+    }
+  ],
+  "SessionEnd": [
+    {
+      "matcher": ".*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python .Planner/scripts/hooks/session_end.py"
+        }
+      ]
+    }
+  ]
+}

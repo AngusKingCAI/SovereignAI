@@ -108,7 +108,7 @@ def check_gate_condition():
     # Check for PR rule references
     pr_references = re.findall(r'PR\d+', content)
     if not pr_references:
-        issues.append("Missing PR rule references (PR1-PR16)")
+        issues.append("Missing PR rule references (PR1-PR21)")
     
     # Check for compliance lines
     compliance_lines = re.findall(r'✅.*PASS', content)

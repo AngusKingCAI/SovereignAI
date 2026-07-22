@@ -1,6 +1,6 @@
 # Plan Workflow
 
-**Version**: 1.0  
+**Version**: 1.2  
 **Last Updated**: 2026-07-22  
 **Status**: Active
 
@@ -9,15 +9,17 @@ Create original plans for the SovereignAI project based on Researcher design doc
 
 ## Workflow Rule Index
 
-| Rule ID | Trigger | Section |
-|---------|---------|---------|
-| W1 | Workflow integration vs separation | §1 |
-| W2 | Round Table quality gates and panelist scoring | §2 |
-| W3 | Panelist web search integration | §3 |
-| W4 | Soft vs hard gate implementation | §4 |
-| W5 | Context budgeting for token limits | §5 |
-| W6 | Spec-first validation pattern | §6 |
-| W7 | Hierarchical goal decomposition | §7 |
+| Rule ID | Trigger | Section | Line |
+|---------|---------|---------|------|
+| W1 | Workflow integration vs separation | §1 | 26 |
+| W2 | Round Table quality gates and panelist scoring | §2 | 41 |
+| W3 | Panelist web search integration | §3 | 59 |
+| W4 | Soft vs hard gate implementation | §4 | 76 |
+| W5 | Context budgeting for token limits | §5 | 93 |
+| W6 | Spec-first validation pattern | §6 | 111 |
+| W7 | Hierarchical goal decomposition | §7 | 129 |
+| W8 | Runtime guardrail hooks | §8 | 148 |
+| W9 | Durable execution & checkpointing | §9 | 167 |
 
 ## Workflow Design Rules
 
@@ -143,12 +145,55 @@ Create original plans for the SovereignAI project based on Researcher design doc
 
 **Evidence**: Galileo's Strategy #2 emphasizes hierarchical goal decomposition for complex task coordination and blocking propagation for cascade failure prevention
 
+### §8 - Runtime Guardrail Hooks (W8)
+
+**Trigger**: Plan file modifications, session lifecycle events  
+**Situation**: Hard gates must be unbypassable via runtime hooks instead of manual invocation  
+**Judgment**: Implement Devin hooks for automatic enforcement of validation gates per AWS and Galileo research
+
+**Detailed Rule**:
+- **PreToolUse hook**: Before any file write to `plans/`, automatically run validation gates (HG-7, HG-8, HG-9). If any fails, block the write.
+- **PostToolUse hook**: After any plan file modification, automatically update workflow state and re-run phase gates for current phase.
+- **SessionStart hook**: On session start, query workflow state and print "Resuming from Phase X.Y" for state awareness.
+- **SessionEnd hook**: On session end, write checkpoint with current phase, pending items, and unposted compliance lines.
+- **Unbypassable enforcement**: Hooks execute deterministically on every matching tool call - agent cannot skip validation.
+- **Hook configuration**: Configure in `.devin/hooks.v1.json` following Claude Code compatible format.
+- **Exit code blocking**: Exit code 0 = allow, exit code 2 = block, exit code 1 = warn but allow.
+- **Hook scripts**: Create hook scripts in `.Planner/scripts/hooks/` for PreToolUse, PostToolUse, SessionStart, SessionEnd.
+- **Compliance**: Post `✅ Gate W8 PASS: Runtime guardrail hooks configured and active`
+
+**Evidence**: AWS prescriptive guidance and Galileo's Strategy #8 both emphasize runtime guardrails that cannot be bypassed by agents
+
+### §9 - Durable Execution & Checkpointing (W9)
+
+**Trigger**: Phase completion, session end, on-demand checkpointing  
+**Situation**: Long-running plan execution may be interrupted and must be resumable from last checkpoint  
+**Judgment**: Implement checkpointing system that saves workflow state, phase progress, and pending items for session resumption
+
+**Detailed Rule**:
+- **Checkpoint format**: JSON checkpoint file with current phase, pending items, compliance lines, and execution state
+- **Checkpoint location**: `.Planner/checkpoints/checkpoint-{timestamp}.json` in project directory
+- **Checkpoint triggers**: Automatic checkpoint after each phase completion, session end, and on demand
+- **State restoration**: SessionStart hook reads latest checkpoint and prints "Resuming from Phase X.Y"
+- **Checkpoint content**: Include phase progress, pending items, compliance lines, plan file references, and execution metadata
+- **Recovery validation**: On resumption, validate checkpoint integrity and consistency with current file state
+- **Rollback support**: Support rollback to previous checkpoint if execution state is corrupted
+- **Compliance**: Post `✅ Gate W9 PASS: Checkpoint created at Phase X.Y, state persisted for recovery`
+
+**Evidence**: Galileo's Strategy #8 emphasizes durable execution with checkpointing for reliability and recovery
+
 ## Workflow Overview
 ```
 Requirements → Plan Batch Creation → Individual Plan Creation → Brief Assembly → Panelist Prompt Creation → Round Table Review → Reviewer Pattern Analysis → Executor
 ```
 
 **Note**: Phase 0 (Plan Batch Creation) is optional - only triggered when user provides requirements for multiple related plans. Single plans skip Phase 0 and start at Phase 1.
+
+**Runtime Guardrail Integration**: 
+- **Hook-based enforcement**: Hard gates are enforced via `.devin/hooks.v1.json` hooks (PreToolUse, PostToolUse)
+- **Unbypassable validation**: Plan file modifications automatically trigger validation gates (HG-7, HG-8, HG-9) before write
+- **State tracking**: SessionStart/SessionEnd hooks provide state awareness and checkpointing
+- **Manual invocation still supported**: Agents can still manually run `python .Planner/scripts/hard_gates/run_phase_gates.py --phase {N}` for explicit validation
 
 **Gate Design Note**: Phase 0 is deliberately un-gated (no hard gates) because it is an optional batch optimization phase rather than a core plan creation phase. Quality gates are applied in subsequent phases (Phase 1-6) where actual plan validation occurs.
 
@@ -215,16 +260,17 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 ## Phase 2: Plan Structure Design
 
 **Trigger**: Input assessment complete  
-**Goal**: Design plan structure following PR1-PR15 and GR1-GR5
+**Goal**: Design plan structure following PR1-PR21 and GR1-GR5
 
 **Steps**:
 1. **Header Design**: Create plan header with Vision principles, PR rules reference
 2. **Manifest Design**: Design Executor Manifest with phases, deliverables, gates
 3. **Phase Planning**: Break down work into executable phases
 4. **Quality Gates**: Define verification gates for each phase
-5. **Compliance**: Post `✅ Gate PLAN-2 PASS: Plan structure designed, gates defined`
+5. **Runtime Guardrail**: PreToolUse hook automatically validates plan structure (HG-14) on file write
+6. **Compliance**: Post `✅ Gate PLAN-2 PASS: Plan structure designed, gates defined, runtime guardrail active`
 
-**Exit Gate**: Plan structure follows PR1-PR15 requirements
+**Exit Gate**: Plan structure follows PR1-PR21 requirements
 
 ---
 
@@ -262,7 +308,8 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 2. **Manifest Completion**: Complete Executor Manifest with all required information
 3. **Phase Details**: Fill in detailed steps for each phase
 4. **Path Verification**: Ensure all paths are repo-relative (PR2)
-5. **Compliance**: Post `✅ Gate PLAN-3 PASS: Plan drafted, paths verified`
+5. **Runtime Guardrail**: PreToolUse hook automatically validates path requirements (HG-15) on file write
+6. **Compliance**: Post `✅ Gate PLAN-3 PASS: Plan drafted, paths verified, runtime guardrail active`
 
 **Exit Gate**: Plan draft complete with all required sections
 
@@ -328,11 +375,12 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 2. **Compliance Check**: Verify all compliance lines are present
 3. **Path Validation**: Final validation of all referenced paths
 4. **Manifest Validation**: Verify Executor Manifest is complete (PR5)
-5. **Hard Gate Validation**: Run validation scripts per AGENTS.md enforcement mechanism
+5. **Runtime Guardrail**: PreToolUse hook automatically validates compliance lines (HG-7), paths (HG-8), and manifest (HG-9) on file write
+6. **Hard Gate Validation**: Run validation scripts per AGENTS.md enforcement mechanism
    ```bash
    python .Planner/scripts/hard_gates/run_phase_gates.py --phase 5
    ```
-6. **Compliance**: Post `✅ Gate PLAN-5 PASS: Plan finalized, ready for Round Table, hard gates validated`
+7. **Compliance**: Post `✅ Gate PLAN-5 PASS: Plan finalized, ready for Round Table, hard gates validated, runtime guardrail active`
 
 **Hard Gates Enforcement**:
 - **HG-7**: Missing compliance lines BLOCK plan delivery (enforced by validation script)
@@ -625,9 +673,14 @@ Submit your scores (1-4 for each assigned competency) before reviewing other pan
 **All phases must follow**:
 - **GR1-GR5**: Universal governance rules (agent responsibilities, single-responsibility, handoff boundaries)
 - **ER1-ER5**: Universal editing rules (file editing best practices, large changes, failure recovery)
-- **PR1-PR15**: Planner-specific rules (plan creation, structure, quality gates)
+- **PR1-PR21**: Planner-specific rules (plan creation, structure, quality gates, runtime guardrails, checkpointing)
 - **PR16**: Universal rules integration
-- **W1-W4**: Plan workflow design rules (workflow integration, panelist scoring, web search, soft/hard gates)
+- **PR17**: Spec-first plan creation
+- **PR18**: Confidence-weighted consensus
+- **PR19**: Hierarchical goal decomposition
+- **PR20**: Runtime guardrail hooks
+- **PR21**: Durable execution & checkpointing
+- **W1-W9**: Plan workflow design rules (workflow integration, panelist scoring, web search, soft/hard gates, context budgeting, spec-first validation, hierarchical decomposition, runtime guardrails, checkpointing)
 
 ## Planner Hard Gates (Blocking Constraints per Rule W4)
 

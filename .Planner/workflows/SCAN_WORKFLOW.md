@@ -1,6 +1,6 @@
 ﻿# Scan Workflow
 
-**Version**: 1.0  
+**Version**: 1.1  
 **Last Updated**: 2026-07-22  
 **Status**: Active
 
@@ -62,7 +62,7 @@ Reviewer Findings → Scan Plan Creation → Scan Plan Delivery → Round Table 
 ## Phase 4: Scan Plan Creation
 
 **Trigger**: Fix strategy design complete  
-**Goal**: Create comprehensive scan plan following PR1-PR15 and GR1-GR5
+**Goal**: Create comprehensive scan plan following PR1-PR21 and GR1-GR5
 
 **Steps**:
 1. **Plan Header**: Create plan header with Vision principles, PR rules, and resolved questions (PR1)
@@ -129,7 +129,7 @@ Reviewer Findings → Scan Plan Creation → Scan Plan Delivery → Round Table 
 **All phases must follow**:
 - **GR1-GR5**: Universal governance rules (agent responsibilities, single-responsibility, handoff boundaries)
 - **ER1-ER5**: Universal editing rules (file editing best practices, large changes, failure recovery)
-- **PR1-PR15**: Planner-specific rules (plan creation, structure, quality gates)
+- **PR1-PR21**: Planner-specific rules (plan creation, structure, quality gates, runtime guardrails, checkpointing)
 - **PR16**: Universal rules integration
 - **G6**: Gate enforcement mechanisms (hard gates blocking, soft gates non-blocking per AGENTS.md)
 
