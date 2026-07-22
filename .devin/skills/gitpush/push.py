@@ -92,6 +92,24 @@ def main():
     print("Git Push Skill: Automated Tagging and Push")
     print("=" * 60)
     
+    # Parse arguments
+    increment_type = "patch"
+    auto_confirm = False
+    
+    i = 1
+    while i < len(sys.argv):
+        arg = sys.argv[i]
+        if arg in ["major", "minor", "patch"]:
+            increment_type = arg
+        elif arg == "--confirm":
+            auto_confirm = True
+        i += 1
+    
+    if increment_type not in ["major", "minor", "patch"]:
+        print(f"[ERROR] Invalid increment type: {increment_type}")
+        print("[INFO] Valid types: major, minor, patch")
+        sys.exit(1)
+    
     # Check for uncommitted changes
     if check_uncommitted_changes():
         print("[WARN] Uncommitted changes detected:")
@@ -112,15 +130,6 @@ def main():
     # Get current version
     current_version = get_current_version()
     print(f"[INFO] Current version: {current_version}")
-    
-    # Determine increment type (default: patch)
-    increment_type = "patch"
-    if len(sys.argv) > 1:
-        increment_type = sys.argv[1].lower()
-        if increment_type not in ["major", "minor", "patch"]:
-            print(f"[ERROR] Invalid increment type: {increment_type}")
-            print("[INFO] Valid types: major, minor, patch")
-            sys.exit(1)
     
     # Calculate new version
     new_version = increment_version(current_version, increment_type)
@@ -149,8 +158,23 @@ def main():
     print("=" * 60)
     
     # User confirmation (Gate A10)
-    print("\n[CONFIRM] Do you want to proceed with push? (yes/no)")
-    confirmation = input().strip().lower()
+    # Check if running in interactive mode
+    is_interactive = sys.stdin.isatty()
+    
+    if is_interactive:
+        print("\n[CONFIRM] Do you want to proceed with push? (yes/no)")
+        try:
+            confirmation = input().strip().lower()
+        except EOFError:
+            print("[ERROR] No input received, cancelling push")
+            sys.exit(0)
+    elif auto_confirm:
+        confirmation = "yes"
+    else:
+        # Non-interactive mode without auto-confirm
+        print("[ERROR] Non-interactive mode requires --confirm flag")
+        print("[INFO] Run with: python push.py [major|minor|patch] --confirm")
+        sys.exit(1)
     
     if confirmation not in ["yes", "y"]:
         print("[CANCELLED] Push cancelled by user")
