@@ -191,7 +191,7 @@ def main():
         print("[INFO] Delete existing tag first: git tag -d {new_version}")
         sys.exit(1)
     
-    stdout, stderr = run_command(f"git tag -a {new_version} -m 'Release {new_version}'")
+    stdout, stderr = run_command(f'git tag -a "{new_version}" -m "Release {new_version}"')
     if stderr:
         print(f"[ERROR] Failed to create tag: {stderr}")
         sys.exit(1)
