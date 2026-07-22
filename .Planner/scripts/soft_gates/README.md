@@ -20,6 +20,10 @@
 ### Self-Check Soft Gates (Phase 6.0)
 - `sg5_self_check_complete.py` - Warn if Phase 6.0 self-check compliance line is missing
 
+### Context Budget Soft Gates (Phase 0, Phase 6.1)
+- `sg6_brief_token_budget.py` - Warn if brief exceeds token budget (≤3000 tokens), recommend content reduction
+- `sg7_panelist_prompt_token_budget.py` - Warn if panelist prompts exceed token budget (≤1500 tokens), recommend prompt reduction
+
 ## Usage Pattern
 
 ```bash

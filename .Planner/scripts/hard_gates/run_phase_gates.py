@@ -23,6 +23,7 @@ def safe_print(text):
 # Hard gate mappings for each phase (blocking)
 # Note: Phase 0 is deliberately un-gated (optional batch optimization phase)
 PHASE_HARD_GATES = {
+    0: ["hg16_brief_token_budget.py"],  # Brief token budget for batch creation
     1: ["hg1_requirements_complete.py", "hg2_scope_defined.py", "hg3_dependencies_feasible.py"],
     2: ["hg14_plan_structure_pr6.py"],
     3: ["hg15_path_verification_pr2.py"],
@@ -33,7 +34,8 @@ PHASE_HARD_GATES = {
 
 # Soft gate mappings for each phase (non-blocking)
 PHASE_SOFT_GATES = {
-    6: ["sg1_score_below_70.py", "sg2_score_70_89.py", "sg3_panelist_majority.py", "sg5_self_check_complete.py"]
+    0: ["sg6_brief_token_budget.py"],  # Warn if brief exceeds token budget
+    6: ["sg1_score_below_70.py", "sg2_score_70_89.py", "sg3_panelist_majority.py", "sg5_self_check_complete.py", "sg7_panelist_prompt_token_budget.py"]
 }
 
 def run_gate(gate_script, scripts_dir, gate_type="hard", soft_gates_dir=None):

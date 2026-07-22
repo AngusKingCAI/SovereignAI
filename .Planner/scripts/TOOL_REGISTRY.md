@@ -11,6 +11,7 @@ Registry of all hard gate scripts with standardized tool descriptions per Anthro
 
 | Tool ID | Tool Name | Trigger Phase | Trigger Condition | Inputs | Outputs | Failure Recovery |
 |---------|-----------|---------------|-------------------|--------|---------|------------------|
+| HG-16 | Brief Token Budget Validation | Phase 0 | After brief creation, before Round Table preparation | None (auto-discovers latest brief) | Exit 0: brief within budget, Exit 1: brief exceeds budget | Reduce brief content, re-run, don't proceed to Round Table |
 | HG-1 | Requirements Complete Validation | Phase 1 | After requirements assessment, before plan drafting | None (auto-discovers latest plan) | Exit 0: requirements complete, Exit 1: specific issues | Fix listed issues, re-run, don't proceed to Phase 2 |
 | HG-2 | Scope Defined Validation | Phase 1 | After requirements assessment, before plan drafting | None (auto-discovers latest plan) | Exit 0: scope defined, Exit 1: scope issues | Add scope section, re-run, don't proceed to Phase 2 |
 | HG-3 | Dependencies Feasible Validation | Phase 1 | After requirements assessment, before plan drafting | None (auto-discovers latest plan) | Exit 0: dependencies feasible, Exit 1: dependency issues | Fix dependency issues, re-run, don't proceed to Phase 2 |
@@ -22,6 +23,7 @@ Registry of all hard gate scripts with standardized tool descriptions per Anthro
 | HG-7 | Compliance Lines Present Validation | Phase 5 | After plan finalization, before Round Table | None (auto-discovers latest plan) | Exit 0: compliance lines present, Exit 1: missing lines | Add compliance lines, re-run, don't proceed to Phase 6 |
 | HG-8 | Paths Valid Validation | Phase 5 | After plan finalization, before Round Table | None (auto-discovers latest plan) | Exit 0: paths valid, Exit 1: path issues | Fix path references, re-run, don't proceed to Phase 6 |
 | HG-9 | Manifest Complete Validation | Phase 5 | After plan finalization, before Round Table | None (auto-discovers latest plan) | Exit 0: manifest complete, Exit 1: missing components | Complete manifest, re-run, don't proceed to Phase 6 |
+| HG-17 | Panelist Prompt Token Budget Validation | Phase 6.1 | After panelist prompt creation, before Round Table execution | None (auto-discovers panelist prompts) | Exit 0: prompts within budget, Exit 1: prompts exceed budget | Reduce prompt content, re-run, don't proceed to Round Table |
 | HG-10 | Critical Findings Addressed Validation | Phase 6 | After Round Table review, before plan delivery | None (queries Round Table database) | Exit 0: CRITICAL findings addressed, Exit 1: unaddressed findings | Address findings, update database, re-run, don't deliver plan |
 | HG-11 | High Findings Addressed Validation | Phase 6 | After Round Table review, before plan delivery | None (queries Round Table database) | Exit 0: HIGH findings addressed, Exit 1: unaddressed findings | Address findings, update database, re-run, don't deliver plan |
 | HG-12 | No Blocking Landmines Validation | Phase 6 | After Round Table review, before plan delivery | None (queries Round Table database) | Exit 0: no blocking landmines, Exit 1: blocking landmines | Address landmines, re-run, don't deliver plan |
@@ -31,19 +33,21 @@ Registry of all hard gate scripts with standardized tool descriptions per Anthro
 
 | Phase | Hard Gates | Blocking? |
 |-------|------------|-----------|
-| Phase 0 | None | N/A (deliberately un-gated) |
+| Phase 0 | HG-16 | Yes |
 | Phase 1 | HG-1, HG-2, HG-3 | Yes |
 | Phase 2 | HG-14 | Yes |
 | Phase 3 | HG-15 | Yes |
 | Phase 4 | HG-4, HG-5, HG-6 | Yes |
 | Phase 5 | HG-7, HG-8, HG-9 | Yes |
-| Phase 6 | HG-10, HG-11, HG-12, HG-13 | Yes |
+| Phase 6 | HG-10, HG-11, HG-12, HG-13, HG-17 | Yes |
 
 ## Tool Distinction Notes
 
 - **HG-9 vs HG-13**: HG-9 checks Executor Manifest completeness (all components present), HG-13 checks Executor Manifest existence (section exists). This distinction prevents false positives.
 - **HG-7 vs HG-8**: HG-7 checks compliance indicators presence, HG-8 checks path validity. Both run in Phase 5 but check different aspects.
 - **HG-10 vs HG-11**: HG-10 checks CRITICAL findings, HG-11 checks HIGH findings. Both query Round Table database but with different severity filters.
+- **HG-16 vs SG-6**: HG-16 is hard gate (blocks) for brief token budget, SG-6 is soft gate (warns) for brief token budget. Same budget, different enforcement.
+- **HG-17 vs SG-7**: HG-17 is hard gate (blocks) for panelist prompt token budget, SG-7 is soft gate (warns) for panelist prompt token budget. Same budget, different enforcement.
 
 ## Tool Testing
 
@@ -65,6 +69,14 @@ Or run all gates for a phase:
 ```bash
 python .Planner/scripts/hard_gates/run_phase_gates.py --phase 1
 ```
+
+## Context Budget Gates
+
+| Context Budget | Hard Gate | Soft Gate | Budget Limit | Trigger Phase |
+|----------------|-----------|-----------|--------------|---------------|
+| Brief Token Budget | HG-16 | SG-6 | 3000 tokens (~2200 words) | Phase 0 |
+| Panelist Prompt Token Budget | HG-17 | SG-7 | 1500 tokens per prompt (~1100 words) | Phase 6.1 |
+| Plan Token Budget | Manual | Manual | 8000 tokens (~6000 words) | Phase 3 |
 
 ## Dependencies
 

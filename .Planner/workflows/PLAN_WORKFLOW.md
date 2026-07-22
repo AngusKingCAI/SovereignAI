@@ -15,6 +15,7 @@ Create original plans for the SovereignAI project based on Researcher design doc
 | W2 | Round Table quality gates and panelist scoring | §2 |
 | W3 | Panelist web search integration | §3 |
 | W4 | Soft vs hard gate implementation | §4 |
+| W5 | Context budgeting for token limits | §5 |
 
 ## Workflow Design Rules
 
@@ -85,6 +86,23 @@ Create original plans for the SovereignAI project based on Researcher design doc
 
 **Evidence**: BP research shows hard-gated verification catches 100% of corrupt episodes with zero false positives, while soft-only approach has 100% false positive rate
 
+### §5 - Context Budgeting for Token Limits (W5)
+
+**Trigger**: Creating briefs, panelist prompts, or plans  
+**Situation**: Determining appropriate token limits for workflow components to prevent context rot  
+**Judgment**: Implement token budget limits per Anthropic research for context window optimization
+
+**Detailed Rule**:
+- **Brief Token Budget**: 3000 tokens (~2200 words) - prevents briefs from becoming full plans
+- **Panelist Prompt Budget**: 1500 tokens per prompt (~1100 words) - prevents prompts from becoming overwhelming
+- **Plan Token Budget**: 8000 tokens (~6000 words) - prevents plans from becoming comprehensive documentation
+- **Context Budget Enforcement**: Hard gates (HG-16, HG-17) + soft gates (SG-6, SG-7) for budget validation
+- **Token Counting Method**: Approximate token counting (1 token ≈ 4 characters) sufficient for budget validation
+- **Budget Rationale**: Context treated as finite resource with diminishing returns per Anthropic research
+- **Compliance**: Post `✅ Gate W5 PASS: Context budgeting follows Anthropic research limits`
+
+**Evidence**: Anthropic research shows context budgeting is the single most important factor for agent reliability, with optimal context windows at 50-70% of maximum capacity for best results
+
 ## Workflow Overview
 ```
 Requirements → Plan Batch Creation → Individual Plan Creation → Brief Assembly → Panelist Prompt Creation → Round Table Review → Reviewer Pattern Analysis → Executor
@@ -107,7 +125,17 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 3. **Batch Structure Design**: Design batch structure with parent plans and sub-plans
 4. **Vision Principles Assignment**: Assign vision principles to each plan in batch
 5. **Rule Mapping**: Map AR and OR rules to each plan in batch
-6. **Compliance**: Post `✅ Gate PLAN-0 PASS: Plan batch created, {N} plans in batch`
+6. **Context Budget Validation**: Run brief token budget validation per CONTEXT_BUDGET_POLICY.md
+   ```bash
+   python .Planner/scripts/hard_gates/run_phase_gates.py --phase 0
+   ```
+7. **Compliance**: Post `✅ Gate PLAN-0 PASS: Plan batch created, {N} plans in batch, context budget validated`
+
+**Hard Gates Enforcement**:
+- **HG-16**: Brief token budget violation (≤3000 tokens) BLOCKS brief creation (enforced by validation script)
+
+**Soft Gates Enforcement**:
+- **SG-6**: Brief token budget warning (≤3000 tokens) - warns if budget exceeded, non-blocking
 
 **Exit Gate**: Plan batch structure defined with dependencies and rule mappings
 
@@ -289,6 +317,19 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
    - Scoring guidelines with rubric references
    - Independent scoring instructions (score before seeing others' feedback)
    - Post: `✅ Gate PLAN-6.7 PASS: Panelist prompts created, {N} competency-specific prompts`
+8. **Context Budget Validation**: Run panelist prompt token budget validation per CONTEXT_BUDGET_POLICY.md
+   ```bash
+   python .Planner/scripts/hard_gates/run_phase_gates.py --phase 6
+   ```
+   - Post: `✅ Gate PLAN-6.8 PASS: Context budget validated, all prompts within token limits`
+
+**Hard Gates Enforcement**:
+- **HG-17**: Panelist prompt token budget violation (≤1500 tokens) BLOCKS Round Table execution (enforced by validation script)
+
+**Soft Gates Enforcement**:
+- **SG-7**: Panelist prompt token budget warning (≤1500 tokens) - warns if budget exceeded, non-blocking
+
+**Exit Gate**: Plan screened, competencies defined, panelists profiled, rubric prepared, brief assembled, prompts created, context budget validated
 
 **Exit Gate**: Plan screened, competencies defined, panelists profiled, rubric prepared, brief assembled, prompts created
 
@@ -309,7 +350,7 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 9. **Database Storage**: Store validated findings in SQLite with automatic audit trail via triggers (include web search citations)
 10. **Verdict Collection**: Collect Pass/Conditional/Block verdicts from panelists (soft gates per Rule W4)
 11. **Panelist Performance Tracking**: Score each panelist 1-100 with weighted acceptance criteria
-12. **Compliance**: Post `✅ Gate PLAN-6.8 PASS: Round Table review completed, findings captured, panelists scored with web search integration`
+12. **Compliance**: Post `✅ Gate PLAN-6.9 PASS: Round Table review completed, findings captured, panelists scored with web search integration`
 
 **Extraction Schema**:
 ```json
@@ -346,6 +387,7 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 - Independent scoring enforced (panelists score before seeing others' feedback)
 - **Soft Gates**: Round Table recommendations are non-blocking (per Rule W4) - allow flexible evaluation with documented rationale
 - **Web Search Quality**: Citations must be structured, verifiable URLs (per Rule W3) - ensures evidence-based findings
+- **Context Budget**: Panelist prompts must respect token budget (≤1500 tokens) per CONTEXT_BUDGET_POLICY.md (HG-17 + SG-7)
 
 **Exit Gate**: All panelist reviews captured, scored, and stored in database
 
@@ -355,7 +397,7 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 1. **Evidence Review**: Review panelist findings focusing on evidence before scores
 2. **Divergence Analysis**: Analyze feedback divergence to ensure independent thinking vs artificial convergence
 3. **Score Discussion**: Discuss score divergences with evidence-based reasoning
-4. **Compliance**: Post `✅ Gate PLAN-6.9 PASS: Evidence-first debriefing completed, divergence analyzed`
+4. **Compliance**: Post `✅ Gate PLAN-6.10 PASS: Evidence-first debriefing completed, divergence analyzed`
 
 **Exit Gate**: Panelist findings reviewed with evidence-first approach
 
@@ -379,17 +421,19 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
    python .Planner/scripts/soft_gates/sg1_score_below_70.py
    python .Planner/scripts/soft_gates/sg2_score_70_89.py
    python .Planner/scripts/soft_gates/sg3_panelist_majority.py
+   python .Planner/scripts/soft_gates/sg7_panelist_prompt_token_budget.py
    ```
 5. **Hard Gate Validation**: Run hard gate validation scripts (blocking, enforces exit conditions)
    ```bash
    python .Planner/scripts/hard_gates/run_phase_gates.py --phase 6
    ```
-6. **Compliance**: Post `✅ Gate PLAN-6.10 PASS: Clean pass soft gate achieved, hard gates validated, score: {score}/100, rationale: {if applicable}`
+6. **Compliance**: Post `✅ Gate PLAN-6.11 PASS: Clean pass soft gate achieved, hard gates validated, score: {score}/100, rationale: {if applicable}`
 
 **Soft Gates Enforcement** (Non-Blocking):
 - **SG-1**: Score <70 with documented rationale may proceed with user approval (enforced by `.Planner/scripts/soft_gates/sg1_score_below_70.py`)
 - **SG-2**: Score 70-89 with documented rationale may proceed (enforced by `.Planner/scripts/soft_gates/sg2_score_70_89.py`)
 - **SG-3**: Panelist majority not achieved may proceed with documented rationale (enforced by `.Planner/scripts/soft_gates/sg3_panelist_majority.py`)
+- **SG-7**: Panelist prompt token budget warning (≤1500 tokens) - warns if budget exceeded, non-blocking (enforced by `.Planner/scripts/soft_gates/sg7_panelist_prompt_token_budget.py`)
 
 **Soft Gate Behavior**:
 - **Always Return 0**: Soft gate scripts always return exit code 0 (non-blocking)
@@ -403,8 +447,9 @@ Requirements → Plan Batch Creation → Individual Plan Creation → Brief Asse
 - **HG-11**: Unaddressed HIGH findings BLOCK plan delivery (enforced by validation script)
 - **HG-12**: Blocking landmines present BLOCK plan delivery (enforced by validation script)
 - **HG-13**: Executor Manifest missing BLOCK plan delivery (enforced by validation script)
+- **HG-17**: Panelist prompt token budget violation (≤1500 tokens) BLOCKS Round Table execution (enforced by validation script)
 
-**Exit Gate**: Clean pass soft gate achieved, hard blocking conditions validated via scripts, plan ready for pattern analysis
+**Exit Gate**: Clean pass soft gate achieved, hard blocking conditions validated via scripts, context budget validated, plan ready for pattern analysis
 
 ---
 
