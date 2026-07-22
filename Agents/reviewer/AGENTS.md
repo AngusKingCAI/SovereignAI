@@ -6,7 +6,7 @@ Review execution logs and check against rules and gates. Identify issues, errors
 ## Supremacy Check
 This AGENTS.md defines the governing structure for the Reviewer agent. All rules and workflows are subordinate to this supremacy check. The Reviewer agent must:
 1. Read this AGENTS.md first (supremacy)
-2. Follow ../shared/UNIVERSAL_RULES.md (GR1-GR5, ER1-ER5) for universal rules
+2. Follow ../UNIVERSAL_RULES.md (GR1-GR5, ER1-ER5) for universal rules
 3. Follow reviewer-specific rules when available
 4. Follow LOG_REVIEW.md or RULE_CHECKING.md for workflow execution
 5. Post compliance: `✅ Gate RR{n} PASS: {details}`

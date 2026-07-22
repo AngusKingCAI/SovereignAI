@@ -10,14 +10,26 @@ import os
 import re
 from pathlib import Path
 
+# Set UTF-8 encoding for Windows console compatibility
+if sys.platform == 'win32':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+
 def check_gate_condition():
     """
     Check if Round Table score is between 70-89.
     Returns True if score >=90 (pass), False if score 70-89 (violation - non-blocking).
     """
     # Look for Round Table score in recent files
-    plans_dir = Path("Plans")
-    if not plans_dir.exists():
+    # Find plans directory (case-insensitive for cross-platform compatibility)
+    plans_dir = None
+    for possible_dir in ["Plans", "plans"]:
+        if Path(possible_dir).exists():
+            plans_dir = Path(possible_dir)
+            break
+    
+    if plans_dir is None:
         print("⚠️  Plans directory not found, skipping validation")
         return True
     

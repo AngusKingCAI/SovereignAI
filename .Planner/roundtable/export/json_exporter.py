@@ -9,9 +9,19 @@ Exports findings and rules to timestamped JSON files with git integration.
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Optional
+
+# Set UTF-8 encoding for Windows console compatibility
+if sys.platform == 'win32':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+
+# Add database directory to path for import
+sys.path.insert(0, str(Path(__file__).parent.parent / "database"))
 from database_manager import RoundTableDatabase
 
 class JSONExporter:

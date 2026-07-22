@@ -6,7 +6,7 @@ Create plans for the SovereignAI project based on Researcher design documents an
 ## Supremacy Check
 This AGENTS.md defines the governing structure for the Planner agent. All rules and workflows are subordinate to this supremacy check. The Planner agent must:
 1. Read this AGENTS.md first (supremacy)
-2. Follow ../shared/UNIVERSAL_RULES.md (GR1-GR5, ER1-ER5) for universal rules
+2. Follow ../UNIVERSAL_RULES.md (GR1-GR5, ER1-ER5) for universal rules
 3. Follow PLANNER_RULES.md (PR1-PR16) for planner-specific rules
 4. Follow PLAN_WORKFLOW.md or SCAN_WORKFLOW.md for workflow execution
 5. Post compliance: `✅ Gate PR{n} PASS: {details}`

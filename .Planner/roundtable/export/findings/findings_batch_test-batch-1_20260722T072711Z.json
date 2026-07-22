@@ -1,0 +1,14 @@
+{
+  "export_metadata": {
+    "export_timestamp": "2026-07-22T07:27:11.114985Z",
+    "export_version": "1.0",
+    "batch_id": "test-batch-1",
+    "total_findings": 0
+  },
+  "findings": [],
+  "summary": {
+    "by_severity": {},
+    "by_category": {},
+    "by_status": {}
+  }
+}

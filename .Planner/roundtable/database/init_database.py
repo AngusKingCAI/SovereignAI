@@ -8,8 +8,15 @@ Includes audit tables, triggers, and views for comprehensive tracking.
 
 import sqlite3
 import os
+import sys
 from pathlib import Path
 from datetime import datetime
+
+# Set UTF-8 encoding for Windows console compatibility
+if sys.platform == 'win32':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
 
 def create_database_schema(db_path):
     """

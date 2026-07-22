@@ -297,10 +297,10 @@
 
 **Trigger**: `universal rules`, `governance`, `editing`  
 **Situation**: Apply universal governance and editing rules across all agents  
-**Judgment**: Follow Agents/shared/UNIVERSAL_RULES.md (GR1-GR5, ER1-ER5) for all operations
+**Judgment**: Follow Agents/UNIVERSAL_RULES.md (GR1-GR5, ER1-ER5) for all operations
 
 **Detailed Rule**:
-- **Reference**: See `Agents/shared/UNIVERSAL_RULES.md` for universal rules (GR1-GR5, ER1-ER5)
+- **Reference**: See `Agents/UNIVERSAL_RULES.md` for universal rules (GR1-GR5, ER1-ER5)
 - **Scope**: These rules apply to all agents (Planner, Executor, Reviewer, Researcher)
 - **Supremacy**: Universal rules have supremacy over agent-specific approaches
 - **Integration**: Planner must follow GR1-GR5 (governance) and ER1-ER5 (editing) when creating or modifying plan files

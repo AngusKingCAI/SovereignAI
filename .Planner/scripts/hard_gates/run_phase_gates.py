@@ -12,6 +12,12 @@ import subprocess
 import argparse
 from pathlib import Path
 
+# Set UTF-8 encoding for Windows console compatibility
+if sys.platform == 'win32':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+
 # Hard gate mappings for each phase (blocking)
 PHASE_HARD_GATES = {
     1: ["hg1_requirements_complete.py", "hg2_scope_defined.py", "hg3_dependencies_feasible.py"],
@@ -25,9 +31,14 @@ PHASE_SOFT_GATES = {
     6: ["sg1_score_below_70.py", "sg2_score_70_89.py", "sg3_panelist_majority.py"]
 }
 
-def run_gate(gate_script, scripts_dir, gate_type="hard"):
+def run_gate(gate_script, scripts_dir, gate_type="hard", soft_gates_dir=None):
     """Run a single gate script and return whether it passed."""
-    script_path = scripts_dir / gate_script
+    # Use appropriate directory based on gate type
+    if gate_type == "soft" and soft_gates_dir:
+        script_path = soft_gates_dir / gate_script
+    else:
+        script_path = scripts_dir / gate_script
+        
     if not script_path.exists():
         print(f"⚠️  Gate script not found: {gate_script} - skipping")
         return True  # Don't fail if script doesn't exist yet
@@ -37,6 +48,8 @@ def run_gate(gate_script, scripts_dir, gate_type="hard"):
             [sys.executable, str(script_path)],
             capture_output=True,
             text=True,
+            encoding='utf-8',
+            errors='replace',
             timeout=30
         )
         
@@ -67,7 +80,7 @@ def run_gate(gate_script, scripts_dir, gate_type="hard"):
         print(f"❌ {gate_script}: ERROR - {e}")
         return False if gate_type == "hard" else True
 
-def run_phase_gates(phase, scripts_dir):
+def run_phase_gates(phase, scripts_dir, soft_gates_dir=None):
     """Run all hard gates (blocking) and soft gates (non-blocking) for a specific phase."""
     if phase not in PHASE_HARD_GATES:
         print(f"❌ Invalid phase: {phase}")
@@ -94,7 +107,7 @@ def run_phase_gates(phase, scripts_dir):
         print(f"Running {len(soft_gates)} soft gates for Phase {phase} (non-blocking)...")
         
         for gate_script in soft_gates:
-            run_gate(gate_script, scripts_dir, gate_type="soft")
+            run_gate(gate_script, scripts_dir, gate_type="soft", soft_gates_dir=soft_gates_dir)
         
         print(f"✅ Phase {phase} soft gates completed (warnings do not block execution)")
     
@@ -103,12 +116,14 @@ def run_phase_gates(phase, scripts_dir):
 def main():
     parser = argparse.ArgumentParser(description="Run gates for a specific phase (hard gates blocking, soft gates non-blocking)")
     parser.add_argument("--phase", type=int, required=True, help="Phase number (1, 4, 5, or 6)")
-    parser.add_argument("--scripts-dir", type=str, default=".Planner/scripts/hard_gates", help="Directory containing gate scripts")
+    parser.add_argument("--scripts-dir", type=str, default=".Planner/scripts/hard_gates", help="Directory containing hard gate scripts")
+    parser.add_argument("--soft-gates-dir", type=str, default=".Planner/scripts/soft_gates", help="Directory containing soft gate scripts")
     
     args = parser.parse_args()
     scripts_dir = Path(args.scripts_dir)
+    soft_gates_dir = Path(args.soft_gates_dir) if args.soft_gates_dir else None
     
-    if run_phase_gates(args.phase, scripts_dir):
+    if run_phase_gates(args.phase, scripts_dir, soft_gates_dir):
         sys.exit(0)
     else:
         sys.exit(1)

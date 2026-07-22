@@ -13,14 +13,25 @@ import os
 import re
 from pathlib import Path
 
+# Set UTF-8 encoding for Windows console compatibility
+if sys.platform == 'win32':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+
 def check_gate_condition():
     """
     Check that all compliance lines are present.
     Returns True if gate passes, False otherwise.
     """
-    # Find the most recent plan file
-    plans_dir = Path("Plans")
-    if not plans_dir.exists():
+    # Find the most recent plan file (case-insensitive for cross-platform compatibility)
+    plans_dir = None
+    for possible_dir in ["Plans", "plans"]:
+        if Path(possible_dir).exists():
+            plans_dir = Path(possible_dir)
+            break
+    
+    if plans_dir is None:
         print("⚠️  Plans directory not found, skipping validation")
         return True
     
