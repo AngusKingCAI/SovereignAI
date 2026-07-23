@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Exec(git status)",
+      "Exec(git restore)",
+      "Exec(git log)",
+      "Exec(New-Item)"
+    ]
+  }
+}
