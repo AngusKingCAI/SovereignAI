@@ -59,7 +59,7 @@ SovereignAI/
 
 ### 4. Scripts Structure (MANDATORY)
 - **All executable scripts and source code MUST be in `Scripts/`**
-- **Agent-specific scripts MUST be in `Scripts/{AgentName}/`**
+- **Agent-specific scripts MAY be in `Scripts/{AgentName}/`** (optional extension)
 - **Source code MUST be in `Scripts/src/`**
 - **Configuration files MUST be in `Scripts/config/`**
 - **Test suites MUST be in `Scripts/tests/`**
@@ -69,7 +69,8 @@ SovereignAI/
 - **Agent-specific logs MUST be in `Logs/{AgentName}/`**
 - **Gate system logs MUST be in `Logs/{AgentName}/Gates/`**
 - **Conversation logs MUST be in `Logs/{AgentName}/Conversations/`**
-- **Component logs MUST be in `Logs/{AgentName}/{Component}/`**
+- **Component logs MAY be in `Logs/{AgentName}/{Component}/`** (optional extension)
+- **Additional log patterns MAY be used for agent-specific purposes** (optional extension)
 
 ## Naming Conventions
 
@@ -81,7 +82,7 @@ SovereignAI/
 ### File Naming
 - **Agent Files**: `AGENTS.md` (always uppercase)
 - **Rule Files**: `{Agent}_Rules.md` (e.g., `Architect_Rules.md`)
-- **Workflow Files**: `{Agent}_Workflow.md` (e.g., `Architect_Workflow.md`)
+- **Workflow Files**: `{Agent}_Workflow.md` preferred (e.g., `Architect_Workflow.md`), but descriptive names allowed (e.g., `Architect_Consistency_Check_Workflow.md`)
 - **Spec Files**: `phase-{N}-{component}.md` (e.g., `phase-0-logging-foundation.md`)
 - **Log Files**: `{component}-{YYYY-MM-DD}.jsonl` (e.g., `harness_infrastructure-2024-01-01.jsonl`)
 - **State Files**: `phase-{N}-state.json` (e.g., `phase-0-state.json`)
@@ -185,6 +186,7 @@ Amendments to these architectural rules require:
 |------|-----------|-----------|
 | 2026-07-24 | Initial IDE architecture rules | Establish deterministic project structure for Architect agent based on Phase 0 implementation experience |
 | 2026-07-24 | Renamed from PROJECT_ARCHITECTURE_RULES to IDE_Architecture_Rules | Made rules specific to Architect agent since only Architect modifies IDE files |
+| 2026-07-24 | Updated Scripts and Logs structure to allow optional extensions | Changed agent-specific scripts from MUST to MAY, added allowance for additional log patterns to match current implementation |
 
 **Current Constitutional Status**: COMPLIANT
 
