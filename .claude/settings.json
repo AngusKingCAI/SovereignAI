@@ -1,0 +1,382 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/unified_session_logger.py",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/rule_cache_hook.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Setup": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/setup_hook.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/chat_capture_hook.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptExpansion": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/user_prompt_expansion_validator.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/block_destructive.py",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/tool_permission_check.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "read|grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/auto_approve_safe.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/permission_denied_retry.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/transcript_monitor.py",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/tool_audit_logger.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/file_formatter.py",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/post_tool_failure_logger.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolBatch": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/post_tool_batch_logger.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/notification_logger.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "MessageDisplay": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/message_display_logger.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/subagent_tracker.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/subagent_tracker.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "TaskCreated": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/task_tracker.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/task_tracker.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/session_finalization.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/stop_failure_logger.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "ConfigChange": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/config_change_monitor.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "InstructionsLoaded": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/instructions_logger.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "CwdChanged": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/directory_change_logger.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "FileChanged": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/file_change_watcher.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "WorktreeCreate": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/worktree_handler.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "WorktreeRemove": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/worktree_handler.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/compact_handler.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/compact_handler.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Elicitation": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/elicitation_handler.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "ElicitationResult": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/elicitation_handler.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:/SovereignAI/Scripts/Governance/Hooks/unified_session_logger.py",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

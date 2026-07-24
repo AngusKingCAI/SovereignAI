@@ -8,5 +8,6 @@
       "Edit(scripts/**)",
       "Edit(.devin/**)"
     ]
-  }
+  },
+  "read_config_from.claude": true
 }

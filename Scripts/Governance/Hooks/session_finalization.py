@@ -11,11 +11,9 @@ import hashlib
 from pathlib import Path
 from datetime import datetime
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-# Import simple logger
-from simple_logger import log_session_end, get_current_session
+def get_current_session():
+    """Get current session ID from environment."""
+    return os.environ.get('DEVIN_SESSION_ID', os.environ.get('CLAUDE_SESSION_ID', 'unknown'))
 
 def load_config():
     """Load governance configuration."""
@@ -32,11 +30,11 @@ def load_config():
     return {}
 
 def get_session_context():
-    """Get current session context using simple logger."""
+    """Get current session context."""
     session_id = get_current_session()
     
     # Try to detect agent type from environment
-    agent_type = os.environ.get('DEVIN_AGENT_TYPE', 'General')
+    agent_type = os.environ.get('DEVIN_AGENT_TYPE', os.environ.get('DEVIN_CURRENT_AGENT', 'General'))
     
     # Return simple session context
     return {
@@ -76,15 +74,24 @@ def verify_completion(session_context, config):
         return False, f"Could not parse state file for phase {current_phase}: {e}"
 
 def generate_compliance_report(session_context, config):
-    """Generate compliance report for the session using simple logger."""
+    """Generate compliance report for the session."""
     session_id = get_current_session()
     
     # Try to detect agent type from environment
-    agent_type = os.environ.get('DEVIN_AGENT_TYPE', 'General')
+    agent_type = os.environ.get('DEVIN_AGENT_TYPE', os.environ.get('DEVIN_CURRENT_AGENT', 'General'))
     
-    # Log session end with summary using simple logger
+    # Log session end with summary
     summary = f"Session completed with {session_context.get('operations_count', 0)} operations"
-    log_file = log_session_end(session_id, summary, agent_type)
+    
+    # Create simple log entry
+    log_file = Path("C:/SovereignAI/.claude/session-ends.log")
+    log_file.parent.mkdir(exist_ok=True)
+    
+    timestamp = datetime.now().isoformat()
+    log_entry = f"[{timestamp}] Session {session_id} ({agent_type}): {summary}\n"
+    
+    with open(log_file, 'a', encoding='utf-8') as f:
+        f.write(log_entry)
     
     return True, f"Session ended and logged to: {log_file}"
 
@@ -192,6 +199,16 @@ def archive_session_logs(session_context):
 
 def main():
     """Main session finalization logic."""
+    try:
+        # Read event data from stdin
+        data = sys.stdin.read()
+        if data.strip():
+            env_vars = json.loads(data)
+        else:
+            env_vars = {}
+    except Exception as e:
+        env_vars = {}
+    
     print("=== Session Finalization ===")
     print(f"Timestamp: {datetime.now().isoformat()}")
     

@@ -9,11 +9,6 @@
         },
         {
           "type": "command",
-          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/context_loader.py",
-          "timeout": 15
-        },
-        {
-          "type": "command",
           "command": "python C:/SovereignAI/Scripts/Governance/Hooks/unified_session_logger.py",
           "timeout": 15
         }
@@ -43,16 +38,6 @@
       ]
     },
     {
-      "matcher": "write|edit",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/structure_validator.py",
-          "timeout": 10
-        }
-      ]
-    },
-    {
       "matcher": "*",
       "hooks": [
         {
@@ -76,11 +61,6 @@
           "type": "command",
           "command": "python C:/SovereignAI/Scripts/Governance/Hooks/tool_audit_logger.py",
           "timeout": 5
-        },
-        {
-          "type": "command",
-          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/gate_verifier.py",
-          "timeout": 10
         }
       ]
     },
