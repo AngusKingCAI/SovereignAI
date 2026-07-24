@@ -88,7 +88,21 @@ def get_session_context() -> Dict:
     except Exception:
         pass
     
-    return {"session_id": "unknown", "agent_type": "unknown"}
+    # Fallback to agent_config.json for agent type
+    try:
+        config_file = PROJECT_ROOT / ".devin" / "agent_config.json"
+        if config_file.exists():
+            with open(config_file, 'r', encoding='utf-8') as f:
+                config = json.load(f)
+                return {
+                    "session_id": "unknown",
+                    "agent_type": config.get("current_agent", "Architect")
+                }
+    except Exception:
+        pass
+    
+    # Final fallback to Architect
+    return {"session_id": "unknown", "agent_type": "Architect"}
 
 
 def log_gate_completion(gate_id: str, gate_message: str, session_context: Dict):
