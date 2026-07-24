@@ -118,30 +118,6 @@ def get_session_context():
         'current_phase': current_phase
     }
 
-def get_hook_environment():
-    """Get hook environment variables from stdin."""
-    import sys
-    
-    env_vars = {}
-    try:
-        # Read from stdin (hook environment)
-        data = sys.stdin.read()
-        if data:
-            env_vars = json.loads(data)
-    except:
-        # Fallback to environment variables
-        env_vars = {
-            'tool_name': os.environ.get('DEVIN_TOOL_NAME', ''),
-            'file_path': os.environ.get('DEVIN_FILE_PATH', ''),
-            'phase_id': os.environ.get('DEVIN_PHASE_ID', '')
-        }
-    
-    # If file_path is still empty, try to get from command line args for testing
-    if not env_vars.get('file_path') and len(sys.argv) > 1:
-        env_vars['file_path'] = sys.argv[1]
-    
-    return env_vars
-
 def check_directory_restriction(file_path, config):
     """Check if operation is within C:/SovereignAI directory."""
     if not file_path:
@@ -190,7 +166,7 @@ def check_phase_permissions(tool_name, file_path, current_phase, config):
         for forbidden in forbidden_operations:
             if forbidden.startswith('modify:') and file_path.startswith(forbidden.replace('modify:', '')):
                 return False, f"Cannot modify files in {forbidden.replace('modify:', '')} during {current_phase}"
-            elif forbidden.startswith('delete:') and forbidden == 'delete:*':
+            elif forbidden.startswith('delete:') and forbidden == 'delete:*' and tool_name in ['delete', 'rm']:
                 return False, f"Delete operations are not allowed during {current_phase}"
         
         # Check if operation matches allowed operations
@@ -199,9 +175,49 @@ def check_phase_permissions(tool_name, file_path, current_phase, config):
             if allowed.startswith('modify:') and file_path.startswith(allowed.replace('modify:', '')):
                 operation_allowed = True
                 break
-            elif allowed.startswith('create:') and file_path.startswith(allowed.replace('create:', '')):
-                operation_allowed = True
-                break
+            elif allowed.startswith('create:'):
+                # Handle create operations with proper path matching
+                allowed_dir = allowed.replace('create:', '')
+                # Convert to normalized path for comparison, using project root as base
+                try:
+                    project_root = Path('C:/SovereignAI').resolve()
+                    allowed_path = (project_root / allowed_dir).resolve()
+                    file_path_normalized = Path(file_path).resolve()
+                    # Check if file is within allowed directory
+                    if file_path_normalized.is_relative_to(allowed_path):
+                        operation_allowed = True
+                        break
+                    # Special case: if allowed_dir doesn't exist yet, check string matching
+                    if not allowed_path.exists() and file_path.startswith(allowed_dir):
+                        operation_allowed = True
+                        break
+                except Exception as e:
+                    # Fallback to string matching if path resolution fails
+                    print(f'Path resolution error: {e}', file=sys.stderr)
+                    if file_path.startswith(allowed_dir):
+                        operation_allowed = True
+                        break
+            elif allowed.startswith('write:'):
+                # Handle write operations similar to modify
+                allowed_dir = allowed.replace('write:', '')
+                # Convert to normalized path for comparison
+                try:
+                    project_root = Path('C:/SovereignAI').resolve()
+                    allowed_path = (project_root / allowed_dir).resolve()
+                    file_path_normalized = Path(file_path).resolve()
+                    # Check if file is within allowed directory
+                    if file_path_normalized.is_relative_to(allowed_path):
+                        operation_allowed = True
+                        break
+                    # Also check string matching for relative paths
+                    if file_path.startswith(allowed_dir):
+                        operation_allowed = True
+                        break
+                except Exception as e:
+                    # Fallback to string matching
+                    if file_path.startswith(allowed_dir):
+                        operation_allowed = True
+                        break
             elif allowed == 'read:*' and tool_name == 'read':
                 operation_allowed = True
                 break

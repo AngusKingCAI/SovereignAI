@@ -80,6 +80,10 @@ def validate_directory_name(dir_path: str) -> Tuple[bool, Optional[str]]:
     """Validate directory name against PascalCase convention."""
     dir_name = Path(dir_path).name
     
+    # Skip validation for system directories starting with dot
+    if dir_name.startswith('.'):
+        return True, None
+    
     # Check PascalCase pattern
     pattern = DIRECTORY_RULES["pascal_case"]["pattern"]
     if not re.match(pattern, dir_name):

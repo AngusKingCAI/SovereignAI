@@ -1,13 +1,22 @@
 {
   "phase_0": {
     "name": "Repository Foundation",
-    "allowed_tools": ["read", "exec"],
+    "allowed_tools": [
+      "read",
+      "exec",
+      "todo_write",
+      "write",
+      "edit"
+    ],
     "allowed_file_operations": [
       "create:Scripts/",
       "create:Rules/",
       "create:Docs/",
       "create:Workflow/",
-      "create:Logs/"
+      "create:Logs/",
+      "modify:.devin/",
+      "read:*",
+      "write:.devin/"
     ],
     "forbidden_operations": [
       "modify:App/",
@@ -19,7 +28,11 @@
   },
   "phase_1": {
     "name": "Rule System",
-    "allowed_tools": ["read", "write", "edit"],
+    "allowed_tools": [
+      "read",
+      "write",
+      "edit"
+    ],
     "allowed_file_operations": [
       "modify:Rules/",
       "create:Rules/",
@@ -30,12 +43,19 @@
       "delete:Rules/",
       "modify:.git/"
     ],
-    "required_completions": ["phase_0"],
+    "required_completions": [
+      "phase_0"
+    ],
     "description": "Rule file creation and validation"
   },
   "phase_2": {
     "name": "Workflow Design",
-    "allowed_tools": ["read", "write", "edit", "exec"],
+    "allowed_tools": [
+      "read",
+      "write",
+      "edit",
+      "exec"
+    ],
     "allowed_file_operations": [
       "modify:Workflow/",
       "create:Workflow/",
@@ -47,12 +67,19 @@
       "delete:Workflow/",
       "modify:.git/"
     ],
-    "required_completions": ["phase_1"],
+    "required_completions": [
+      "phase_1"
+    ],
     "description": "Workflow creation and structure"
   },
   "phase_3": {
     "name": "Gate Implementation",
-    "allowed_tools": ["read", "write", "edit", "exec"],
+    "allowed_tools": [
+      "read",
+      "write",
+      "edit",
+      "exec"
+    ],
     "allowed_file_operations": [
       "modify:Scripts/Governance/",
       "create:Scripts/Governance/",
@@ -64,12 +91,19 @@
       "delete:Scripts/Governance/",
       "modify:.git/"
     ],
-    "required_completions": ["phase_2"],
+    "required_completions": [
+      "phase_2"
+    ],
     "description": "Hook system setup and governance"
   },
   "phase_4": {
     "name": "Testing",
-    "allowed_tools": ["read", "write", "edit", "exec"],
+    "allowed_tools": [
+      "read",
+      "write",
+      "edit",
+      "exec"
+    ],
     "allowed_file_operations": [
       "modify:Scripts/tests/",
       "create:Scripts/tests/",
@@ -81,12 +115,18 @@
       "delete:Scripts/tests/",
       "modify:.git/"
     ],
-    "required_completions": ["phase_3"],
+    "required_completions": [
+      "phase_3"
+    ],
     "description": "Validation and testing"
   },
   "phase_5": {
     "name": "Documentation",
-    "allowed_tools": ["read", "write", "edit"],
+    "allowed_tools": [
+      "read",
+      "write",
+      "edit"
+    ],
     "allowed_file_operations": [
       "modify:Docs/",
       "create:Docs/",
@@ -97,7 +137,9 @@
       "delete:Docs/",
       "modify:.git/"
     ],
-    "required_completions": ["phase_4"],
+    "required_completions": [
+      "phase_4"
+    ],
     "description": "Final documentation"
   }
 }

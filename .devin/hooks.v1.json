@@ -33,21 +33,31 @@
   ],
   "PreToolUse": [
     {
-      "matcher": "exec",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/block_destructive.py",
-          "timeout": 10
-        }
-      ]
-    },
-    {
       "matcher": "write|edit",
       "hooks": [
         {
           "type": "command",
           "command": "python C:/SovereignAI/Scripts/Governance/Hooks/structure_validator.py",
+          "timeout": 10
+        },
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/template_compliance_validator.py",
+          "timeout": 10
+        }
+      ]
+    },
+    {
+      "matcher": "write",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/config_validator.py",
+          "timeout": 10
+        },
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/dependency_checker.py",
           "timeout": 10
         }
       ]
@@ -81,6 +91,41 @@
           "type": "command",
           "command": "python C:/SovereignAI/Scripts/Governance/Hooks/gate_verifier.py",
           "timeout": 10
+        },
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/audit_trail_generator.py",
+          "timeout": 5
+        }
+      ]
+    },
+    {
+      "matcher": "write",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/agent_doc_completeness.py",
+          "timeout": 10
+        },
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/cross_reference_integrity.py",
+          "timeout": 10
+        },
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/log_file_organizer.py",
+          "timeout": 10
+        },
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/quality_metrics_calculator.py",
+          "timeout": 10
+        },
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/workflow_progress_tracker.py",
+          "timeout": 10
         }
       ]
     },
@@ -101,6 +146,11 @@
         {
           "type": "command",
           "command": "python C:/SovereignAI/Scripts/Governance/Hooks/unified_session_logger.py",
+          "timeout": 15
+        },
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/session_state_manager.py",
           "timeout": 15
         }
       ]

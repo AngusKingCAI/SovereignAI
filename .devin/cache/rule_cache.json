@@ -1,5 +1,5 @@
 {
-  "cached_at": "2026-07-25T02:05:52.204919",
+  "cached_at": "2026-07-25T03:00:41.658287",
   "rules": {
     "governance": {
       "governance": {
@@ -73,14 +73,18 @@
         "name": "Repository Foundation",
         "allowed_tools": [
           "read",
-          "exec"
+          "exec",
+          "todo_write",
+          "write",
+          "edit"
         ],
         "allowed_file_operations": [
           "create:Scripts/",
           "create:Rules/",
           "create:Docs/",
           "create:Workflow/",
-          "create:Logs/"
+          "create:Logs/",
+          "modify:.devin/"
         ],
         "forbidden_operations": [
           "modify:App/",
