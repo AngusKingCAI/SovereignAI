@@ -1,6 +1,12 @@
 # Executor Workflow
 
-**Purpose**: Step-by-step workflow for Executor agent to execute plans created by Planner agent with verification and attestation.
+**File**: Execute.md  
+**Workflow Name**: Executor Workflow  
+**Description**: Step-by-step workflow for Executor agent to execute plans created by Planner agent with verification and attestation  
+**Status**: Executor Agent Standard  
+**Authority**: Enforced by Executor agent and gate system  
+**Created**: 2026-07-24  
+**Constitutional Compliance**: Verified
 
 **Version**: 1.0  
 **Last Updated**: 2026-07-23 05:05 (MYT)  

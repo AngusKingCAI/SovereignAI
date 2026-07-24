@@ -12,7 +12,9 @@ allowed-tools:
   - exec
   - write
   - edit
+  - ask_user_question
   - skill
+  - todo_write
 permissions:
   allow:
     - Read(Plans/**)

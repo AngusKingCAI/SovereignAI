@@ -1,6 +1,12 @@
 # Reviewer Workflow
 
-**Purpose**: Step-by-step workflow for Reviewer agent to review execution logs and check against rules and gates.
+**File**: Review.md  
+**Workflow Name**: Reviewer Workflow  
+**Description**: Step-by-step workflow for Reviewer agent to review execution logs and check against rules and gates  
+**Status**: Reviewer Agent Standard  
+**Authority**: Enforced by Reviewer agent and gate system  
+**Created**: 2026-07-24  
+**Constitutional Compliance**: Verified
 
 **Version**: 1.0  
 **Last Updated**: 2026-07-23 05:05 (MYT)  

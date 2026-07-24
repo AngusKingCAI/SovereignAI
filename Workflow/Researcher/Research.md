@@ -1,6 +1,12 @@
 # Researcher Workflow
 
-**Purpose**: Step-by-step workflow for Researcher agent to perform external research and create design documents.
+**File**: Research.md  
+**Workflow Name**: Researcher Workflow  
+**Description**: Step-by-step workflow for Researcher agent to perform external research and create design documents  
+**Status**: Researcher Agent Standard  
+**Authority**: Enforced by Researcher agent and gate system  
+**Created**: 2026-07-24  
+**Constitutional Compliance**: Verified
 
 **Version**: 1.0  
 **Last Updated**: 2026-07-23 05:05 (MYT)  

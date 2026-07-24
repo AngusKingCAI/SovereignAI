@@ -1,6 +1,12 @@
 # Planner Workflow
 
-**Purpose**: Step-by-step workflow for Planner agent to create plans for Executor execution with internal and external Round Table review and incremental validation.
+**File**: Plan.md  
+**Workflow Name**: Planner Workflow  
+**Description**: Step-by-step workflow for Planner agent to create plans for Executor execution with internal and external Round Table review and incremental validation  
+**Status**: Planner Agent Standard  
+**Authority**: Enforced by Planner agent and gate system  
+**Created**: 2026-07-24  
+**Constitutional Compliance**: Verified
 
 **Version**: 2.0  
 **Last Updated**: 2026-07-24 01:30 (UTC)  

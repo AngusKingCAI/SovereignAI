@@ -11,8 +11,10 @@ allowed-tools:
   - find_file_by_name
   - exec
   - write
+  - edit
   - ask_user_question
   - skill
+  - todo_write
 permissions:
   allow:
     - Read(Plans/**)

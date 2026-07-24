@@ -3,6 +3,7 @@ name: architect-scope
 description: Enforce Architect agent scope boundaries - infrastructure only, no application code
 argument-hint: "[task]"
 triggers:
+  - user
   - model
 allowed-tools:
   - read
