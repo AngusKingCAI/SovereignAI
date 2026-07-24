@@ -37,14 +37,12 @@ Present discovered workflows to user using `ask_user_question`:
 - Include "Close" option to exit workflow discovery
 - List all discovered workflows with their descriptions
 
-### Step 4: Load Selected Workflow
+### Step 4: Execute Selected Workflow
 When user selects a workflow:
 - Load the selected workflow file from `Workflow/Researcher/`
 - Read the full workflow content
-- Present the workflow steps to the user
-
-### Step 5: Execute Workflow
-Follow the workflow's defined steps and gates as specified in the workflow file.
+- Immediately execute the workflow's defined steps and gates as specified in the workflow file
+- User selection is the execution signal - no additional confirmation needed
 
 ## Workflow File Format
 Each workflow file in `Workflow/Researcher/` should:
