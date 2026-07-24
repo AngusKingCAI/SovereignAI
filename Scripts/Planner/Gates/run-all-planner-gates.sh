@@ -137,7 +137,7 @@ if [ ${#FAILED_GATES[@]} -eq 0 ]; then
     echo "Gate Completion Hash: $GATE_HASH"
     
     # Log gate completion
-    LOG_ENTRY="Logs/Planner/gate-completions/${SESSION_ID}.json"
+    LOG_ENTRY="Logs/Planner/Gates/${SESSION_ID}.json"
     mkdir -p "$(dirname "$LOG_ENTRY")"
     
     if [ "$USE_JQ" = true ]; then
@@ -178,7 +178,7 @@ else
     echo "Plan delivery BLOCKED until all gates pass"
     
     # Log gate failure
-    LOG_ENTRY="Logs/Planner/gate-failures/${SESSION_ID}.json"
+    LOG_ENTRY="Logs/Planner/Gates/${SESSION_ID}.json"
     mkdir -p "$(dirname "$LOG_ENTRY")"
     
     if [ "$USE_JQ" = true ]; then

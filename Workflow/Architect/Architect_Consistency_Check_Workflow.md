@@ -18,6 +18,7 @@ Systematic workflow for consistency checking across the SovereignAI infrastructu
 - Directory structure validation across all project directories
 - File naming convention compliance checking
 - Agent documentation completeness verification
+- AGENTS.md template compliance verification
 - Rules and workflow folder structure validation
 - Scripts/ and Logs/ directory organization checks
 - Template compliance verification for workflow files
@@ -36,6 +37,7 @@ Systematic workflow for consistency checking across the SovereignAI infrastructu
 - Validate directory structure compliance against IDE architecture rules
 - Verify file naming conventions across all project artifacts
 - Ensure agent documentation completeness and validity
+- Verify AGENTS.md template compliance against industry standards
 - Check rules and workflow folder structure compliance
 - Validate Scripts/ and Logs/ directory organization
 - Provide comprehensive violation reporting and remediation guidance
@@ -43,6 +45,7 @@ Systematic workflow for consistency checking across the SovereignAI infrastructu
 ### Target Artifacts
 - Directory structure: Agents/, Rules/, Workflow/, Scripts/, Logs/, Docs/
 - Agent folders and AGENTS.md documentation
+- AGENTS.md template file: Agents/AGENTS_TEMPLATE.md
 - Rules folders and rule files
 - Workflow folders and workflow files
 - Source code organization in Scripts/src/
@@ -124,6 +127,14 @@ Systematic workflow for consistency checking across the SovereignAI infrastructu
 - Verify Gate Enforcement section positioned before Workflow Steps
 - Verify Quality Metrics positioned near end of workflow
 - Verify Template Compliance field present in header
+- Load Agents/AGENTS_TEMPLATE.md as template reference
+- Validate each AGENTS.md file against template structure
+- Check for required industry-standard sections: Agent Name, Purpose, Setup Commands, Code Style, Testing, Boundaries, Security Considerations, Integration Points
+- Verify SovereignAI framework extensions: Constitutional Framework, Scope Boundaries, Git Operations Restrictions
+- Verify Boundaries section uses Always/Ask First/Never pattern
+- Verify Integration Points reference correct file paths
+- Verify placeholders are replaced (no {placeholder} text remaining)
+- Check template structure comment is present or removed appropriately
 
 **Gate 4 Verification**: Post "✅ Gate 4 PASS: Validation rules applied, violations classified"
 
@@ -289,6 +300,17 @@ Systematic workflow for consistency checking across the SovereignAI infrastructu
 - Quality Metrics section present with required subsections
 - Conversation Logging section present with agent-specific context
 
+### AGENTS.md Template Compliance
+- AGENTS.md files follow Agents/AGENTS_TEMPLATE.md structure
+- Industry-standard sections present: Agent Name, Purpose, Setup Commands, Code Style, Testing, Boundaries, Security Considerations, Integration Points
+- SovereignAI framework extensions present: Constitutional Framework, Scope Boundaries, Git Operations Restrictions
+- Boundaries section uses Always/Ask First/Never pattern correctly
+- Integration Points reference correct file paths (Rules/, Workflow/, Skills/, Logs/)
+- All placeholders replaced (no {placeholder} text remaining)
+- Template structure comment handled appropriately (present for new agents, removed for completed agents)
+- File length within industry standard (60-300 lines)
+- Proper separation between industry-standard sections and SovereignAI extensions
+
 ### Cross-Reference Integrity
 - References between files are valid
 - No orphaned file references
@@ -297,6 +319,7 @@ Systematic workflow for consistency checking across the SovereignAI infrastructu
 
 ### Documentation Completeness
 - All agents have AGENTS.md documentation
+- All AGENTS.md files follow template structure
 - All agents have corresponding rules and workflows
 - Change logs and amendment records where applicable
 - Compliance checklists completed
@@ -308,12 +331,16 @@ Systematic workflow for consistency checking across the SovereignAI infrastructu
 **Critical Violations**
 - Missing mandatory directories
 - Missing AGENTS.md files for agents
+- AGENTS.md files missing critical industry-standard sections
+- AGENTS.md files missing SovereignAI framework extensions
 - Critical structural violations that break architecture
 - Zero tolerance - must block progression
 
 **Warning Violations**
 - Naming convention deviations
 - Minor structural inconsistencies
+- AGENTS.md template structure deviations (non-critical)
+- Placeholders not replaced in AGENTS.md files
 - Documentation completeness issues
 - Should be addressed but may not block progression
 
