@@ -1,0 +1,67 @@
+{
+  "governance": {
+    "file_protection": {
+      "protected_files": [
+        ".git/",
+        "App/",
+        "Rules/Architect/IDE_Architecture_Rules.md",
+        "PRINCIPLES.md",
+        "Agents/Architect/AGENTS.md",
+        "Agents/Executor/AGENTS.md"
+      ],
+      "protection_level": "strict",
+      "description": "Core governance files that cannot be modified"
+    },
+    "operation_restrictions": {
+      "dangerous_commands": [
+        "rm -rf",
+        "git push --force",
+        "git reset --hard",
+        "chmod 777",
+        "sudo"
+      ],
+      "high_risk_operations": [
+        "delete:",
+        "modify:.git/",
+        "exec:git push"
+      ],
+      "description": "Operations that require special approval"
+    },
+    "phase_requirements": {
+      "completion_verification": true,
+      "integrity_checking": true,
+      "audit_logging": true,
+      "signature_verification": true,
+      "description": "Requirements for phase completion"
+    },
+    "compliance_thresholds": {
+      "minimum_completeness": 100,
+      "maximum_violations": 0,
+      "critical_violations_block": true,
+      "warning_violations_block": false,
+      "description": "Compliance thresholds for gate passing"
+    },
+    "hook_configuration": {
+      "session_init": {
+        "validate_environment": true,
+        "initialize_audit_log": true,
+        "timeout": 30
+      },
+      "tool_permission_check": {
+        "check_phase_permissions": true,
+        "validate_governance_rules": true,
+        "verify_file_protection": true,
+        "timeout": 10
+      },
+      "operation_logger": {
+        "log_tool_execution": true,
+        "update_operation_counters": true,
+        "timeout": 5
+      },
+      "session_finalization": {
+        "generate_compliance_report": true,
+        "timeout": 30
+      }
+    }
+  }
+}

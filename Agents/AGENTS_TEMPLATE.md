@@ -50,6 +50,10 @@
 - **Workflows**: `Workflow/{AgentName}/{Agent}_Workflow.md`
 - **Skills**: `.devin/skills/{agent}/SKILL.md`
 - **Logs**: `Logs/{AgentName}/`
+- **Rule Cache Skills**: `.devin/skills/create-rule-cache/SKILL.md`, `.devin/skills/remind-rules/SKILL.md`, `.devin/skills/validate-compliance/SKILL.md`
+- **Rule Cache Scripts**: `Scripts/src/rule_cache/md_rule_parser.py`, `Scripts/src/rule_cache/agent_compliance_validator.py`
+- **Cache Storage**: `Scripts/config/rule_cache/{phase}_{agent}_cache.json`
+- **Compliance Reports**: `Logs/{AgentName}/Gates/compliance_reports.json`
 
 ---
 

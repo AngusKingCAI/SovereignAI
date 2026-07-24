@@ -1,0 +1,48 @@
+{
+  "SessionStart": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/session_init.py",
+          "timeout": 30
+        }
+      ]
+    }
+  ],
+  "PreToolUse": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/tool_permission_check.py",
+          "timeout": 10
+        }
+      ]
+    }
+  ],
+  "PostToolUse": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/operation_logger.py",
+          "timeout": 5
+        }
+      ]
+    }
+  ],
+  "SessionEnd": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Governance/Hooks/session_finalization.py",
+          "timeout": 30
+        }
+      ]
+    }
+  ]
+}

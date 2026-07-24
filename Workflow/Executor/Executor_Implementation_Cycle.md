@@ -1,36 +1,37 @@
-# Architect Implementation Cycle
+# Executor Implementation Cycle
 
-**File**: Architect_Implementation_Cycle.md  
-**Workflow Name**: Architect Implementation Cycle  
-**Description**: Complete 12-step implementation cycle with hook-based governance enforcement for systematic architectural work  
-**Status**: Architect Agent Standard  
+**File**: Executor_Implementation_Cycle.md  
+**Workflow Name**: Executor Implementation Cycle  
+**Description**: Complete 10-step implementation cycle with hook-based governance enforcement for systematic plan execution  
+**Status**: Executor Agent Standard  
+**Authority**: Enforced by Executor agent and hook system  
+**Created**: 2026-07-24  
 **Template Compliance**: Verified  
 **Hook-Based Governance**: Enabled (automatic enforcement)
 
-Step-by-step process for architectural decisions with best practice validation and automatic hook-based governance.
+Step-by-step process for executing approved plans with implementation fidelity and automatic hook-based governance.
 
 ## Purpose
 
-Provide systematic architectural decision-making with gated implementation cycles to ensure infrastructure design follows best practices and maintains compliance with IDE architecture standards.
+Provide systematic plan execution with gated implementation cycles to ensure code implementation follows approved plans exactly and maintains compliance with execution standards.
 
 ## Scope
 
 ### Included
-- Infrastructure design and architecture planning
-- Directory structure and file organization standards
-- Workflow definition and procedure documentation
-- Gate system design and verification
-- Constitutional compliance verification
-- IDE architecture rules definition and enforcement
+- Code implementation according to approved plans
+- Feature development based on specifications
+- Code quality and testing implementation
+- Bug fixes and maintenance tasks
+- Integration and deployment preparation
+- Implementation verification and validation
+- Production deployment operations
 
 ### Excluded
-- SovereignAI application code implementation (deferred to Phase 12)
-- Direct application feature development (deferred to Phase 12)
-- Application-level testing and debugging (deferred to Phase 12)
-- Direct file editing in App/ directory (reference only)
-- Production deployment operations (deferred to Phase 12)
-- User interface development (deferred to Phase 12)
-- Database schema modifications (deferred to Phase 12)
+- Plan creation and strategy development (deferred to Planner agent)
+- Infrastructure design and architecture (deferred to Architect agent for Harness only)
+- High-level requirement analysis (deferred to Planner agent)
+- Architectural decision making (defined by Planner in plans)
+- Database schema design (defined by Planner in plans)
 
 ## Hook-Based Governance
 
@@ -46,14 +47,14 @@ Provide systematic architectural decision-making with gated implementation cycle
 - **Automatic Enforcement**: No manual script invocation required
 - **Real-Time Validation**: Permissions checked before every tool execution
 - **Comprehensive Logging**: All operations automatically logged to session files
-- **Phase-Based Permissions**: Automatic enforcement of phase restrictions
+- **Plan-Based Permissions**: Automatic enforcement of plan restrictions
 - **Session Management**: Automatic session lifecycle management
 
 **INTEGRATION PATTERN**:
 - Hook system is automatically active via `.devin/hooks.v1.json`
 - Governance happens automatically without agent intervention
 - Session logs stored in `Logs/{AgentType}/Sessions/`
-- Phase permissions enforced via `Scripts/Governance/Config/phase_permissions.json`
+- Plan permissions enforced via `Scripts/Governance/Config/phase_permissions.json`
 - Non-compliance automatically blocks operations
 
 ## Hook-Based Enforcement
@@ -88,108 +89,85 @@ Provide systematic architectural decision-making with gated implementation cycle
 ### 0. Environment Initialization (Automatic)
 - Hook system automatically initializes governance environment
 - SessionStart hook creates session log and validates environment
-- Phase permissions automatically loaded from configuration
+- Plan permissions automatically loaded from configuration
 - No manual intervention required
 
 **Automatic Hook**: SessionStart hook runs automatically at session start
 
-### 1. Understand
+### 1. Understand (Executor Context)
 - Review applicable rules from governance configuration
-- Identify current phase and dependencies
-- Understand task context within framework of governance rules
-- Hook system automatically enforces permissions during research
+- Understand approved plan from Planner agent
+- Identify current plan phase and implementation scope
+- Verify plan completeness before proceeding
+- Hook system automatically enforces permissions during this step
 
 **Automatic Enforcement**: PreToolUse hook validates all tool permissions
 
-### 2. Architect Interaction
-- Ask user: "Hi, Architect here - how can I help you today?"
-- Wait for user to specify their architectural task or question
-- Clarify the task if needed
-- Hook system logs all interactions automatically
+### 2. Plan Validation
+- Validate approved plan meets implementation requirements
+- Check plan completeness and clarity
+- Verify architectural compliance in plan
+- Hook system automatically validates all validation operations
 
-**Automatic Enforcement**: PostToolUse hook logs all operations
+**Automatic Enforcement**: PreToolUse hook validates all validation operations
 
-### 3. Research
-- Use web search to find industry best practices
-- Reference Devin CLI documentation for IDE-related features: `Docs/Devin Local IDE Documents/`
-- Cross-reference with Devin Local documentation for implementation feasibility
-- Gather multiple approaches and patterns
-- Ensure proposed solutions comply with governance rules
-- Hook system automatically validates all research operations
+### 3. Implementation Setup
+- Set up development environment according to plan
+- Prepare required dependencies and tools
+- Create initial project structure as specified
+- Hook system automatically validates all setup operations
 
-**Automatic Enforcement**: PreToolUse hook validates all research tool permissions
+**Automatic Enforcement**: PreToolUse hook validates all setup operations
 
-### 4. Options (Generate 2-5 Implementation Options)
-- Generate 2-5 implementation options based on research
-- **RESEARCH RUBRIC** (GitHub analysis of 2,500+ repositories):
-  - **Minimality**: Only operational knowledge, not discoverable content
-  - **Tooling Specification**: Explicit tool names and commands
-  - **Novelty vs Redundancy**: Unique operational context not found elsewhere
-  - **Authorship**: Human-written or heavily human-edited content
-- **EACH OPTION MUST INCLUDE**:
-  - Summary of what the option does
-  - Quality score (out of 10) with reasoning based on rubric
-  - Token Cost score (out of 10) with reasoning based on rubric
-  - Efficiency score (out of 10) with reasoning based on rubric
-- **ARCHITECT OPINION**: After presenting options, provide architect's analysis and recommendation BEFORE calling ask_user_question
-- **PRESENTATION PATTERN**: 
-  1. Present options with full metrics in text format
-  2. Provide architect's analysis and opinion
-  3. Use ask_user_question for selection
-
-**Automatic Enforcement**: Hook system logs all option generation activities
-
-### 5. Decide
-- User selects the preferred option
-- Architect agent validates constitutional compliance of selection
-- Hook system automatically validates all decision-related operations
-
-**Automatic Enforcement**: PreToolUse hook validates all decision operations
-
-### 6. Specify
-- Create detailed specification for selected approach
-- Define interfaces, data structures, error handling
-- Specify testing and documentation requirements
-- Ensure specification follows IDE architecture file naming conventions
-- Verify proposed file locations comply with directory structure rules
-- **IMPLEMENTATION MODE SELECTION**: Ask user to choose implementation mode:
-  - **Mode 1: Automated**: Agent implements everything automatically
-  - **Mode 2: Manual**: User and agent use steps 4-5 pattern for iterative implementation. Architect provides opinion on each iteration.
-
-**Automatic Enforcement**: Hook system validates all specification file operations
-
-### 7. Implement
-- Implement according to specification
-- Follow IDE architecture rules for file placement
-- Cross-reference Devin CLI documentation for IDE-related implementations
-- Hook system automatically enforces all implementation permissions
+### 4. Code Implementation
+- Implement code according to approved plan specifications
+- Follow coding standards and architectural patterns from plan
+- Implement features exactly as specified in plan
+- Hook system automatically validates all implementation operations
 
 **Automatic Enforcement**: PreToolUse hook validates all implementation operations
 
-### 8. Test
-- Run unit tests
-- Run integration tests
-- Verify all tests pass
-- Hook system automatically logs all testing activities
+### 5. Testing Implementation
+- Implement tests according to plan specifications
+- Create unit tests, integration tests as specified
+- Ensure test coverage meets plan requirements
+- Hook system automatically validates all testing operations
 
-**Automatic Enforcement**: PostToolUse hook logs all test operations
+**Automatic Enforcement**: PreToolUse hook validates all testing operations
 
-### 9. Verify
-- Verify implementation matches specification
-- Run verification tests
-- Ensure constitutional compliance
+### 6. Quality Verification
+- Run all tests to verify implementation quality
+- Check code quality metrics against plan requirements
+- Verify implementation matches plan specifications exactly
 - Hook system automatically validates all verification operations
 
 **Automatic Enforcement**: PreToolUse hook validates all verification operations
 
-### 10. Document
-- Update agent documentation
-- Create usage examples
-- Hook system automatically logs all documentation activities
+### 7. Integration and Deployment
+- Prepare integration with existing systems as specified in plan
+- Create deployment artifacts according to plan
+- Verify deployment readiness matches plan requirements
+- Hook system automatically validates all deployment operations
 
-**Automatic Enforcement**: PostToolUse hook logs all documentation operations
+**Automatic Enforcement**: PreToolUse hook validates all deployment operations
 
-### 11. Session Finalization (Automatic)
+### 8. Documentation
+- Create/update documentation as specified in plan
+- Ensure all documentation matches implementation
+- Verify documentation completeness against plan
+- Hook system automatically validates all documentation operations
+
+**Automatic Enforcement**: PreToolUse hook validates all documentation operations
+
+### 9. Final Verification
+- Verify complete implementation matches approved plan
+- Check all plan requirements are met
+- Validate implementation quality and completeness
+- Hook system automatically validates all final verification operations
+
+**Automatic Enforcement**: PreToolUse hook validates all final verification operations
+
+### 10. Session Finalization (Automatic)
 - SessionEnd hook automatically validates session completion
 - Generates session completion report
 - Archives session logs automatically
@@ -197,10 +175,10 @@ Provide systematic architectural decision-making with gated implementation cycle
 
 **Automatic Hook**: SessionEnd hook runs automatically at session end
 
-### 12. Cycle Back to Step 1
+### 11. Cycle Back to Step 1
 **MANDATORY**: After completing workflow, cycle back to Step 1 (Understand)
 - This makes the workflow repeatable
-- Architect can handle multiple tasks in sequence
+- Executor can handle multiple plan phases in sequence
 - Each cycle maintains automatic hook-based governance
 
 **Automatic Enforcement**: Hook system automatically handles all governance
@@ -243,10 +221,10 @@ Workflow closure is handled automatically by the SessionEnd hook.
 ## Integration Points
 
 **Standard Integration Points:**
-- **Rules**: `Rules/Architect/Architect_Rules.md`
-- **Workflows**: `Workflow/Architect/Architect_Implementation_Cycle.md`
-- **Skills**: `.devin/skills/architect/SKILL.md`
-- **Logs**: `Logs/Architect/`
+- **Rules**: `Rules/Executor/Executor_Rules.md`
+- **Workflows**: `Workflow/Executor/Executor_Implementation_Cycle.md`
+- **Skills**: `.devin/skills/executor/SKILL.md`
+- **Logs**: `Logs/Executor/`
 
 **Hook System Integration Points:**
 - **Hook Configuration**: `.devin/hooks.v1.json`
@@ -275,7 +253,7 @@ Workflow closure is handled automatically by the SessionEnd hook.
 - Resource utilization (3): Computational overhead, data structure efficiency
 
 ## Session Logging
-Hook system automatically maintains session logs in `Logs/{AgentType}/Sessions/` for each implementation cycle session with:
+Hook system automatically maintains session logs in `Logs/{AgentType}/Sessions/` for each session with:
 - Session ID and timestamp
 - Agent type identification
 - All operations with tool names, file paths, and results
@@ -285,45 +263,37 @@ Hook system automatically maintains session logs in `Logs/{AgentType}/Sessions/`
 
 ## Usage Examples
 
-### Example Architect Implementation Cycle with Hook-Based Governance
+### Example Executor Implementation Cycle with Hook-Based Governance
 
 ```markdown
-## Architect Implementation Cycle: Hook System Implementation
+## Executor Implementation Cycle: Plan Execution
 
 ### 0. Environment Initialization (Automatic)
 - Hook system automatically initializes governance environment
-- SessionStart hook creates session log: `Logs/Architect/Sessions/{session_id}.json`
-- Phase permissions automatically loaded from `Scripts/Governance/Config/phase_permissions.json`
+- SessionStart hook creates session log: `Logs/Executor/Sessions/{session_id}.json`
+- Plan permissions automatically loaded from `Scripts/Governance/Config/phase_permissions.json`
 - No manual intervention required
 
 **Automatic Hook**: SessionStart hook executed successfully
 
-### 1. Understand
+### 1. Understand (Executor Context)
 - Review applicable rules from governance configuration
-- Identify current phase and dependencies
-- Understand task context within framework of governance rules
-- PreToolUse hook automatically validates all research permissions
+- Understand approved plan from Planner agent
+- Identify current plan phase and implementation scope
+- Hook system automatically enforces permissions during this step
 
 **Automatic Enforcement**: PreToolUse hook validated all tool permissions
 
-### 2. Architect Interaction
-- User requests implementation of Hook-Based Governance System
-- Clarify requirements: automatic enforcement via hooks
-- Hook system logs all interactions automatically
+### 2. Plan Validation
+- Validate approved plan meets implementation requirements
+- Check plan completeness and clarity
+- Hook system automatically validates all validation operations
 
-**Automatic Enforcement**: PostToolUse hook logged all operations
+**Automatic Enforcement**: PreToolUse hook validated all validation operations
 
-### 3. Research
-- Use web search to find industry best practices for hook systems
-- Reference Devin CLI documentation for IDE-related features
-- Ensure proposed solutions comply with governance rules
-- Hook system automatically validates all research operations
+[... continue with steps 3-9 ...]
 
-**Automatic Enforcement**: PreToolUse hook validated all research operations
-
-[... continue with steps 4-10 ...]
-
-### 11. Session Finalization (Automatic)
+### 10. Session Finalization (Automatic)
 - SessionEnd hook automatically validates session completion
 - SessionEnd hook generates session completion report
 - SessionEnd hook archives session logs automatically
@@ -331,9 +301,9 @@ Hook system automatically maintains session logs in `Logs/{AgentType}/Sessions/`
 
 **Automatic Hook**: SessionEnd hook executed successfully
 
-### 12. Cycle Back to Step 1
-- Workflow completed successfully
-- Ready for next architectural task
+### 11. Cycle Back to Step 1
+- Plan phase completed successfully
+- Ready for next plan phase or task
 - Hook system automatically continues governance enforcement
 
 **Automatic Enforcement**: Hook system maintains continuous governance
@@ -349,6 +319,6 @@ Hook system automatically maintains session logs in `Logs/{AgentType}/Sessions/`
 - No manual logging intervention required
 
 **Session Log Location:**
-- Session logs stored in `Logs/Architect/Sessions/{session_id}.json`
+- Session logs stored in `Logs/Executor/Sessions/{session_id}.json`
 - Automatic session lifecycle management
 - Comprehensive operation tracking via hooks

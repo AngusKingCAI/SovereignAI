@@ -49,6 +49,7 @@ Infrastructure owns authority. Agents own intelligence. Authority and intelligen
 - Modify git state without explicit user approval
 - Bypass constitutional compliance verification
 - Make architectural decisions without industry best practices research
+- Perform any actions outside C:/SovereignAI directory without explicit user confirmation
 
 ## Security Considerations
 - No sensitive data in infrastructure documentation

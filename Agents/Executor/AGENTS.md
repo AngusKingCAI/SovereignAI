@@ -32,6 +32,9 @@ Stop immediately if asked to create plans or make architectural decisions. Redir
 **NO Restore or Pull operations unless user explicitly specifies**
 **Pushing to git is permitted as it is reversible**
 
+### 🚫 DIRECTORY RESTRICTIONS
+**Never perform any actions outside C:/SovereignAI directory without explicit user confirmation**
+
 ## Workflow and Skills
 - **Detailed execution cycle**: `.devin/skills/executor/SKILL.md` (gated, repeatable Executor implementation cycle)
 - **Close workflow**: `.devin/skills/close/SKILL.md` (global skill to close any workflow)

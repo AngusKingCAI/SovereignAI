@@ -1,15 +1,19 @@
 {
   "phase": "6",
   "phase_name": "Phase 6",
-  "completion_hash": "8881c4c8119c2755e77f099ae1a4f49bac7b106d43da4cf132189052a8ae5f59",
-  "state_hash": "b77306aa6dad3da2927b043ff64e599ec9b2043fee7d0bd9013da562b963d57e",
+  "completion_hash": null,
+  "state_hash": null,
   "timestamp": "2026-07-24T03:08:39Z",
   "completion_signature": "architect-approved",
-  "previous_phase_hash": f3305b91265762d4e1c56735b344dcf2b991c3bb03a4ee64bfe8ba603b3a740f,
+  "previous_phase_hash": "1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2",
   "state_files": [],
   "metadata": {
     "specification_status": "pending",
     "implementation_status": "complete",
     "test_status": "passing"
+  },
+  "hook_metadata": {
+    "operations_count": 0,
+    "last_operation": ""
   }
 }

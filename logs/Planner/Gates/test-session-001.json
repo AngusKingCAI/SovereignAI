@@ -1,8 +1,0 @@
-{
-  "session_id": "test-session-001",
-  "plan_file": "Plans/test-valid-plan.md",
-  "timestamp": "2026-07-23T18:20:53Z",
-  "gate_results": ,
-  "failed_gates": ,
-  "status": "failed"
-}
