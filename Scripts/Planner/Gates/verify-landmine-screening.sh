@@ -46,7 +46,7 @@ SCREENING_DOCUMENTED=$(grep -i "landmine" "$PLAN_FILE" | wc -l)
 if [ "$SCREENING_DOCUMENTED" -eq 0 ]; then
     echo "❌ GATE FAILED: No landmine screening documentation found in plan"
     echo "Action: Document LANDMINES.md screening results in plan"
-    echo "Reference: Workflow/Planner/Plan.md - Step 2.5"
+    echo "Reference: Workflow/Planner/Planner_Plan_Workflow.md - Step 2.5"
     exit 1
 fi
 

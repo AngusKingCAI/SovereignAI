@@ -1,12 +1,64 @@
 # Planner Workflow
 
-**Purpose**: Step-by-step workflow for Planner agent to create plans for Executor execution with internal and external Round Table review and incremental validation.
+**File**: Plan.md  
+**Workflow Name**: Planner Workflow  
+**Description**: Step-by-step workflow for Planner agent to create plans for Executor execution with internal and external Round Table review and incremental validation  
+**Status**: Planner Agent Standard  
+**Authority**: Enforced by Planner agent and gate system  
+**Created**: 2026-07-24  
+**Template Compliance**: Verified
 
 **Version**: 2.0  
 **Last Updated**: 2026-07-24 01:30 (UTC)  
 **Status**: Active with Incremental Validation
 
 **Attestation**: This workflow is gated with incremental validation and dual-gate governance per best practices.
+
+## Purpose
+
+Create detailed, implementation-ready plans for AI-driven software development with comprehensive analysis and validation, including internal and external Round Table review with incremental validation to ensure plan quality and completeness.
+
+## Scope
+
+### Included
+- Plan creation and refinement for development tasks
+- Dependency analysis and requirement specification
+- Quality assessment and risk identification
+- Scope definition and boundary setting
+- Implementation strategy development
+- Plan validation and gate verification
+
+### Excluded
+- Direct code implementation (deferred to Executor agent)
+- Application feature development (deferred to Executor agent)
+- Production deployment operations (deferred to Phase 12)
+- Infrastructure design (deferred to Architect agent)
+- User interface development (deferred to Phase 12)
+- Database schema modifications (deferred to Phase 12)
+
+## Gate Enforcement
+
+**EVERY STEP HAS A GATE REQUIREMENT**: Each workflow step includes a mandatory gate that must pass before proceeding to the next step.
+
+**GATING RULES**:
+- Gate verification must be explicit and actionable
+- Gates must have clear PASS/FAIL criteria
+- Gate failures must stop progression until resolved
+- Gate results must be documented in conversation log
+- Gates should validate completion, quality, and compliance of the step
+
+**GATE PATTERN**:
+1. Perform the step's actions
+2. Document the results in conversation log
+3. Run the step's gate verification
+4. Gate must pass to proceed to next step
+5. If gate fails, stop and address the issue
+
+**COMPLIANCE REQUIREMENT**: 
+- Skipping any gate is a SCOPE VIOLATION per AGENTS.md
+- The gate system provides enforcement for all workflow steps
+- Each step is gated individually for comprehensive compliance
+- Template compliance requires gate enforcement rules to be defined
 
 ---
 
@@ -34,10 +86,10 @@ This workflow follows AI planning best practices with:
 10. **Phase 7**: Session Logging + Validation
 
 **Template References**:
-- **Plan Creation**: Plans/Plan_Template.md (plan structure and format)
+- **Plan Creation**: Workflow/Planner/Plan_Template.md (plan structure and format)
 - **Brief Creation**: Workflow/Planner/Plan_Brief_Template.md (review brief structure)
 - **Prompt Instructions**: Workflow/Planner/Plan_Prompt_Template.md (persona adoption instructions)
-- **Quality Assessment**: Plans/Quality_Rubric.md (dimension scoring criteria)
+- **Quality Assessment**: Workflow/Planner/Quality_Rubric.md (dimension scoring criteria)
 - **Gate System**: Scripts/Planner/Gates/run-all-planner-gates.sh (automated validation)
 
 **Logging Structure**:
@@ -58,7 +110,7 @@ Read current governance documents to ensure up-to-date context for infrastructur
 Read Rules/Planner/Planner_Rules.md to understand operational rules, scope boundaries, and best practices.
 
 ### Step 1.2: Read Plan Template  
-Read Plans/Plan_Template.md to understand required plan structure and format.
+Read Workflow/Planner/Plan_Template.md to understand required plan structure and format.
 
 ### Step 1.3: Phase Validation
 Validate that governance documents were read successfully and context is established.
@@ -67,6 +119,8 @@ Validate that governance documents were read successfully and context is establi
 - [ ] Planner_Rules.md read and understood
 - [ ] Plan_Template.md read and understood  
 - [ ] Current planning context established
+
+**Gate 1 Verification**: Post "✅ Gate 1 PASS: Phase 1 governance context established, planning rules understood"
 
 **Phase 1 PASS**: Governance context established, planning rules understood, ready for plan creation.
 
@@ -87,7 +141,7 @@ Understand the user's request and what changes are needed for SovereignAI implem
 Assess the current system state and dependencies relevant to the planned changes.
 
 ### Step 2.3: Create Plan Draft
-Create plan draft following Plans/Plan_Template.md format exactly:
+Create plan draft following Workflow/Planner/Plan_Template.md format exactly:
 - Required sections: Context, Steps, Dependencies
 - Metadata: Revision, Date, Goal
 - Planning language only (no implementation details)
@@ -123,6 +177,8 @@ Validate that plan creation completed successfully and early gates passed.
 - [ ] Early gate validation passed (Gates 1-6)
 - [ ] Plan is ready for review process
 
+**Gate 2 Verification**: Post "✅ Gate 2 PASS: Phase 2 plan created with valid structure and scope, early gates passed"
+
 **Phase 2 PASS**: Plan created with valid structure and scope, early gates passed, ready for internal review.
 
 **Phase 2 FAIL**: Fix plan issues and re-run early gate validation before proceeding.
@@ -150,7 +206,7 @@ Create plan brief and review prompt for initial internal review using templates:
 - Quality dimensions to evaluate
 - Specific persona assignment for each panelist
 - Web search requirement explicitly stated
-- Quality rubric reference (Plans/Quality_Rubric.md)
+- Quality rubric reference (Workflow/Planner/Quality_Rubric.md)
 - Structured output format requirements
 
 **Prompt Must Include**:
@@ -241,6 +297,8 @@ Validate that internal review completed successfully and findings were logged.
 - [ ] Findings aggregated and consolidated
 - [ ] Convergence criteria established (findings decreasing, similarity increasing)
 
+**Gate 3 Verification**: Post "✅ Gate 3 PASS: Phase 3 internal review completed, findings logged"
+
 **Phase 3 PASS**: Internal review completed, findings logged, ready for application.
 
 **Phase 3 FAIL**: Re-launch panelists or fix logging issues before proceeding.
@@ -297,6 +355,8 @@ Validate that findings were applied correctly and plan quality improved.
 - [ ] Gate validation passed
 - [ ] Iteration logged with metadata
 
+**Gate 5 Verification**: Post "✅ Gate 5 PASS: Phase 5 findings applied, plan improved"
+
 **Phase 5 PASS**: Findings applied, plan improved, ready for next review iteration.
 
 **Phase 5 FAIL**: Fix application issues and re-validate before proceeding.
@@ -352,7 +412,7 @@ Create external review brief and prompt for Chathub.gg panelists using templates
 - Quality dimensions to evaluate
 - Specific persona assignment for each external panelist
 - Web search requirement explicitly stated
-- Quality rubric reference (Plans/Quality_Rubric.md)
+- Quality rubric reference (Workflow/Planner/Quality_Rubric.md)
 - Structured output format requirements
 
 **Prompt Must Include**:
@@ -445,6 +505,8 @@ Validate that external review completed successfully and findings were logged.
 - [ ] Findings aggregated and consolidated
 - [ ] Quality score calculated (≥90 for clean pass, 70-89 with rationale, <70 fails)
 
+**Gate 4 Verification**: Post "✅ Gate 4 PASS: Phase 4 external review completed, findings logged, quality score achieved"
+
 **Phase 4 PASS**: External review completed, findings logged, quality score achieved.
 
 **Phase 4 FAIL**: Re-launch external panelists or fix logging issues before proceeding.
@@ -527,6 +589,8 @@ Validate that final gate validation completed successfully and delivery is autho
 - [ ] Delivery authorized for manual implementation
 - [ ] Plan ready for user execution
 
+**Gate 6 Verification**: Post "✅ Gate 6 PASS: Phase 6 final gate validation passed, delivery authorized"
+
 **Phase 6 PASS**: Final gate validation passed, delivery authorized, plan ready for manual implementation.
 
 **Phase 6 FAIL**: Fix gate failures and re-validate before delivery authorization.
@@ -605,6 +669,8 @@ Validate that session logging completed successfully and audit trail is complete
 - [ ] Audit trail complete
 - [ ] Session ready for handoff
 
+**Gate 7 Verification**: Post "✅ Gate 7 PASS: Phase 7 session logging complete, audit trail validated"
+
 **Phase 7 PASS**: Session logging complete, audit trail validated, Planner workflow complete.
 
 **Phase 7 FAIL**: Fix logging issues and re-validate before session completion.
@@ -666,3 +732,69 @@ Follow Quality > Token Cost > Efficiency hierarchy per PRINCIPLES.md when making
 - Contains: plan metadata, Round Table results, gate results, quality metrics
 - Enables Reviewer to analyze patterns and recommend improvements
 - Separate from Planner workflow completion
+
+---
+
+## Workflow Logging
+The Planner workflow includes comprehensive logging procedures in Phase 7 (Session Logging + Validate) with detailed session logging for each planning cycle.
+
+**Script-Based Logging:**
+-Call Scripts/Governance/log_conversation.py at workflow completion
+-Script automatically generates structured JSON log entry with full conversation details
+-Each planning cycle gets its own session_id and log file
+
+**Script Usage:**
+```bash
+python Scripts/Governance/log_conversation.py Planner {session_id} "{summary}" "{task}" "Planner_Plan_Workflow" {phase}
+```
+
+**Script Output Location:**
+-Logs/Planner/Conversations/{session-id}.json
+-Script automatically includes conversation, steps, gates, actions, context in structured JSON format
+
+**Note**: The Planner workflow has detailed logging procedures in Phase 7 that supplement this generic script-based logging.
+
+---
+
+## Workflow Closure
+To properly close the Planner workflow session, invoke the global `close` skill.
+This will:
+-Finalize the conversation log with session end time
+-Record session summary and accomplishments
+-Clear workflow state
+-Return to normal chat mode
+
+**Closure can be triggered by:**
+-User request: "close workflow", "/close"
+-Task completion
+-Error or interruption
+
+---
+
+## Quality Metrics
+
+### Quality (10 points)
+-Determinism (3): Predictable, reproducible behavior
+-Observability (3): Audit trails, logging, state visibility  
+-Testability (2): Isolated testing, clear interfaces
+-Architectural soundness (2): Single responsibility, minimal coupling
+
+### Token Cost (10 points)
+-Context efficiency (3): Targeted information retrieval
+-Model selection (3): Appropriate model choices
+-Caching strategy (2): Repeated query optimization
+-Reasoning overhead (2): Efficient prompt design
+
+### Efficiency (10 points)
+-Parallelization (4): Independent task identification
+-Latency optimization (3): Critical path analysis
+-Resource utilization (3): Computational overhead, data structure efficiency
+
+## Conversation Logging
+Maintain conversation logs in `Logs/Planner/Conversations/` for each session with:
+-Session ID and trace ID
+-Timestamp for each step
+-Planning workflow phase being executed
+-Gate verification results
+-Actions taken and results
+-Metadata for tracking

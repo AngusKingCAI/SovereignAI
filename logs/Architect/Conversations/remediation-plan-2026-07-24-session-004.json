@@ -1,0 +1,174 @@
+{
+  "session_id": "remediation-plan-2026-07-24-session-004",
+  "timestamp": "2026-07-24T13:25:00Z",
+  "parent_session": "consistency-check-2026-07-24-session-004",
+  "workflow": "Architect Consistency Check Workflow - Step 7: Remedy Planning",
+  "remediation_plan": {
+    "critical_violations": [
+      {
+        "violation_id": "CRITICAL-001",
+        "description": "Missing Logs directories for Executor, Researcher, Reviewer agents",
+        "rule_reference": "IDE_Architecture_Rules.md - Logs Structure (MANDATORY)",
+        "urgency": "IMMEDIATE",
+        "complexity": "LOW",
+        "estimated_effort": "5 minutes",
+        "remediation_steps": [
+          "Create Logs/Executor/ directory",
+          "Create Logs/Executor/Gates/ directory",
+          "Create Logs/Executor/Conversations/ directory",
+          "Create Logs/Researcher/ directory",
+          "Create Logs/Researcher/Gates/ directory",
+          "Create Logs/Researcher/Conversations/ directory",
+          "Create Logs/Reviewer/ directory",
+          "Create Logs/Reviewer/Gates/ directory",
+          "Create Logs/Reviewer/Conversations/ directory"
+        ],
+        "verification_criteria": [
+          "ls -la Logs/Executor/ shows Gates/ and Conversations/ subdirectories",
+          "ls -la Logs/Researcher/ shows Gates/ and Conversations/ subdirectories",
+          "ls -la Logs/Reviewer/ shows Gates/ and Conversations/ subdirectories"
+        ],
+        "blocks_progression": true
+      }
+    ],
+    "warning_violations": [
+      {
+        "violation_id": "WARNING-001",
+        "description": "Non-standard workflow file naming for Planner",
+        "rule_reference": "IDE_Architecture_Rules.md - File Naming - Workflow Files",
+        "urgency": "MEDIUM",
+        "complexity": "LOW",
+        "estimated_effort": "2 minutes",
+        "remediation_steps": [
+          "Consider renaming Workflow/Planner/Plan.md to Workflow/Planner/Planner_Workflow.md",
+          "Update any references to the old filename in documentation or skills"
+        ],
+        "verification_criteria": [
+          "File renamed to standard naming convention",
+          "No broken references to old filename"
+        ],
+        "blocks_progression": false
+      },
+      {
+        "violation_id": "WARNING-002",
+        "description": "Stub workflow files for Executor, Researcher, Reviewer agents",
+        "rule_reference": "IDE_Architecture_Rules.md - Workflow Structure (MANDATORY)",
+        "urgency": "MEDIUM",
+        "complexity": "HIGH",
+        "estimated_effort": "2-3 hours per agent",
+        "remediation_steps": [
+          "Review existing workflow patterns in Architect_Consistency_Check_Workflow.md",
+          "Design comprehensive workflow steps for each agent",
+          "Implement full workflow procedures with gates",
+          "Add quality metrics and constitutional compliance sections"
+        ],
+        "verification_criteria": [
+          "Workflow files contain complete step-by-step procedures",
+          "Each workflow includes gate verification steps",
+          "Quality metrics defined and constitutional compliance verified"
+        ],
+        "blocks_progression": false
+      },
+      {
+        "violation_id": "WARNING-003",
+        "description": "Multiple workflow-related files in Planner directory",
+        "rule_reference": "IDE_Architecture_Rules.md - Workflow Structure",
+        "urgency": "LOW",
+        "complexity": "MEDIUM",
+        "estimated_effort": "30 minutes",
+        "remediation_steps": [
+          "Review all files in Workflow/Planner/ directory",
+          "Determine which files are active workflow vs templates/archives",
+          "Consider creating Templates/ subdirectory for template files",
+          "Archive or remove obsolete files (Plan-old-backup.md)"
+        ],
+        "verification_criteria": [
+          "Clear separation between active workflow and supporting files",
+          "Obsolete files removed or archived",
+          "Directory structure reflects current workflow organization"
+        ],
+        "blocks_progression": false
+      }
+    ],
+    "informational_violations": [
+      {
+        "violation_id": "INFO-001",
+        "description": "Legacy files at Scripts root level",
+        "rule_reference": "IDE_Architecture_Rules.md - Scripts Structure",
+        "urgency": "LOW",
+        "complexity": "LOW",
+        "estimated_effort": "10 minutes",
+        "remediation_steps": [
+          "Determine appropriate owner for check-specification-exists.ps1 (likely Planner)",
+          "Determine appropriate owner for log_conversation.py (likely Architect)",
+          "Move files to Scripts/{AgentName}/ subdirectories",
+          "Update any references to old file locations"
+        ],
+        "verification_criteria": [
+          "Files moved to appropriate agent-specific directories",
+          "No broken references to old file locations"
+        ],
+        "blocks_progression": false
+      },
+      {
+        "violation_id": "INFO-002",
+        "description": "Missing agent-specific script directories for Executor, Researcher, Reviewer",
+        "rule_reference": "IDE_Architecture_Rules.md - Scripts Structure (optional extension)",
+        "urgency": "OPTIONAL",
+        "complexity": "LOW",
+        "estimated_effort": "5 minutes per agent",
+        "remediation_steps": [
+          "Assess whether Executor, Researcher, Reviewer need script implementations",
+          "Create Scripts/{AgentName}/ directories only if needed",
+          "Follow Scripts structure (src/, config/, tests/) if implementing"
+        ],
+        "verification_criteria": [
+          "Script directories created only where needed",
+          "Proper structure followed if created"
+        ],
+        "blocks_progression": false
+      }
+    ]
+  },
+  "remediation_priority_order": [
+    "CRITICAL-001",
+    "WARNING-001",
+    "WARNING-003",
+    "INFO-001",
+    "WARNING-002",
+    "INFO-002"
+  ],
+  "total_estimated_effort": {
+    "critical": "5 minutes",
+    "warning": "3 hours",
+    "informational": "25 minutes",
+    "total": "3.5 hours"
+  },
+  "remediation_phases": [
+    {
+      "phase": "Phase 1 - Critical Fixes",
+      "violations": ["CRITICAL-001"],
+      "estimated_time": "5 minutes",
+      "blocks_progression": true
+    },
+    {
+      "phase": "Phase 2 - Quick Wins",
+      "violations": ["WARNING-001", "WARNING-003", "INFO-001"],
+      "estimated_time": "45 minutes",
+      "blocks_progression": false
+    },
+    {
+      "phase": "Phase 3 - Major Work",
+      "violations": ["WARNING-002"],
+      "estimated_time": "2-3 hours",
+      "blocks_progression": false
+    },
+    {
+      "phase": "Phase 4 - Optional",
+      "violations": ["INFO-002"],
+      "estimated_time": "15 minutes",
+      "blocks_progression": false
+    }
+  ],
+  "implementation_recommendation": "Begin with Phase 1 (Critical Fixes) immediately to unblock progression. Phase 2 (Quick Wins) can be completed in the same session. Phase 3 (Major Work) should be scheduled as separate tasks for each agent workflow implementation. Phase 4 (Optional) can be deferred until agents need script implementations."
+}

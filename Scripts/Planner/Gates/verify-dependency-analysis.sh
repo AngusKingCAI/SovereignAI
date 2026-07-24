@@ -30,7 +30,7 @@ DEPS_SECTION=$(sed -n '/^## Dependencies/,/^##/p' "$PLAN_FILE" | sed '$d')
 if [ -z "$DEPS_SECTION" ]; then
     echo "❌ GATE FAILED: Dependencies section not found"
     echo "Action: Add Dependencies section to plan"
-    echo "Reference: Workflow/Planner/Plan.md - Dependencies section"
+    echo "Reference: Workflow/Planner/Planner_Plan_Workflow.md - Dependencies section"
     exit 1
 fi
 
@@ -329,6 +329,6 @@ else
     echo "GATE FAILED: $GATE_NAME"
     echo "=========================================="
     echo "Action: Fix dependency structure before proceeding"
-    echo "Reference: Workflow/Planner/Plan.md - Dependencies section"
+    echo "Reference: Workflow/Planner/Planner_Plan_Workflow.md - Dependencies section"
     exit 1
 fi

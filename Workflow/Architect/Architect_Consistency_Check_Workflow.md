@@ -6,11 +6,29 @@
 **Status**: Architect Agent Standard  
 **Authority**: Enforced by Architect agent and gate system  
 **Created**: 2026-07-24  
-**Constitutional Compliance**: Verified
+**Template Compliance**: Verified
 
 ## Purpose
 
 Systematic workflow for consistency checking across the SovereignAI infrastructure, ensuring architectural compliance and structural integrity according to IDE architecture rules and constitutional requirements.
+
+## Scope
+
+### Included
+- Directory structure validation across all project directories
+- File naming convention compliance checking
+- Agent documentation completeness verification
+- Rules and workflow folder structure validation
+- Scripts/ and Logs/ directory organization checks
+- Template compliance verification for workflow files
+- Comprehensive violation reporting and remediation guidance
+
+### Excluded
+- Application code implementation verification (deferred to Executor agent)
+- Application feature development validation (deferred to Phase 12)
+- Production deployment operations (deferred to Phase 12)
+- User interface development validation (deferred to Phase 12)
+- Database schema modifications verification (deferred to Phase 12)
 
 ## Workflow Overview
 
@@ -43,6 +61,22 @@ Systematic workflow for consistency checking across the SovereignAI infrastructu
 - Automatic execution before phase progression
 - Post-implementation verification after structural changes
 - On-demand consistency validation
+
+## Gate Enforcement
+
+**EVERY STEP HAS A GATE REQUIREMENT**: Each workflow step includes a mandatory gate that must pass before proceeding to the next step.
+
+**GATE PATTERN**:
+1. Perform the step's actions
+2. Document the results in conversation log
+3. Run the step's gate verification
+4. Gate must pass to proceed to next step
+5. If gate fails, stop and address the issue
+
+**COMPLIANCE REQUIREMENT**: 
+- Skipping any gate is a SCOPE VIOLATION per AGENTS.md
+- The gate system provides enforcement for all workflow steps
+- Each step is gated individually for comprehensive compliance
 
 ## Workflow Steps
 
@@ -80,10 +114,16 @@ Systematic workflow for consistency checking across the SovereignAI infrastructu
 - Check file naming conventions across all artifacts
 - Verify agent folder structure (AGENTS.md exists and is valid)
 - Verify rules folder structure (rule files exist and are valid)
-- Verify workflow folder structure (workflow files exist and are valid)
+- Verify workflow folder structure (workflow files exist and valid)
 - Verify Scripts/ directory structure compliance
 - Verify Logs/ directory structure compliance
 - Apply content pattern validation where applicable
+- Load Workflow/Workflow_Template.md as template reference
+- Validate each workflow file against template structure
+- Check for required sections: Header, Purpose, Scope, Gate Enforcement, Workflow Steps, Workflow Logging, Workflow Closure, Quality Metrics, Conversation Logging
+- Verify Gate Enforcement section positioned before Workflow Steps
+- Verify Quality Metrics positioned near end of workflow
+- Verify Template Compliance field present in header
 
 **Gate 4 Verification**: Post "✅ Gate 4 PASS: Validation rules applied, violations classified"
 
@@ -113,14 +153,18 @@ Systematic workflow for consistency checking across the SovereignAI infrastructu
 - Generate remediation plan with prioritized actions
 - Estimate remediation effort and timeline
 - Map violations to specific IDE architecture rule references
+- **MANDATORY**: Present remediation plan to user for explicit approval before any implementation
+- **MANDATORY**: Wait for user consent before proceeding with any remediation actions
 
-**Gate 7 Verification**: Post "✅ Gate 7 PASS: Remedy plan generated, violations addressed"
+**Gate 7 Verification**: Post "✅ Gate 7 PASS: Remedy plan generated, user approval obtained"
 
 ### Step 8: Re-verification Loop (Conditional)
 *Executed only after remediation implementation*
 
-- Allow user to implement remediation steps
-- Re-run consistency check after remediation
+- **MANDATORY**: For each remediation action, present specific plan to user and obtain explicit consent
+- **MANDATORY**: Wait for user approval before implementing each individual remediation step
+- Implement approved remediation steps one at a time with user consent
+- Re-run consistency check after each remediation step
 - Verify previous violations are resolved
 - Check for new violations introduced by changes
 - Update compliance status and statistics
@@ -232,6 +276,18 @@ Systematic workflow for consistency checking across the SovereignAI infrastructu
 - Workflow files contain step-by-step procedures
 - Markdown formatting consistency
 - Required metadata present
+
+### Workflow Template Compliance
+- Workflow files follow Workflow/Workflow_Template.md structure
+- Header includes all required sections (Title, File, Workflow Name, Description, Status, Template Compliance)
+- Purpose section present and properly defined
+- Scope section with Included/Excluded subsections
+- Gate Enforcement section positioned before Workflow Steps
+- Workflow Steps with embedded gate verifications
+- Workflow Logging section present with script-based logging specification
+- Workflow Closure section present with close skill reference
+- Quality Metrics section present with required subsections
+- Conversation Logging section present with agent-specific context
 
 ### Cross-Reference Integrity
 - References between files are valid
@@ -362,13 +418,5 @@ This workflow enforces constitutional requirements:
 - **Minimal Coupling**: Clear scope boundaries and integration points
 - **Architecture First**: Structural validation before implementation
 - **Explicit Interfaces**: Clear workflow steps and gate requirements
-
-## Amendment Log
-
-| Date | Amendment | Rationale |
-|------|-----------|-----------|
-| 2026-07-24 | Initial consistency check workflow | Establish systematic validation workflow for Architect agent based on IDE architecture rules |
-
-**Current Constitutional Status**: COMPLIANT
 
 This consistency check workflow ensures the Architect agent maintains deterministic, observable, and structured project organization for the SovereignAI Harness infrastructure through systematic validation and enforcement of IDE architecture rules.

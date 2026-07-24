@@ -83,7 +83,7 @@ SovereignAI/
 - **Agent Files**: `AGENTS.md` (always uppercase)
 - **Rule Files**: `{Agent}_Rules.md` (e.g., `Architect_Rules.md`)
 - **Workflow Files**: `{Agent}_Workflow.md` preferred (e.g., `Architect_Workflow.md`), but descriptive names allowed (e.g., `Architect_Consistency_Check_Workflow.md`)
-- **Spec Files**: `phase-{N}-{component}.md` (e.g., `phase-0-logging-foundation.md`)
+- **Spec Files**: `phase-{N}-{component}.md` (e.g., `phase-0-hash-based-gates.md`)
 - **Log Files**: `{component}-{YYYY-MM-DD}.jsonl` (e.g., `harness_infrastructure-2024-01-01.jsonl`)
 - **State Files**: `phase-{N}-state.json` (e.g., `phase-0-state.json`)
 - **Conversation Files**: `{session-id}.json` (e.g., `phase-0-implementation.json`)

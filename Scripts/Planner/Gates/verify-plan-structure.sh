@@ -335,6 +335,6 @@ else
     echo "GATE FAILED: $GATE_NAME"
     echo "=========================================="
     echo "Action: Fix plan structure before proceeding"
-    echo "Reference: Workflow/Planner/Plan.md - Plan Format section"
+    echo "Reference: Workflow/Planner/Planner_Plan_Workflow.md - Plan Format section"
     exit 1
 fi

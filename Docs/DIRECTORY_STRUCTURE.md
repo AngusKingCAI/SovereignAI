@@ -4,15 +4,12 @@
 
 **Root Level (Constitutional Authority)**:
 - `PRINCIPLES.md` - Supreme project constitution (P1-P14 + workflow principles)
-- `FOUNDING_ARCHITECTURE.md` - Architect infrastructure constitution
 - `AGENTS.md` - Universal invariants for all agents
 - `README.md` - Project overview
 
 **Docs/ (Reference & Documentation)**:
 - `DECISIONS.md` - Historical decision log (119 decisions from 40,323 lines)
 - `DIRECTORY_STRUCTURE.md` - Architecture documentation
-- `specs/` - Technical specifications
-- `logging/` - System documentation
 
 **Rules/ (Active Governance)**:
 - `Architect/` - Architect-specific rules
@@ -26,7 +23,6 @@ The SovereignAI Harness follows a structured directory layout that separates con
 ```
 SovereignAI/
 ├── PRINCIPLES.md                 # Supreme project constitution (P1-P14 + workflow)
-├── FOUNDING_ARCHITECTURE.md     # Architect infrastructure constitution
 ├── AGENTS.md                     # Universal invariants for all agents
 ├── README.md                    # Project overview
 ├── App/                          # SovereignAI application layer
@@ -67,67 +63,63 @@ SovereignAI/
 │       └── IDE_Architecture_Rules.md  # IDE structure rules
 ├── Workflow/                     # Agent workflows
 │   ├── Architect/
-│   │   └── Architect Workflow.md
+│   │   ├── Architect_Consistency_Check_Workflow.md
+│   │   └── Architect_Implementation_Cycle.md
 │   ├── Planner/
-│   │   └── Plan.md
+│   │   ├── Planner_Plan_Workflow.md
+│   │   ├── Quality_Rubric.md
+│   │   └── Templates/
+│   │       ├── Plan_Template.md
+│   │       ├── Plan_Brief_Template.md
+│   │       └── Plan_Prompt_Template.md
 │   ├── Executor/
-│   │   └── Execute.md
+│   │   └── Executor_Workflow.md
 │   ├── Researcher/
-│   │   └── Research.md
+│   │   └── Researcher_Workflow.md
 │   └── Reviewer/
-│       └── Review.md
+│       └── Reviewer_Workflow.md
 ├── Scripts/                      # All executable scripts and source code
 │   ├── Architect/                # Architect-specific scripts
-│   │   ├── Gates/               # Gate enforcement system
-│   │   │   ├── verify-phase-complete.sh
-│   │   │   ├── record-phase-complete.sh
-│   │   │   ├── verify-conversation-logging.sh
-│   │   │   └── gate-core/       # Core gate functions
-│   │   └── [Other architect scripts]
+│   │   └── Gates/               # Gate enforcement system
+│   ├── Governance/               # System-level governance tools
+│   │   ├── check-specification-exists.ps1  # Specification validation before write operations
+│   │   └── log_conversation.py   # Agent-agnostic conversation logging
+│   ├── Planner/                  # Planner-specific scripts
+│   │   └── Gates/               # Planner gate system
+│   ├── config/                   # Configuration files
+│   │   └── logging_config.py
 │   ├── src/                     # Source code
-│   │   ├── logging/            # Logging system implementation
-│   │   │   ├── log_level.py
-│   │   │   ├── log_entry.py
-│   │   │   ├── log_context.py
-│   │   │   ├── correlation.py
-│   │   │   ├── formatter.py
-│   │   │   ├── conversation_logger.py
-│   │   │   ├── logger.py
-│   │   │   ├── __init__.py
-│   │   │   └── output/          # Output handlers
-│   │   │       ├── stdout_output.py
-│   │   │       ├── file_output.py
-│   │   │       └── __init__.py
-│   │   └── config/             # Configuration files
-│   │       └── logging_config.py
-│   ├── tests/                   # Test suite
-│   │   ├── test_log_level.py
-│   │   ├── test_correlation.py
-│   │   ├── test_formatter.py
-│   │   └── test_integration.py
-│   └── log_conversation.py      # Conversation logging script
+│   │   └── logging/            # Logging system implementation
+│   │       ├── log_level.py
+│   │       ├── log_entry.py
+│   │       ├── log_context.py
+│   │       ├── correlation.py
+│   │       ├── formatter.py
+│   │       ├── conversation_logger.py
+│   │       ├── logger.py
+│   │       ├── __init__.py
+│   │       └── output/          # Output handlers
+│   │           ├── stdout_output.py
+│   │           ├── file_output.py
+│   │           └── __init__.py
+│   └── tests/                   # Test suite
+│       ├── test_log_level.py
+│       ├── test_correlation.py
+│       ├── test_formatter.py
+│       └── test_integration.py
 ├── Docs/                         # Documentation directory
 │   ├── DECISIONS.md            # Historical decision log
 │   ├── DIRECTORY_STRUCTURE.md   # This file
-│   ├── specs/                  # Specifications
-│   │   ├── phase-0-logging-foundation.md
-│   │   ├── phase-0-hash-based-gates.md
-│   │   └── phase-0-logging-implementation.md
-│   ├── logging/                # Logging documentation
-│   │   ├── LOGGING_GUIDE.md
-│   │   └── EXAMPLES.md
 │   ├── "Devin Local IDE Documents"  # IDE-specific documentation
 │   └── "Sovereign AI Design Docs"   # Application design docs
 ├── Logs/                         # All log files
 │   ├── Architect/              # Architect-specific logs
 │   │   ├── Gates/              # Gate system logs
-│   │   │   └── phase-0-state.json
+│   │   │   └── phase-{N}-state.json
 │   │   ├── Conversations/      # AI conversation logs
 │   │   │   └── session-*.json
 │   │   ├── harness_infrastructure/  # Harness infrastructure logs
 │   │   │   └── harness_infrastructure-YYYY-MM-DD.jsonl
-│   │   ├── phase_0_operations/       # Phase 0 operations logs
-│   │   │   └── phase_0_operations-YYYY-MM-DD.jsonl
 │   │   └── constitutional_audit/     # Constitutional audit logs
 │   │       └── constitutional_audit-YYYY-MM-DD.jsonl
 ├── Plans/                        # Execution plans (currently empty)
@@ -145,11 +137,9 @@ SovereignAI/
 
 **Gate System Logs**:
 - `phase-{N}-state.json` - State files for each phase
-- Example: `phase-0-state.json`
 
 **Conversation Logs**:
 - `{session-id}.json` - AI conversation session logs
-- Example: `phase-0-logging-implementation.json`
 
 ### Application Logs
 
@@ -160,9 +150,7 @@ SovereignAI/
 **Components**:
 1. **harness_infrastructure** - Harness infrastructure events
    - Example: `harness_infrastructure-2024-01-01.jsonl`
-2. **phase_0_operations** - Phase 0 operations
-   - Example: `phase_0_operations-2024-01-01.jsonl`
-3. **constitutional_audit** - Constitutional compliance
+2. **constitutional_audit** - Constitutional compliance
    - Example: `constitutional_audit-2024-01-01.jsonl`
 
 ### Log File Format

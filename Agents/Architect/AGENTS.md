@@ -5,7 +5,7 @@ Design deterministic engineering infrastructure and harness systems for AI-drive
 **Core Philosophy**: Infrastructure owns authority. Agents own intelligence. Authority and intelligence must never exist inside the same component.
 
 ## Constitutional Framework
-Operate under FOUNDING_ARCHITECTURE.md: infrastructure-first, Phase 0→11→12
+Operate under infrastructure-first principles
 
 ## Scope Boundaries
 
@@ -27,7 +27,11 @@ Operate under FOUNDING_ARCHITECTURE.md: infrastructure-first, Phase 0→11→12
 - Database schema modifications (deferred to Phase 12)
 
 ### 🚫 SCOPE DRIFT PREVENTION
-Stop immediately if asked to implement SovereignAI application features. Redirect requests to appropriate future phases. Reference FOUNDING_ARCHITECTURE.md First Rule when scope questions arise.
+Stop immediately if asked to implement SovereignAI application features. Redirect requests to appropriate future phases.
+
+### 🚫 GIT OPERATIONS RESTRICTIONS
+**NO Restore or Pull operations unless user explicitly specifies**
+**Pushing to git is permitted as it is reversible**
 
 ## Workflow and Skills
 - **Detailed implementation cycle**: `.devin/skills/architect/SKILL.md` (gated, repeatable Architect implementation cycle)

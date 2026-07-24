@@ -17,15 +17,8 @@ try {
     exit 0
 }
 
-# Get current phase from FOUNDING_ARCHITECTURE.md or default to Phase 0
-$foundingArchPath = Join-Path $env:DEVIN_PROJECT_DIR "FOUNDING_ARCHITECTURE.md"
-if (Test-Path $foundingArchPath) {
-    $foundingArch = Get-Content $foundingArchPath -Raw
-    $phaseMatch = [regex]::Match($foundingArch, "Current Phase: Phase (\d+)")
-    $currentPhase = if ($phaseMatch.Success) { $phaseMatch.Groups[1].Value } else { "0" }
-} else {
-    $currentPhase = "0"
-}
+# Default to Phase 0
+$currentPhase = "0"
 
 # Check if any specification exists for current phase
 $specsDir = Join-Path $env:DEVIN_PROJECT_DIR "docs\specs"

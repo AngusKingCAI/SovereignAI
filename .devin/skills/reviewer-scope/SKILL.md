@@ -26,7 +26,6 @@ permissions:
     - Read(AGENTS/**)
     - Read(Logs/**)
     - Read(PRINCIPLES.md)
-    - Read(FOUNDING_ARCHITECTURE.md)
     - Read(DECISIONS.md)
   deny:
     - Write(App/**)

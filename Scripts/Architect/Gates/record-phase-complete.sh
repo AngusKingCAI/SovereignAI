@@ -74,9 +74,6 @@ echo "Generating completion hash..."
 case "$PHASE" in
     0)
         FILES=(
-            "Docs/specs/phase-0-logging-foundation.md"
-            "Docs/specs/phase-0-hash-based-gates.md"
-            "Docs/specs/phase-0-logging-implementation.md"
             "Rules/Architect/IDE_Architecture_Rules.md"
             "Docs/DIRECTORY_STRUCTURE.md"
             "Scripts/Architect/Gates/verify-phase-complete.sh"
@@ -99,8 +96,6 @@ case "$PHASE" in
             "Scripts/tests/test_correlation.py"
             "Scripts/tests/test_formatter.py"
             "Scripts/tests/test_integration.py"
-            "Docs/logging/LOGGING_GUIDE.md"
-            "Docs/logging/EXAMPLES.md"
         )
         ;;
     *)

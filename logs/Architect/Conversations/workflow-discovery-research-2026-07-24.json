@@ -1,0 +1,74 @@
+{
+  "session_id": "workflow-discovery-research-2026-07-24",
+  "workflow": "Architect Implementation Cycle",
+  "agent": "Architect",
+  "start_time": "2026-07-24",
+  "end_time": "2026-07-24",
+  "status": "CLOSED",
+  "closure_reason": "User requested workflow closure before option selection",
+  "steps_completed": [
+    "Step 1: Understand - Read Architect agent documentation and IDE architecture rules",
+    "Step 2: Architect Interaction - User requested dynamic workflow discovery for Architect and other agents",
+    "Step 3: Research - Researched industry best practices for filesystem-based workflow discovery",
+    "Step 4: Options - Presented 4 implementation approaches with quality metrics"
+  ],
+  "gates_passed": [
+    "Gate 1: Workflow initialization and documentation loading",
+    "Gate 2: Research completion and best practices identification",
+    "Gate 3: Options generation with quality metrics"
+  ],
+  "research_findings": {
+    "key_patterns": [
+      "Filesystem-based discovery with frontmatter parsing",
+      "Multi-scope discovery (bundled, global, project)",
+      "Recursive directory scanning with depth limits",
+      "Caching strategies for performance optimization"
+    ],
+    "current_state": {
+      "architect_skill": "Hardcoded workflow options in .devin/skills/architect/SKILL.md",
+      "workflow_files": "Located in Workflow/{AgentName}/ directories",
+      "other_agents": "Similar structures in Workflow/Planner/, Workflow/Executor/, etc."
+    },
+    "research_sources": [
+      "GitHub Actions dynamic workflow discovery",
+      "Archon workflow discovery system",
+      "Filesystem-based tool discovery patterns",
+      "Directory-driven menu systems",
+      "Devin CLI skills documentation"
+    ]
+  },
+  "options_presented": [
+    {
+      "name": "Simple Filesystem Scanning",
+      "quality_score": 8,
+      "token_cost_score": 8,
+      "efficiency_score": 8,
+      "description": "Python script for basic filesystem scanning and frontmatter parsing"
+    },
+    {
+      "name": "Enhanced Multi-Scope Discovery",
+      "quality_score": 9,
+      "token_cost_score": 7,
+      "efficiency_score": 7,
+      "description": "Comprehensive multi-scope discovery with schema validation and caching"
+    },
+    {
+      "name": "Integrated Skill-Based Discovery",
+      "quality_score": 7,
+      "token_cost_score": 6,
+      "efficiency_score": 6,
+      "description": "Extend skill system with integrated workflow discovery capabilities"
+    },
+    {
+      "name": "Hybrid Script and Skill Integration",
+      "quality_score": 9,
+      "token_cost_score": 8,
+      "efficiency_score": 8,
+      "description": "Hybrid approach with script discovery and skill integration"
+    }
+  ],
+  "user_decision": "Requested workflow closure before option selection",
+  "outcome": "Research completed for dynamic workflow discovery implementation. Options documented for future implementation when user is ready to proceed.",
+  "constitutional_compliance": "VERIFIED - Infrastructure design scope, research phase only, no implementation attempted",
+  "next_steps": "User can re-invoke Architect workflow to select implementation approach when ready"
+}

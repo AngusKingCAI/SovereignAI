@@ -30,7 +30,7 @@ MANIFEST_SECTION=$(sed -n '/^## Executor Manifest/,/^##/p' "$PLAN_FILE" | sed '$
 if [ -z "$MANIFEST_SECTION" ]; then
     echo "❌ GATE FAILED: Executor Manifest section not found"
     echo "Action: Add Executor Manifest section to plan"
-    echo "Reference: Workflow/Planner/Plan.md - Executor Manifest section"
+    echo "Reference: Workflow/Planner/Planner_Plan_Workflow.md - Executor Manifest section"
     exit 1
 fi
 
@@ -238,6 +238,6 @@ else
     echo "GATE FAILED: $GATE_NAME"
     echo "=========================================="
     echo "Action: Complete Executor Manifest per specification"
-    echo "Reference: Workflow/Planner/Plan.md - Executor Manifest section"
+    echo "Reference: Workflow/Planner/Planner_Plan_Workflow.md - Executor Manifest section"
     exit 1
 fi

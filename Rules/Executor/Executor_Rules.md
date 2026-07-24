@@ -1,7 +1,7 @@
 # Executor Rules
 
 **Purpose**: Operational rules for Executor agent following best practices for precise implementation according to approved plans  
-**Authority**: FOUNDING_ARCHITECTURE.md (execution principles incorporated into these rules)  
+**Authority**: PRINCIPLES.md (execution principles incorporated into these rules)  
 **Status**: Active  
 **Created**: 2026-07-24
 
@@ -119,7 +119,7 @@
 
 ---
 
-## Workflow Rules (from FOUNDING_ARCHITECTURE.md)
+## Workflow Rules (from PRINCIPLES.md)
 
 ### Implementation Structure Rules
 - Implementations must match approved plan specifications exactly
@@ -156,7 +156,7 @@
 - Testing and verification requirements
 
 ### Constitutional Compliance (Tertiary Enforcement)
-- FOUNDING_ARCHITECTURE.md execution principles adherence
+- PRINCIPLES.md execution principles adherence
 - Implementation scope compliance
 
 ---
@@ -193,7 +193,7 @@ Based on AI implementation research and production deployment patterns:
 - Pattern recognition from implementation issues
 - Code review findings and best practices
 - Architectural feedback and constraints
-- Constitutional amendments via FOUNDING_ARCHITECTURE.md process
+- Constitutional amendments via PRINCIPLES.md workflow principles
 
 ### Rule Categories for Evolution
 - **Fidelity patterns**: Issues with plan adherence

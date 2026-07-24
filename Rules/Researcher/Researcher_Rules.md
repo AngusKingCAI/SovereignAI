@@ -1,7 +1,7 @@
 # Researcher Rules
 
 **Purpose**: Operational rules for Researcher agent following best practices for comprehensive research and analysis  
-**Authority**: FOUNDING_ARCHITECTURE.md (research principles incorporated into these rules)  
+**Authority**: PRINCIPLES.md (research principles incorporated into these rules)  
 **Status**: Active  
 **Created**: 2026-07-24
 
@@ -119,7 +119,7 @@
 
 ---
 
-## Workflow Rules (from FOUNDING_ARCHITECTURE.md)
+## Workflow Rules (from PRINCIPLES.md)
 
 ### Research Structure Rules
 - Research must be thorough and well-documented
@@ -156,7 +156,7 @@
 - Actionable presentation of findings
 
 ### Constitutional Compliance (Tertiary Enforcement)
-- FOUNDING_ARCHITECTURE.md research principles adherence
+- PRINCIPLES.md research principles adherence
 - Research scope compliance
 
 ---
@@ -193,7 +193,7 @@ Based on AI research methodologies and production analysis patterns:
 - Pattern recognition from research quality issues
 - Feedback from agents using research findings
 - Best practice research and implementation
-- Constitutional amendments via FOUNDING_ARCHITECTURE.md process
+- Constitutional amendments via PRINCIPLES.md workflow principles
 
 ### Rule Categories for Evolution
 - **Quality patterns**: Research thoroughness and accuracy issues

@@ -212,7 +212,7 @@ Based on AI planning research and production deployment patterns:
 - External Round Table findings from repeated errors
 - Pattern recognition from gate failures
 - Best practice research and implementation
-- Constitutional amendments via FOUNDING_ARCHITECTURE.md process
+- Constitutional amendments via PRINCIPLES.md workflow principles
 
 ### Rule Categories for Evolution
 - **Gate patterns**: Issues found during gate validation
@@ -233,20 +233,20 @@ Based on AI planning research and production deployment patterns:
 ## Template Usage Rules
 
 ### Template Locations
-- **Plan Template**: Workflow/Planner/Plan_Template.md (plan structure and format)
-- **Brief Template**: Workflow/Planner/Plan_Brief_Template.md (review brief structure)
-- **Prompt Template**: Workflow/Planner/Plan_Prompt_Template.md (persona adoption instructions)
+- **Plan Template**: Workflow/Planner/Templates/Plan_Template.md (plan structure and format)
+- **Brief Template**: Workflow/Planner/Templates/Plan_Brief_Template.md (review brief structure)
+- **Prompt Template**: Workflow/Planner/Templates/Plan_Prompt_Template.md (persona adoption instructions)
 - **Quality Rubric**: Workflow/Planner/Quality_Rubric.md (dimension scoring criteria)
 - **Plan Storage**: Plans/ folder (actual plans for manual implementation only)
 
 ### Template Usage Rules
 
 **DO**:
-- Use Workflow/Planner/Plan_Template.md for plan structure and format
-- Use Workflow/Planner/Plan_Brief_Template.md for Round Table brief creation
-- Use Workflow/Planner/Plan_Prompt_Template.md for persona adoption instructions
+- Use Workflow/Planner/Templates/Plan_Template.md for plan structure and format
+- Use Workflow/Planner/Templates/Plan_Brief_Template.md for Round Table brief creation
+- Use Workflow/Planner/Templates/Plan_Prompt_Template.md for persona adoption instructions
 - Use Workflow/Planner/Quality_Rubric.md for quality assessment criteria
-- Reference templates by their Workflow/Planner/ locations
+- Reference templates by their Workflow/Planner/Templates/ locations
 - Keep Plans/ folder for actual plans only
 
 **DON'T**:

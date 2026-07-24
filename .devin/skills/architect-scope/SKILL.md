@@ -25,7 +25,6 @@ permissions:
     - Read(Logs/**)
     - Read(Plans/**)
     - Read(PRINCIPLES.md)
-    - Read(FOUNDING_ARCHITECTURE.md)
     - Read(DECISIONS.md)
     - Read(README.md)
   deny:
@@ -54,7 +53,7 @@ This skill enforces the Architect agent's scope boundaries as defined in `Agents
 - **Docs/**: Documentation and specifications
 - **Logs/**: Log files and audit trails
 - **Plans/**: Execution plans and state management
-- **Root constitutional docs**: PRINCIPLES.md, FOUNDING_ARCHITECTURE.md, DECISIONS.md
+- **Root constitutional docs**: PRINCIPLES.md, DECISIONS.md
 
 ### ❌ BLOCKED (Application Work)
 - **App/**: SovereignAI application code (completely blocked)
@@ -66,8 +65,8 @@ This skill enforces the Architect agent's scope boundaries as defined in `Agents
 
 ## Constitutional Compliance
 
-This skill enforces the FOUNDING_ARCHITECTURE.md First Rule:
-> "Never build SovereignAI first. Build the infrastructure that will later build SovereignAI."
+This skill enforces infrastructure-first principles:
+> "Build infrastructure that will later build SovereignAI."
 
 ## When Invoked
 
@@ -88,7 +87,7 @@ If the Architect agent attempts to:
 **App/ Access Blocked:**
 ```
 ❌ SCOPE VIOLATION: Architect agent cannot modify App/ directory.
-Reason: Application code implementation is deferred to Phase 12 per FOUNDING_ARCHITECTURE.md.
+Reason: Application code implementation is deferred to infrastructure completion.
 Action: Redirect to infrastructure work or defer to appropriate phase.
 Reference: Agents/Architect/AGENTS.md - Scope Boundaries section
 ```

@@ -1,7 +1,7 @@
 # Reviewer Rules
 
 **Purpose**: Operational rules for Reviewer agent following best practices for comprehensive quality review and assessment  
-**Authority**: FOUNDING_ARCHITECTURE.md (review principles incorporated into these rules)  
+**Authority**: PRINCIPLES.md (review principles incorporated into these rules)  
 **Status**: Active  
 **Created**: 2026-07-24
 
@@ -119,7 +119,7 @@
 
 ---
 
-## Workflow Rules (from FOUNDING_ARCHITECTURE.md)
+## Workflow Rules (from PRINCIPLES.md)
 
 ### Review Structure Rules
 - Reviews must be thorough and well-documented
@@ -156,7 +156,7 @@
 - Verification against best practices
 
 ### Constitutional Compliance (Tertiary Enforcement)
-- FOUNDING_ARCHITECTURE.md review principles adherence
+- PRINCIPLES.md review principles adherence
 - Review scope compliance
 
 ---
@@ -193,7 +193,7 @@ Based on AI review methodologies and quality assessment patterns:
 - Pattern recognition from review quality issues
 - Feedback from agents receiving review findings
 - Best practice research and implementation
-- Constitutional amendments via FOUNDING_ARCHITECTURE.md process
+- Constitutional amendments via PRINCIPLES.md workflow principles
 
 ### Rule Categories for Evolution
 - **Quality patterns**: Review thoroughness and feedback quality issues

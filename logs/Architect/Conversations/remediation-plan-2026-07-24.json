@@ -1,0 +1,98 @@
+{
+  "session_id": "remediation-plan-2026-07-24",
+  "timestamp": "2026-07-24T12:35:00Z",
+  "parent_session": "consistency-check-2026-07-24-session-001",
+  "workflow": "Architect_Consistency_Check_Workflow",
+  "agent": "Architect",
+  "remediation_plan": {
+    "immediate_actions": [
+      {
+        "id": "REM-001",
+        "priority": "CRITICAL",
+        "target_violation": "CRIT-003",
+        "action": "Rename file to fix naming convention",
+        "description": "Rename Rules/Architect/Architect Rules.md to Rules/Architect/Architect_Rules.md",
+        "estimated_effort": "5 minutes",
+        "complexity": "LOW",
+        "dependencies": [],
+        "rule_reference": "IDE_Architecture_Rules.md - File Naming"
+      },
+      {
+        "id": "REM-002",
+        "priority": "CRITICAL", 
+        "target_violation": "CRIT-001",
+        "action": "Create missing agent documentation",
+        "description": "Create AGENTS.md files for Planner, Executor, Researcher, Reviewer agents",
+        "estimated_effort": "2-3 hours",
+        "complexity": "MEDIUM",
+        "dependencies": [],
+        "rule_reference": "IDE_Architecture_Rules.md - Agent Structure (MANDATORY)"
+      },
+      {
+        "id": "REM-003",
+        "priority": "CRITICAL",
+        "target_violation": "CRIT-002", 
+        "action": "Create missing rules documentation",
+        "description": "Create rule files for Executor, Researcher, Reviewer agents",
+        "estimated_effort": "2-3 hours",
+        "complexity": "MEDIUM",
+        "dependencies": ["REM-002"],
+        "rule_reference": "IDE_Architecture_Rules.md - Rules Structure (MANDATORY)"
+      }
+    ],
+    "short_term_actions": [
+      {
+        "id": "REM-004",
+        "priority": "WARNING",
+        "target_violation": "WARN-001",
+        "action": "Standardize workflow naming",
+        "description": "Rename workflow files to follow {Agent}_Workflow.md convention",
+        "estimated_effort": "30 minutes",
+        "complexity": "LOW",
+        "dependencies": [],
+        "rule_reference": "IDE_Architecture_Rules.md - File Naming"
+      }
+    ],
+    "long_term_actions": [
+      {
+        "id": "REM-005",
+        "priority": "INFORMATIONAL",
+        "target_violation": "INFO-001, INFO-002",
+        "action": "Document extensions to standard structure",
+        "description": "Document why Scripts/ and Logs/ have additional patterns beyond standard structure",
+        "estimated_effort": "1 hour",
+        "complexity": "LOW",
+        "dependencies": [],
+        "rule_reference": "IDE_Architecture_Rules.md - Exceptions Process"
+      }
+    ]
+  },
+  "remediation_timeline": {
+    "immediate_phase": "2026-07-24 - 2026-07-25",
+    "short_term_phase": "2026-07-25 - 2026-07-26", 
+    "long_term_phase": "2026-07-26 - 2026-07-31"
+  },
+  "compliance_impact": {
+    "before_remediation": {
+      "critical_violations": 5,
+      "warning_violations": 3,
+      "informational_violations": 2,
+      "compliance_status": "FAIL"
+    },
+    "after_immediate_remediation": {
+      "critical_violations": 0,
+      "warning_violations": 3,
+      "informational_violations": 2,
+      "compliance_status": "PASS"
+    },
+    "after_complete_remediation": {
+      "critical_violations": 0,
+      "warning_violations": 0,
+      "informational_violations": 0,
+      "compliance_status": "FULL_COMPLIANCE"
+    }
+  },
+  "gate_verification": {
+    "gate_7": "PASS - Remedy plan generated, violations addressed"
+  }
+}

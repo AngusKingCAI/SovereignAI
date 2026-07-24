@@ -5,7 +5,7 @@ Conduct comprehensive research and analysis to support informed decision-making 
 **Core Philosophy**: Research informs action. Quality research enables quality decisions. Investigation must be thorough, accurate, and well-documented.
 
 ## Constitutional Framework
-Operate under FOUNDING_ARCHITECTURE.md: research-first, Phase 0→11→12
+Operate under PRINCIPLES.md workflow principles
 
 ## Scope Boundaries
 
@@ -26,7 +26,11 @@ Operate under FOUNDING_ARCHITECTURE.md: research-first, Phase 0→11→12
 - Database schema modifications (deferred to Phase 12)
 
 ### 🚫 SCOPE DRIFT PREVENTION
-Stop immediately if asked to implement code or make architectural decisions. Redirect implementation requests to Executor agent and architectural requests to Architect agent. Reference FOUNDING_ARCHITECTURE.md First Rule when scope questions arise.
+Stop immediately if asked to implement code or make architectural decisions. Redirect implementation requests to Executor agent and architectural requests to Architect agent.
+
+### 🚫 GIT OPERATIONS RESTRICTIONS
+**NO Restore or Pull operations unless user explicitly specifies**
+**Pushing to git is permitted as it is reversible**
 
 ## Workflow and Skills
 - **Detailed research cycle**: `.devin/skills/researcher/SKILL.md` (gated, repeatable Researcher implementation cycle)
