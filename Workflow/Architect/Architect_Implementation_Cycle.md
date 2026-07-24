@@ -4,9 +4,48 @@
 **Workflow Name**: Architect Implementation Cycle  
 **Description**: Complete 11-step implementation cycle with gate enforcement for systematic architectural work  
 **Status**: Architect Agent Standard  
-**Constitutional Compliance**: Verified
+**Template Compliance**: Verified
 
 Step-by-step process for architectural decisions with best practice validation and enforced gates.
+
+## Purpose
+
+Provide systematic architectural decision-making with gated implementation cycles to ensure infrastructure design follows best practices and maintains compliance with IDE architecture standards.
+
+## Scope
+
+### Included
+- Infrastructure design and architecture planning
+- Directory structure and file organization standards
+- Workflow definition and procedure documentation
+- Gate system design and verification
+- Constitutional compliance verification
+- IDE architecture rules definition and enforcement
+
+### Excluded
+- SovereignAI application code implementation (deferred to Phase 12)
+- Direct application feature development (deferred to Phase 12)
+- Application-level testing and debugging (deferred to Phase 12)
+- Direct file editing in App/ directory (reference only)
+- Production deployment operations (deferred to Phase 12)
+- User interface development (deferred to Phase 12)
+- Database schema modifications (deferred to Phase 12)
+
+## Gate Enforcement
+
+**EVERY STEP HAS A GATE REQUIREMENT**: Each workflow step includes a mandatory gate that must pass before proceeding to the next step.
+
+**GATE PATTERN**:
+1. Perform the step's actions
+2. Document the results in conversation log
+3. Run the step's gate verification
+4. Gate must pass to proceed to next step
+5. If gate fails, stop and address the issue
+
+**COMPLIANCE REQUIREMENT**: 
+- Skipping any gate is a SCOPE VIOLATION per AGENTS.md
+- The gate system provides enforcement for all workflow steps
+- Each step is gated individually for comprehensive compliance
 
 ## Workflow Steps
 
@@ -18,7 +57,7 @@ Step-by-step process for architectural decisions with best practice validation a
 **Gate 1 Verification**: Post "✅ Gate 1 PASS: Understand step completed, all documentation loaded"
 
 ### 2. Architect Interaction
-**MANDATORY**: Ask user: "Hi, Architect here - how can I help you today?"
+Ask user: "Hi, Architect here - how can I help you today?"
 - Wait for user to specify their architectural task or question
 - Clarify the task if needed
 
@@ -33,8 +72,8 @@ Step-by-step process for architectural decisions with best practice validation a
 
 **Gate 3 Verification**: Post "✅ Gate 3 PASS: Research completed, best practices identified"
 
-### 4. Options (Generate 2-4 Implementation Options)
-- Generate 2-4 implementation options based on research
+### 4. Options (Generate 2-5 Implementation Options)
+- Generate 2-5 implementation options based on research
 - **RESEARCH RUBRIC** (GitHub analysis of 2,500+ repositories):
   - **Minimality**: Only operational knowledge, not discoverable content
   - **Tooling Specification**: Explicit tool names and commands
@@ -45,9 +84,13 @@ Step-by-step process for architectural decisions with best practice validation a
   - Quality score (out of 10) with reasoning based on rubric
   - Token Cost score (out of 10) with reasoning based on rubric
   - Efficiency score (out of 10) with reasoning based on rubric
-- **PRESENTATION PATTERN**: Present options with full metrics in text format first, then use ask_user_question for selection
+- **ARCHITECT OPINION**: After presenting options, provide architect's analysis and recommendation BEFORE calling ask_user_question
+- **PRESENTATION PATTERN**: 
+  1. Present options with full metrics in text format
+  2. Provide architect's analysis and opinion
+  3. Use ask_user_question for selection
 
-**Gate 4 Verification**: Post "✅ Gate 4 PASS: Options generated with quality metrics"
+**Gate 4 Verification**: Post "✅ Gate 4 PASS: Options generated with quality metrics and architect opinion provided"
 
 ### 5. Decide
 - User selects the preferred option
@@ -63,7 +106,7 @@ Step-by-step process for architectural decisions with best practice validation a
 - Verify proposed file locations comply with directory structure rules
 - **IMPLEMENTATION MODE SELECTION**: Ask user to choose implementation mode:
   - **Mode 1: Automated**: Agent implements everything automatically
-  - **Mode 2: Manual**: User and agent use steps 4-5 pattern for iterative implementation
+  - **Mode 2: Manual**: User and agent use steps 4-5 pattern for iterative implementation. Architect provides opinion on each iteration.
 
 **Gate 6 Verification**: Post "✅ Gate 6 PASS: Specification completed, compliance verified"
 
