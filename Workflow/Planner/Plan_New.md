@@ -34,10 +34,10 @@ This workflow follows AI planning best practices with:
 10. **Phase 7**: Session Logging + Validation
 
 **Template References**:
-- **Plan Creation**: Workflow/Planner/Plan_Template.md (plan structure and format)
+- **Plan Creation**: Plans/Plan_Template.md (plan structure and format)
 - **Brief Creation**: Workflow/Planner/Plan_Brief_Template.md (review brief structure)
 - **Prompt Instructions**: Workflow/Planner/Plan_Prompt_Template.md (persona adoption instructions)
-- **Quality Assessment**: Workflow/Planner/Quality_Rubric.md (dimension scoring criteria)
+- **Quality Assessment**: Plans/Quality_Rubric.md (dimension scoring criteria)
 - **Gate System**: Scripts/Planner/Gates/run-all-planner-gates.sh (automated validation)
 
 **Logging Structure**:
@@ -58,7 +58,7 @@ Read current governance documents to ensure up-to-date context for infrastructur
 Read Rules/Planner/Planner_Rules.md to understand operational rules, scope boundaries, and best practices.
 
 ### Step 1.2: Read Plan Template  
-Read Workflow/Planner/Plan_Template.md to understand required plan structure and format.
+Read Plans/Plan_Template.md to understand required plan structure and format.
 
 ### Step 1.3: Phase Validation
 Validate that governance documents were read successfully and context is established.
@@ -87,7 +87,7 @@ Understand the user's request and what changes are needed for SovereignAI implem
 Assess the current system state and dependencies relevant to the planned changes.
 
 ### Step 2.3: Create Plan Draft
-Create plan draft following Workflow/Planner/Plan_Template.md format exactly:
+Create plan draft following Plans/Plan_Template.md format exactly:
 - Required sections: Context, Steps, Dependencies
 - Metadata: Revision, Date, Goal
 - Planning language only (no implementation details)
@@ -150,7 +150,7 @@ Create plan brief and review prompt for initial internal review using templates:
 - Quality dimensions to evaluate
 - Specific persona assignment for each panelist
 - Web search requirement explicitly stated
-- Quality rubric reference (Workflow/Planner/Quality_Rubric.md)
+- Quality rubric reference (Plans/Quality_Rubric.md)
 - Structured output format requirements
 
 **Prompt Must Include**:
@@ -352,7 +352,7 @@ Create external review brief and prompt for Chathub.gg panelists using templates
 - Quality dimensions to evaluate
 - Specific persona assignment for each external panelist
 - Web search requirement explicitly stated
-- Quality rubric reference (Workflow/Planner/Quality_Rubric.md)
+- Quality rubric reference (Plans/Quality_Rubric.md)
 - Structured output format requirements
 
 **Prompt Must Include**:

@@ -1,0 +1,14 @@
+{
+  "session_id": "test-gate1-structure-fixed",
+  "plan_file": "Plans/test-gate1-fail-missing-sections.md",
+  "timestamp": "2026-07-24T01:06:34Z",
+  "gate_results": ["Gate 1 (Structure): FAIL
+Gate 2 (Scope): PASS
+Gate 3 (Manifest): FAIL
+Gate 4 (Dependencies): PASS
+Gate 5 (Landmines): PASS
+Gate 6 (Architect): PASS"],
+  "failed_gates": ["Plan Structure Validation
+Executor Manifest Validation"],
+  "status": "failed"
+}
