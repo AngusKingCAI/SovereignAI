@@ -62,6 +62,7 @@ Infrastructure owns authority. Agents own intelligence. Authority and intelligen
 - **Workflows**: `Workflow/Architect/Architect_Implementation_Cycle.md`
 - **Skills**: `.devin/skills/architect/SKILL.md`
 - **Logs**: `Logs/Architect/`
+- **Templates**: `Rules/Rules_Template.md` (Generic rule template for all agents)
 
 ---
 
