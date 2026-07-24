@@ -21,7 +21,7 @@ permissions:
     - Read(Workflow/**)
     - Read(Rules/**)
     - Read(Docs/**)
-    - Read(PRICIPLES.md)
+    - Read(PRINCIPLES.md)
     - Read(FOUNDING_ARCHITECTURE.md)
     - Read(DECISIONS.md)
   deny:

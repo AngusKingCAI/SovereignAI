@@ -24,7 +24,7 @@ permissions:
     - Read(Docs/**)
     - Read(Logs/**)
     - Read(Plans/**)
-    - Read(PRICIPLES.md)
+    - Read(PRINCIPLES.md)
     - Read(FOUNDING_ARCHITECTURE.md)
     - Read(DECISIONS.md)
     - Read(README.md)
