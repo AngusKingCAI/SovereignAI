@@ -1,0 +1,4 @@
+{"timestamp": "{\"$date\": {\"$numberLong\": \"1784918819361\"}}", "gate_id": "gate_1_governance_context", "gate_message": "\u2705 Gate 1 PASS: Governance context established, rules loaded", "session_id": "unknown", "agent_type": "unknown"}
+{"timestamp": "{\"$date\": {\"$numberLong\": \"1784918819361\"}}", "gate_id": "gate_2_plan_structure", "gate_message": "\u2705 Gate 2 PASS: Plan structure created, template compliance verified", "session_id": "unknown", "agent_type": "unknown"}
+{"timestamp": "{\"$date\": {\"$numberLong\": \"1784918819361\"}}", "gate_id": "gate_3_early_validation", "gate_message": "\u2705 Gate 3 PASS: Early gate validation completed", "session_id": "unknown", "agent_type": "unknown"}
+{"timestamp": "{\"$date\": {\"$numberLong\": \"1784918819361\"}}", "gate_id": "gate_3_early_validation", "gate_message": "\u2705 Gate 3 PASS: Early gate validation completed", "session_id": "unknown", "agent_type": "unknown"}
