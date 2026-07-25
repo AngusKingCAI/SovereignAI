@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
 Git Auto-Approve Hook - PermissionRequest
-Auto-approves git commands to prevent blocking development workflow
+Auto-approves local git commands but requires permission for push operations
 """
 import json
 import sys
 
 def main():
-    """Auto-approve git commands."""
+    """Auto-approve local git commands, require permission for push."""
     try:
         # Read event data from stdin
         data = sys.stdin.read()
@@ -20,14 +20,19 @@ def main():
         tool_input = env_vars.get('tool_input', {})
         command = tool_input.get('command', '')
         
-        # Auto-approve git commands
+        # Require permission for git push operations
         if tool_name == 'exec' and command.startswith('git '):
-            output = {
-                "decision": "approve",
-                "reason": "Git command auto-approved for development workflow"
-            }
-            print(json.dumps(output))
-            sys.exit(0)
+            if 'push' in command:
+                # Don't return anything for push operations to require user permission
+                sys.exit(0)
+            else:
+                # Auto-approve local git operations
+                output = {
+                    "decision": "approve",
+                    "reason": "Local git command auto-approved for development workflow"
+                }
+                print(json.dumps(output))
+                sys.exit(0)
         
         # Allow other tools to proceed normally
         sys.exit(0)
