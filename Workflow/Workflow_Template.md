@@ -20,6 +20,12 @@
 
 ## Workflow Steps
 
+### 0. Read {Agent} Rules
+- **ACTION**: Read Rules/{Agent}/{Agent}_Rules.md to load current governance constraints
+- **ACTION**: Parse YAML frontmatter and rule definitions for implementation guidance
+- **ACTION**: Store rule context for reference throughout workflow execution
+- **VERBOSE LOG**: "{Agent} rules loaded from Rules/{Agent}/{Agent}_Rules.md"
+
 ### 1. {Step Name}
 - **ACTION**: {Specific action description}
 - **ACTION**: {Additional actions as needed}
@@ -60,36 +66,40 @@
 - **ACTION**: {Additional actions as needed}
 - **VERBOSE LOG**: "{Description of what was logged for transparency}"
 
-### 9. Return to Step 1
-- **ACTION**: After completing workflow, return to Step 1
+### 9. Return to Step 0
+- **ACTION**: After completing workflow, return to Step 0
 - **ACTION**: This makes the workflow repeatable for continuous work
 - **ACTION**: Ready for next task
-- **VERBOSE LOG**: "Workflow cycle complete - returning to Step 1 for next task"
+- **VERBOSE LOG**: "Workflow cycle complete - returning to Step 0 for next task"
 - **VERBOSE LOG**: "{Agent} agent ready - awaiting next user request"
 
 ## Hook-Based Gate System Integration
 
-### Automatic Enforcement
-- **HOOK SYSTEM**: Scripts/Gating/Hooks/ provides automatic governance enforcement
-- **SESSION START**: SessionStart hook initializes governance environment
-- **PRE-TOOL USE**: PreToolUse hook validates permissions before each tool execution
-- **POST-TOOL USE**: PostToolUse hook logs all operations to audit trail
-- **SESSION END**: SessionEnd hook performs final validation and cleanup
+### Automated Progression System
+The workflow uses an automated progression system based on step-based gating:
+- **State machine architecture**: External state in `Logs/{Agent}/Gating/workflow-state.json`
+- **Single responsibility separation**: Manager, Gate, Tracker, Handler components
+- **Agent-agnostic design**: Uses `DEVIN_PROJECT_DIR` for portability
+- **Fail-open on errors**: Never deadlocks the agent on internal failures
+- **Devin-compatible hooks**: Proper JSON output format as per guides
+- **Regex-based workflow parsing**: `^###\s+(\d+)\.\s+(.+)$` pattern
 
-### Phase-Based Permissions
-- **PHASE 0**: Repository Foundation - infrastructure setup only (read, exec tools)
-- **PHASE 1**: Rule System - rule file creation and validation (read, write, edit tools)
-- **PHASE 2**: Workflow Design - workflow creation and structure (read, write, edit tools)
-- **PHASE 3**: Gate Implementation - hook system setup and governance (read, write, edit, exec tools)
-- **PHASE 4**: Testing - validation and testing (read, write, edit, exec tools)
-- **PHASE 5**: Documentation - final documentation (read, write, edit tools)
+### Automated Workflow Progression
+- **Step completion detection**: Automatically detects successful step completion via state-mutating tools
+- **Automatic advancement**: System auto-advances to next step on success
+- **Failure detection**: Detects step failures and triggers user intervention
+- **User intervention**: Only pauses on failure with `/retry`, `/modify`, `/abort` options
+- **No manual commands**: No need for `/step-complete` or `/step-begin` commands
 
-### Compliance Verification
-- **AUTOMATIC CHECKS**: Hook system automatically validates permissions at tool execution time
-- **PHASE VALIDATION**: Required phase completions checked before allowing operations
-- **FILE PROTECTION**: Core governance files automatically protected from modification
-- **AUDIT TRAIL**: All operations automatically logged to Logs/{Agent}/Gating/audit-trail.log
-- **SESSION TRACKING**: Session context maintained in Logs/{Agent}/Gating/session-context.json
+### Commands (for failure intervention only)
+| Command | Effect |
+|---------|--------|
+| `/retry` | Retry failed step from beginning |
+| `/modify` | Allow modifications while step is failed |
+| `/abort` | Skip failed step and advance to next |
+| `/workflow-status` | Show all steps and completion state |
+
+Research tools (`read`, `grep`, `glob`, `ask_user_question`, `view`) are never gated. State-mutating tools (`edit`, `write`, `exec`) are automatically allowed in normal progression and only blocked on failure.
 
 ### Verbose Action Logging
 - **EVERY ACTION**: Each workflow step includes explicit ACTION markers
@@ -103,15 +113,24 @@
 ### Hook Configuration
 - **FILE**: .devin/hooks.v1.json
 - **SESSION START**: session_init.py hook
-- **PRE-TOOL USE**: tool_permission_check.py hook
-- **POST-TOOL USE**: operation_logger.py hook
+- **PRE-TOOL USE**: workflow_step_gate.py hook
+- **POST-TOOL USE**: automated_progress_tracker.py hook
+- **USER PROMPT SUBMIT**: user_decision_handler.py hook
 - **SESSION END**: session_finalization.py hook
 
-### Phase Permissions
-- **CONFIGURATION**: Scripts/Gating/Config/phase_permissions.json
-- **STATE MANAGEMENT**: Logs/{Agent}/Gating/phase-{N}-state.json
+### Workflow State Management
+- **WORKFLOW STATE**: Logs/{Agent}/Gating/workflow-state.json
+- **WORKFLOW HISTORY**: Logs/{Agent}/Gating/workflow-history.jsonl
 - **SESSION CONTEXT**: Logs/{Agent}/Gating/session-context.json
 - **AUDIT TRAIL**: Logs/{Agent}/Gating/audit-trail.log
+
+### Hook Script Components
+- **workflow_state_manager.py**: State I/O and validation, regex workflow parsing
+- **workflow_step_gate.py**: PreToolUse gate, blocks on failure only
+- **automated_progress_tracker.py**: PostToolUse tracker, detects completion and failures
+- **user_decision_handler.py**: UserPromptSubmit handler, processes retry/modify/abort commands
+- **session_init.py**: Session initialization, creates session context
+- **session_finalization.py**: Session end validation and cleanup
 
 ### {Agent} Rules Compliance
 - **CONSTRAINTS**: Rules/{Agent}/{Agent}_Rules.md constraints enforced

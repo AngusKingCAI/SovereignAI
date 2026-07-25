@@ -1,0 +1,10 @@
+# Standard gitignore entries
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Gating system override files - tracked for audit trail
+# .gating-overrides/ directory and its contents are intentionally NOT ignored
+# to provide visibility into gate overrides in PR diffs
