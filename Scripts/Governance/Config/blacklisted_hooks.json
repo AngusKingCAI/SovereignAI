@@ -7,9 +7,10 @@
     "dependency_checker.py",
     "file_naming_validator.py",
     "directory_structure_validator.py",
-    "block_destructive.py"
+    "block_destructive.py",
+    "agent_switch_hook.py"
   ],
-  "reason": "These hooks block git operations and other essential tools",
+  "reason": "These hooks block git operations or conflict with existing skill-based functionality",
   "blacklisted_date": "2026-07-25T03:31:00Z",
-  "notes": "Blacklisted due to preventing exec commands and git operations during development"
+  "notes": "Blacklisted due to preventing exec commands, git operations, or conflicts with skill-based agent switching"
 }
