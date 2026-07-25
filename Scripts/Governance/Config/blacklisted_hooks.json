@@ -5,5 +5,5 @@
   ],
   "reason": "These hooks are permanently disabled due to conflicts or redundant functionality",
   "blacklisted_date": "2026-07-25T03:31:00Z",
-  "notes": "block_destructive.py - blocked legitimate commands including git operations. agent_switch_hook.py - conflicts with skill-based agent switching. git_auto_approve.py - now requires permission for git push operations while auto-approving local git commands"
+  "notes": "block_destructive.py - blocked legitimate commands including git operations. agent_switch_hook.py - conflicts with skill-based agent switching. git_auto_approve.py - now requires permission for git push, pull, and restore operations while auto-approving local git commands"
 }
