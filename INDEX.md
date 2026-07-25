@@ -1,0 +1,32 @@
+# SovereignAI Repository INDEX
+
+**Folder Structure:**
+- `Agents/` - Other agents' governance files
+  - `Executor/`
+  - `Planner/`
+  - `Researcher/`
+  - `Reviewer/`
+- `App/` - SovereignAI application code
+- `Docs/` - Documentation and research
+  - `Architecture/`
+  - `Claude Hooks/`
+  - `Code/`
+  - `Decisions/`
+  - `Devin Local IDE Documents/`
+  - `Governance/`
+  - `Guides/`
+  - `Implementation/`
+  - `Research/`
+  - `Sovereign AI Design Docs/`
+  - `Websites/`
+- `.devin/` - Devin CLI configuration, skills, and hooks
+- `Logs/` - Agent logs and conversation history
+- `Plans/` - Project planning documents
+- `Rules/` - Rule definitions for all agents
+  - `Architect/`
+  - `Executor/`
+  - `Planner/`
+  - `Researcher/`
+  - `Reviewer/`
+- `Scripts/` - Implementation scripts organized by category
+- `Workflow/` - Workflow definitions for all agents
