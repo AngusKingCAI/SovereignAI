@@ -102,7 +102,7 @@ class UnifiedSessionLogger:
                 return 1
             
             # Extract session numbers from existing files
-            # Expected format: Agent_DD-M-YYYY_HH:MM:SS_number.md
+            # Expected format: Agent_DD-M-YYYY_HH-MM-SS_number.md
             session_numbers = []
             for file in existing_files:
                 # Extract the number before .md
@@ -118,10 +118,11 @@ class UnifiedSessionLogger:
             if not session_numbers:
                 return 1
             
-            # Return max + 1
+            # Return max + 1 to ensure always incrementing
             return max(session_numbers) + 1
             
-        except Exception:
+        except Exception as e:
+            print(f"Error getting session number: {e}", file=sys.stderr)
             return 1
 
     def initialize_session(self):
