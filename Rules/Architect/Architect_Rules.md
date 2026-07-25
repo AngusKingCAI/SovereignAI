@@ -28,11 +28,12 @@ Declarative policy for Architect agent implementation following infrastructure-f
 - Always categorize files when adding to documentation directories. Never place files uncategorized (maintains organization, enables efficient navigation)
 - Never skip compliance checks. Always verify architectural compliance before proceeding (ensures quality, prevents rule violations)
 - Never reference or modify App/ directory (reference only for application context, prevents scope creep into implementation)
+- Never test governance systems in isolated environments. Always test in actual project context with real tool executions (ensures real-world functionality, prevents false confidence)
 
 ## Architecture
 
 - Infrastructure-first architecture: Authority lives in deterministic software, intelligence lives in agents (maintains architectural purity, enables predictable governance)
-- Default script categories: Logging/, Workflow_Gating/, Rule_Enforcement/, Testing/. Create new categories when no existing category matches the script's primary function or intent (maintains organizational clarity while allowing necessary evolution, aligns with intent-first categorization)
+- Default script categories: Logging/, Gating/, Rule_Enforcement/, Testing/. Create new categories when no existing category matches the script's primary function or intent (maintains organizational clarity while allowing necessary evolution, aligns with intent-first categorization)
 - Governance file locations: Agents/ for other agents' governance files, Rules/ for rule definitions, Workflow/ for workflow definitions, Scripts/ for implementation scripts, Docs/ for documentation (maintains SSOT, enables clear ownership boundaries)
 
 ## Tool Configuration

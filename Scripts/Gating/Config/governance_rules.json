@@ -1,0 +1,32 @@
+{
+  "governance_rules": {
+    "file_protection": {
+      "protected_files": [
+        ".git/",
+        "App/",
+        ".devin/hooks.v1.json",
+        "Scripts/Gating/Config/phase_permissions.json",
+        "Scripts/Gating/Config/governance_rules.json"
+      ],
+      "protection_level": "strict"
+    },
+    "workflow_enforcement": {
+      "require_cycle_back": true,
+      "enforce_action_markers": true,
+      "enforce_verbose_logging": true,
+      "template_compliance": "strict"
+    },
+    "audit_requirements": {
+      "log_all_operations": true,
+      "log_session_context": true,
+      "log_phase_transitions": true,
+      "audit_trail_location": "Logs/{Agent}/Gating/audit-trail.log"
+    },
+    "hook_configuration": {
+      "session_start": "Scripts/Gating/Hooks/session_init.py",
+      "pre_tool_use": "Scripts/Gating/Hooks/tool_permission_check.py",
+      "post_tool_use": "Scripts/Gating/Hooks/operation_logger.py",
+      "session_end": "Scripts/Gating/Hooks/session_finalization.py"
+    }
+  }
+}

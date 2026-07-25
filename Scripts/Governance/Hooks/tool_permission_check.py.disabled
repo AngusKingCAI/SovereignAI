@@ -1,3 +1,0 @@
-#!/usr/bin/env python3
-# DISABLED - This hook was blocking exec commands
-# Original tool_permission_check.py disabled due to blocking git operations
