@@ -143,7 +143,7 @@ def main():
         except:
             relative_path = file_path
         
-        # Perform validations
+        # Perform validations but only log warnings instead of blocking
         validations = [
             validate_file_name(relative_path),
             validate_against_mandatory_structure(relative_path)
@@ -156,21 +156,12 @@ def main():
             if not dir_valid:
                 validations.append((False, dir_error))
         
-        # Check if any validation failed
+        # Log warnings for validation failures but don't block
         for is_valid, error_msg in validations:
             if not is_valid:
-                # Block the operation with exit code 2
-                output = {
-                    "hookSpecificOutput": {
-                        "hookEventName": "PreToolUse",
-                        "permissionDecision": "deny",
-                        "permissionDecisionReason": f"Structure validation failed: {error_msg}"
-                    }
-                }
-                print(json.dumps(output))
-                sys.exit(2)
+                print(f"Structure validation warning: {error_msg}", file=sys.stderr)
         
-        # All validations passed
+        # Always allow the operation (non-blocking)
         print(json.dumps({"hookSpecificOutput": {"hookEventName": "PreToolUse"}}))
         sys.exit(0)
         

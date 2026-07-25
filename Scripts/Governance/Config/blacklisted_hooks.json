@@ -1,16 +1,9 @@
 {
   "blacklisted_hooks": [
-    "tool_permission_check.py",
-    "structure_validator.py", 
-    "template_compliance_validator.py",
-    "config_validator.py",
-    "dependency_checker.py",
-    "file_naming_validator.py",
-    "directory_structure_validator.py",
     "block_destructive.py",
     "agent_switch_hook.py"
   ],
-  "reason": "These hooks block git operations or conflict with existing skill-based functionality",
+  "reason": "These hooks are permanently disabled due to conflicts or redundant functionality",
   "blacklisted_date": "2026-07-25T03:31:00Z",
-  "notes": "Blacklisted due to preventing exec commands, git operations, or conflicts with skill-based agent switching"
+  "notes": "block_destructive.py - blocked legitimate commands including git operations. agent_switch_hook.py - conflicts with skill-based agent switching"
 }

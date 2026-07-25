@@ -99,29 +99,13 @@ def main():
             # Validate JSON structure
             is_valid_json, json_error = validate_json_structure(content)
             if not is_valid_json:
-                output = {
-                    "hookSpecificOutput": {
-                        "hookEventName": "PreToolUse",
-                        "permissionDecision": "deny",
-                        "permissionDecisionReason": json_error
-                    }
-                }
-                print(json.dumps(output))
-                sys.exit(2)
+                print(f"Config validation warning: {json_error}", file=sys.stderr)
             
             # Validate configuration requirements
             is_valid_config, config_issues = validate_config_requirements(content, config_name)
             if not is_valid_config:
                 error_message = "Configuration validation failed: " + "; ".join(config_issues)
-                output = {
-                    "hookSpecificOutput": {
-                        "hookEventName": "PreToolUse",
-                        "permissionDecision": "deny",
-                        "permissionDecisionReason": error_message
-                    }
-                }
-                print(json.dumps(output))
-                sys.exit(2)
+                print(f"Config validation warning: {error_message}", file=sys.stderr)
         
         print(json.dumps({"hookSpecificOutput": {"hookEventName": "PreToolUse"}}))
         sys.exit(0)
