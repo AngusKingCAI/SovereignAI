@@ -20,19 +20,18 @@ def main():
         tool_input = env_vars.get('tool_input', {})
         command = tool_input.get('command', '')
         
-        # Require permission for git push, pull, and restore operations
+        # Only auto-approve local git operations (not push/pull/restore)
         if tool_name == 'exec' and command.startswith('git '):
-            if 'push' in command or 'pull' in command or 'restore' in command:
-                # Don't return anything for these operations to require user permission
-                sys.exit(0)
-            else:
-                # Auto-approve local git operations
+            if 'push' not in command and 'pull' not in command and 'restore' not in command:
+                # Auto-approve local git operations only
                 output = {
                     "decision": "approve",
                     "reason": "Local git command auto-approved for development workflow"
                 }
                 print(json.dumps(output))
                 sys.exit(0)
+            # For push/pull/restore, don't return anything to let normal permission flow work
+            sys.exit(0)
         
         # Allow other tools to proceed normally
         sys.exit(0)
