@@ -361,7 +361,7 @@ Workflow closure is handled automatically by the SessionEnd hook.
 **Standard Integration Points:**
 - **Rules**: `Rules/Architect/Architect_Rules.md`
 - **Workflows**: `Workflow/Architect/Architect_Hook_Creator_Workflow.md`
-- **Skills**: `.devin/skills/architect/SKILL.md`
+- **Skills**: `.devin/skills/architect/SKILL.md` (skill to be created)
 - **Logs**: `Logs/Architect/`
 
 **Hook System Integration Points:**
