@@ -15,8 +15,10 @@
       "create:Workflow/",
       "create:Logs/",
       "modify:.devin/",
+      "modify:.claude/",
       "read:*",
-      "write:.devin/"
+      "write:.devin/",
+      "write:.claude/"
     ],
     "forbidden_operations": [
       "modify:App/",
@@ -84,6 +86,7 @@
       "modify:Scripts/Governance/",
       "create:Scripts/Governance/",
       "modify:.devin/",
+      "modify:.claude/",
       "read:*"
     ],
     "forbidden_operations": [

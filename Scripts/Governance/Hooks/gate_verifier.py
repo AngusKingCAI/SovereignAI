@@ -77,32 +77,30 @@ def detect_gate_from_operation(tool_name: str, tool_input: Dict) -> Optional[str
     return None
 
 
-def get_session_context() -> Dict:
-    """Get current session context."""
-    try:
-        # Try to read from session logger output
-        session_file = PROJECT_ROOT / ".devin" / "current_session.json"
-        if session_file.exists():
-            with open(session_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
-    except Exception:
-        pass
+def get_session_context(input_data: Dict) -> Dict:
+    """Get current session context from hook input data."""
+    # Extract session information from hook input
+    session_id = input_data.get("session_id", "unknown")
+    agent_type = input_data.get("agent_type", "unknown")
     
-    # Fallback to agent_config.json for agent type
-    try:
-        config_file = PROJECT_ROOT / ".devin" / "agent_config.json"
-        if config_file.exists():
-            with open(config_file, 'r', encoding='utf-8') as f:
-                config = json.load(f)
-                return {
-                    "session_id": "unknown",
-                    "agent_type": config.get("current_agent", "Architect")
-                }
-    except Exception:
-        pass
+    # If not in input data, try to get from environment variables
+    if session_id == "unknown":
+        session_id = os.environ.get("DEVIN_SESSION_ID", "unknown")
+    if agent_type == "unknown":
+        agent_type = os.environ.get("DEVIN_AGENT_TYPE", "unknown")
     
-    # Final fallback to Architect
-    return {"session_id": "unknown", "agent_type": "Architect"}
+    # Final fallback to agent_config.json
+    if agent_type == "unknown":
+        try:
+            config_file = PROJECT_ROOT / ".devin" / "agent_config.json"
+            if config_file.exists():
+                with open(config_file, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+                    agent_type = config.get("current_agent", "unknown")
+        except Exception:
+            pass
+    
+    return {"session_id": session_id, "agent_type": agent_type}
 
 
 def log_gate_completion(gate_id: str, gate_message: str, session_context: Dict):
@@ -152,7 +150,7 @@ def main():
             gate_message = gate_config["message"]
             
             # Get session context
-            session_context = get_session_context()
+            session_context = get_session_context(input_data)
             
             # Log gate completion
             log_gate_completion(gate_id, gate_message, session_context)
