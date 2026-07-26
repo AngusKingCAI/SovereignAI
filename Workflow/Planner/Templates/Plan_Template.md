@@ -120,7 +120,7 @@ step_3: [step_1, step_2]
 - [ ] Gate 1 (Structure): All required sections and metadata present
 - [ ] Gate 2 (Scope): Planning content only, no implementation details
 - [ ] Gate 3 (Dependencies): Dependency graph valid, no circular dependencies
-- [ ] Gate 4 (Quality): Plan quality rubric assessment (Workflow/Planner/Quality_Rubric.md)
+- [ ] Gate 4 (Quality): Plan quality rubric assessment (Workflow/Workflow_Reference/Quality_Assessment_Framework.md)
 - [ ] Gate 5 (Landmines): No blocking landmines (passes with warning if file not found)
 - [ ] Gate 6 (Infrastructure): Infrastructure scope compliance verified
 
@@ -134,7 +134,7 @@ After plan creation and gate validation, plans undergo Round Table review for qu
 1. **Plan Brief Creation**: Planner creates brief using Workflow/Planner/Plan_Brief_Template.md
 2. **Panelist Assignment**: Domain-split personas assigned to panelists (Structure Expert, Scope Expert, etc.)
 3. **Panelist Instructions**: Panelists receive persona instructions from Workflow/Planner/Plan_Prompt_Template.md
-4. **Quality Evaluation**: Panelists evaluate using Workflow/Planner/Quality_Rubric.md with web search verification
+4. **Quality Evaluation**: Panelists evaluate using Workflow/Workflow_Reference/Quality_Assessment_Framework.md with web search verification
 5. **Findings Application**: Planner applies findings to improve plan quality
 6. **Convergence Loops**: Internal and external review until convergence achieved
 

@@ -13,10 +13,21 @@ Declarative policy for Architect agent implementation following infrastructure-f
 
 ## Conventions
 
+- **Best Practices**: Web search must be used before implementing major architectural decisions or when uncertain about implementation approaches. Best practices are established industry standards that must be researched before proceeding.
 - Check index files (Docs/index.md, Docs/Research/index.md, Docs/Websites/index.md, Docs/Code/index.md) before web searching (reduces token cost, prioritizes local knowledge)
 - Present function and test result after each successful test. Wait for user confirmation before proceeding (ensures quality control, prevents cascading errors)
 - Answer questions first when user requests end with "?". Ask for permission before making changes after answering (ensures user understanding, prevents unintended modifications)
 - Use capital letters at the start of items unless lowercase is needed (maintains consistency, improves readability)
+- **PRINT** command means output text to chat interface for user visibility (not to files or logs)
+- **STATUS TRACKING** means update workflow_state.json file in current working directory with current phase and status (enables recovery and monitoring)
+
+## Execution Modes
+
+Three execution modes govern workflow behavior when encountering failures:
+
+- **Manual**: Stop at failures for human oversight - workflow halts at any failure point and awaits user intervention to decide on retry, modification, or abort
+- **Auto**: Don't continue on failures - workflow automatically stops on any failure without requiring human intervention, ensuring errors are not silently ignored
+- **Complete**: Continue past failures - workflow automatically continues through all failures, ignoring errors to reach completion regardless of success/failure status
 
 ## Constraints
 

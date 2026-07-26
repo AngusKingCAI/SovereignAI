@@ -64,7 +64,7 @@
 
 ## Quality Rubric Reference
 
-**Scoring**: Use Plans/Quality_Rubric.md for dimension-specific evaluation
+**Scoring**: Use Workflow/Workflow_Reference/Quality_Assessment_Framework.md for dimension-specific evaluation
 **Thresholds**: 
 - 5.0-4.5: Excellent - Clean pass
 - 4.4-3.5: Good - Clean pass  

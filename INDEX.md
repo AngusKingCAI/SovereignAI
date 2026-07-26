@@ -10,7 +10,7 @@
 - `Docs/` - Documentation and research
   - `Architecture/`
   - `Claude Hooks/`
-  - `Code/`
+  - `Code/` - Code documentation and references
   - `Decisions/`
   - `Devin Local IDE Documents/`
   - `Governance/`
@@ -29,4 +29,5 @@
   - `Researcher/`
   - `Reviewer/`
 - `Scripts/` - Implementation scripts organized by category
+  - `Gating/` - Hook-based workflow gating system scripts (session_init.py, workflow_gate.py, progress_tracker.py)
 - `Workflow/` - Workflow definitions for all agents

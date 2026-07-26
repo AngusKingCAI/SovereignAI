@@ -104,7 +104,7 @@
 - Take notes with web search citations
 
 ### Step 4: Evaluate Your Dimension
-- Score your relevant dimensions using Workflow/Planner/Quality_Rubric.md
+- Score your relevant dimensions using Workflow/Workflow_Reference/Quality_Assessment_Framework.md
 - Identify issues with severity ratings (CRITICAL, HIGH, MEDIUM, LOW)
 - Provide specific, actionable feedback
 - Include web search sources for all claims
@@ -140,7 +140,7 @@
 
 ## Quality Rubric Usage
 
-**Reference**: Workflow/Planner/Quality_Rubric.md
+**Reference**: Workflow/Workflow_Reference/Quality_Assessment_Framework.md
 
 **Scoring Process**:
 1. Read the rubric for your relevant dimensions

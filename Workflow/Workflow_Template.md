@@ -12,128 +12,121 @@
 ## Roles and Owners
 - **{Agent} Agent**: Executes workflow steps, enforces governance rules
 - **User**: Provides task requirements, approves decisions
-- **Governance System**: Automatic enforcement via hooks (non-manual)
+- **Governance System**: Validation and compliance enforcement
 
 ## Trigger and End State
 - **Trigger**: {What triggers this workflow}
 - **End State**: {What constitutes workflow completion}
 
-## Workflow Steps
+## Workflow Steps ({TotalSteps} steps)
 
-### 0. Read {Agent} Rules
-- **ACTION**: Read Rules/{Agent}/{Agent}_Rules.md to load current governance constraints
-- **ACTION**: Parse YAML frontmatter and rule definitions for implementation guidance
-- **ACTION**: Store rule context for reference throughout workflow execution
-- **VERBOSE LOG**: "{Agent} rules loaded from Rules/{Agent}/{Agent}_Rules.md"
+### Phase 0. Read {Agent} Rules
+- 1. Read Rules/{Agent}/{Agent}_Rules.md to load current governance constraints
+- 2. Parse YAML frontmatter and rule definitions for implementation guidance
+- 3. Store rule context for reference throughout workflow execution
+- 4. **PRINT** "{Agent} rules loaded from Rules/{Agent}/{Agent}_Rules.md"
 
-### 1. {Step Name}
-- **ACTION**: {Specific action description}
-- **ACTION**: {Additional actions as needed}
-- **VERBOSE LOG**: "{Description of what was logged for transparency}"
+### Phase 1. Select Execution Strategy
+- 5. Select execution strategy appropriate for agent type:
+  - **{Option 1}**: {Description of first execution strategy}
+  - **{Option 2}**: {Description of second execution strategy}
+  - **{Option 3}**: {Description of third execution strategy}
+- 6. Store selected execution strategy for workflow behavior
+- 7. **PRINT** "Execution strategy selected - {Strategy} will govern workflow behavior"
 
-### 2. {Step Name}
-- **ACTION**: {Specific action description}
-- **ACTION**: {Additional actions as needed}
-- **VERBOSE LOG**: "{Description of what was logged for transparency}"
+### Phase 2. {Phase Name}
+- 8. {Specific action description}
+- 9. {Additional actions as needed}
+- 10. **VALIDATION**: {Validation criteria for this phase}
+- 11. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
+- 12. **PRINT** "{Description of what was logged for transparency}"
 
-### 3. {Step Name}
-- **ACTION**: {Specific action description}
-- **ACTION**: {Additional actions as needed}
-- **VERBOSE LOG**: "{Description of what was logged for transparency}"
+### Phase 3. Research and Best Practices
+- 13. Check relevant documentation (Docs/{Category}/) for examples relevant to the specific task type
+- 14. **BEST PRACTICES WEB SEARCH**: Web search must be performed before major decisions (per Architect_Rules.md). Research industry standards and established patterns for the approach being considered.
+- 15. Gather multiple approaches and patterns from web search and local research
+- 16. Ensure proposed solutions comply with governance rules
+- 17. **VALIDATION**: {Validation criteria for research phase}
+- 18. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
+- 19. **PRINT** "Researching best practices - checking documentation for relevant examples"
+- 20. **PRINT** "Best practices web search initiated - required before major decisions"
+- 21. **PRINT** "Research complete - gathered multiple implementation approaches from industry standards"
 
-### 4. {Step Name}
-- **ACTION**: {Specific action description}
-- **ACTION**: {Additional actions as needed}
-- **VERBOSE LOG**: "{Description of what was logged for transparency}"
+### Phase 4. {Phase Name}
+- 22. {Specific action description}
+- 23. **VALIDATION**: {Validation criteria for this phase}
+- 24. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
+- 25. **PRINT** "{Description of what was logged for transparency}"
 
-### 5. {Step Name}
-- **ACTION**: {Specific action description}
-- **ACTION**: {Additional actions as needed}
-- **VERBOSE LOG**: "{Description of what was logged for transparency}"
+### Phase 5. {Phase Name}
+- 26. {Specific action description}
+- 27. **VALIDATION**: {Validation criteria for this phase}
+- 28. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
+- 29. **PRINT** "{Description of what was logged for transparency}"
 
-### 6. {Step Name}
-- **ACTION**: {Specific action description}
-- **ACTION**: {Additional actions as needed}
-- **VERBOSE LOG**: "{Description of what was logged for transparency}"
+### Phase 6. {Phase Name}
+- 30. {Specific action description}
+- 31. When step fails, apply selected execution strategy:
+  - **{Strategy 1}**: {Failure handling for strategy 1}
+  - **{Strategy 2}**: {Failure handling for strategy 2}
+  - **{Strategy 3}**: {Failure handling for strategy 3}
+- 32. **RETRY LOGIC**: {Retry behavior for this agent type}
+- 33. **STATUS TRACKING**: Update workflow status to "phase_6_in_progress" during execution, "phase_6_complete" when finished
+- 34. **PRINT** "{Description of what was logged for transparency}"
 
-### 7. {Step Name}
-- **ACTION**: {Specific action description}
-- **ACTION**: {Additional actions as needed}
-- **VERBOSE LOG**: "{Description of what was logged for transparency}"
+### Phase 7. {Phase Name}
+- 35. {Specific action description}
+- 36. **VALIDATION**: {Validation criteria for this phase}
+- 37. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
+- 38. **PRINT** "{Description of what was logged for transparency}"
 
-### 8. {Step Name}
-- **ACTION**: {Specific action description}
-- **ACTION**: {Additional actions as needed}
-- **VERBOSE LOG**: "{Description of what was logged for transparency}"
+### Phase 8. {Phase Name}
+- 39. {Specific action description}
+- 40. **VALIDATION**: {Validation criteria for this phase}
+- 41. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
+- 42. **PRINT** "{Description of what was logged for transparency}"
 
-### 9. Return to Step 0
-- **ACTION**: After completing workflow, return to Step 0
-- **ACTION**: This makes the workflow repeatable for continuous work
-- **ACTION**: Ready for next task
-- **VERBOSE LOG**: "Workflow cycle complete - returning to Step 0 for next task"
-- **VERBOSE LOG**: "{Agent} agent ready - awaiting next user request"
+### Phase 9. {Phase Name}
+- 43. {Specific action description}
+- 44. **VALIDATION**: {Validation criteria for this phase}
+- 45. **STATUS TRACKING**: Update workflow status to "phase_9_complete"
+- 46. **PRINT** "{Description of what was logged for transparency}"
 
-## Hook-Based Gate System Integration
+### Phase 10. Return to Phase 0
+- 47. **PRINT** "Workflow cycle complete - returning to Phase 0 for next task"
+- 48. **PRINT** "{Agent} agent ready - awaiting next user request"
+- 49. Return to step 1
 
-### Automated Progression System
-The workflow uses an automated progression system based on step-based gating:
-- **State machine architecture**: External state in `Logs/{Agent}/Gating/workflow-state.json`
-- **Single responsibility separation**: Manager, Gate, Tracker, Handler components
-- **Agent-agnostic design**: Uses `DEVIN_PROJECT_DIR` for portability
-- **Fail-open on errors**: Never deadlocks the agent on internal failures
-- **Devin-compatible hooks**: Proper JSON output format as per guides
-- **Regex-based workflow parsing**: `^###\s+(\d+)\.\s+(.+)$` pattern
+## Execution Strategy Handling
 
-### Automated Workflow Progression
-- **Step completion detection**: Automatically detects successful step completion via state-mutating tools
-- **Automatic advancement**: System auto-advances to next step on success
-- **Failure detection**: Detects step failures and triggers user intervention
-- **User intervention**: Only pauses on failure with `/retry`, `/modify`, `/abort` options
-- **No manual commands**: No need for `/step-complete` or `/step-begin` commands
+See Workflow/Workflow_Reference/Execution_Strategy_Guidelines.md for detailed execution strategy specifications and agent-specific patterns.
 
-### Commands (for failure intervention only)
-| Command | Effect |
-|---------|--------|
-| `/retry` | Retry failed step from beginning |
-| `/modify` | Allow modifications while step is failed |
-| `/abort` | Skip failed step and advance to next |
-| `/workflow-status` | Show all steps and completion state |
+## State Management
 
-Research tools (`read`, `grep`, `glob`, `ask_user_question`, `view`) are never gated. State-mutating tools (`edit`, `write`, `exec`) are automatically allowed in normal progression and only blocked on failure.
+- **WORKFLOW STATE**: workflow_state.json in current working directory
+- **EXECUTION STRATEGY**: Stored in workflow state for consistent behavior
+- **STATUS TRACKING**: Phase status updates for recovery
+- **AUDIT TRAIL**: Complete execution history in Logs/{Agent}/
 
-### Verbose Action Logging
-- **EVERY ACTION**: Each workflow step includes explicit ACTION markers
-- **VERBOSE LOG**: Each step includes VERBOSE LOG statements for chat output
-- **TRANSPARENCY**: All actions explicitly stated in workflow execution
-- **OBSERVABILITY**: Complete audit trail of workflow step execution
-- **ACCOUNTABILITY**: Every action logged and visible in agent communication
+See Workflow/Workflow_Reference/State_Management_Guidelines.md for detailed state management patterns and recovery procedures.
 
-## Integration Points
+## Template Usage Guidelines
 
-### Hook Configuration
-- **FILE**: .devin/hooks.v1.json
-- **SESSION START**: session_init.py hook
-- **PRE-TOOL USE**: workflow_step_gate.py hook
-- **POST-TOOL USE**: automated_progress_tracker.py hook
-- **USER PROMPT SUBMIT**: user_decision_handler.py hook
-- **SESSION END**: session_finalization.py hook
+See Workflow/Workflow_Reference/Template_Usage_Guidelines.md for detailed template usage guidelines and customization patterns.
 
-### Workflow State Management
-- **WORKFLOW STATE**: Logs/{Agent}/Gating/workflow-state.json
-- **WORKFLOW HISTORY**: Logs/{Agent}/Gating/workflow-history.jsonl
-- **SESSION CONTEXT**: Logs/{Agent}/Gating/session-context.json
-- **AUDIT TRAIL**: Logs/{Agent}/Gating/audit-trail.log
+## Universal Framework References
 
-### Hook Script Components
-- **workflow_state_manager.py**: State I/O and validation, regex workflow parsing
-- **workflow_step_gate.py**: PreToolUse gate, blocks on failure only
-- **automated_progress_tracker.py**: PostToolUse tracker, detects completion and failures
-- **user_decision_handler.py**: UserPromptSubmit handler, processes retry/modify/abort commands
-- **session_init.py**: Session initialization, creates session context
-- **session_finalization.py**: Session end validation and cleanup
+### Quality Assessment
+- **Universal Framework**: Workflow/Workflow_Reference/Quality_Assessment_Framework.md
+- **Agent Customization**: Agent-specific quality criteria within universal framework
+- **Usage**: Reference universal framework for consistency
 
-### {Agent} Rules Compliance
-- **CONSTRAINTS**: Rules/{Agent}/{Agent}_Rules.md constraints enforced
-- **FILE PLACEMENT**: Scripts/Gating/ category per architect rules
-- **TESTING REQUIREMENT**: Never test in isolated environments, always test in actual project context
-- **GOVERNANCE COMPLIANCE**: Hook system provides automatic enforcement without manual invocation
+### Role Responsibilities
+- **Universal Framework**: Workflow/Workflow_Reference/Role_Responsibilities_Framework.md
+- **Agent Customization**: Agent-specific responsibilities within universal framework
+- **Usage**: Reference universal framework for consistency
+
+### Quality Metrics
+- **Universal Framework**: Workflow/Workflow_Reference/Quality_Metrics_Framework.md
+- **Agent Customization**: Agent-specific metric customization
+- **Usage**: Reference universal framework for consistency
