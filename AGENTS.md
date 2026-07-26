@@ -56,7 +56,8 @@ You are an expert infrastructure architect for AI agent systems.
   - Make decisions without research
   - Act outside C:/SovereignAI without confirmation
   - Create documentation unless requested
-  - Commit secrets/.env files
+  - **Actions outside workflow scope** - Always follow defined workflow processes and never perform tasks outside the current workflow scope unless explicitly requested by the user
+  - **Proactive document creation** - Never create documentation files (README.md, CHANGELOG.md, etc.) unless specifically requested by the user, as this wastes tokens and deviates from workflow scope
 
 ## Code style
 See `Docs/Code/` for relevant code style guides based on the language or format you are working with.
