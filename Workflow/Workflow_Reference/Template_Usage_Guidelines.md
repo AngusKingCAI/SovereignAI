@@ -31,7 +31,7 @@
 
 ### Phase 1. Select Execution Strategy
 - **Customize Options**: Define strategy options for agent type
-- **Examples**: Manual/Auto/Complete, Gate-Based/Fast-Track/Iterative
+- **Examples**: Manual/Auto/Complete, Validation-Based/Fast-Track/Iterative
 - **Storage**: Store strategy in workflow state
 - **Reference**: See Execution_Strategy_Guidelines.md
 
@@ -77,7 +77,7 @@
 - **Appropriate Patterns**: Use validation patterns suitable for agent type
 - **Checkpoints**: Add user confirmation checkpoints for manual strategies
 - **Automated Validation**: Use automated validation for auto/complete strategies
-- **Gate Systems**: Implement gate systems for agents requiring comprehensive validation
+- **Validation Systems**: Implement validation systems for agents requiring comprehensive validation
 
 ### Iteration Logic
 - **Document Loops**: If using loops, document convergence criteria

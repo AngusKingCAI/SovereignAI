@@ -7,7 +7,7 @@
 **Priority**: High
 
 ## Purpose
-Systematic architectural decision-making ensuring infrastructure design follows best practices and maintains compliance with governance rules, enforced through the hook-based gate system for automatic permission validation and audit logging.
+Systematic architectural decision-making ensuring infrastructure design follows best practices and maintains compliance with governance rules, enforced through the hook-based validation system for automatic permission validation and audit logging.
 
 ## Roles and Owners
 - **Architect Agent**: Executes workflow steps, enforces governance rules
@@ -18,7 +18,7 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 - **Trigger**: User requests architectural work or agent initiates task
 - **End State**: Implementation complete, documented, verified for compliance
 
-## Workflow Steps (91 steps)
+## Workflow Steps (90 steps)
 ### Phase 0. Read Architect Rules
 - 1. Read Rules/Architect/Architect_Rules.md to load current governance constraints
 - 2. Parse YAML frontmatter and rule definitions for implementation guidance
@@ -46,7 +46,7 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 
 ### Phase 3. Research Best Practices
 - 17. Check code documentation (Docs/Code/) for examples relevant to the specific type of code being implemented (Python, JSON, YAML, Bash, etc.)
-- 18. **BEST PRACTICES WEB SEARCH**: Web search must be performed before major architectural decisions (per Architect_Rules.md). Research industry standards and established patterns for the architectural approach being considered.
+- 18. **BEST PRACTICES WEB SEARCH**: Web search must be performed before major architectural decisions (per Rules/Architect/Architect_Rules.md). Research industry standards and established patterns for the architectural approach being considered.
 - 19. Gather multiple approaches and patterns from web search and local research
 - 20. Ensure proposed solutions comply with governance rules
 - 21. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
@@ -69,20 +69,20 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 
 ### Phase 5. Specify Implementation
 - 37. Create detailed specification for selected approach
-- 37. **VALIDATION**: Validate specification completeness and compliance (see Workflow/Architect/Reference/Option_Evaluation_Framework.md)
-- 38. **IMPLEMENTATION MODE SELECTION**: Ask user to choose using popup menu (see Workflow/Architect/Reference/Implementation_Mode_Patterns.md)
-- 39. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
-- 40. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
-- 41. **PRINT** "Creating detailed implementation specification - defining architecture and constraints"
-- 42. **PRINT** "Specification complete - verifying file placement compliance with directory structure"
-- 43. **PRINT** "Implementation mode selection presented - awaiting user choice between automated and manual modes"
+- 38. **VALIDATION**: Validate specification completeness and compliance (see Workflow/Architect/Reference/Option_Evaluation_Framework.md)
+- 39. **IMPLEMENTATION MODE SELECTION**: Ask user to choose using popup menu (see Workflow/Architect/Reference/Implementation_Mode_Patterns.md)
+- 40. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 41. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
+- 42. **PRINT** "Creating detailed implementation specification - defining architecture and constraints"
+- 43. **PRINT** "Specification complete - verifying file placement compliance with directory structure"
+- 44. **PRINT** "Implementation mode selection presented - awaiting user choice between automated and manual modes"
 
 ### Phase 6. Implement (One Function at a Time)
 - 45. Build exactly one function at a time, test immediately
 - 46. Present function and test result to user after each successful test
 - 47. Wait for explicit user confirmation before proceeding
 - 48. Treat user-confirmed functions as locked
-- **AUTOMATED PROGRESSION NOTE**: The gate system allows state-mutating tools (edit, write, exec) automatically during this step. User confirmation requests use ask_user_question (ungated) to pause for approval without triggering failure intervention.
+- **AUTOMATED PROGRESSION NOTE**: The validation system allows state-mutating tools (edit, write, exec) automatically during this step. User confirmation requests use ask_user_question (unvalidated) to pause for approval without triggering failure intervention.
 - 49. When placing files, check INDEX.md for folder structure (token-efficient vs loading full directory)
 - 50. Load Rules/Architect/Architect_Rules.md only when specific constraints are needed
 - 51. When function fails, apply selected execution mode (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
@@ -110,7 +110,7 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 - 69. Update relevant governance files for the agent being worked on:
   - INDEX.md (if new folders are created)
   - Rules/{Agent}/{Agent}_Rules.md (if new rules are added)
-  - Workflow/{Agent}/{Agent}_Workflow.md (if workflow changes)
+  - Workflow/Architect/Reference/Workflow_Template.md (if template changes)
   - AGENTS.md (if agent capabilities change)
 - 70. Always categorize files when adding to documentation directories per Rules/Architect/Architect_Rules.md
 - 71. Never place files uncategorized
@@ -157,17 +157,33 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 - **Architect Customization**: Architect-specific role definitions for infrastructure design
 - **Focus**: Infrastructure creation, governance framework implementation, compliance enforcement
 
-### Quality Metrics
-- **Universal Framework**: Workflow/Workflow_Reference/Quality_Metrics_Framework.md
+### Performance Metrics
+- **Universal Framework**: Workflow/Workflow_Reference/Performance_Metrics_Framework.md
 - **Architect Customization**: Infrastructure design efficiency, architectural compliance rate, governance system reliability
 - **Focus**: Architectural efficiency metrics and compliance assessment
 
 ### State Management
 - **Universal Framework**: Workflow/Workflow_Reference/State_Management_Guidelines.md
-- **Architect Customization**: Implementation state tracking, execution mode state, compliance validation results
-- **Focus**: Implementation progress, gate validation results, execution mode tracking
+- **Architect Customization**: Implementation state tracking, execution mode state, validation results
+- **Focus**: Implementation progress tracking and execution mode state
 
 ### Execution Strategy
 - **Universal Framework**: Workflow/Workflow_Reference/Execution_Strategy_Guidelines.md
 - **Architect Customization**: Hook-based validation, execution mode handling patterns
 - **Focus**: Architectural strategies and execution mode-based iteration
+
+### Quota Handling
+- **Universal Framework**: Workflow/Workflow_Reference/Quota_Handling_Patterns.md
+- **Architect Customization**: Execution mode-based quota handling patterns
+- **Focus**: Current practice and future implementation plans
+- **Note**: Quota handling patterns are design documents only, not yet implemented
+
+### Runtime Prerequisites
+- **Universal Framework**: Workflow/Workflow_Reference/Runtime_Prerequisites.md
+- **Architect Customization**: Hook system status and runtime directory requirements
+- **Focus**: Runtime paths and infrastructure requirements for workflow execution
+
+### Workflow Template
+- **Architect Tool**: Workflow/Architect/Reference/Workflow_Template.md
+- **Architect Customization**: Architect's template for creating workflows
+- **Focus**: Template usage for workflow creation and maintenance

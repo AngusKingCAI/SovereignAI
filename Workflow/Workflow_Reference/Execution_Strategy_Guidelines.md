@@ -13,7 +13,7 @@
 - **Retry Logic**: Configurable retry with exponential backoff (max 3 retries) for Auto/Complete modes
 
 ### Planner Agent
-- **Gate-Based Validation**: Standard gate validation with Round Table review loops
+- **Validation-Based Validation**: Standard validation with Round Table review loops
 - **Fast-Track Planning**: Simplified validation for simple planning tasks
 - **Iterative Planning**: Extended iteration loops for complex architectural changes
 - **Convergence Loops**: Internal and external Round Table review until convergence achieved

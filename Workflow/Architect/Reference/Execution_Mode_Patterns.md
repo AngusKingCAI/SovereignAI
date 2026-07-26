@@ -2,7 +2,16 @@
 
 **Purpose**: Architect-specific execution mode handling patterns for failure management and workflow progression.
 
-## Execution Mode Definitions
+## Universal Pattern Reference
+
+See Workflow/Workflow_Reference/Execution_Strategy_Guidelines.md for universal execution strategy patterns including:
+- Universal execution strategy guidelines
+- Universal execution mode handling patterns
+- Universal execution strategy framework
+
+## Architect Execution Mode Specifications
+
+### Execution Mode Definitions
 
 ### Manual Mode
 **Behavior**: Stop at failures for human oversight

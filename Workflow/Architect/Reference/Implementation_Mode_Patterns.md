@@ -2,7 +2,16 @@
 
 **Purpose**: Architect-specific implementation mode selection and execution patterns.
 
-## Implementation Mode Options
+## Universal Pattern Reference
+
+See Workflow/Workflow_Reference/Execution_Strategy_Guidelines.md for universal execution strategy patterns including:
+- Universal execution strategy guidelines
+- Universal implementation mode handling patterns
+- Universal execution strategy framework
+
+## Architect Implementation Mode Specifications
+
+### Implementation Mode Options
 
 ### Mode 1: Automated
 **Description**: Agent implements everything automatically

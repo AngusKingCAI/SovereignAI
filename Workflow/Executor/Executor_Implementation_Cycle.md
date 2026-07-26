@@ -13,7 +13,7 @@ Step-by-step process for executing approved plans with implementation fidelity a
 
 ## Purpose
 
-Provide systematic plan execution with gated implementation cycles to ensure code implementation follows approved plans exactly and maintains compliance with execution standards.
+Provide systematic plan execution with validated implementation cycles to ensure code implementation follows approved plans exactly and maintains compliance with execution standards.
 
 ## Scope
 
@@ -35,7 +35,7 @@ Provide systematic plan execution with gated implementation cycles to ensure cod
 
 ## Hook-Based Governance
 
-**AUTOMATIC GOVERNANCE ENFORCEMENT**: This workflow uses Devin CLI hooks for automatic governance enforcement without manual gate invocation.
+**AUTOMATIC GOVERNANCE ENFORCEMENT**: This workflow uses Devin CLI hooks for automatic governance enforcement without manual validation invocation.
 
 **HOOK SYSTEM**:
 1. **SessionStart Hook**: Initializes governance environment and session logging
@@ -59,7 +59,7 @@ Provide systematic plan execution with gated implementation cycles to ensure cod
 
 ## Hook-Based Enforcement
 
-**AUTOMATIC ENFORCEMENT**: Hook system provides automatic governance enforcement without manual gate invocation.
+**AUTOMATIC ENFORCEMENT**: Hook system provides automatic governance enforcement without manual validation invocation.
 
 **ENFORCEMENT RULES**:
 - Hook verification is automatic and happens at tool execution time
@@ -80,7 +80,7 @@ Provide systematic plan execution with gated implementation cycles to ensure cod
 **COMPLIANCE REQUIREMENT**: 
 - Hook system is automatically active via `.devin/hooks.v1.json`
 - Governance enforcement happens at tool execution time
-- No manual gate invocation or rule cache management required
+- No manual validation invocation or rule cache management required
 - Hook-based enforcement provides comprehensive compliance coverage
 - Hook configuration in `Scripts/Governance/Config/` governs all behavior
 

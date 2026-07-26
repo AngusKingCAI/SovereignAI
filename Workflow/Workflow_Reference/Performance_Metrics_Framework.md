@@ -94,7 +94,7 @@
 
 ### Planner Agent Metrics
 - **Planning Efficiency**: Time to create quality plans
-- **Plan Quality Rate**: Percentage of plans passing gate validation
+- **Plan Quality Rate**: Percentage of plans passing validation
 - **Convergence Speed**: Number of iterations to achieve convergence
 - **Stakeholder Satisfaction**: User satisfaction with plan quality
 - **Implementation Success Rate**: Plans that execute successfully

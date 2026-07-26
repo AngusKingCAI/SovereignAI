@@ -152,6 +152,11 @@ If any dimension has a hard fail, the overall quality score is automatically **0
 - **Customization**: Code quality metrics, test coverage validation
 - **Reference**: Universal framework with executor-specific criteria integration
 
+### Researcher Agent
+- **Focus**: Research quality assessment
+- **Customization**: Research methodology validation, source quality assessment
+- **Reference**: Universal framework with researcher-specific criteria integration
+
 ### Reviewer Agent
 - **Focus**: Quality analysis and pattern recognition
 - **Customization**: Recurring issue identification, governance gap analysis

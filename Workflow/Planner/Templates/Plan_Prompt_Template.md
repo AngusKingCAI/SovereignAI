@@ -1,7 +1,7 @@
 # Plan Review Prompt Template
 
 **Purpose**: Explicit instructions for Round Table panelists on how to adopt personas and conduct reviews  
-**Location**: Workflow/Planner/Plan_Prompt_Template.md  
+**Location**: Workflow/Planner/Templates/Plan_Prompt_Template.md  
 **Usage**: Include in brief documents or send directly to panelists  
 **Version**: 1.0
 

@@ -40,7 +40,7 @@ See Workflow/Workflow_Reference/Convergence_Loop_Patterns.md for universal conve
 
 **Convergence Logic**:
 1. Run Phase 6 (External Round Table)
-2. If Phase 6 PASSES (≥90 score or 70-89 with rationale) → Proceed to Phase 7 (Final Gate Delivery)
+2. If Phase 6 PASSES (≥90 score or 70-89 with rationale) → Proceed to Phase 7 (Final Validation)
 3. If Phase 6 FAILS (<70 score) → Proceed to Phase 5 (Apply Findings)
 4. At end of Phase 5 → Return to Phase 6
 5. Repeat until External Round Table achieves convergence
@@ -55,6 +55,6 @@ See Workflow/Workflow_Reference/Convergence_Loop_Patterns.md for universal conve
 
 **Loop Cap**: Maximum 3 external iterations.
 
-**On Convergence**: Proceed to Phase 7 (Final Gate Delivery).
+**On Convergence**: Proceed to Phase 7 (Final Validation).
 
 **On Loop Cap Reached**: Stop and escalate to user decision.

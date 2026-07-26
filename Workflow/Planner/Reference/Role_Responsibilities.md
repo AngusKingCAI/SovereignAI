@@ -1,5 +1,17 @@
 # Planner Role Responsibilities
 
+**Purpose**: Planner-specific role responsibilities for plan creation and delivery.
+
+## Universal Pattern Reference
+
+See Workflow/Workflow_Reference/Role_Responsibilities_Framework.md for universal role responsibility patterns including:
+- Universal agent responsibilities
+- Universal user responsibilities
+- Universal governance system responsibilities
+- Universal role customization patterns
+
+## Planner Role Responsibilities Specifications
+
 ## Planner Workflow Completion
 
 - Execute convergence-based review process

@@ -1,7 +1,7 @@
 # Plan Brief Template
 
 **Purpose**: Brief document for Round Table panelists (internal and external) summarizing the plan for review  
-**Location**: Workflow/Planner/Plan_Brief_Template.md  
+**Location**: Workflow/Planner/Templates/Plan_Brief_Template.md  
 **Usage**: Save as Logs/Roundtable/Devin/brief-rev{N}.md or Logs/Roundtable/External/brief-rev{N}.md  
 **Version**: 1.0
 

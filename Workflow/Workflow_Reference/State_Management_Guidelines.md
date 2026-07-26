@@ -173,7 +173,7 @@
 **Planner-Specific State Elements**:
 - Round Table iteration state
 - Convergence metrics tracking
-- Gate validation results history
+- Validation results history
 - Plan revision tracking
 - Panelist review aggregation state
 
@@ -189,7 +189,7 @@
       "quality_score": "number"
     },
     "plan_revision": "string",
-    "gate_results": "array"
+    "validation_results": "array"
   }
 }
 ```

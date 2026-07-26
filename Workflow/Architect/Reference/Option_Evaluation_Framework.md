@@ -2,7 +2,16 @@
 
 **Purpose**: Architect-specific criteria for generating and evaluating implementation options.
 
-## Viable Option Criteria
+## Universal Pattern Reference
+
+See Workflow/Workflow_Reference/Quality_Assessment_Framework.md for universal quality assessment patterns including:
+- Universal quality assessment dimensions and scoring rubrics
+- Universal quality evaluation criteria
+- Universal quality assessment framework
+
+## Architect Option Criteria Specifications
+
+### Viable Option Criteria
 
 **Different Mechanism of Action**
 - Options must represent distinct approaches, not cosmetic variations

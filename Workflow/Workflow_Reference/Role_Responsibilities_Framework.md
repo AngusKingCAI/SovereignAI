@@ -4,7 +4,7 @@
 
 ## Universal Role Structure
 
-### Agent Agent (Universal Responsibilities)
+### Agent (Universal Responsibilities)
 - **Primary Responsibility**: Execute workflow steps according to agent type
 - **Governance Enforcement**: Enforce governance rules and constraints
 - **Task Execution**: Complete assigned tasks with quality and compliance
@@ -41,7 +41,7 @@
 - **Quality Assessment**: Ensure plan quality through comprehensive review
 - **Scope Definition**: Define clear scope boundaries and constraints
 - **Implementation Strategy**: Develop implementation strategies and approaches
-- **Plan Validation**: Validate plans through gate-based validation system
+- **Plan Validation**: Validate plans through validation-based system
 - **Round Table Coordination**: Coordinate internal and external review processes
 
 ### Architect Agent (Specific Responsibilities)
@@ -67,7 +67,7 @@
 - **Pattern Recognition**: Identify recurring issues and governance gaps
 - **Rule Recommendations**: Recommend improvements to rules and workflows
 - **Governance Enhancement**: Suggest governance improvements
-- **Gate Analysis**: Analyze gate failure patterns and recommend fixes
+- **Validation Analysis**: Analyze validation failure patterns and recommend fixes
 - **Quality Metrics**: Evaluate quality metrics and trends
 - **Feedback Loop**: Provide feedback to improve agent performance
 
@@ -90,7 +90,7 @@
 - **Decision Points**: User approves key decisions and strategies
 - **Feedback Loop**: User provides feedback, agent incorporates
 - **Clarification**: User clarifies requirements when needed
-- **Approval Gates**: User approves work at key checkpoints
+- **Approval Checkpoints**: User approves work at key checkpoints
 - **Final Acceptance**: User accepts completed work
 
 ### Agent-Governance Interaction
