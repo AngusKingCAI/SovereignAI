@@ -22,7 +22,7 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 - **Trigger**: User requests hook implementation OR Architect initiates hook development project
 - **End State**: Hook implemented, tested, documented, and integrated with SovereignAI workflows
 
-## Workflow Steps (70 steps)
+## Workflow Steps (71 steps)
 
 ### Phase 0. Read Architect Rules + Hook Context
 - 1. Read Rules/Architect/Architect_Rules.md to understand governance constraints
@@ -75,45 +75,48 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 - 37. **PRINT**: "Hook implementation created - script and configuration files updated"
 
 ### Phase 5. Test and Validate Hook
-- 38. **PRINT**: "CRITICAL: Hook file changes in .devin/ require Devin CLI restart (per Hooks-Guide.md)"
-- 39. Ask user to restart Devin CLI completely
-- 40. Wait for user confirmation of restart completion
-- 41. Test hook with basic operations (simple commands, file operations)
-- 42. Test hook with SovereignAI workflows (Architect/Planner workflows)
-- 43. Verify hook achieves expected behavior and performance goals
-- 44. Test error handling and edge cases
-- 45. Verify hook doesn't break existing SovereignAI workflows
-- 46. Check compatibility with existing hooks in .devin/hooks.v1.json
-- 47. **VALIDATION**: Validate hook functionality, integration, and compliance (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md)
-- 48. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
-- 49. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
-- 50. **PRINT**: "Hook testing complete - functionality validated and performance verified"
+- 38. **CRITICAL**: Hook file changes in .devin/ require Devin CLI restart before testing can proceed
+- 39. **PRINT**: "CRITICAL: Devin CLI restart required before testing - hook files in .devin/ only load on session start"
+- 40. Ask user to restart Devin CLI completely
+- 41. Wait for user confirmation of restart completion
+- 42. **VALIDATION**: Verify Devin CLI has restarted and hooks are loaded
+- 43. Test hook with real SovereignAI workflows (Architect/Planner workflows) - NOT in isolation
+- 44. Test hook with basic operations to verify functionality
+- 45. Verify hook achieves expected behavior and performance goals in real scenarios
+- 46. Test error handling and edge cases in real workflow contexts
+- 47. Verify hook doesn't break existing SovereignAI workflows
+- 48. Check compatibility with existing hooks in .devin/hooks.v1.json
+- 49. **IMPORTANT**: Real-world testing required to avoid fake passes from isolated testing
+- 50. **VALIDATION**: Validate hook functionality, integration, and compliance (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md)
+- 51. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 52. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
+- 53. **PRINT**: "Hook testing complete - functionality validated in real SovereignAI workflow scenarios"
 
 ### Phase 6. Document Implementation
-- 51. Create hook-specific documentation in Docs/Hooks/ or appropriate location
-- 52. Document hook behavior, configuration, and integration points
-- 53. Update workflow integration notes and known limitations
-- 54. Update relevant governance files if hook behavior changes agent capabilities
-- 55. **VALIDATION**: Validate documentation completeness and accuracy (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md)
-- 56. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
-- 57. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
-- 58. **PRINT**: "Documentation complete - hook implementation results documented"
+- 54. Create hook-specific documentation in Docs/Hooks/ or appropriate location
+- 55. Document hook behavior, configuration, and integration points
+- 56. Update workflow integration notes and known limitations
+- 57. Update relevant governance files if hook behavior changes agent capabilities
+- 58. **VALIDATION**: Validate documentation completeness and accuracy (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md)
+- 59. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 60. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
+- 61. **PRINT**: "Documentation complete - hook implementation results documented"
 
 ### Phase 7. Final Validation
-- 59. Verify implementation matches intended scope from Phase 2
-- 60. Ensure no unintended changes outside hook implementation scope
-- 61. Validate hook performance in real SovereignAI workflow scenarios
-- 62. Review documentation completeness and accuracy
-- 63. Ensure compliance with all Architect rules and constraints
-- 64. **VALIDATION**: Validate final implementation quality and compliance (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md)
-- 65. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
-- 66. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
-- 67. **PRINT**: "Final validation complete - hook implementation ready for production use"
+- 62. Verify implementation matches intended scope from Phase 2
+- 63. Ensure no unintended changes outside hook implementation scope
+- 64. Validate hook performance in real SovereignAI workflow scenarios
+- 65. Review documentation completeness and accuracy
+- 66. Ensure compliance with all Architect rules and constraints
+- 67. **VALIDATION**: Validate final implementation quality and compliance (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md)
+- 68. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 69. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
+- 70. **PRINT**: "Final validation complete - hook implementation ready for production use"
 
 ### Phase 8. Workflow Termination
-- 68. **PRINT** "Hook implementation workflow complete - workflow terminated"
-- 69. **PRINT** "Architect agent ready - awaiting next hook implementation request"
-- 70. **TERMINATE**: End workflow execution (do not return to step 1)
+- 71. **PRINT** "Hook implementation workflow complete - workflow terminated"
+- 72. **PRINT** "Architect agent ready - awaiting next hook implementation request"
+- 73. **TERMINATE**: End workflow execution (do not return to step 1)
 
 ---
 
