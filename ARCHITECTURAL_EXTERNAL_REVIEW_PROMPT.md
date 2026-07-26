@@ -10,6 +10,8 @@ Focus on the Workflow/ directory structure, which contains:
 - Architect-managed template in Workflow/Architect/Reference/
 - Agent-specific reference files in Workflow/{Agent}/Reference/
 
+**Primary Focus**: Architect and Planner workflows are the only pertinent agents for now. Other agents (Executor, Researcher, Reviewer) are either stubs or have incomplete implementations. Review should prioritize Architect and Planner workflows for current architectural assessment.
+
 ## Key Architectural Decisions to Evaluate
 
 ### 1. Workflow Type Classification
@@ -63,12 +65,13 @@ Focus on the Workflow/ directory structure, which contains:
 - **Low**: Minor improvements or cleanups
 
 ### Focus Areas
-1. **Template Compliance**: Do workflows follow the updated template structure?
-2. **Workflow Type Appropriateness**: Are continuous vs single-execution classifications correct?
-3. **Terminology Consistency**: Is validation terminology consistently applied?
-4. **Reference Accuracy**: Are all file references correct and functional?
-5. **Structural Integrity**: Is directory structure consistent across agents?
-6. **Architecture Alignment**: Do changes align with stated governance principles?
+1. **Template Compliance**: Do Architect and Planner workflows follow the updated template structure?
+2. **Workflow Type Appropriateness**: Are continuous vs single-execution classifications correct for Architect and Planner workflows?
+3. **Terminology Consistency**: Is validation terminology consistently applied in Architect and Planner workflows?
+4. **Reference Accuracy**: Are all file references correct and functional in Architect and Planner workflows?
+5. **Structural Integrity**: Is directory structure consistent across Architect and Planner workflows?
+6. **Architecture Alignment**: Do changes align with stated governance principles for Architect and Planner workflows?
+7. **Secondary Focus**: Executor, Researcher, Reviewer workflows treated as lower priority (stubs/incomplete implementations)
 
 ## Output Format
 
@@ -203,9 +206,9 @@ Please provide your review in the following JSON structure:
 Since the previous external review, the following changes have been made:
 - Fixed infinite loop risk in consistency workflows (removed Phase 10 loop from single-execution workflows)
 - Updated template to provide both Phase 10 patterns (continuous vs single-execution)
-- Added workflow type classification to Architect workflows
+- Added workflow type classification to Architect workflows (Continuous Operation type)
+- Fixed step numbering in Architect_General_Workflow.md (90→91 steps)
 - Removed redundant session log generation from consistency check workflow
-- Enhanced universal framework coverage in template
-- Fixed step numbering in Architect_General_Workflow.md
+- Enhanced universal framework coverage in template (10 frameworks)
 
-Please evaluate whether these changes address previous concerns and identify any new issues that may have been introduced.
+**Note**: Architect and Planner workflows are the primary focus for current architectural assessment. Executor, Researcher, and Reviewer workflows are either stubs or have incomplete implementations and should be treated as lower priority in this review.
