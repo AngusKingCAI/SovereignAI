@@ -1,7 +1,7 @@
 # Token Optimization Hooks Implementation Plan
 
 ## Overview
-Systematic implementation of token optimization hooks for SovereignAI harness using Devin CLI. Focus on proven implementations with extensive testing before moving to next hook.
+This document provides comprehensive context and implementation guidance for token optimization hooks for the SovereignAI harness using Devin CLI. When the Hook Implementer Workflow asks for implementation plan documents or context, provide this document to supply all necessary information.
 
 ## Implementation Philosophy
 - **One hook at a time**: Implement, test, validate, then proceed

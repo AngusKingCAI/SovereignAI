@@ -43,7 +43,7 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 ### Phase 2. Architect Interaction
 - 10. Ask user: "Hi, Architect here - what type of hook would you like to implement?"
 - 11. Wait for user to specify hook type and requirements
-- 12. Ask user to provide hook implementation plan document if available, or create implementation approach from scratch
+- 12. Ask user to provide any relevant implementation plan documents or context
 - 13. Clarify hook requirements, expected behavior, and integration points
 - 14. Document user's hook requirements and rationale
 - 15. Apply loaded architect rules to hook implementation requirements
