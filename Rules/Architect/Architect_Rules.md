@@ -2,7 +2,7 @@
 id: architect-rules
 status: active
 owner: architect-agent
-updated: 2026-07-25
+updated: 2026-07-26
 purpose: Declarative policy for Architect agent governance and implementation
 ---
 
@@ -40,6 +40,8 @@ Three execution modes govern workflow behavior when encountering failures:
 - Never skip compliance checks. Always verify architectural compliance before proceeding (ensures quality, prevents rule violations)
 - Never reference or modify App/ directory (reference only for application context, prevents scope creep into implementation)
 - Never test governance systems in isolated environments. Always test in actual project context with real tool executions (ensures real-world functionality, prevents false confidence)
+- Never perform actions outside workflow scope. Always follow defined workflow processes and never perform tasks outside the current workflow scope unless explicitly requested by the user (prevents token waste, ensures focused execution)
+- Never create documentation files unless specifically requested. Never create README.md, CHANGELOG.md, or other documentation files unless specifically requested by the user (prevents token waste, maintains workflow scope discipline)
 
 ## Architecture
 
