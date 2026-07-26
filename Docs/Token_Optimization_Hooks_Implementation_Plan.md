@@ -12,64 +12,83 @@ This document provides comprehensive context and implementation guidance for tok
 
 ## Implementation Priority
 
-### Phase 1: Proven Implementations (No-Brainer)
+### Phase 1: SovereignAI Workflow-Specific Optimizations (Highest Impact)
 
-#### 1. RTK Integration (Highest Priority)
-- **Status**: ✅ CONFIRMED WORKING
-- **Implementation**: PreToolUse hook with command rewriting
-- **Expected Savings**: 60-90% command output reduction
-- **Real Example**: RTK Devin CLI integration (PR #3144)
-- **Risk Level**: Low - proven technology with documentation
-- **Implementation Steps**:
-  1. Install RTK globally: `rtk init --agent devin`
-  2. Verify hook installation in `~/.config/devin/config.json`
-  3. Test with command: `git status` → should be rewritten to `rtk git status`
-  4. Verify output compression works correctly
-  5. Test with SovereignAI Architect workflow
-  6. Document results and token savings
-
-#### 2. TokenJuice Integration (Second Priority)
-- **Status**: ✅ CONFIRMED WORKING (Beta)
-- **Implementation**: PreToolUse hook with command wrapping
-- **Expected Savings**: Variable content-aware compression
-- **Real Example**: TokenJuice Devin integration
-- **Risk Level**: Medium - beta status but functional
-- **Implementation Steps**:
-  1. Install TokenJuice: `tokenjuice install devin`
-  2. Verify hook installation in `.devin/hooks.v1.json`
-  3. Test with various command types
-  4. Verify content-aware compression
-  5. Test with SovereignAI workflows
-  6. Document results and token savings
-
-### Phase 2: Adaptable Patterns (Test Required)
-
-#### 3. File Read Caching (Third Priority)
+#### 1. File Read Caching (Highest Priority)
 - **Status**: ⚠️ ADAPTATION REQUIRED
-- **Implementation**: Port Cache-Cow logic to Devin CLI
-- **Expected Savings**: 30-50% file read reduction
+- **Relevance**: **HIGH** - SovereignAI workflows repeatedly read governance files (Architect_Rules.md, AGENTS.md, workflows)
+- **Implementation**: Port Cache-Cow logic to Devin CLI for markdown governance files
+- **Expected Savings**: 30-50% file read reduction for repeated governance file access
 - **Real Example**: Cache-Cow for Claude Code
 - **Risk Level**: Medium - requires adaptation and testing
+- **SovereignAI Impact**: Very High (Architect/Planner workflows read governance files repeatedly)
 - **Implementation Steps**:
   1. Study Cache-Cow implementation for Claude Code
-  2. Adapt to Devin CLI hook format
-  3. Create custom hook script for file read caching
-  4. Test with SovereignAI workflow file reads
+  2. Adapt to Devin CLI hook format for markdown files
+  3. Create custom hook script for governance file caching
+  4. Test with SovereignAI workflow file reads (Rules/, Workflow/, AGENTS.md)
   5. Verify cache invalidation on file edits
   6. Document results and token savings
 
-#### 4. PostToolUse Output Compression (Fourth Priority)
-- **Status**: ⚠️ DEVIN SUPPORT UNCERTAIN
-- **Implementation**: Test PostToolUse output replacement
-- **Expected Savings**: 50-80% tool output reduction
-- **Real Example**: Claude Code PostToolUse compression
-- **Risk Level**: High - Devin CLI PostToolUse capabilities unclear
+#### 2. Partial Read Optimization (Second Priority)
+- **Status**: ✅ DEVIN CLI NATIVE SUPPORT
+- **Relevance**: **HIGH** - SovereignAI workflows often need specific sections of large files
+- **Implementation**: Use Devin CLI's native offset/limit parameters for read tool
+- **Expected Savings**: 40-70% reduction for large file reads
+- **Real Example**: Devin CLI read tool with offset/limit parameters
+- **Risk Level**: Low - native feature, no custom implementation needed
+- **SovereignAI Impact**: High (large workflow files, comprehensive governance documents)
 - **Implementation Steps**:
-  1. Test basic PostToolUse hook with Devin CLI
-  2. Verify output replacement capabilities
-  3. If supported, implement compression logic
-  4. Test with various tool outputs
-  5. Document results and limitations
+  1. Analyze SovereignAI workflow file access patterns
+  2. Identify files >500 lines that could benefit from partial reads
+  3. Update workflows to use offset/limit for targeted reads
+  4. Test with Architect/Planner workflows
+  5. Document results and token savings
+
+#### 3. Grep Result Limiting (Third Priority)
+- **Status**: ✅ DEVIN CLI NATIVE SUPPORT
+- **Relevance**: **MEDIUM** - SovereignAI workflows use grep for pattern matching
+- **Implementation**: Use Devin CLI's native max_results parameter for grep tool
+- **Expected Savings**: 30-50% reduction for pattern search operations
+- **Real Example**: Devin CLI grep tool with max_results parameter
+- **Risk Level**: Low - native feature, no custom implementation needed
+- **SovereignAI Impact**: Medium (pattern searching in governance files)
+- **Implementation Steps**:
+  1. Analyze SovereignAI workflow grep usage patterns
+  2. Add max_results parameter to grep operations
+  3. Test with Architect/Planner workflows
+  4. Document results and token savings
+
+### Phase 2: Advanced Optimizations (Test Required)
+
+#### 4. Markdown Compression Hook (Fourth Priority)
+- **Status**: ⚠️ CUSTOM IMPLEMENTATION REQUIRED
+- **Relevance**: **MEDIUM** - SovereignAI governance files are markdown-heavy
+- **Implementation**: PreToolUse hook to compress markdown file reads by removing non-essential content
+- **Expected Savings**: 20-40% markdown file read reduction
+- **Real Example**: squeez markdown compression for memory files
+- **Risk Level**: Medium - requires custom implementation and testing
+- **SovereignAI Impact**: Medium (governance files, workflow documentation)
+- **Implementation Steps**:
+  1. Research markdown compression techniques
+  2. Create hook script for intelligent markdown compression
+  3. Test with SovereignAI governance files
+  4. Verify essential content preservation
+  5. Document results and token savings
+
+#### 5. Context Management Hook (Fifth Priority)
+- **Status**: ⚠️ DEVIN SUPPORT UNCERTAIN
+- **Relevance**: **MEDIUM** - Better context management for long SovereignAI sessions
+- **Implementation**: PostCompaction hook to re-inject critical governance context
+- **Expected Savings**: 15-25% context reduction across compaction events
+- **Real Example**: squeez PostCompaction re-injection
+- **Risk Level**: High - Devin CLI PostCompaction support unclear
+- **SovereignAI Impact**: Medium (long architectural planning sessions)
+- **Implementation Steps**:
+  1. Test PostCompaction hook support in Devin CLI
+  2. If supported, implement context re-injection logic
+  3. Test with long SovereignAI workflow sessions
+  4. Document results and limitations
 
 ## Restart Requirement
 
@@ -234,22 +253,23 @@ This document provides comprehensive context and implementation guidance for tok
 ## Risk Mitigation
 
 ### Low Risk Hooks
-- RTK Integration: Proven technology
-- TokenJuice: Beta but functional
-- Basic command rewriting
+- Partial Read Optimization: Native Devin CLI feature
+- Grep Result Limiting: Native Devin CLI feature
+- No custom implementation required
 
 ### Medium Risk Hooks
-- File read caching: Requires adaptation
-- Output compression: Devin support uncertain
-- Custom hook scripts
+- File Read Caching: Requires adaptation from Cache-Cow
+- Markdown Compression Hook: Custom implementation needed
+- Testing required for SovereignAI governance files
 
 ### High Risk Hooks
-- Session management hooks: Devin support unclear
+- Context Management Hook: Devin CLI PostCompaction support unclear
 - MCP integration: Complex architecture
 - Multiple hook coordination
 
 ### Risk Mitigation Strategies
 - Implement one hook at a time
+- Start with native features (no risk)
 - Extensive testing before proceeding
 - Rollback procedures for each hook
 - Documentation of known issues
@@ -278,20 +298,20 @@ This document provides comprehensive context and implementation guidance for tok
 ## Next Steps
 
 ### Immediate Actions
-1. Create Hook_Implementer_Workflow.md in Workflow/Architect/
-2. Implement RTK integration (Phase 1, Hook #1)
+1. Implement Partial Read Optimization (Phase 1, Hook #2) - native feature, no risk
+2. Implement Grep Result Limiting (Phase 1, Hook #3) - native feature, no risk
 3. Test extensively with SovereignAI workflows
 4. Document results and lessons learned
 
 ### Short-term Actions
-1. Implement TokenJuice integration (Phase 1, Hook #2)
+1. Implement File Read Caching (Phase 1, Hook #1) - adaptation from Cache-Cow
 2. Test extensively with SovereignAI workflows
 3. Document results and lessons learned
 4. Evaluate Phase 2 hook adaptations
 
 ### Long-term Actions
-1. Adapt file read caching from Cache-Cow
-2. Test PostToolUse capabilities in Devin CLI
+1. Implement Markdown Compression Hook (Phase 2, Hook #4)
+2. Test Context Management Hook (Phase 2, Hook #5)
 3. Evaluate advanced hook patterns
 4. Continuous optimization based on results
 
@@ -301,13 +321,14 @@ This document provides comprehensive context and implementation guidance for tok
 - Primary workflows: Architect_General_Workflow, Planner_Plan_Workflow
 - Governance: Architect_Rules.md, AGENTS.md
 - Hook location: .devin/hooks.v1.json
-- Script location: Scripts/TokenOptimization/
+- Script location: Scripts/ (following script categorization rules)
 
 ### External References
-- RTK: https://github.com/rtk-ai/rtk
-- TokenJuice: https://github.com/vincentkoc/tokenjuice
 - Cache-Cow: https://github.com/soonswan-study/claude-code-thrifty
+- squeez: https://github.com/claudioemmanuel/squeez
 - Devin CLI Hooks: https://docs.devin.ai/cli/extensibility/hooks/overview
+- Devin CLI Read Tool: https://docs.devin.ai/cli/extensibility/hooks/lifecycle-hooks
+- Devin CLI Grep Tool: https://docs.devin.ai/cli/extensibility/hooks/lifecycle-hooks
 
 ### Implementation Notes
 - This plan prioritizes proven implementations over theoretical patterns
