@@ -5,6 +5,7 @@
 **Frequency**: On-demand (recommended: weekly basic, monthly comprehensive)  
 **Duration**: Variable (15-60 minutes depending on scope)  
 **Priority**: High
+**Workflow Type**: Single-Execution (executes once and terminates)
 
 ## Purpose
 Systematic validation of harness architecture consistency across the entire project to identify structural issues, broken references, terminology inconsistencies, and governance gaps.

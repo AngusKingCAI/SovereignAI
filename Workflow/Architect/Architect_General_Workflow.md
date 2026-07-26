@@ -5,6 +5,7 @@
 **Frequency**: Per architectural task  
 **Duration**: Variable (task-dependent)  
 **Priority**: High
+**Workflow Type**: Continuous Operation (always ready for new tasks)
 
 ## Purpose
 Systematic architectural decision-making ensuring infrastructure design follows best practices and maintains compliance with governance rules, enforced through the validation-based governance system for automatic permission validation and audit logging.
@@ -18,7 +19,7 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 - **Trigger**: User requests architectural work or agent initiates task
 - **End State**: Implementation complete, documented, verified for compliance
 
-## Workflow Steps (90 steps)
+## Workflow Steps (91 steps)
 ### Phase 0. Read Architect Rules
 - 1. Read Rules/Architect/Architect_Rules.md to load current governance constraints
 - 2. Parse YAML frontmatter and rule definitions for implementation guidance
@@ -80,63 +81,63 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 ### Phase 6. Implement (One Function at a Time)
 - 44. Build exactly one function at a time, test immediately
 - 45. Present function and test result to user after each successful test
-- 47. Wait for explicit user confirmation before proceeding
-- 48. Treat user-confirmed functions as locked
+- 46. Wait for explicit user confirmation before proceeding
+- 47. Treat user-confirmed functions as locked
 - **AUTOMATED PROGRESSION NOTE**: The validation system allows state-mutating tools (edit, write, exec) automatically during this step. User confirmation requests use ask_user_question (unvalidated) to pause for approval without triggering failure intervention.
-- 49. When placing files, check INDEX.md for folder structure (token-efficient vs loading full directory)
-- 50. Load Rules/Architect/Architect_Rules.md only when specific constraints are needed
-- 51. When function fails, apply selected execution mode (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
-- 52. **RETRY LOGIC**: For Auto and Complete modes, implement configurable retry with exponential backoff (max 3 retries)
-- 53. **STATUS TRACKING**: Update workflow status to "phase_6_in_progress" during implementation, "phase_6_complete" when finished
-- 54. **PRINT**: "Implementing function - building one function at a time per architect rules"
-- 55. **PRINT**: "Function test complete - presenting test results to user for confirmation"
-- 56. **PRINT**: "Awaiting user confirmation - treating function as locked once confirmed"
-- 57. **PRINT**: "Function implementation complete - proceeding to next function"
+- 48. When placing files, check INDEX.md for folder structure (token-efficient vs loading full directory)
+- 49. Load Rules/Architect/Architect_Rules.md only when specific constraints are needed
+- 50. When function fails, apply selected execution mode (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 51. **RETRY LOGIC**: For Auto and Complete modes, implement configurable retry with exponential backoff (max 3 retries)
+- 52. **STATUS TRACKING**: Update workflow status to "phase_6_in_progress" during implementation, "phase_6_complete" when finished
+- 53. **PRINT**: "Implementing function - building one function at a time per architect rules"
+- 54. **PRINT**: "Function test complete - presenting test results to user for confirmation"
+- 55. **PRINT**: "Awaiting user confirmation - treating function as locked once confirmed"
+- 56. **PRINT**: "Function implementation complete - proceeding to next function"
 
 ### Phase 7. Verify Compliance
-- 58. Verify implementation matches specification
-- 59. Run verification tests
-- 60. Ensure constitutional compliance per Rules/Architect/Architect_Rules.md
-- 61. Never skip compliance checks
-- 62. Always verify architectural compliance before proceeding
-- 63. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
-- 64. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
-- 65. **PRINT**: "Verifying compliance - checking implementation against specification"
-- 66. **PRINT**: "Running verification tests - ensuring all success criteria met"
-- 67. **PRINT**: "Constitutional compliance verified - implementation aligns with architect rules"
-- 68. **PRINT**: "Architectural compliance complete - ready to proceed"
+- 57. Verify implementation matches specification
+- 58. Run verification tests
+- 59. Ensure constitutional compliance per Rules/Architect/Architect_Rules.md
+- 60. Never skip compliance checks
+- 61. Always verify architectural compliance before proceeding
+- 62. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 63. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
+- 64. **PRINT**: "Verifying compliance - checking implementation against specification"
+- 65. **PRINT**: "Running verification tests - ensuring all success criteria met"
+- 66. **PRINT**: "Constitutional compliance verified - implementation aligns with architect rules"
+- 67. **PRINT**: "Architectural compliance complete - ready to proceed"
 
 ### Phase 8. Document
-- 69. Update relevant governance files for the agent being worked on:
+- 68. Update relevant governance files for the agent being worked on:
   - INDEX.md (if new folders are created)
   - Rules/{Agent}/{Agent}_Rules.md (if new rules are added)
   - Workflow/Architect/Reference/Workflow_Template.md (if template changes)
   - AGENTS.md (if agent capabilities change)
-- 70. Always categorize files when adding to documentation directories per Rules/Architect/Architect_Rules.md
-- 71. Never place files uncategorized
-- 72. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
-- 73. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
-- 74. **PRINT**: "Updating governance documentation - modifying relevant agent files"
-- 75. **PRINT**: "Documentation categorization verified - all files properly categorized per architect rules"
-- 76. **PRINT**: "Documentation complete - governance files updated"
+- 69. Always categorize files when adding to documentation directories per Rules/Architect/Architect_Rules.md
+- 70. Never place files uncategorized
+- 71. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 72. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
+- 73. **PRINT**: "Updating governance documentation - modifying relevant agent files"
+- 74. **PRINT**: "Documentation categorization verified - all files properly categorized per architect rules"
+- 75. **PRINT**: "Documentation complete - governance files updated"
 
 ### Phase 9. Final Validation
-- 77. Verify implementation matches intended scope for the specific area:
+- 76. Verify implementation matches intended scope for the specific area:
   - Rules: Follow template and proper formatting
   - Workflow: Follow structure and is executable
   - Scripts: Function as intended
   - Documentation: Properly categorized
-- 78. Confirm governance file placement compliance per INDEX.md
-- 79. Validate no unintended changes outside the target area
-- 80. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
-- 81. **STATUS TRACKING**: Update workflow status to "phase_9_complete"
-- 82. **PRINT**: "Final validation initiated - verifying implementation scope compliance"
-- 83. **PRINT**: "Rules verification complete - template and formatting validated"
-- 84. **PRINT**: "Workflow verification complete - structure and executability confirmed"
-- 85. **PRINT**: "Scripts verification complete - functionality validated"
-- 86. **PRINT**: "Documentation verification complete - categorization confirmed"
-- 87. **PRINT**: "Governance file placement verified - compliance with INDEX.md confirmed"
-- 88. **PRINT**: "Unintended changes check complete - no changes outside target area detected"
+- 77. Confirm governance file placement compliance per INDEX.md
+- 78. Validate no unintended changes outside the target area
+- 79. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 80. **STATUS TRACKING**: Update workflow status to "phase_9_complete"
+- 81. **PRINT**: "Final validation initiated - verifying implementation scope compliance"
+- 82. **PRINT**: "Rules verification complete - template and formatting validated"
+- 83. **PRINT**: "Workflow verification complete - structure and executability confirmed"
+- 84. **PRINT**: "Scripts verification complete - functionality validated"
+- 85. **PRINT**: "Documentation verification complete - categorization confirmed"
+- 86. **PRINT**: "Governance file placement verified - compliance with INDEX.md confirmed"
+- 87. **PRINT**: "Unintended changes check complete - no changes outside target area detected"
 
 ### Phase 10. Return to Phase 0
 - 89. **PRINT** "Workflow cycle complete - returning to Phase 0 for next architectural task"

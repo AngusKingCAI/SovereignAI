@@ -5,6 +5,7 @@
 **Frequency**: On-demand (triggered after consistency check review)  
 **Duration**: Variable (30-120 minutes depending on issue count)  
 **Priority**: High
+**Workflow Type**: Single-Execution (executes once and terminates)
 
 ## Purpose
 Systematic resolution of consistency issues identified by Architect Consistency Check Workflow to improve harness architecture integrity and maintain governance compliance.
