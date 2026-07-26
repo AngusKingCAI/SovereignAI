@@ -4,7 +4,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "python Scripts/TokenOptimization/file_read_cache.py",
+          "command": "Scripts/TokenOptimization/file_read_cache.bat SessionStart",
           "timeout": 30
         }
       ]
@@ -16,7 +16,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "python Scripts/TokenOptimization/file_read_cache.py",
+          "command": "Scripts/TokenOptimization/file_read_cache.bat PreToolUse",
           "timeout": 10
         }
       ]
@@ -28,7 +28,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "python Scripts/TokenOptimization/file_read_cache.py",
+          "command": "Scripts/TokenOptimization/file_read_cache.bat PostToolUse",
           "timeout": 10
         }
       ]

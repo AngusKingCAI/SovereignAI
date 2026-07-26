@@ -147,14 +147,13 @@ def pre_read_hook(input_data: Dict) -> int:
     # Check if partial read
     is_partial = offset is not None or limit is not None
     
-    # Block large files for full reads (increased limit for SovereignAI governance files)
+    # Block large files for full reads
     if not is_partial:
         line_count = get_line_count(file_path)
-        if line_count > 2000:  # Increased from 1000 to accommodate governance files
-            print(f"This file has {line_count} lines. Consider using offset/limit to read only the section you need.", file=sys.stderr)
+        if line_count > 1000:
+            print(f"This file has {line_count} lines. Use offset/limit to read only the section you need.", file=sys.stderr)
             print(f"File: {file_path}", file=sys.stderr)
-            # Changed from blocking (return 2) to warning (return 0) to prevent blocking legitimate reads
-            return 0
+            return 2
     
     # Handle partial reads
     if is_partial:
@@ -188,9 +187,9 @@ def pre_read_hook(input_data: Dict) -> int:
                 # File unchanged - check if range is covered
                 if is_range_covered(ranges, start, end):
                     print(f"Range already read (lines {start}-{end}): {file_path}")
-                    print("Content unchanged since last read. Proceeding with read for context refresh.")
-                    # Changed from blocking (return 2) to allowing (return 0) for context refresh
-                    return 0
+                    print("No changes since last read. Work with the content you already have.")
+                    print("To modify: use Edit tool.")
+                    return 2
             else:
                 # File changed - show diff
                 print(f"Showing changes since last read: {file_path}")
@@ -210,9 +209,9 @@ def pre_read_hook(input_data: Dict) -> int:
             if current_hash == cache_hash:
                 if is_range_covered(ranges, start, end):
                     print(f"Range already read (lines {start}-{end}): {file_path}")
-                    print("Content unchanged since last read. Proceeding with read for context refresh.")
-                    # Changed from blocking (return 2) to allowing (return 0) for context refresh
-                    return 0
+                    print("No changes since last read. Work with the content you already have.")
+                    print("To modify: use Edit tool.")
+                    return 2
             else:
                 print(f"Showing changes since last read: {file_path}")
                 print("---")
@@ -235,10 +234,10 @@ def pre_read_hook(input_data: Dict) -> int:
     cache_hash = get_file_hash(str(cache_file))
     
     if current_hash == cache_hash:
-        print(f"File unchanged (re-read for context refresh): {file_path}")
-        print("Content unchanged since last read. Proceeding with read for context refresh.")
-        # Changed from blocking (return 2) to allowing (return 0) for context refresh
-        return 0
+        print(f"File unchanged (re-read unnecessary): {file_path}")
+        print("No changes since last read. Work with the content you already have.")
+        print("To modify: use Edit tool.")
+        return 2
     else:
         print(f"Showing changes since last read: {file_path}")
         print("---")
