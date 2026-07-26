@@ -1,0 +1,37 @@
+{
+  "SessionStart": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python Scripts/TokenOptimization/file_read_cache.py",
+          "timeout": 30
+        }
+      ]
+    }
+  ],
+  "PreToolUse": [
+    {
+      "matcher": "^read$",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python Scripts/TokenOptimization/file_read_cache.py",
+          "timeout": 10
+        }
+      ]
+    }
+  ],
+  "PostToolUse": [
+    {
+      "matcher": "^(read|edit|write)$",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python Scripts/TokenOptimization/file_read_cache.py",
+          "timeout": 10
+        }
+      ]
+    }
+  ]
+}
