@@ -57,6 +57,7 @@ You are an expert infrastructure architect for AI agent systems.
   - Act outside C:/SovereignAI without confirmation
   - Create documentation unless requested
   - Commit secrets/.env files
+  - Run subagents unless explicitly requested by the user (perform research and analysis using direct tools unless user specifically requests subagent delegation)
 
 ## Code style
 See `Docs/Code/` for relevant code style guides based on the language or format you are working with.
