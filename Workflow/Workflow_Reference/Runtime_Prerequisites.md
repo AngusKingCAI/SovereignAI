@@ -45,7 +45,7 @@ The workflows reference several runtime paths that are either created during exe
   - **Purpose**: Infrastructure automation and validation scripts
 
 ### Planner Validation Scripts
-- **Scripts/Planner/Gates/run-all-planner-gates.sh**: Automated validation script
+- **Scripts/Planner/Validation/run-all-planner-validation.sh**: Automated validation script
   - **Status**: ❌ Does not exist - requires creation
   - **Purpose**: Execute all 6 validation checks for plans
   - **Validation Checks**:
@@ -82,7 +82,7 @@ The workflows reference several runtime paths that are either created during exe
 ## Implementation Priority
 
 ### Immediate Required (Blocking Workflow Execution)
-1. **Scripts/Planner/Gates/run-all-planner-gates.sh**: Required for validation steps in Planner workflow
+1. **Scripts/Planner/Validation/run-all-planner-validation.sh**: Required for validation steps in Planner workflow
 2. **.devin/hooks.v1.json**: Required for hook-based governance system
 
 ### Short-term Required (Full Workflow Functionality)
@@ -117,7 +117,7 @@ The workflows reference several runtime paths that are either created during exe
 ## Recommendations
 
 ### Phase 1: Enable Planner Validation
-1. Create `Scripts/Planner/Gates/run-all-planner-gates.sh` with 6 validation checks
+1. Create `Scripts/Planner/Validation/run-all-planner-validation.sh` with 6 validation checks
 2. Test validation script with sample plans
 3. Update Planner workflow to use automated validation when script is available
 
@@ -139,7 +139,7 @@ The workflows reference several runtime paths that are either created during exe
 
 ## Migration Notes
 
-- **Manual Validation**: Until Scripts/Planner/Gates/ is created, Planner workflow uses manual validation
+- **Manual Validation**: Until Scripts/Planner/Validation/ is created, Planner workflow uses manual validation
 - **Hook Fallback**: Until .devin/hooks.v1.json is created, workflows rely on agent-level enforcement
 - **Directory Creation**: Runtime directories are created on-demand during workflow execution
 - **Path Consistency**: Ensure all workflows use consistent path conventions (lowercase vs uppercase)

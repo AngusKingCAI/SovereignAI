@@ -128,7 +128,7 @@ step_3: [step_1, step_2]
 
 ## Round Table Review Process
 
-After plan creation and gate validation, plans undergo Round Table review for quality assessment:
+After plan creation and validation, plans undergo Round Table review for quality assessment:
 
 ### Review Process
 1. **Plan Brief Creation**: Planner creates brief using Workflow/Planner/Templates/Plan_Brief_Template.md
@@ -160,14 +160,14 @@ Panelists provide structured JSON output with dimension scores, findings with se
 **Goal**: Test the new plan template format with valid plan structure for SovereignAI changes
 
 ## Context
-This plan tests the new plan template format to ensure Planner agents can follow the standardized structure. The goal is to verify that the template produces plans that pass all gates and can be implemented manually. This template replaces the previous ad-hoc plan formats and ensures consistency across SovereignAI development planning.
+This plan tests the new plan template format to ensure Planner agents can follow the standardized structure. The goal is to verify that the template produces plans that pass all validation checks and can be implemented manually. This template replaces the previous ad-hoc plan formats and ensures consistency across SovereignAI development planning.
 
 ## Steps
 1. Define the changes needed for the SovereignAI system
 2. Specify the structure and approach for implementation
 3. Outline dependencies and execution order
 4. Provide context and rationale for the changes
-5. Verify gate system compliance before manual implementation
+5. Verify validation system compliance before manual implementation
 
 ## Dependencies
 step_1: []
@@ -182,7 +182,7 @@ step_5: [step_4]
 ## Template Evolution
 
 This template will evolve based on:
-- Gate system pattern recognition
+- Validation system pattern recognition
 - Round Table findings on plan quality
 - Best practice research updates
 - Infrastructure development phase requirements

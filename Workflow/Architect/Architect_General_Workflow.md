@@ -7,12 +7,12 @@
 **Priority**: High
 
 ## Purpose
-Systematic architectural decision-making ensuring infrastructure design follows best practices and maintains compliance with governance rules, enforced through the hook-based validation system for automatic permission validation and audit logging.
+Systematic architectural decision-making ensuring infrastructure design follows best practices and maintains compliance with governance rules, enforced through the validation-based governance system for automatic permission validation and audit logging.
 
 ## Roles and Owners
 - **Architect Agent**: Executes workflow steps, enforces governance rules
 - **User**: Provides task requirements, approves decisions
-- **Governance System**: Automatic enforcement via hooks (non-manual)
+- **Governance System**: Automatic enforcement via validation system (non-manual)
 
 ## Trigger and End State
 - **Trigger**: User requests architectural work or agent initiates task
@@ -56,30 +56,30 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 - 25. **PRINT** "Research complete - gathered multiple implementation approaches from industry standards"
 
 ### Phase 4. Generate Options
-- 27. Generate 2-4 implementation options based on research
-- 28. **VALIDATION**: Validate options against viable option criteria (see Workflow/Architect/Reference/Option_Evaluation_Framework.md)
-- 29. **ARCHITECT OPINION**: Provide analysis and recommendation BEFORE user selection
-- 30. **PRESENTATION PATTERN**: Present options with metrics, provide architect opinion, use popup menu for selection
-- 31. **RULE ENFORCEMENT**: Ensure options comply with Rules/Architect/Architect_Rules.md
-- 32. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
-- 33. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
-- 34. **PRINT**: "Generating implementation options - applying viable option criteria"
-- 35. **PRINT**: "Options generated - presenting with impact, effort, and risk metrics"
-- 36. **PRINT**: "Architect opinion provided - recommending optimal approach based on analysis"
+- 26. Generate 2-4 implementation options based on research
+- 27. **VALIDATION**: Validate options against viable option criteria (see Workflow/Architect/Reference/Option_Evaluation_Framework.md)
+- 28. **ARCHITECT OPINION**: Provide analysis and recommendation BEFORE user selection
+- 29. **PRESENTATION PATTERN**: Present options with metrics, provide architect opinion, use popup menu for selection
+- 30. **RULE ENFORCEMENT**: Ensure options comply with Rules/Architect/Architect_Rules.md
+- 31. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 32. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
+- 33. **PRINT**: "Generating implementation options - applying viable option criteria"
+- 34. **PRINT**: "Options generated - presenting with impact, effort, and risk metrics"
+- 35. **PRINT**: "Architect opinion provided - recommending optimal approach based on analysis"
 
 ### Phase 5. Specify Implementation
-- 37. Create detailed specification for selected approach
-- 38. **VALIDATION**: Validate specification completeness and compliance (see Workflow/Architect/Reference/Option_Evaluation_Framework.md)
-- 39. **IMPLEMENTATION MODE SELECTION**: Ask user to choose using popup menu (see Workflow/Architect/Reference/Implementation_Mode_Patterns.md)
-- 40. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
-- 41. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
-- 42. **PRINT** "Creating detailed implementation specification - defining architecture and constraints"
-- 43. **PRINT** "Specification complete - verifying file placement compliance with directory structure"
-- 44. **PRINT** "Implementation mode selection presented - awaiting user choice between automated and manual modes"
+- 36. Create detailed specification for selected approach
+- 37. **VALIDATION**: Validate specification completeness and compliance (see Workflow/Architect/Reference/Option_Evaluation_Framework.md)
+- 38. **IMPLEMENTATION MODE SELECTION**: Ask user to choose using popup menu (see Workflow/Architect/Reference/Implementation_Mode_Patterns.md)
+- 39. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 40. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
+- 41. **PRINT** "Creating detailed implementation specification - defining architecture and constraints"
+- 42. **PRINT** "Specification complete - verifying file placement compliance with directory structure"
+- 43. **PRINT** "Implementation mode selection presented - awaiting user choice between automated and manual modes"
 
 ### Phase 6. Implement (One Function at a Time)
-- 45. Build exactly one function at a time, test immediately
-- 46. Present function and test result to user after each successful test
+- 44. Build exactly one function at a time, test immediately
+- 45. Present function and test result to user after each successful test
 - 47. Wait for explicit user confirmation before proceeding
 - 48. Treat user-confirmed functions as locked
 - **AUTOMATED PROGRESSION NOTE**: The validation system allows state-mutating tools (edit, write, exec) automatically during this step. User confirmation requests use ask_user_question (unvalidated) to pause for approval without triggering failure intervention.
@@ -169,7 +169,7 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 
 ### Execution Strategy
 - **Universal Framework**: Workflow/Workflow_Reference/Execution_Strategy_Guidelines.md
-- **Architect Customization**: Hook-based validation, execution mode handling patterns
+- **Architect Customization**: Validation-based governance, execution mode handling patterns
 - **Focus**: Architectural strategies and execution mode-based iteration
 
 ### Quota Handling

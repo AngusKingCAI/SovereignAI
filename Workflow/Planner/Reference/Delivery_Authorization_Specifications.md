@@ -31,6 +31,6 @@ When final validation is complete, delivery authorization is generated as follow
 
 ## Validation System Reference
 
-- See Workflow/Planner/Reference/Gate_Enforcement_System.md for detailed validation specifications
+- See Workflow/Planner/Reference/Validation_System_Specifications.md for detailed validation specifications
 - Validation completion hash generated during validation process
 - Authorization stored in workflow state for audit trail

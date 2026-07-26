@@ -42,7 +42,7 @@ See Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md for universal
 
 ## Validation System Reference
 
-- **Universal Pattern**: Workflow/Workflow_Reference/Gate_Enforcement_Patterns.md (universal validation framework)
+- **Universal Pattern**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md (universal validation framework)
 - **Quality Assessment**: Workflow/Workflow_Reference/Quality_Assessment_Framework.md (universal framework)
 - **Compliance**: Rules/Planner/Planner_Rules.md (planning rules and constraints)
 - **Delivery Authorization**: Workflow/Planner/Reference/Delivery_Authorization_Specifications.md (delivery process)

@@ -37,7 +37,7 @@ This workflow follows AI planning best practices with:
 - **Prompt Instructions**: Workflow/Planner/Templates/Plan_Prompt_Template.md (persona adoption instructions)
 - **Plan Batch Specifications**: Workflow/Planner/Reference/Plan_Batch_Specifications.md (batch processing and scan plan patterns)
 - **Quality Assessment**: Workflow/Workflow_Reference/Quality_Assessment_Framework.md (universal framework)
-- **Validation System**: Workflow/Planner/Reference/Gate_Enforcement_System.md (planner-specific validation definitions)
+- **Validation System**: Workflow/Planner/Reference/Validation_System_Specifications.md (planner-specific validation definitions)
 - **Convergence Loops**: Workflow/Workflow_Reference/Convergence_Loop_Patterns.md (universal pattern) and Workflow/Planner/Reference/Convergence_Loop_Specifications.md (planner-specific implementation)
 - **Delivery Authorization**: Workflow/Planner/Reference/Delivery_Authorization_Specifications.md (planner-specific)
 - **Role Responsibilities**: Workflow/Workflow_Reference/Role_Responsibilities_Framework.md (universal framework) and Workflow/Planner/Reference/Role_Responsibilities.md (planner-specific)

@@ -23,7 +23,7 @@ Systematic validation of harness architecture consistency across the entire proj
 - **Trigger**: User requests consistency check OR before/after major architectural changes
 - **End State**: Comprehensive consistency report generated in Logs/Architect/Consistency Review/
 
-## Workflow Steps (47 steps)
+## Workflow Steps (64 steps)
 
 ### Phase 0. Read Architect Rules + Scan Scope
 - 1. Read Rules/Architect/Architect_Rules.md to understand governance constraints
@@ -60,7 +60,7 @@ Systematic validation of harness architecture consistency across the entire proj
 - 21. **PRINT**: "File reference check complete - {N} broken references found"
 
 ### Phase 4. Terminology Consistency Check
-- 22. Search for outdated terminology: `grep -r "gate\|validation" /c/SovereignAI/Workflow/`
+- 22. Search for outdated terminology: `grep -r "gate" /c/SovereignAI/Workflow/` (should return no results if cleanup complete)
 - 23. Check for "Workflow_Template.md" location references
 - 24. Validate framework naming (Quality_Metrics vs Performance_Metrics)
 - 25. Check agent naming convention consistency
@@ -172,7 +172,7 @@ Systematic validation of harness architecture consistency across the entire proj
 - **Check**: Consistent terminology across all governance files
 - **Scope**: All markdown files in harness architecture
 - **Variables**:
-  - "gate" vs "validation" terminology
+  - "gate" terminology (should be eliminated in favor of "validation")
   - "Workflow_Template.md" location references
   - Framework naming (Quality_Metrics vs Performance_Metrics)
   - Agent naming conventions
@@ -402,7 +402,7 @@ find /c/SovereignAI -name "*.md" -path "*/Workflow/*" -o -path "*/Rules/*" -o -p
 ```bash
 grep -r "Workflow/" /c/SovereignAI/Workflow/
 grep -r "Rules/" /c/SovereignAI/Workflow/
-grep -r "gate\|validation" /c/SovereignAI/Workflow/
+grep -r "gate" /c/SovereignAI/Workflow/ (should return no results if cleanup complete)
 ```
 
 ### Cross-Reference Validation

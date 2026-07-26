@@ -27,7 +27,7 @@
 ### Reviewer Agent
 - **Review Phases**: Quality assessment and feedback loops
 - **Pattern Recognition**: Identify recurring issues and governance gaps
-- **Gate Analysis**: Analyze gate failure patterns and recommend improvements
+- **Validation Analysis**: Analyze validation failure patterns and recommend improvements
 - **Quality Metrics**: Dimension-based quality assessment
 
 ### Researcher Agent
