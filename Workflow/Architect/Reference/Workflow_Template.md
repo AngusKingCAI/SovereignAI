@@ -6,6 +6,28 @@
 
 This template is used by the Architect agent to create workflows for other agents. All workflows must follow this structure for consistency.
 
+## Workflow Types
+
+Architect creates two types of workflows with different Phase 10 patterns:
+
+### 1. Continuous Operation Workflows (Standard Agent Workflows)
+- **Purpose**: Agents that should always be ready for new tasks
+- **Phase 10 Pattern**: Include "Return to step 1" for continuous operation
+- **Examples**: Architect_General_Workflow, Planner_Plan_Workflow, Executor_Implementation_Cycle
+- **Behavior**: Workflow cycles indefinitely, agent always ready for next task
+- **Use Case**: Primary agent workflows that handle ongoing agent operations
+
+### 2. Single-Execution Workflows (Utility/Tool Workflows)
+- **Purpose**: Utility workflows that execute once and terminate
+- **Phase 10 Pattern**: Exclude or modify to termination (no "Return to step 1")
+- **Examples**: Architect_Consistency_Check_Workflow, Architect_Consistency_Fix_Workflow
+- **Behavior**: Workflow executes once and terminates, no automatic looping
+- **Use Case**: Specialized workflows that run on-demand and complete
+
+### Workflow Type Selection Guidelines
+- **Use Continuous Operation**: For primary agent workflows that should always be available
+- **Use Single-Execution**: For utility workflows, validation workflows, maintenance workflows
+
 ## Template Reference
 
 - **Location**: Workflow/Architect/Reference/Workflow_Template.md
@@ -108,10 +130,15 @@ This template is used by the Architect agent to create workflows for other agent
 - 48. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
 - 49. **PRINT**: "Session logging complete - audit trail validated, {Agent} workflow complete"
 
-### Phase 10. Return to Phase 0
+### Phase 10. Return to Phase 0 (CONTINUOUS OPERATION WORKFLOWS ONLY)
 - 50. **PRINT** "Workflow cycle complete - returning to Phase 0 for next {agent} task"
 - 51. **PRINT** "{Agent} agent ready - awaiting next user request"
 - 52. Return to step 1
+
+### Phase 10. Workflow Termination (SINGLE-EXECUTION WORKFLOWS ONLY)
+- 50. **PRINT** "Workflow execution complete - workflow terminated"
+- 51. **PRINT** "{Agent} agent ready - awaiting next user request"
+- 52. **TERMINATE**: End workflow execution (do not return to step 1)
 
 ---
 
@@ -155,7 +182,10 @@ All workflows must include:
 - **Phase 1**: Select Execution Mode (Manual/Auto/Complete)
 - **Phase 2**: {Agent} Interaction (user task specification)
 - **Phase 3**: Research Best Practices (web search required before major decisions)
-- **Phase 10**: Return to Phase 0 (workflow cycle)
+
+### Phase 10 (Workflow Type Dependent)
+- **Continuous Operation Workflows**: Include Phase 10 with "Return to step 1" for continuous operation
+- **Single-Execution Workflows**: Include Phase 10 with "TERMINATE" (no "Return to step 1")
 
 ### Mandatory Elements
 All workflows must include:
@@ -209,3 +239,52 @@ See Workflow/Workflow_Reference/Template_Usage_Guidelines.md for detailed templa
 - **Universal Framework**: Workflow/Workflow_Reference/Performance_Metrics_Framework.md
 - **Agent Customization**: Agent-specific metric customization
 - **Usage**: Reference universal framework for consistency
+
+### State Management
+- **Universal Framework**: Workflow/Workflow_Reference/State_Management_Guidelines.md
+- **Agent Customization**: Agent-specific state tracking
+- **Usage**: Reference universal framework for consistency
+
+### Execution Strategy
+- **Universal Framework**: Workflow/Workflow_Reference/Execution_Strategy_Guidelines.md
+- **Agent Customization**: Agent-specific execution patterns
+- **Usage**: Reference universal framework for consistency
+
+### Runtime Prerequisites
+- **Universal Framework**: Workflow/Workflow_Reference/Runtime_Prerequisites.md
+- **Agent Customization**: Agent-specific runtime requirements
+- **Usage**: Reference universal framework for consistency
+
+### Validation Enforcement
+- **Universal Framework**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md
+- **Agent Customization**: Agent-specific validation patterns
+- **Usage**: Reference universal framework for consistency
+
+### Convergence Loops
+- **Universal Framework**: Workflow/Workflow_Reference/Convergence_Loop_Patterns.md
+- **Agent Customization**: Agent-specific convergence patterns
+- **Usage**: Reference universal framework for consistency
+
+### Quota Handling
+- **Universal Framework**: Workflow/Workflow_Reference/Quota_Handling_Patterns.md
+- **Agent Customization**: Agent-specific quota patterns
+- **Usage**: Reference universal framework for consistency
+
+### Template Usage
+- **Universal Framework**: Workflow/Workflow_Reference/Template_Usage_Guidelines.md
+- **Agent Customization**: Agent-specific template customization
+- **Usage**: Reference universal framework for consistency
+
+## Universal Framework Coverage
+
+This template references all 10 universal frameworks:
+1. Quality Assessment Framework
+2. Role Responsibilities Framework
+3. Performance Metrics Framework
+4. State Management Guidelines
+5. Execution Strategy Guidelines
+6. Runtime Prerequisites
+7. Validation Enforcement Patterns
+8. Convergence Loop Patterns
+9. Quota Handling Patterns
+10. Template Usage Guidelines
