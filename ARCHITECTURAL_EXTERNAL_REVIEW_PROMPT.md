@@ -3,6 +3,8 @@
 ## Context
 Please review the SovereignAI project's workflow architecture for consistency, completeness, and alignment with governance principles. This is a multi-agent AI system with a governance framework that includes workflow templates, universal frameworks, and agent-specific implementations.
 
+**Repository**: https://github.com/AngusKingCAI/SovereignAI
+
 ## Review Scope
 Focus on the Workflow/ directory structure, which contains:
 - Universal frameworks in Workflow/Workflow_Reference/
@@ -194,7 +196,7 @@ Please provide your review in the following JSON structure:
 
 ## Instructions
 
-1. **Pull new repo update**: Start by pulling the latest changes from the repository to ensure you're reviewing the most current version
+1. **Pull new repo update**: Clone or pull the latest changes from https://github.com/AngusKingCAI/SovereignAI to ensure you're reviewing the most current version
 2. **Be Specific**: Provide concrete file paths and line numbers where applicable
 3. **Be Balanced**: Acknowledge both strengths and weaknesses
 4. **Be Constructive**: Provide actionable recommendations
