@@ -1,22 +1,10 @@
 {
-  "SessionStart": [
+  "UserPromptSubmit": [
     {
       "hooks": [
         {
           "type": "command",
-          "command": "Scripts/TokenOptimization/file_read_cache.bat SessionStart",
-          "timeout": 30
-        }
-      ]
-    }
-  ],
-  "PreToolUse": [
-    {
-      "matcher": "^read$",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "Scripts/TokenOptimization/file_read_cache.bat PreToolUse",
+          "command": "python C:/SovereignAI/Scripts/Logging/prompt_tracker.py",
           "timeout": 10
         }
       ]
@@ -24,11 +12,23 @@
   ],
   "PostToolUse": [
     {
-      "matcher": "^(read|edit|write)$",
+      "matcher": "*",
       "hooks": [
         {
           "type": "command",
-          "command": "Scripts/TokenOptimization/file_read_cache.bat PostToolUse",
+          "command": "python C:/SovereignAI/Scripts/Logging/tool_action_logger.py",
+          "timeout": 10
+        }
+      ]
+    }
+  ],
+  "PreToolUse": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Logging/tool_pre_logger.py",
           "timeout": 10
         }
       ]

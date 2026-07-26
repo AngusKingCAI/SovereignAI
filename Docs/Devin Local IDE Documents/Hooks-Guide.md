@@ -290,15 +290,69 @@ If hooks don't trigger:
 }
 ```
 
-## Exit Codes
+## Exit Codes and JSON Responses
 
-Hook exit codes control behavior:
+Hook exit codes and JSON responses control behavior:
+
+### Exit Codes
 
 | Code | Meaning |
 |------|---------|
 | 0 | Success — hook continues normally |
-| 2 | Block — action is denied |
+| 2 | Block — action is denied (may stop entire agent loop) |
 | Other | Error — logged but doesn't block |
+
+### JSON Response Format (Recommended)
+
+For proper workflow gating, use JSON responses instead of exit codes:
+
+**Block single tool call without stopping agent:**
+```json
+{
+  "permissionDecision": "deny",
+  "permissionDecisionReason": "Redundant edit blocked: old_string == new_string"
+}
+```
+
+**Key distinction:**
+- `permissionDecision: "deny"` → Blocks a **single tool call**, agent can continue and try other actions
+- Exit code 2 → May be interpreted as a hard stop that terminates the entire agent loop
+- `continue: false` → Terminates the entire agent loop completely
+
+**Example implementation:**
+```python
+import json
+import sys
+
+def main():
+    try:
+        data = json.load(sys.stdin)
+    except:
+        sys.exit(0)
+    
+    tool_name = data.get("tool_name", "")
+    tool_input = data.get("tool_input", {})
+    
+    # Block redundant edits
+    if tool_name == "edit":
+        old_string = tool_input.get("old_string", "")
+        new_string = tool_input.get("new_string", "")
+        
+        if old_string == new_string:
+            response = {
+                "permissionDecision": "deny",
+                "permissionDecisionReason": "Redundant edit blocked: old_string == new_string"
+            }
+            print(json.dumps(response))
+            sys.exit(0)  # Return success with JSON response
+    
+    sys.exit(0)  # Allow the action
+
+if __name__ == "__main__":
+    main()
+```
+
+**Important:** When using JSON responses, always exit with code 0. The blocking decision is communicated through the JSON payload, not the exit code.
 
 ## Advanced Features
 
