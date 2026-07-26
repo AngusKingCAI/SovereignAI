@@ -23,7 +23,7 @@ Systematic validation of harness architecture consistency across the entire proj
 - **Trigger**: User requests consistency check OR before/after major architectural changes
 - **End State**: Comprehensive consistency report generated in Logs/Architect/Consistency Review/
 
-## Workflow Steps (64 steps)
+## Workflow Steps (56 steps)
 
 ### Phase 0. Read Architect Rules + Scan Scope
 - 1. Read Rules/Architect/Architect_Rules.md to understand governance constraints
@@ -100,19 +100,7 @@ Systematic validation of harness architecture consistency across the entire proj
 - 53. Provide actionable recommendations with timeline
 - 54. **VALIDATION**: Validate report generation completed successfully
 - 55. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
-- 56. **PRINT**: "Report generation complete - report saved to Logs/Architect/Consistency Review/"
-
-### Phase 8. Session Logging + Validate
-- 57. Log scan parameters and results to Logs/Architect/
-- 58. Generate scan attestation hash for verification
-- 59. **VALIDATION**: Validate session logging completed successfully
-- 60. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
-- 61. **PRINT**: "Session logging complete - consistency check workflow finished"
-
-### Phase 9. Return to Phase 0
-- 62. **PRINT** "Consistency check cycle complete - returning to Phase 0 for next scan"
-- 63. **PRINT** "Architect agent ready - awaiting next consistency check request"
-- 64. Return to step 1
+- 56. **PRINT**: "Report generation complete - workflow terminated"
 
 ---
 
@@ -390,6 +378,8 @@ Yes, we need a separate workflow for implementing these changes. This should be:
 - **After architectural refactoring**: Full consistency check  
 - **Weekly automated scan**: Basic consistency check (file references only)
 - **Monthly comprehensive scan**: Full consistency check with detailed report
+
+**Note**: Workflow terminates after single scan execution. Do not loop automatically.
 
 ## Scan Execution Commands
 

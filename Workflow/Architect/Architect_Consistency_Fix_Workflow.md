@@ -23,7 +23,7 @@ Systematic resolution of consistency issues identified by Architect Consistency 
 - **Trigger**: User reviews consistency check report and requests fixes
 - **End State**: Selected consistency issues resolved, harness architecture improved
 
-## Workflow Steps (58 steps)
+## Workflow Steps (55 steps)
 
 ### Phase 0. Read Consistency Report + Governance Rules
 - 1. Read latest consistency check report from Logs/Architect/Consistency Review/
@@ -125,12 +125,7 @@ Systematic resolution of consistency issues identified by Architect Consistency 
 - 52. Validate compliance with Architect rules
 - 53. **VALIDATION**: Validate final consistency state meets quality standards
 - 54. **STATUS TRACKING**: Update workflow status to "phase_9_complete"
-- 55. **PRINT**: "Final validation complete - harness architecture consistency improved"
-
-### Phase 10. Return to Phase 0
-- 56. **PRINT** "Consistency fix cycle complete - returning to Phase 0 for next consistency check"
-- 57. **PRINT** "Architect agent ready - awaiting next consistency fix request"
-- 58. Return to step 1
+- 55. **PRINT**: "Final validation complete - workflow terminated"
 
 ---
 
