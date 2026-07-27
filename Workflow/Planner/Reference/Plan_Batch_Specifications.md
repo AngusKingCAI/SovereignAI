@@ -46,11 +46,12 @@ Batch 6: Plans 26, 27, 28, 29, 30 (Plan 30 = Scan Plan)
 
 ### Planner Workflow Modification
 The Planner workflow should:
-1. **Process single plans at a time** (not return to Phase 0)
-2. **Follow batch sequence**: Process plans in numerical order
-3. **Identify scan plans**: Recognize plan numbers 5, 10, 15, 20, 25, 30
-4. **Apply scan plan logic**: Use different approach for scan plans
-5. **Track batch progress**: Monitor batch completion status
+1. **Batch Mode**: Process plans sequentially through batch (return to Phase 0 after each plan for next plan in sequence)
+2. **Single Plan Mode**: Process single plan and terminate (no return to Phase 0)
+3. **Follow batch sequence**: Process plans in numerical order when in batch mode
+4. **Identify scan plans**: Recognize plan numbers 5, 10, 15, 20, 25, 30
+5. **Apply scan plan logic**: Use different approach for scan plans
+6. **Track batch progress**: Monitor batch completion status
 
 ### Scan Plan Detection Logic
 ```python

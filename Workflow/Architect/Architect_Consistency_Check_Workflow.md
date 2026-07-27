@@ -5,7 +5,7 @@
 **Frequency**: On-demand (recommended: weekly basic, monthly comprehensive)  
 **Duration**: Variable (15-60 minutes depending on scope)  
 **Priority**: High
-**Workflow Type**: Single-Execution (executes once and terminates)
+**Workflow Type**: Single-Execution
 
 ## Purpose
 Systematic validation of harness architecture consistency across the entire project to identify structural issues, broken references, terminology inconsistencies, and governance gaps.
@@ -63,22 +63,21 @@ Systematic validation of harness architecture consistency across the entire proj
 ### Phase 4. Terminology Consistency Check
 - 22. Search for outdated terminology: `grep -r "gate" /c/SovereignAI/Workflow/` (should return no results if cleanup complete, except in meta-references like this line)
 - 23. Check for "Workflow_Template.md" location references
-- 24. Validate framework naming (Quality_Metrics vs Performance_Metrics)
-- 25. Check agent naming convention consistency
-- 26. **VALIDATION**: Validate terminology check completed successfully
-- 27. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
-- 28. **PRINT**: "Terminology check complete - {N} terminology inconsistencies found"
+- 24. Check agent naming convention consistency
+- 25. **VALIDATION**: Validate terminology check completed successfully
+- 26. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
+- 27. **PRINT**: "Terminology check complete - {N} terminology inconsistencies found"
 
 ### Phase 5. Workflow Structure Consistency Check
-- 29. Compare each workflow against Workflow/Workflow_Reference/Workflow_Template.md
-- 30. Check for mandated sections: Workflow Header, Universal Framework References
-- 31. Validate workflow follows header structure requirements (ID, Owner, Frequency, Duration, Priority, Purpose, Roles, Trigger and End State)
-- 32. Check Universal Framework References section presence and completeness
-- 33. Note any missing suggested phases (Phase 0, Phase 3, Phase 10) as informational, not as issues
-- 34. Validate step numbering sequential consistency (if steps are used)
-- 35. **VALIDATION**: Validate workflow structure check completed successfully
-- 36. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
-- 37. **PRINT**: "Workflow structure check complete - {N} structure issues found"
+- 28. Compare each workflow against Workflow/Workflow_Reference/Workflow_Template.md
+- 29. Check for mandated sections: Workflow Header, Universal Framework References
+- 30. Validate workflow follows header structure requirements (ID, Owner, Frequency, Duration, Priority, Purpose, Roles, Trigger and End State)
+- 31. Check Universal Framework References section presence and completeness
+- 32. Note any missing suggested phases (Phase 0, Phase 3, Phase 10) as informational, not as issues
+- 33. Validate step numbering sequential consistency (if steps are used)
+- 34. **VALIDATION**: Validate workflow structure check completed successfully
+- 35. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
+- 36. **PRINT**: "Workflow structure check complete - {N} structure issues found"
 
 ### Phase 6. Additional Consistency Checks (if full scan)
 - 38. Governance Rule Consistency: Check Rules/ files structure and patterns
@@ -163,7 +162,7 @@ Systematic validation of harness architecture consistency across the entire proj
 - **Variables**:
   - "gate" terminology (should be eliminated in favor of "validation", except in meta-references describing the check itself)
   - "Workflow_Template.md" location references
-  - Framework naming (Quality_Metrics vs Performance_Metrics)
+  - Framework naming (removed - naming issue resolved)
   - Agent naming conventions
   - Phase naming conventions
 

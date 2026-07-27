@@ -2,41 +2,7 @@
 
 **Purpose**: Universal execution strategy specifications for all agent workflows.
 
-## Agent-Specific Strategies
-
-### Architect Agent
-- **Manual/Auto/Complete Execution Modes**: 
-  - **Manual**: Stop at failures for human oversight with checkpoint handling
-  - **Auto**: Don't continue on failures (auto-stop on errors)
-  - **Complete**: Continue past failures (ignore all errors)
-- **Checkpoint Handling**: User confirmation via popup menu before phase transitions in Manual mode
-- **Retry Logic**: Configurable retry with exponential backoff (max 3 retries) for Auto/Complete modes
-
-### Planner Agent
-- **Validation-Based Validation**: Standard validation with Round Table review loops
-- **Fast-Track Planning**: Simplified validation for simple planning tasks
-- **Iterative Planning**: Extended iteration loops for complex architectural changes
-- **Convergence Loops**: Internal and external Round Table review until convergence achieved
-
-### Executor Agent
-- **Implementation Phases**: Systematic implementation with testing and deployment validation
-- **Hook-Based Governance**: Automatic enforcement via Devin CLI hooks
-- **Plan-Based Permissions**: Automatic enforcement of plan restrictions
-- **Quality Verification**: Implementation quality checks against plan specifications
-
-### Reviewer Agent
-- **Review Phases**: Quality assessment and feedback loops
-- **Pattern Recognition**: Identify recurring issues and governance gaps
-- **Validation Analysis**: Analyze validation failure patterns and recommend improvements
-- **Quality Metrics**: Dimension-based quality assessment
-
-### Researcher Agent
-- **Investigation Phases**: Research and analysis with validation
-- **Web Search Verification**: Verify findings against current best practices
-- **Documentation**: Create design documents with proper citations
-- **Analysis**: Comprehensive investigation with quality assessment
-
-## Strategy Configuration Patterns
+## Universal Strategy Configuration Patterns
 
 ### Strategy Selection Pattern
 1. Agent selects appropriate strategy based on task complexity

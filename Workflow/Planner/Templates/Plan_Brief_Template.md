@@ -64,13 +64,13 @@
 
 ## Quality Rubric Reference
 
-**Scoring**: Use Workflow/Workflow_Reference/Quality_Assessment_Framework.md for dimension-specific evaluation
+**Scoring**: Use Workflow/Workflow_Reference/Quality_Assessment_Framework.md for dimension-specific evaluation (1-5 scale)
 **Thresholds**: 
-- 5.0-4.5: Excellent - Clean pass
-- 4.4-3.5: Good - Clean pass  
-- 3.4-2.5: Fair - Proceed with rationale
-- 2.4-1.5: Poor - Requires revisions
-- 1.4-0.0: Critical - Block review
+- 5 (Excellent): Clean pass
+- 4 (Good): Clean pass  
+- 3 (Fair): Proceed with rationale
+- 2 (Poor): Requires revisions
+- 1 (Critical): Block review
 
 ---
 
@@ -79,6 +79,14 @@
 **Your Persona**: {Structure Expert | Scope Expert | Quality Expert | Risk Expert | Alternative Expert | Infrastructure Expert}
 
 **Your Focus**: {Specific domain expertise based on persona}
+
+**CRITICAL**: At the start of your review response, you MUST explicitly state:
+- For Internal Round Table: "I am reviewing as {Persona}"
+- For External Round Table: "I am reviewing as {Model Name} ({Persona})"
+
+This ensures proper logging to the correct file path:
+- Internal: Logs/Planner/Roundtable/Internal/plan{N}/{Agent_Persona}.md
+- External: Logs/Planner/Roundtable/External/plan{N}/{Agent_Name}_{Agent_Persona}.md
 
 **Web Search Requirement**: MUST use web search to verify findings against current best practices and research
 
@@ -105,7 +113,7 @@ Provide structured review in JSON format:
     "structure": {"score": 1-5, "notes": "...", "web_sources": []},
     "context": {"score": 1-5, "notes": "...", "web_sources": []}
   },
-  "overall_score": 0.0-5.0,
+  "overall_score": 1-5,
   "issues": [
     {"severity": "CRITICAL|HIGH|MEDIUM|LOW", "dimension": "...", "description": "...", "web_sources": ["https://..."]}
   ],

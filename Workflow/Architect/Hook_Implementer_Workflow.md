@@ -5,7 +5,7 @@
 **Frequency**: On-demand (per hook implementation)  
 **Duration**: Variable (30-120 minutes per hook depending on complexity)  
 **Priority**: High
-**Workflow Type**: Continuous Operation (loops for multiple hook implementations)
+**Workflow Type**: Continuous Operation
 
 ## Purpose
 Systematic implementation and testing of hooks for SovereignAI harness using Devin CLI, ensuring each hook is implemented, tested extensively, and validated before proceeding to the next hook. This workflow is generalized for any hook implementation type (token optimization, governance enforcement, logging, automation, etc.).
@@ -32,10 +32,7 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 - 5. **PRINT**: "Architect rules loaded - hook implementation context established including Devin CLI hooks guide"
 
 ### Phase 1. Select Execution Mode
-- 6. Ask user to select execution mode for this workflow using popup menu:
-  - **Manual**: Stop at failures for human oversight
-  - **Auto**: Don't continue on failures (auto-stop on errors)
-  - **Complete**: Continue past failures (ignore all errors)
+- 6. Ask user to select execution mode for this workflow using popup menu (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md for execution mode definitions)
 - 7. Store selected execution mode for failure handling throughout workflow
 - 8. **PRINT**: "Execution mode selected - [Manual/Auto/Complete] will govern failure handling"
 
@@ -46,7 +43,7 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 - 12. Clarify hook requirements, expected behavior, and integration points
 - 13. Document user's hook requirements and rationale
 - 14. Apply loaded architect rules to hook implementation requirements
-- 15. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 15. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 16. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
 - 17. **PRINT**: "Hook requirements defined - {Hook Type} specified for implementation"
 
@@ -58,7 +55,7 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 - 22. Analyze SovereignAI workflow requirements and integration points
 - 23. Gather multiple implementation approaches from web search and local research
 - 24. Ensure proposed solutions comply with governance rules
-- 25. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 25. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 26. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
 - 27. **PRINT**: "Researching best practices - checking code documentation for hook examples"
 - 28. **PRINT**: "Best practices web search initiated - required before hook implementation"
@@ -70,7 +67,7 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 - 32. Ensure proper error handling and logging in hook script
 - 33. Follow Architect rules for script placement and categorization
 - 34. **VALIDATION**: Validate hook script syntax and hook configuration format (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md)
-- 35. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 35. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 36. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
 - 37. **PRINT**: "Hook implementation created - script and configuration files updated"
 
@@ -92,7 +89,7 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 - 50. Check compatibility with existing hooks in .devin/hooks.v1.json
 - 51. **IMPORTANT**: Real-world testing required to avoid fake passes from isolated testing
 - 52. **VALIDATION**: Validate hook functionality, integration, and compliance (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md)
-- 53. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 53. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 54. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
 - 55. **PRINT**: "Hook testing complete - functionality validated in real SovereignAI workflow scenarios"
 
@@ -102,7 +99,7 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 - 58. Update workflow integration notes and known limitations
 - 59. Update relevant governance files if hook behavior changes agent capabilities
 - 60. **VALIDATION**: Validate documentation completeness and accuracy (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md)
-- 61. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 61. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 62. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
 - 63. **PRINT**: "Documentation complete - hook implementation results documented"
 
@@ -113,7 +110,7 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 - 67. Review documentation completeness and accuracy
 - 68. Ensure compliance with all Architect rules and constraints
 - 69. **VALIDATION**: Validate final implementation quality and compliance (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md)
-- 70. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 70. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 71. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
 - 72. **PRINT**: "Final validation complete - hook implementation ready for production use"
 
@@ -160,18 +157,3 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 - **Universal Framework**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md
 - **Architect Customization**: Hook implementation validation patterns (functionality testing, integration testing, governance compliance)
 - **Focus**: Validation enforcement patterns for hook implementation quality checks
-
-### Convergence Loops
-- **Universal Framework**: Workflow/Workflow_Reference/Convergence_Loop_Patterns.md
-- **Architect Customization**: Hook implementation iteration patterns (test-fix-retest cycles)
-- **Focus**: Convergence patterns for hook implementation testing and validation iterations
-
-### Quota Handling
-- **Universal Framework**: Workflow/Workflow_Reference/Quota_Handling_Patterns.md
-- **Architect Customization**: Hook implementation quota patterns (resource monitoring, performance budgeting)
-- **Focus**: Quota handling patterns for measuring and optimizing hook performance
-
-### Template Usage
-- **Universal Framework**: Workflow/Workflow_Reference/Template_Usage_Guidelines.md
-- **Architect Customization**: Hook implementation template customization (workflow type selection, phase adaptation)
-- **Focus**: Template usage patterns for continuous operation workflows with systematic implementation phases

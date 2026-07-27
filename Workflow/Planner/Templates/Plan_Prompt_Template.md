@@ -91,6 +91,14 @@
 - Focus exclusively on your domain - do not wander into other domains
 - Use web search to inform your domain-specific evaluation
 
+**CRITICAL**: At the start of your review response, you MUST explicitly state:
+- For Internal Round Table: "I am reviewing as {Persona}"
+- For External Round Table: "I am reviewing as {Model Name} ({Persona})"
+
+This ensures proper logging to the correct file path:
+- Internal: Logs/Planner/Roundtable/Internal/plan{N}/{Agent_Persona}.md
+- External: Logs/Planner/Roundtable/External/plan{N}/{Agent_Name}_{Agent_Persona}.md
+
 ### Step 2: Read the Plan Brief
 - Review the plan overview and context
 - Understand the steps and dependencies
@@ -225,7 +233,7 @@
     "structure": {"score": 1-5, "notes": "...", "web_sources": []},
     "context": {"score": 1-5, "notes": "...", "web_sources": []}
   },
-  "overall_score": 0.0-5.0,
+  "overall_score": 1-5,
   "issues": [
     {"severity": "CRITICAL|HIGH|MEDIUM|LOW", "dimension": "...", "description": "...", "web_sources": ["https://..."]}
   ],

@@ -81,7 +81,7 @@ Architect creates two types of workflows with different Phase 10 patterns:
 - 11. Clarify the task if needed
 - 12. Review user request and check local research using index files before web search
 - 13. Apply loaded {agent} rules to task requirements
-- 14. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 14. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 15. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
 - 16. **PRINT** "Initiating {agent} interaction - awaiting user task specification"
 
@@ -90,7 +90,7 @@ Architect creates two types of workflows with different Phase 10 patterns:
 - 18. **BEST PRACTICES WEB SEARCH**: Web search must be performed before major decisions (per {Agent}_Rules.md). Research industry standards and established patterns for the approach being considered.
 - 19. Gather multiple approaches and patterns from web search and local research
 - 20. Ensure proposed solutions comply with governance rules
-- 21. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 21. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 22. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
 - 23. **PRINT** "Researching best practices - checking code documentation for relevant examples"
 - 24. **PRINT**: "Best practices web search initiated - required before major decisions"
@@ -99,7 +99,7 @@ Architect creates two types of workflows with different Phase 10 patterns:
 ### Phase 4. {Agent} Work Phase
 - 26. {Agent-specific work steps}
 - 27. **VALIDATION**: Validate work completion and quality (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md for universal pattern)
-- 28. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 28. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 29. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
 - 30. **PRINT**: "{Agent} work phase complete - ready for next phase"
 
@@ -111,7 +111,7 @@ Architect creates two types of workflows with different Phase 10 patterns:
 
 ### Phase 6. {Agent} Documentation Phase
 - 35. Update relevant governance files and documentation
-- 36. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 36. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 37. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
 - 38. **PRINT**: "Documentation complete - governance files updated"
 
@@ -119,7 +119,7 @@ Architect creates two types of workflows with different Phase 10 patterns:
 - 39. Verify implementation matches intended scope
 - 40. Ensure compliance with all rules and constraints
 - 41. **VALIDATION**: Validate that final validation completed successfully (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md for universal pattern)
-- 42. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 42. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 43. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
 - 44. **PRINT**: "Final validation complete - work verified for compliance"
 
@@ -181,6 +181,7 @@ All workflows must include:
 - **Workflow Header**: ID, Owner, Frequency, Duration, Priority, Purpose, Roles, Trigger and End State
 - **Universal Framework References** section at the end
 - References to all universal frameworks relevant to the workflow
+- **Relevance Requirement**: Only include universal framework references that are actually relevant to the agent's specific purpose
 
 ### Suggested Phases (Recommended but Flexible)
 The following phases are suggested patterns that work well for most workflows, but agents should adapt them based on their specific needs:
@@ -282,7 +283,9 @@ See Workflow/Workflow_Reference/Template_Usage_Guidelines.md for detailed templa
 
 ## Universal Framework Coverage
 
-This template references all 10 universal frameworks:
+This template includes all 10 universal frameworks for reference, but individual workflows should only include the frameworks that are actually relevant to the agent's specific purpose (see Relevance Requirement above).
+
+Available universal frameworks:
 1. Quality Assessment Framework
 2. Role Responsibilities Framework
 3. Performance Metrics Framework
@@ -293,3 +296,5 @@ This template references all 10 universal frameworks:
 8. Convergence Loop Patterns
 9. Quota Handling Patterns
 10. Template Usage Guidelines
+
+**Note**: Not all frameworks are relevant to all agents. Workflows should selectively include only the frameworks that apply to their specific workflow purpose and operational needs.

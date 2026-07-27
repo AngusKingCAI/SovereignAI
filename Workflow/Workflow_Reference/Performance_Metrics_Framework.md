@@ -1,8 +1,8 @@
-# Quality Metrics Framework
+# Performance Metrics Framework
 
-**Purpose**: Universal quality metrics framework for all agent workflows.
+**Purpose**: Universal performance metrics framework for all agent workflows.
 
-## Universal Quality Metrics
+## Universal Performance Metrics
 
 ### Quality (10 points total)
 **Determinism (3 points)**: Predictable, reproducible behavior
