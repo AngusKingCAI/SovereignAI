@@ -19,15 +19,16 @@ Create detailed, implementation-ready plans for AI-driven software development w
 - **Trigger**: User requests planning work or agent initiates task
 - **End State**: Plan saved to Plans/ directory for executor execution with delivery authorization (Batch Mode: continues to next plan in sequence; Single Plan Mode: terminates after single plan)
 
-## Workflow Steps (73 steps)
+## Workflow Steps (74 steps)
 ### Phase 0. Read Planner Rules + Governance
 - 1. Read Rules/Planner/Planner_Rules.md to understand operational rules, scope boundaries, and best practices
-- 2. Read Workflow/Planner/Templates/Plan_Template.md to understand required plan structure and format
-- 3. Read Workflow/Planner/Reference/Plan_Batch_Specifications.md to understand batch processing and scan plan patterns
-- 4. Parse YAML frontmatter and rule definitions for implementation guidance
-- 5. Store rule context, template structure, and batch specifications for reference throughout workflow execution
-- 6. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
-- 7. **PRINT** "Planner rules, template, and batch specifications loaded"
+- 2. Read Workflow/Workflow_Reference/Terminology_Glossary.md to understand terminology definitions
+- 3. Read Workflow/Planner/Templates/Plan_Template.md to understand required plan structure and format
+- 4. Read Workflow/Planner/Reference/Plan_Batch_Specifications.md to understand batch processing and scan plan patterns
+- 5. Parse YAML frontmatter and rule definitions for implementation guidance
+- 6. Store rule context, template structure, and batch specifications for reference throughout workflow execution
+- 7. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
+- 8. **PRINT** "Planner rules, template, and batch specifications loaded"
 
 ### Phase 1. Select Execution Mode
 - 8. Ask user to select execution mode for this workflow using popup menu (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md for execution mode definitions)

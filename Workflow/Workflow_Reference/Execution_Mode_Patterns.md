@@ -5,11 +5,11 @@
 ## Execution Mode Definitions
 
 ### Manual Mode
-**Behavior**: Stop at failures for human oversight
-- **Checkpoint Handling**: Require user confirmation via popup menu before proceeding to next phase
+**Behavior**: Require user confirmation at every single step for maximum oversight
+- **Checkpoint Handling**: Require user confirmation via popup menu before proceeding to each next step (every step, not just failures)
 - **Failure Handling**: Stop workflow and await user intervention for retry/modify/abort decision
-- **User Control**: Maximum user control over workflow progression
-- **Risk Mitigation**: Human oversight at each phase transition
+- **User Control**: Maximum user control over workflow progression with step-by-step approval
+- **Risk Mitigation**: Human oversight at each phase transition and every workflow step
 
 ### Auto Mode
 **Behavior**: Don't continue on failures (auto-stop on errors)
@@ -29,49 +29,49 @@
 
 ### Phase Transition Handling
 **Manual Mode Pattern**:
-1. Complete phase actions
-2. **EXECUTION MODE HANDLING**: Require user confirmation via popup menu before proceeding to next phase (CHECKPOINT)
-3. **STATUS TRACKING**: Update workflow status to "phase_{N}_complete"
-4. **PRINT**: Phase completion message with checkpoint confirmation
-5. Wait for user approval before proceeding
+1. Complete current step action
+2. **EXECUTION MODE HANDLING**: Require user confirmation via popup menu before proceeding to next step (CHECKPOINT at every step)
+3. **STATUS TRACKING**: Update workflow status to "step_{N}_complete"
+4. **PRINT**: Step completion message with checkpoint confirmation
+5. Wait for user approval before proceeding to next step
 
 **Auto Mode Pattern**:
-1. Complete phase actions
-2. **EXECUTION MODE HANDLING**: Proceed automatically to next phase
-3. **STATUS TRACKING**: Update workflow status to "phase_{N}_complete"
-4. **PRINT**: Phase completion message
-5. Proceed automatically to next phase
+1. Complete current step action
+2. **EXECUTION MODE HANDLING**: Proceed automatically to next step if step succeeded, stop if step failed
+3. **STATUS TRACKING**: Update workflow status to "step_{N}_complete" (success) or "step_{N}_failed" (failure)
+4. **PRINT**: Step completion message (success) or failure message with retry attempt information
+5. Proceed automatically to next step on success, apply retry logic on failure
 
 **Complete Mode Pattern**:
-1. Complete phase actions (even if failures occur)
-2. **EXECUTION MODE HANDLING**: Proceed automatically to next phase
-3. **STATUS TRACKING**: Update workflow status to "phase_{N}_complete"
-4. **PRINT**: Phase completion message (including any failures)
-5. Proceed automatically to next phase
+1. Complete current step action (even if failures occur)
+2. **EXECUTION MODE HANDLING**: Proceed automatically to next step regardless of success/failure
+3. **STATUS TRACKING**: Update workflow status to "step_{N}_complete" (even if step failed)
+4. **PRINT**: Step completion message (including any failures but continue workflow)
+5. Proceed to next step automatically
 
 ### Failure Handling Patterns
 **Manual Mode Failure Pattern**:
-1. Detect failure in current phase
+1. Detect failure in current step
 2. **EXECUTION MODE HANDLING**: Stop workflow and await user intervention for retry/modify/abort decision (CHECKPOINT)
-3. **STATUS TRACKING**: Update workflow status to "phase_{N}_failed"
+3. **STATUS TRACKING**: Update workflow status to "step_{N}_failed"
 4. **PRINT**: Failure message with error details
 5. Await user decision on recovery action
 
 **Auto Mode Failure Pattern**:
-1. Detect failure in current phase
+1. Detect failure in current step
 2. **EXECUTION MODE HANDLING**: Stop workflow automatically without requiring human intervention
 3. **RETRY LOGIC**: Implement configurable retry with exponential backoff (max 3 retries)
-4. **STATUS TRACKING**: Update workflow status to "phase_{N}_failed"
+4. **STATUS TRACKING**: Update workflow status to "step_{N}_failed"
 5. **PRINT**: Failure message with retry attempt information
 6. Proceed with retry logic automatically
 
 **Complete Mode Failure Pattern**:
-1. Detect failure in current phase
+1. Detect failure in current step
 2. **EXECUTION MODE HANDLING**: Continue workflow automatically, ignoring the failure
 3. **RETRY LOGIC**: Implement configurable retry with exponential backoff (max 3 retries)
-4. **STATUS TRACKING**: Update workflow status to "phase_{N}_complete" (despite failure)
+4. **STATUS TRACKING**: Update workflow status to "step_{N}_complete" (despite failure)
 5. **PRINT**: Failure message but continue workflow
-6. Proceed to next phase automatically
+6. Proceed to next step automatically
 
 ## Retry Logic with Exponential Backoff
 

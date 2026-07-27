@@ -22,14 +22,15 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 - **Trigger**: User requests hook implementation OR Architect initiates hook development project
 - **End State**: Hook implemented, tested, documented, and integrated with SovereignAI workflows (workflow loops for next hook)
 
-## Workflow Steps (75 steps)
+## Workflow Steps (76 steps)
 
 ### Phase 0. Read Architect Rules + Hook Context
 - 1. Read Rules/Architect/Architect_Rules.md to understand governance constraints
-- 2. Read Docs/Devin Local IDE Documents/Hooks-Guide.md for Devin CLI hook implementation patterns
-- 3. Store hook implementation context for reference throughout workflow
-- 4. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
-- 5. **PRINT**: "Architect rules loaded - hook implementation context established including Devin CLI hooks guide"
+- 2. Read Workflow/Workflow_Reference/Terminology_Glossary.md to understand terminology definitions
+- 3. Read Docs/Devin Local IDE Documents/Hooks-Guide.md for Devin CLI hook implementation patterns
+- 4. Store hook implementation context for reference throughout workflow
+- 5. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
+- 6. **PRINT**: "Architect rules loaded - hook implementation context established including Devin CLI hooks guide"
 
 ### Phase 1. Select Execution Mode
 - 6. Ask user to select execution mode for this workflow using popup menu (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md for execution mode definitions)
@@ -114,7 +115,7 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 - 71. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
 - 72. **PRINT**: "Final validation complete - hook implementation ready for production use"
 
-### Phase 9. Return to Phase 0 (CONTINUOUS OPERATION)
+### Phase 10. Return to Phase 0 (CONTINUOUS OPERATION)
 - 73. **PRINT** "Hook implementation workflow complete - returning to Phase 0 for next hook implementation"
 - 74. **PRINT** "Architect agent ready - awaiting next hook implementation request"
 - 75. Return to step 1

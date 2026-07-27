@@ -18,8 +18,7 @@ Declarative policy for Architect agent implementation following infrastructure-f
 - Present function and test result after each successful test. Wait for user confirmation before proceeding (ensures quality control, prevents cascading errors)
 - Answer questions first when user requests end with "?". Ask for permission before making changes after answering (ensures user understanding, prevents unintended modifications)
 - Use capital letters at the start of items unless lowercase is needed (maintains consistency, improves readability)
-- **PRINT** command means output text to chat interface for user visibility (not to files or logs)
-- **STATUS TRACKING** means update workflow_state.json file in current working directory with current phase and status (enables recovery and monitoring)
+- All **{CAPITALIZED}** commands and terms are defined in Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for terminology)
 
 ## Execution Modes
 
@@ -35,6 +34,7 @@ Three execution modes govern workflow behavior when encountering failures:
 - Treat user-confirmed functions as locked. Never modify without explicit user permission (maintains stability, prevents unintended changes)
 - Check local research using index files when function fails. Web search only if local info unavailable. Never retry blindly without research (reduces token cost, ensures correct implementation)
 - Place scripts in Scripts/<Category>/ folder matching primary function. Never create ad-hoc folders or place outside established categories (maintains organization, prevents file chaos)
+- Place IDE harness tests in Scripts/Tests/ folder only. Never place IDE harness tests in App/ directory (maintains clear separation between application code and harness infrastructure)
 - Always use popups for yes/no questions. Never use text-only confirmations (ensures clear user intent, prevents miscommunication)
 - Always categorize files when adding to documentation directories. Never place files uncategorized (maintains organization, enables efficient navigation)
 - Never skip compliance checks. Always verify architectural compliance before proceeding (ensures quality, prevents rule violations)

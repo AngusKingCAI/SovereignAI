@@ -19,14 +19,15 @@ Systematic plan execution ensuring implementation follows best practices and mai
 - **Trigger**: Plan provided by Planner agent
 - **End State**: Plan execution complete, structured handoff to Reviewer agent prepared
 
-## Workflow Steps (68 steps)
+## Workflow Steps (69 steps)
 
 ### Phase 0. Read Executor Rules
 - 1. Read Rules/Executor/Executor_Rules.md to load current governance constraints
-- 2. Parse YAML frontmatter and rule definitions for implementation guidance
-- 3. Store rule context for reference throughout workflow execution
-- 4. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
-- 5. **PRINT** "Executor rules loaded from Rules/Executor/Executor_Rules.md"
+- 2. Read Workflow/Workflow_Reference/Terminology_Glossary.md to understand terminology definitions
+- 3. Parse YAML frontmatter and rule definitions for implementation guidance
+- 4. Store rule context for reference throughout workflow execution
+- 5. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
+- 6. **PRINT** "Executor rules loaded from Rules/Executor/Executor_Rules.md"
 
 ### Phase 1. Select Execution Mode
 - 6. Ask user to select execution mode for this workflow using popup menu (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md for execution mode definitions)

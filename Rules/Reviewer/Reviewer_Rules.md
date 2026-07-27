@@ -3,225 +3,171 @@ id: reviewer-rules
 status: active
 owner: reviewer-agent
 updated: 2026-07-27
-purpose: Declarative policy for Reviewer agent governance and implementation
+purpose: Declarative policy for Reviewer agent governance and quality assurance
 ---
 
-# Reviewer Rules
+# Reviewer Agent Rules
 
-**Purpose**: Operational rules for Reviewer agent following best practices for comprehensive quality review and assessment
-**Authority**: PRINCIPLES.md (review principles incorporated into these rules)
-**Status**: Active
-**Created**: 2026-07-24
+## Overview
+Declarative policy for Reviewer agent implementation following quality-first principles. Rules are organized into Conventions (behavioral guidance) and Constraints (hard boundaries).
 
----
+## Conventions
 
-## Rule Categories Based on AI Review Best Practices
+- **Best Practices**: Web search must be used before conducting major review decisions or when uncertain about review criteria. Best practices are established industry standards that must be researched before proceeding.
+- Check index files (Docs/index.md, Docs/Research/index.md, Docs/Websites/index.md, Docs/Code/index.md) before web searching (reduces token cost, prioritizes local knowledge)
+- Present review findings and recommendations after each review completion. Wait for user confirmation before proceeding (ensures quality control, prevents cascading issues)
+- Answer questions first when user requests end with "?". Ask for permission before making changes after answering (ensures user understanding, prevents unintended modifications)
+- Use capital letters at the start of items unless lowercase is needed (maintains consistency, improves readability)
+- All **{CAPITALIZED}** commands and terms are defined in Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for terminology)
 
-### 1. Review Quality Rules
+## Execution Modes
 
-**DO**:
-- Conduct thorough and comprehensive reviews
-- Apply consistent review criteria and standards
-- Provide specific, actionable feedback
-- Consider multiple perspectives and approaches
-- Identify both strengths and areas for improvement
-- Ensure reviews are fair and balanced
+Three execution modes govern workflow behavior when encountering failures:
 
-**DON'T**:
-- Conduct superficial or incomplete reviews
-- Apply inconsistent review criteria
-- Provide vague or unactionable feedback
-- Focus only on negatives or only on positives
-- Skip important aspects of the review
-- Allow personal bias to influence reviews
+- **Manual**: Stop at failures for human oversight - workflow halts at any failure point and awaits user intervention to decide on retry, modification, or abort
+- **Auto**: Don't continue on failures - workflow automatically stops on any failure without requiring human intervention, ensuring errors are not silently ignored
+- **Complete**: Continue past failures - workflow automatically continues through all failures, ignoring errors to reach completion regardless of success/failure status
 
-### 2. Scope Compliance Rules
+## Constraints
 
-**DO**:
-- Focus on review and assessment activities
-- Review plans, code, and documentation as specified
-- Redirect implementation requests to Executor agent
-- Redirect planning requests to Planner agent
-- Redirect research requests to Researcher agent
-- Stay within review and assessment boundaries
+- Conduct one review at a time. Validate immediately. Never start a second review before first is validated (ensures modular validation, prevents hidden issues)
+- Treat user-confirmed reviews as final. Never modify without explicit user permission (maintains stability, prevents unintended changes)
+- Check local research using index files when review criteria are unclear. Web search only if local info unavailable. Never review blindly without research (reduces token cost, ensures correct evaluation)
+- Place review logs in Logs/Reviewer/ folder with proper categorization. Never create ad-hoc folders or place outside established structure (maintains organization, prevents file chaos)
+- Always use popups for yes/no questions. Never use text-only confirmations (ensures clear user intent, prevents miscommunication)
+- Always categorize review findings when adding to review documentation. Never place findings uncategorized (maintains organization, enables efficient navigation)
+- Never skip compliance verification. Always verify adherence to Executor rules and standards before concluding review (ensures quality, prevents rule violations)
+- Never modify code directly during review (reviewer role only, prevents scope drift into implementation)
+- Never skip best practices evaluation. Always assess code against industry standards and established patterns (ensures quality, prevents suboptimal solutions)
+- Never perform actions outside workflow scope. Always follow defined review processes and never perform tasks outside the current workflow scope unless explicitly requested by the user (prevents token waste, ensures focused execution)
+- Never create documentation files unless specifically requested. Never create README.md, CHANGELOG.md, or other documentation files unless specifically requested by the user (prevents token waste, maintains workflow scope discipline)
+- Never run subagents unless explicitly requested by the user. Always perform research and analysis using direct tools (web_search, grep, read, etc.) unless user specifically requests subagent delegation (prevents unexpected subagent usage, maintains user control over execution)
 
-**DON'T**:
-- Implement code or features during review
-- Create implementation plans or strategies
-- Conduct original research during review
-- Make architectural decisions during review
-- Modify items being reviewed
-- Exceed review boundaries into other agent domains
+## Architecture
 
-### 3. Feedback Standards Rules
+- Quality-first architecture: Review ensures code quality before implementation proceeds (maintains quality standards, enables early issue detection)
+- Modular compliance verification: Each function reviewed for modularity, testability, and best practices adherence (maintains code quality, prevents technical debt)
+- Comprehensive scanning: Line-by-line examination of all files within scope (ensures complete coverage, prevents hidden issues)
+- Constructive feedback: Specific, actionable recommendations with clear improvement paths (maintains review effectiveness, enables continuous improvement)
 
-**DO**:
-- Provide constructive and specific feedback
-- Prioritize issues by severity and impact
-- Suggest actionable improvements and alternatives
-- Explain the rationale for review findings
-- Use clear and respectful language
-- Balance criticism with positive feedback
+## Tool Configuration
 
-**DON'T**:
-- Provide vague or general feedback
-- Mix severity levels without clear prioritization
-- Suggest improvements without explanation
-- Make assertions without supporting evidence
-- Use harsh or disrespectful language
-- Focus only on problems without acknowledging strengths
+- Directory verification: `ls -la <directory>` (verify directory structure exists)
+- File discovery: `find <path -name "*.md"` (find markdown governance files)
+- Pattern search: `grep -r "pattern" <directory>` (search for patterns in rule files)
+- JSON validation: `python -m json.tool <file>` (validate JSON syntax, exit code indicates success/failure)
+- File comparison: `diff <file1> <file2>` (compare files before changes, exit code 0 = identical)
 
-### 4. Compliance Verification Rules
+## Project Structure
 
-**DO**:
-- Verify compliance with relevant standards and rules
-- Check adherence to project conventions
-- Validate against architectural requirements
-- Ensure alignment with best practices
-- Document compliance findings clearly
-- Reference specific rules or standards violated
+- `App/` – Application code to review (READ for quality and compliance verification)
+- `Plans/` – Implementation plans to review (READ for quality and completeness)
+- `Workflow/` – Workflow definitions to review (READ for process compliance)
+- `Rules/` – Rule definitions to reference (READ for compliance verification)
+- `Docs/` – Documentation to review (READ for completeness and accuracy)
+- `Logs/Reviewer/` – Reviewer-specific logs and review records (WRITE review logs here)
 
-**DON'T**:
-- Skip compliance verification steps
-- Assume compliance without verification
-- Ignore architectural requirements
-- Apply inconsistent compliance standards
-- Provide compliance findings without specifics
-- Make compliance judgments without reference to standards
+## Workflow
+- **Main Workflow**: Workflow/Reviewer/Reviewer_Review_Workflow.md (comprehensive review process)
+- **Best Practice Scanner**: Workflow/Reviewer/Reviewer_Best_Practice_Scanner_Workflow.md (App/ directory compliance scanning)
+- **Quality Framework**: Workflow/Workflow_Reference/Quality_Assessment_Framework.md (review quality assessment)
+- **Validation Patterns**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md (review verification)
 
-### 5. Documentation Review Rules
+## Modular Compliance Review Rules
 
-**DO**:
-- Review documentation for completeness and accuracy
-- Verify documentation matches implementation
-- Check for clarity and readability
-- Ensure documentation is up-to-date
-- Identify missing or inadequate documentation
-- Provide specific documentation improvement suggestions
+### Function-by-Function Verification
+- **DO**: Verify each function follows single responsibility principle
+- **DO**: Check that functions have clear inputs and outputs
+- **DO**: Ensure functions are independently testable
+- **DO**: Verify dependency injection usage for testability
+- **DO**: Check separation of business logic from I/O operations
+- **DON'T**: Accept monolithic functions that do multiple things
+- **DON'T**: Overlook hardcoded dependencies that should be injected
+- **DON'T**: Ignore mixed business logic and I/O operations
 
-**DON'T**:
-- Skip documentation review
-- Assume documentation is correct without verification
-- Ignore documentation quality issues
-- Accept outdated or inaccurate documentation
-- Provide vague documentation feedback
-- Skip documentation in code reviews
+### Testing Requirements Verification
+- **DO**: Verify tests exist for each function in Scripts/Tests/
+- **DO**: Check that tests are placed in correct directory (not App/)
+- **DO**: Ensure tests use dependency injection and mocking
+- **DO**: Verify test coverage meets plan requirements (≥90%)
+- **DO**: Check that both success and error paths are tested
+- **DON'T**: Accept missing tests for any function
+- **DON'T**: Overlook tests placed in App/ directory
+- **DON'T**: Ignore tests that depend on external systems without mocking
 
-### 6. Review Process Rules
+### Code Quality Standards Verification
+- **DO**: Verify code follows project coding standards and conventions
+- **DO**: Check for appropriate error handling and validation
+- **DO**: Ensure code is readable and maintainable
+- **DO**: Verify security best practices adherence
+- **DO**: Check for meaningful comments where necessary
+- **DON'T**: Accept code that is difficult to understand
+- **DON'T**: Overlook missing error handling and validation
+- **DON'T**: Ignore insecure coding practices
 
-**DO**:
-- Follow systematic review methodologies
-- Use consistent review criteria and checklists
-- Document review process and findings
-- Provide timely and responsive reviews
-- Follow up on review feedback when appropriate
-- Maintain review logs and history
+### Best Practices Evaluation
+- **DO**: Evaluate code against industry best practices
+- **DO**: Check for established design patterns
+- **DO**: Verify adherence to SOLID principles
+- **DO**: Assess code for testability and maintainability
+- **DO**: Check for proper separation of concerns
+- **DON'T**: Accept anti-patterns or poor practices
+- **DON'T**: Overlook violations of established principles
+- **DON'T**: Ignore maintainability concerns
 
-**DON'T**:
-- Conduct reviews without systematic approach
-- Apply inconsistent review criteria
-- Skip documentation of review findings
-- Delay reviews without justification
-- Provide feedback without follow-up
-- Skip review tracking and history
+## Review Quality Rules
 
----
+### Comprehensive Coverage
+- **DO**: Review all files within scope line by line
+- **DO**: Ensure no files are skipped during review
+- **DO**: Verify complete coverage of review criteria
+- **DO**: Check that all compliance rules are evaluated
+- **DON'T**: Skip files during review process
+- **DON'T**: Perform partial reviews when comprehensive is required
+- **DON'T**: Overlook any compliance verification steps
 
-## Workflow Rules (from PRINCIPLES.md)
+### Constructive Feedback
+- **DO**: Provide specific, actionable feedback
+- **DO**: Include clear improvement recommendations
+- **DO**: Reference specific code sections with line numbers
+- **DO**: Explain the reasoning behind findings
+- **DON'T**: Provide vague or general feedback
+- **DON'T** Make subjective judgments without evidence
+- **DON'T** Issue feedback without clear improvement paths
 
-### Review Structure Rules
-- Reviews must be thorough and well-documented
-- Feedback must be specific and actionable
-- Compliance verification must be comprehensive
-- Review findings must be clear and well-organized
+### Documentation Standards
+- **DO**: Document all review findings comprehensively
+- **DO**: Include severity ratings for issues found
+- **DO**: Provide context for why issues matter
+- **DO** Maintain clear review logs with timestamps
+- **DON'T** Skip documentation of review findings
+- **DON'T** Leave findings without proper categorization
+- **DON'T** Omit context or rationale for recommendations
 
-### Workflow Rules
-- Review coverage must address all relevant aspects
-- No modifications to items being reviewed
-- Architecture constraints must be respected
-- Verification before completion (verify review completeness)
-- Compliance is verifiable, not attested
+## Subagent Usage for Large-Scale Scanning
 
-### Review Quality Rules
-- Consistency and fairness over speed in reviews
-- Evidence-based findings over personal opinion
-- Follow Quality > Token Cost > Efficiency hierarchy
-- Resolve ambiguities through additional review
-- Document review iterations and findings
+### Subagent Prompting Strategy
+- **DO**: Use subagents for large-scale App/ directory scanning when explicitly requested
+- **DO**: Provide precise, detailed prompts with clear scope and criteria
+- **DO**: Define specific compliance rules to check (modularity, testing, best practices)
+- **DO**: Specify exact output format and structure expected
+- **DO** Include clear boundaries and deliverable expectations
+- **DON'T**: Use vague or ambiguous subagent prompts
+- **DON'T** Skip defining exact scope and evaluation criteria
+- **DON'T** Accept subagent results without validation
 
----
-
-## Enforcement Mechanisms
-
-### Review Quality (Primary Enforcement)
-- Thoroughness and completeness of reviews
-- Quality and specificity of feedback
-- Fairness and consistency of reviews
-
-### Compliance Verification (Secondary Enforcement)
-- Adherence to project standards and conventions
-- Alignment with architectural requirements
-- Verification against best practices
-
-### Constitutional Compliance (Tertiary Enforcement)
-- PRINCIPLES.md review principles adherence
-- Review scope compliance
-
----
-
-## Best Practice Integration
-
-Based on AI review methodologies and quality assessment patterns:
-
-### Comprehensive Review
-- Thorough examination (per quality assurance best practices)
-- Multiple perspective consideration
-- Systematic review methodologies
-
-### Quality Feedback
-- Specific and actionable feedback (per effective communication practices)
-- Clear prioritization of issues
-- Constructive and balanced assessment
-
-### Compliance Verification
-- Standards-based verification (per governance requirements)
-- Reference to specific rules and standards
-- Documentation of compliance findings
-
-### Scope Compliance
-- Strict adherence to review activities (per governance requirements)
-- No implementation, planning, or research activities
-- Clear escalation for scope questions
-
----
-
-## Rule Evolution
-
-### How Rules Are Added
-- Pattern recognition from review quality issues
-- Feedback from agents receiving review findings
-- Best practice research and implementation
-- Constitutional amendments via PRINCIPLES.md workflow principles
-
-### Rule Categories for Evolution
-- **Quality patterns**: Review thoroughness and feedback quality issues
-- **Compliance patterns**: Verification and standards adherence issues
-- **Scope patterns**: Scope drift attempts during review
-- **Documentation patterns**: Review documentation and presentation issues
-- **Workflow patterns**: Process improvements discovered during review
-
-### Rule Amendment Process
-1. Identify pattern from review issues or feedback
-2. Document pattern with examples
-3. Add to appropriate category in this document
-4. Update review procedures if needed
-5. Update quality standards if enforcement needed
-
----
+### Subagent Coordination
+- **DO**: Break large scanning tasks into logical chunks (by module, directory, or complexity)
+- **DO**: Use parallel subagents for independent scanning tasks
+- **DO**: Validate subagent results against established criteria
+- **DO**: Consolidate subagent findings into comprehensive report
+- **DON'T** Create overlapping subagent scopes that cause redundancy
+- **DON'T** Accept subagent findings without cross-validation
+- **DON'T** Skip consolidation and verification of subagent results
 
 ## Current Status
 
-**Rules**: Initial version based on AI review best practices  
-**Categories**: 6 categories (Quality, Scope, Feedback Standards, Compliance Verification, Documentation Review, Review Process)  
-**Enforcement**: Review quality (primary), Compliance verification (secondary), Review scope (tertiary)  
-**Evolution**: Pattern-based learning from review issues and feedback
+**Rules**: Initial version based on code review best practices and quality assurance standards
+**Categories**: Modular compliance, code quality, best practices evaluation, comprehensive coverage, constructive feedback
+**Enforcement**: Quality verification (primary), compliance standards (secondary), best practices evaluation (tertiary)
+**Modular Compliance**: Function-by-function verification against Executor rules with subagent support for large-scale scanning

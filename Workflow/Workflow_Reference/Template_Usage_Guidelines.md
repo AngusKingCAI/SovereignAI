@@ -16,11 +16,13 @@
 - **Steps**: Check documentation, web search, gather patterns
 - **Output**: PRINT research progress and completion
 
-### Phase 10. Return to Phase 0
-- **Always Required**: Return phase for all agents
-- **Purpose**: Enable continuous workflow execution
-- **Steps**: PRINT completion, agent ready, return to step 1
-- **Output**: Workflow cycle ready for next task
+### Phase 10. Workflow Type Dependent (Optional)
+- **When Required**: Only for workflows that require termination or return-to-start logic
+- **Continuous Operation Workflows**: Include "Return to step 1" for continuous operation
+- **Single-Execution Workflows**: Include "TERMINATE" (no "Return to step 1") or exclude entirely
+- **Purpose**: Provide workflow termination or continuous operation based on workflow type
+- **Steps**: PRINT completion, agent ready, either return to step 1 or terminate
+- **Output**: Workflow cycle ready for next task or workflow terminated
 
 ### Universal Elements
 - **VALIDATION**: Include validation criteria for each phase
@@ -63,7 +65,8 @@
 
 ### Phase Numbering
 - **Maintain 0-10**: Consistent phase numbering across all agents
-- **Core Phases**: Keep Phase 0 (rules), Phase 3 (research), Phase 10 (return)
+- **Core Phases**: Keep Phase 0 (rules), Phase 3 (research)
+- **Optional Phases**: Phase 10 (workflow-type dependent - see Workflow_Template.md)
 - **Customizable**: Adapt Phases 1-2, 4-9 for agent-specific needs
 - **Numbering**: Use sequential step numbering within phases
 
@@ -90,7 +93,7 @@
 ### Universal Elements
 - [ ] Phase 0: Read {Agent} Rules present
 - [ ] Phase 3: Research and Best Practices present
-- [ ] Phase 10: Return to Phase 0 present
+- [ ] Phase 10: Included if workflow type requires (see Workflow_Template.md)
 - [ ] VALIDATION in each phase
 - [ ] STATUS TRACKING in each phase
 - [ ] PRINT commands for visibility
@@ -98,7 +101,8 @@
 ### Structure Compliance
 - [ ] Phase numbering 0-10 maintained
 - [ ] Sequential step numbering within phases
-- [ ] Core phases (0, 3, 10) preserved
+- [ ] Core phases (0, 3) preserved
+- [ ] Phase 10 included if workflow type requires (see Workflow_Template.md)
 - [ ] Agent-specific phases added as needed
 
 ### Reference Compliance

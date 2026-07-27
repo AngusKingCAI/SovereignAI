@@ -8,16 +8,74 @@ purpose: Declarative policy for Executor agent governance and implementation
 
 # Executor Rules
 
-**Purpose**: Operational rules for Executor agent following best practices for precise implementation according to approved plans
-**Authority**: PRINCIPLES.md (execution principles incorporated into these rules)
-**Status**: Active
-**Created**: 2026-07-24
+## Overview
+Declarative policy for Executor agent implementation following execution-first principles. Rules are organized into Conventions (behavioral guidance) and Constraints (hard boundaries).
 
----
+## Conventions
 
-## Rule Categories Based on AI Implementation Best Practices
+- **Best Practices**: Web search must be used before implementing major code decisions or when uncertain about implementation approaches. Best practices are established industry standards that must be researched before proceeding.
+- Check index files (Docs/index.md, Docs/Research/index.md, Docs/Websites/index.md, Docs/Code/index.md) before web searching (reduces token cost, prioritizes local knowledge)
+- Present function and test result after each successful implementation. Wait for user confirmation before proceeding (ensures quality control, prevents cascading errors)
+- Answer questions first when user requests end with "?". Ask for permission before making changes after answering (ensures user understanding, prevents unintended modifications)
+- Use capital letters at the start of items unless lowercase is needed (maintains consistency, improves readability)
+- All **{CAPITALIZED}** commands and terms are defined in Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for terminology)
 
-### 1. Implementation Fidelity Rules
+## Constraints
+
+- Build exactly one function at a time. Test immediately. Never write a second function before first is tested (ensures modular validation, prevents hidden bugs)
+- Treat user-confirmed functions as locked. Never modify without explicit user permission (maintains stability, prevents unintended changes)
+- Check local research using index files when function implementation fails. Web search only if local info unavailable. Never retry blindly without research (reduces token cost, ensures correct implementation)
+- Place IDE harness tests in Scripts/Tests/ folder only. Never place IDE harness tests in App/ directory (maintains clear separation between application code and harness infrastructure)
+- Always use popups for yes/no questions. Never use text-only confirmations (ensures clear user intent, prevents miscommunication)
+- Always categorize files when adding to documentation directories. Never place files uncategorized (maintains organization, enables efficient navigation)
+- Never skip compliance checks. Always verify implementation compliance before proceeding (ensures quality, prevents rule violations)
+- Never create implementation plans or make architectural decisions during execution (maintains role separation, prevents scope drift)
+- Never perform actions outside workflow scope. Always follow defined workflow processes and never perform tasks outside the current workflow scope unless explicitly requested by the user (prevents token waste, ensures focused execution)
+- Never create documentation files unless specifically requested. Never create README.md, CHANGELOG.md, or other documentation files unless specifically requested by the user (prevents token waste, maintains workflow scope discipline)
+- Never run subagents unless explicitly requested by the user. Always perform research and analysis using direct tools (web_search, grep, read, etc.) unless user specifically requests subagent delegation (prevents unexpected subagent usage, maintains user control over execution)
+- Never implement multiple functions without testing each one individually (ensures modular validation, prevents cascading errors)
+- Never hardcode dependencies that could be injected for testability (maintains modularity, enables proper testing)
+- Never mix business logic with I/O operations in the same function (maintains separation of concerns, enables unit testing)
+
+## Execution Modes
+
+Three execution modes govern workflow behavior when encountering failures:
+
+- **Manual**: Stop at failures for human oversight - workflow halts at any failure point and awaits user intervention to decide on retry, modification, or abort
+- **Auto**: Don't continue on failures - workflow automatically stops on any failure without requiring human intervention, ensuring errors are not silently ignored
+- **Complete**: Continue past failures - workflow automatically continues through all failures, ignoring errors to reach completion regardless of success/failure status
+
+## Architecture
+
+- Execution-first architecture: Implementation follows approved plans exactly (maintains architectural purity, enables predictable delivery)
+- Modular function design: Each function implements one responsibility with clear inputs/outputs (maintains testability, enables independent validation)
+- Dependency injection: Dependencies passed as parameters rather than hardcoded imports (maintains modularity, enables proper testing)
+- Test location: IDE harness tests in Scripts/Tests/ only, App/ directory for production code only (maintains clear separation, prevents scope confusion)
+
+## Tool Configuration
+
+- Directory verification: `ls -la <directory>` (verify directory structure exists)
+- File discovery: `find <path -name "*.md"` (find markdown governance files)
+- Pattern search: `grep -r "pattern" <directory>` (search for patterns in rule files)
+- JSON validation: `python -m json.tool <file>` (validate JSON syntax, exit code indicates success/failure)
+- File comparison: `diff <file1> <file2>` (compare files before changes, exit code 0 = identical)
+
+## Project Structure
+
+- `App/` – Application code to implement (WRITE implementation code here per approved plans)
+- `Scripts/Tests/` – IDE harness tests for validation (WRITE tests here, never in App/)
+- `Workflow/Executor/` – Executor-specific workflows and processes (REFERENCE for execution procedures)
+- `Workflow/Workflow_Reference/` – Universal frameworks (quality assessment, validation patterns)
+- `Plans/` – Approved implementation plans (REFERENCE for exact implementation specifications)
+- `Logs/Executor/` – Executor-specific logs and execution records (WRITE execution logs here)
+
+## Workflow
+- **Main Workflow**: Workflow/Executor/Executor_Implementation_Workflow.md (plan execution with modular function implementation)
+- **Implementation Standards**: Follow approved plans exactly with function-by-function testing approach
+- **Quality Framework**: Workflow/Workflow_Reference/Quality_Assessment_Framework.md (implementation quality assessment)
+- **Validation Patterns**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md (implementation verification)
+
+## Implementation Fidelity Rules
 
 **DO**:
 - Follow approved plans exactly as specified
@@ -35,7 +93,7 @@ purpose: Declarative policy for Executor agent governance and implementation
 - Implement alternative approaches without approval
 - Reorder implementation steps arbitrarily
 
-### 2. Code Quality Rules
+## Code Quality Rules
 
 **DO**:
 - Follow project coding standards and conventions
@@ -44,6 +102,13 @@ purpose: Declarative policy for Executor agent governance and implementation
 - Add meaningful comments where necessary
 - Follow security best practices
 - Test implementations thoroughly
+- **Implement every file with modularity in mind - create modular functions that are independently testable**
+- **Design functions following single responsibility principle - each function should do one thing well**
+- **Use dependency injection for testability - pass dependencies as parameters rather than hardcoding imports**
+- **Separate business logic from side effects - keep I/O operations separate from core logic**
+- **Write tests for each function immediately after implementation - function-by-function approach**
+- **Ensure functions are deterministic where possible - same inputs produce same outputs**
+- **Design clear function interfaces with explicit inputs and outputs**
 
 **DON'T**:
 - Write code that is difficult to understand
@@ -52,8 +117,13 @@ purpose: Declarative policy for Executor agent governance and implementation
 - Implement insecure coding practices
 - Duplicate code instead of creating reusable functions
 - Skip testing or verification steps
+- **Create monolithic functions that do multiple things**
+- **Hardcode dependencies - use dependency injection instead**
+- **Mix business logic with I/O operations in the same function**
+- **Write functions without corresponding tests**
+- **Create functions with unclear interfaces or hidden dependencies**
 
-### 3. Scope Compliance Rules
+## Scope Compliance Rules
 
 **DO**:
 - Implement only what is specified in approved plans
@@ -71,7 +141,7 @@ purpose: Declarative policy for Executor agent governance and implementation
 - Conduct original research during implementation
 - Add functionality not specified in plans
 
-### 4. Verification and Testing Rules
+## Verification and Testing Rules
 
 **DO**:
 - Verify implementation matches plan specifications
@@ -80,6 +150,15 @@ purpose: Declarative policy for Executor agent governance and implementation
 - Check for edge cases and error conditions
 - Document testing results
 - Ensure implementation completeness
+- **Test each function immediately after implementation - function-by-function testing approach**
+- **Write tests in Scripts/Tests/ directory - never place IDE harness tests in App/ directory**
+- **Use dependency injection and mocking for isolated unit testing**
+- **Test both success paths and error conditions for each function**
+- **Ensure test coverage meets plan requirements (typically ≥90%)**
+- **Run tests immediately after writing each function - never batch function creation without testing**
+- **Verify that tests fail before implementation (TDD approach where applicable)**
+- **Mock external dependencies (I/O, databases, APIs) for unit testing**
+- **Write integration tests for component interactions after unit tests pass**
 
 **DON'T**:
 - Skip verification steps
@@ -88,8 +167,14 @@ purpose: Declarative policy for Executor agent governance and implementation
 - Ignore edge cases or error conditions
 - Proceed with incomplete implementation
 - Skip documentation of testing results
+- **Write multiple functions before testing any of them**
+- **Place IDE harness tests in App/ directory - must use Scripts/Tests/ only**
+- **Skip unit testing in favor of only integration testing**
+- **Write tests that depend on external systems without mocking**
+- **Proceed to next function until current function's tests pass**
+- **Write tests that are fragile or implementation-dependent**
 
-### 5. Documentation Standards Rules
+## Documentation Standards Rules
 
 **DO**:
 - Document implementation decisions and rationale
@@ -107,7 +192,7 @@ purpose: Declarative policy for Executor agent governance and implementation
 - Omit implementation progress tracking
 - Leave documentation outdated
 
-### 6. Integration and Deployment Rules
+## Integration and Deployment Rules
 
 **DO**:
 - Follow approved integration procedures
@@ -221,7 +306,8 @@ Based on AI implementation research and production deployment patterns:
 
 ## Current Status
 
-**Rules**: Initial version based on AI implementation best practices  
+**Rules**: Updated version with modular function implementation requirements based on best practices
 **Categories**: 6 categories (Fidelity, Quality, Scope, Verification, Documentation, Integration)  
 **Enforcement**: Plan adherence (primary), Code quality (secondary), Implementation scope (tertiary)  
 **Evolution**: Pattern-based learning from implementation issues and feedback
+**Modular Implementation**: Function-by-function testing approach with dependency injection and separation of concerns

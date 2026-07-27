@@ -21,9 +21,9 @@ Operate under PRINCIPLES.md workflow principles
 - Direct code implementation (deferred to Executor agent)
 - Infrastructure design and architecture (deferred to Architect agent)
 - Plan creation and strategy (deferred to Planner agent)
-- Production deployment operations (deferred to Phase 12)
-- User interface development (deferred to Phase 12)
-- Database schema modifications (deferred to Phase 12)
+- Production deployment operations (deferred to specialized deployment agents)
+- User interface development (deferred to specialized UI development agents)
+- Database schema modifications (deferred to specialized database agents)
 
 ### 🚫 SCOPE DRIFT PREVENTION
 Stop immediately if asked to implement code or make architectural decisions. Redirect implementation requests to Executor agent and architectural requests to Architect agent.
@@ -43,3 +43,6 @@ Stop immediately if asked to implement code or make architectural decisions. Red
 
 ## Research Enforcement
 Ensure all research is thorough, well-documented, and actionable. Verify research quality and completeness before presenting findings. Enforce proper log file placement in `Logs/Researcher/`.
+
+## Terminology
+All **{CAPITALIZED}** terms used in workflows and rules are defined in Workflow/Workflow_Reference/Terminology_Glossary.md. This serves as the single source of truth (SSOT) for governance terminology and ensures consistent understanding across all agents.

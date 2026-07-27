@@ -21,12 +21,12 @@ The workflows reference several runtime paths that are either created during exe
     - `validation-completions/`: Successful validation results
     - `validation-failures/`: Failed validation results
 
-- **Logs/Roundtable/Devin/**: Storage location for internal Round Table reviews
+- **Logs/Planner/Roundtable/Internal/**: Storage location for internal Round Table reviews
   - **Status**: Created during Planner workflow execution
   - **Usage**: Internal panelist reviews and briefs
   - **Naming Convention**: brief-rev{N}.md, iteration-{N}-panelist-{M}.md
 
-- **Logs/Roundtable/External/**: Storage location for external Round Table reviews
+- **Logs/Planner/Roundtable/External/**: Storage location for external Round Table reviews
   - **Status**: Created during Planner workflow execution
   - **Usage**: External panelist reviews and briefs
   - **Naming Convention**: brief-rev{N}.md, round-{N}-panelist-{M}.md
@@ -94,8 +94,8 @@ The workflows reference several runtime paths that are either created during exe
 ### Automatic Creation (No Manual Intervention Required)
 7. **Plans/**: Created automatically by Planner workflow
 8. **Logs/Planner/**: Created automatically by Planner workflow
-9. **Logs/Roundtable/Devin/**: Created automatically by Planner workflow
-10. **Logs/Roundtable/External/**: Created automatically by Planner workflow
+9. **Logs/Planner/Roundtable/Internal/**: Created automatically by Planner workflow
+10. **Logs/Planner/Roundtable/External/**: Created automatically by Planner workflow
 11. **Logs/{AgentType}/Sessions/**: Created automatically by Executor workflow
 
 ## Current Workflow Status
@@ -116,23 +116,23 @@ The workflows reference several runtime paths that are either created during exe
 
 ## Recommendations
 
-### Phase 1: Enable Planner Validation
+### Step 1: Enable Planner Validation
 1. Create `Scripts/Planner/Validation/run-all-planner-validation.sh` with 6 validation checks
 2. Test validation script with sample plans
 3. Update Planner workflow to use automated validation when script is available
 
-### Phase 2: Implement Hook System
+### Step 2: Implement Hook System
 1. Create `.devin/hooks.v1.json` with basic hook configuration
 2. Create hook scripts in `Scripts/Governance/Hooks/`
 3. Configure phase permissions in `Scripts/Governance/Config/phase_permissions.json`
 4. Implement standardized logging in `Scripts/Governance/simple_logger.py`
 
-### Phase 3: Define Executor Agent
+### Step 3: Define Executor Agent
 1. Create `.devin/skills/executor/SKILL.md` with Executor capabilities
 2. Define Executor-specific commands and patterns
 3. Test Executor workflow with hook system
 
-### Phase 4: Automation Enhancement
+### Step 4: Automation Enhancement
 1. Add more automation scripts to `Scripts/` as needed
 2. Enhance governance automation over time
 3. Standardize logging across all workflows

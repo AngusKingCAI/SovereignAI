@@ -47,7 +47,7 @@ This workflow follows AI planning best practices with:
 
 ## Logging Structure
 
-- Round Table reviews: Incremental logging as received (Logs/Roundtable/Devin/ and Logs/Roundtable/External/)
+- Round Table reviews: Incremental logging as received (Logs/Planner/Roundtable/Internal/ and Logs/Planner/Roundtable/External/)
 - Plan iterations: Incremental logging (Logs/Planner/)
 - Validation results: JSON logging (Logs/Planner/validation-completions/ and Logs/Planner/validation-failures/)
 - Session: Final consolidated logging at Phase 8

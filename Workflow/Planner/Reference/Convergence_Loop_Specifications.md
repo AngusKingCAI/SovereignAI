@@ -21,12 +21,10 @@ See Workflow/Workflow_Reference/Convergence_Loop_Patterns.md for universal conve
 5. Repeat until Internal Round Table achieves convergence
 
 **Convergence Criteria**:
-- Findings count decreasing across iterations
-- Panelist similarity increasing across iterations
 - CRITICAL and HIGH findings resolved
 - Plan quality rubric scores improving
 
-**Loop Exit Condition**: Internal Round Table achieves convergence (findings ≤5, panelist agreement ≥80%).
+**Loop Exit Condition**: Internal Round Table achieves convergence (all panelists choose PASS with ≥4.5 score or 3.5-4.4 with rationale).
 
 **Loop Cap**: Maximum 5 internal iterations.
 
@@ -40,18 +38,16 @@ See Workflow/Workflow_Reference/Convergence_Loop_Patterns.md for universal conve
 
 **Convergence Logic**:
 1. Run Phase 6 (External Round Table)
-2. If Phase 6 PASSES (≥90 score or 70-89 with rationale) → Proceed to Phase 7 (Final Validation)
-3. If Phase 6 FAILS (<70 score) → Proceed to Phase 5 (Apply Findings)
+2. If Phase 6 PASSES (≥4.5 score or 3.5-4.4 with rationale) → Proceed to Phase 7 (Final Validation)
+3. If Phase 6 FAILS (<3.5 score) → Proceed to Phase 5 (Apply Findings)
 4. At end of Phase 5 → Return to Phase 6
 5. Repeat until External Round Table achieves convergence
 
 **Convergence Criteria**:
-- Quality score ≥90 (clean pass) OR 70-89 with documented rationale
-- Findings count decreasing across iterations
-- Panelist similarity increasing across iterations
+- Quality score ≥4.5 (clean pass) OR 3.5-4.4 with documented rationale
 - CRITICAL and HIGH findings resolved
 
-**Loop Exit Condition**: External Round Table achieves clean pass (≥90) or acceptable pass (70-89 with rationale).
+**Loop Exit Condition**: External Round Table achieves clean pass (≥4.5) or acceptable pass (3.5-4.4 with rationale).
 
 **Loop Cap**: Maximum 3 external iterations.
 
