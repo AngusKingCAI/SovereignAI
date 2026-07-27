@@ -24,7 +24,7 @@ Systematic validation of harness architecture consistency across the entire proj
 - **Trigger**: User requests consistency check OR before/after major architectural changes
 - **End State**: Comprehensive consistency report generated in Logs/Architect/Consistency Review/
 
-## Workflow Steps (56 steps)
+## Workflow Steps (58 steps)
 
 ### Phase 0. Read Architect Rules + Scan Scope
 - 1. Read Rules/Architect/Architect_Rules.md to understand governance constraints
@@ -36,7 +36,7 @@ Systematic validation of harness architecture consistency across the entire proj
 
 ### Phase 1. Select Scan Strategy
 - 7. Ask user to select scan strategy using popup menu:
-  - **Full Comprehensive**: All 10 consistency variables (recommended monthly)
+  - **Full Comprehensive**: All 12 consistency variables (recommended monthly)
   - **Basic Essential**: File references + terminology + workflow structure (recommended weekly)
   - **Targeted**: User selects specific consistency variables
   - **Quick Check**: File references only (recommended before changes)
@@ -83,24 +83,26 @@ Systematic validation of harness architecture consistency across the entire proj
 - 38. Governance Rule Consistency: Check Rules/ files structure and patterns
 - 39. Documentation Structure: Validate INDEX.md and documentation conventions
 - 40. Agent Capability Alignment: Compare AGENTS.md with actual capabilities
-- 41. Universal Framework Coverage: Check proper separation and references
+- 41. Universal Framework Coverage: Check proper separation and references with relevance requirement
 - 42. Execution Strategy Consistency: Validate execution patterns across agents
 - 43. State Management Consistency: Check state schemas and tracking patterns
 - 44. Runtime Prerequisites: Validate runtime infrastructure documentation
-- 45. **VALIDATION**: Validate additional checks completed successfully
-- 46. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
-- 47. **PRINT**: "Additional consistency checks complete - full scan analysis finished"
+- 45. Scoring Scale Consistency: Validate 1-5 scoring scale consistency across quality assessments
+- 46. Agent Behavior Rules Consistency: Validate AGENTS.md behavior rules are properly defined
+- 47. **VALIDATION**: Validate additional checks completed successfully
+- 48. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
+- 49. **PRINT**: "Additional consistency checks complete - full scan analysis finished"
 
 ### Phase 7. Report Generation
-- 48. Create Logs/Architect/Consistency Review/ directory if not exists
-- 49. Generate report with timestamp: Scan_{YYYY-MM-DD_HH-MM-SS}.md
-- 50. Include executive summary with overall consistency score
-- 51. Document findings for each consistency variable checked
-- 52. Classify issues by severity (Critical/High/Medium/Low)
-- 53. Provide actionable recommendations with timeline
-- 54. **VALIDATION**: Validate report generation completed successfully
-- 55. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
-- 56. **PRINT**: "Report generation complete - workflow terminated"
+- 50. Create Logs/Architect/Consistency Review/ directory if not exists
+- 51. Generate report with timestamp: Scan_{YYYY-MM-DD_HH-MM-SS}.md
+- 52. Include executive summary with overall consistency score
+- 53. Document findings for each consistency variable checked
+- 54. Classify issues by severity (Critical/High/Medium/Low)
+- 55. Provide actionable recommendations with timeline
+- 56. **VALIDATION**: Validate report generation completed successfully
+- 57. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
+- 58. **PRINT**: "Report generation complete - workflow terminated"
 
 ---
 
@@ -210,14 +212,15 @@ Systematic validation of harness architecture consistency across the entire proj
   - Cross-agent dependencies
 
 ### 7. Universal Framework Coverage
-- **Check**: Proper separation of universal vs agent-specific content
+- **Check**: Proper separation of universal vs agent-specific content with relevance requirement
 - **Scope**: Workflow_Reference/ and agent Reference/ folders
 - **Variables**:
-  - Universal framework references in agent workflows
+  - Universal framework references in agent workflows (relevance requirement: only include frameworks relevant to agent purpose)
   - No agent-specific content in Workflow_Reference/
   - No universal content in agent Reference/
   - Universal Pattern Reference sections presence
   - Cross-reference patterns consistency
+  - Framework reference count appropriateness (Architect: ~5, Planner: ~9, Executor: ~8 based on agent purpose)
 
 ### 8. Execution Strategy Consistency
 - **Check**: Execution patterns are consistent across agents
@@ -248,6 +251,26 @@ Systematic validation of harness architecture consistency across the entire proj
   - .devin/ configuration files
   - Logs/ directory structure
   - Runtime prerequisites documentation accuracy
+
+### 11. Scoring Scale Consistency
+- **Check**: Quality assessment uses consistent scoring scales
+- **Scope**: Quality assessment references, template scoring, workflow convergence checks
+- **Variables**:
+  - Quality assessment framework uses 1-5 scale consistently
+  - Template scoring examples match 1-5 scale
+  - Workflow convergence checks use 1-5 scale thresholds
+  - No mixed scoring scales (0-100 vs 1-5)
+  - Quality threshold consistency across workflows
+
+### 12. Agent Behavior Rules Consistency
+- **Check**: AGENTS.md behavior rules are properly defined and consistent
+- **Scope**: AGENTS.md, agent workflows, agent rules
+- **Variables**:
+  - AGENTS.md contains current behavior rules (direct question answering, BP? search)
+  - Behavior rules are consistent across all agents
+  - Behavior rules are actionable and clear
+  - Behavior rules align with actual agent behavior in workflows
+  - No conflicting behavior rules
 
 ## Consistency Check Process
 
@@ -340,6 +363,8 @@ Systematic validation of harness architecture consistency across the entire proj
 **Execution Strategy Consistency**: {X}%
 **State Management Consistency**: {X}%
 **Runtime Prerequisites Accuracy**: {X}%
+**Scoring Scale Consistency**: {X}%
+**Agent Behavior Rules Consistency**: {X}%
 
 ## Recommendations
 
@@ -404,16 +429,18 @@ grep -rh "Workflow/[A-Za-z/]*\.md" /c/SovereignAI/Workflow/ | sort -u
 ## Consistency Scoring
 
 **Overall Score Calculation**:
-- File Reference Consistency: 20%
-- Terminology Consistency: 10%
-- Workflow Structure Consistency: 20%
-- Governance Rule Consistency: 10%
-- Documentation Structure: 10%
-- Agent Capability Alignment: 10%
-- Universal Framework Coverage: 10%
-- Execution Strategy Consistency: 5%
+- File Reference Consistency: 18%
+- Terminology Consistency: 9%
+- Workflow Structure Consistency: 18%
+- Governance Rule Consistency: 9%
+- Documentation Structure: 9%
+- Agent Capability Alignment: 9%
+- Universal Framework Coverage: 9%
+- Execution Strategy Consistency: 4%
 - State Management Consistency: 3%
 - Runtime Prerequisites: 2%
+- Scoring Scale Consistency: 5%
+- Agent Behavior Rules Consistency: 4%
 
 **Score Thresholds**:
 - 90-100: Excellent - No critical issues
