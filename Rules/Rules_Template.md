@@ -47,11 +47,11 @@ These 5-10 critical rules are enforced on every task and cached separately for o
 - BEFORE architectural decisions, complete research step
 - IF uncertain about best practices, conduct additional research
 
-### 7. Gate Enforcement
-- NEVER skip gate verification for convenience
-- ALWAYS treat gate failures as STOP conditions
-- BEFORE proceeding to next step, verify current gate passes
-- IF gate fails, address issues before proceeding
+### 7. Validation Enforcement
+- NEVER skip validation verification for convenience
+- ALWAYS treat validation failures as STOP conditions
+- BEFORE proceeding to next step, verify current validation passes
+- IF validation fails, address issues before proceeding
 
 ### 8. File and Directory Compliance
 - NEVER place files outside designated directories per IDE architecture rules
@@ -87,15 +87,15 @@ These 5-10 critical rules are enforced on every task and cached separately for o
 ### Integration Points
 - **IDE Architecture Rules**: Complies with `Rules/Architect/IDE_Architecture_Rules.md`
 - **Agent AGENTS.md Files**: Reference this template for rule creation
-- **Gate System**: Includes gate enforcement hook points at each rule
-- **Audit Logging**: Violations logged to `Logs/{AgentName}/Gates/`
+- **Validation System**: Includes validation enforcement hook points at each rule
+- **Audit Logging**: Violations logged to `Logs/{AgentName}/Validation/`
 - **MCP Integration**: Designed for future rule repository tool integration
 
 ### Dependencies
 - **Required**: IDE Architecture Rules compliance
 - **Optional**: MCP server for rule repository integration
 - **Related**: Agent-specific AGENTS.md files
-- **Compatible**: Existing agent workflows and gate systems
+- **Compatible**: Existing agent workflows and validation systems
 
 ### Template Usage
 - **For New Agents**: Copy template and customize Warm Rules for agent-specific needs
@@ -148,7 +148,7 @@ Detailed rule coverage organized by category for comprehensive agent governance.
 **DO**:
 - Follow defined workflows for all agent operations
 - Complete all required steps before proceeding
-- Verify gate compliance before phase transitions
+- Verify validation compliance before phase transitions
 - Generate evidence (hashes, logs) for compliance verification
 - Document process deviations with approval
 - Follow quality > token cost > efficiency hierarchy
@@ -156,7 +156,7 @@ Detailed rule coverage organized by category for comprehensive agent governance.
 **DON'T**:
 - Skip workflow steps for convenience
 - Proceed without required verification
-- Override gate decisions without explicit approval
+- Override validation decisions without explicit approval
 - Make undocumented process changes
 - Ignore quality standards for speed
 - Proceed when process compliance is uncertain
@@ -203,7 +203,7 @@ Detailed rule coverage organized by category for comprehensive agent governance.
 
 **DO**:
 - Implement automated hooks for critical rules
-- Use gate system for workflow enforcement
+- Use validation system for workflow enforcement
 - Generate audit trails for all decisions
 - Log rule violations for analysis
 - Use verification scripts for compliance checking
@@ -211,7 +211,7 @@ Detailed rule coverage organized by category for comprehensive agent governance.
 
 **DON'T**:
 - Rely on agent attention for critical rule enforcement
-- Skip gate verification for convenience
+- Skip validation verification for convenience
 - Proceed without generating required evidence
 - Ignore rule violation patterns
 - Override enforcement mechanisms without approval
@@ -261,7 +261,7 @@ Based on AI agent rule enforcement research and production deployment patterns:
 
 ### Integration Architecture
 - Complies with IDE architecture rules for file placement
-- Compatible with existing agent workflows and gate systems
+- Compatible with existing agent workflows and validation systems
 - Designed for future MCP server integration
 - Supports both automated and manual enforcement modes
 

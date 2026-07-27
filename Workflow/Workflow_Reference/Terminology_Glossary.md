@@ -35,7 +35,7 @@
 ### **VALIDATION**
 **Definition**: Validate step completion before proceeding to next phase.
 
-**Usage**: Used to ensure that workflow steps have completed successfully and meet quality criteria before moving to the next phase. This is a quality gate mechanism.
+**Usage**: Used to ensure that workflow steps have completed successfully and meet quality criteria before moving to the next phase. This is a quality validation mechanism.
 
 **Examples**:
 - **VALIDATION**: Validate file reference extraction completed successfully
