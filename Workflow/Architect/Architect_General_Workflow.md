@@ -70,13 +70,14 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 
 ### Phase 5. Specify Implementation
 - 36. Create detailed specification for selected approach
-- 37. **VALIDATION**: Validate specification completeness and compliance (see Workflow/Architect/Reference/Option_Evaluation_Framework.md)
-- 38. **IMPLEMENTATION MODE SELECTION**: Ask user to choose using popup menu (see Workflow/Architect/Reference/Implementation_Mode_Patterns.md)
-- 39. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
-- 40. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
-- 41. **PRINT** "Creating detailed implementation specification - defining architecture and constraints"
-- 42. **PRINT** "Specification complete - verifying file placement compliance with directory structure"
-- 43. **PRINT** "Implementation mode selection presented - awaiting user choice between automated and manual modes"
+- 37. **SPECIFICATION CONFIRMATION**: Ask user to confirm specification or request modifications using popup menu with [Confirm/Modify] options
+- 38. **VALIDATION**: Validate specification completeness and compliance (see Workflow/Architect/Reference/Option_Evaluation_Framework.md)
+- 39. **IMPLEMENTATION MODE SELECTION**: Ask user to choose using popup menu (see Workflow/Architect/Reference/Implementation_Mode_Patterns.md)
+- 40. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 41. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
+- 42. **PRINT** "Creating detailed implementation specification - defining architecture and constraints"
+- 43. **PRINT** "Specification complete - verifying file placement compliance with directory structure"
+- 44. **PRINT** "Implementation mode selection presented - awaiting user choice between automated and manual modes"
 
 ### Phase 6. Implement (One Function at a Time)
 - 44. Build exactly one function at a time, test immediately
@@ -129,6 +130,9 @@ Systematic architectural decision-making ensuring infrastructure design follows 
   - Documentation: Properly categorized
 - 77. Confirm governance file placement compliance per INDEX.md
 - 78. Validate no unintended changes outside the target area
+  - Run git status to check for changes
+  - If unintended changes detected, present popup menu with [Accept Changes/Restore Files] options
+  - Only attempt restore after user explicitly selects "Restore Files" option
 - 79. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
 - 80. **STATUS TRACKING**: Update workflow status to "phase_9_complete"
 - 81. **PRINT**: "Final validation initiated - verifying implementation scope compliance"

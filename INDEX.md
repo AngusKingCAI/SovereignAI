@@ -30,4 +30,11 @@
   - `Reviewer/`
 - `Scripts/` - Implementation scripts organized by category
   - `Gating/` - Hook-based workflow gating system scripts (session_init.py, workflow_gate.py, progress_tracker.py)
+  - `Tests/` - Test files organized by app section
 - `Workflow/` - Workflow definitions for all agents
+  - `Architect/`
+  - `Executor/`
+  - `Planner/`
+  - `Researcher/`
+  - `Reviewer/`
+  - `Workflow_Reference/`
