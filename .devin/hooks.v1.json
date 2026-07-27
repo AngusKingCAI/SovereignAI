@@ -33,5 +33,17 @@
         }
       ]
     }
+  ],
+  "PostCompaction": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Misc/simple_post_compact.py",
+          "timeout": 30
+        }
+      ]
+    }
   ]
 }

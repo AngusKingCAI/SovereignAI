@@ -1,138 +1,75 @@
-# Execution Mode Patterns
+# Execution Mode Patterns (General Reference)
 
-**Purpose**: Universal execution mode patterns for all agent workflows.
+**Purpose**: General reference for execution mode patterns across all agent workflows.
 
-## Execution Mode Definitions
+## Agent-Specific Execution Mode Patterns
 
-### Manual Mode
-**Behavior**: Require user confirmation at every single step for maximum oversight
-- **Checkpoint Handling**: Require user confirmation via popup menu before proceeding to each next step (every step, not just failures)
-- **Failure Handling**: Stop workflow and await user intervention for retry/modify/abort decision
-- **User Control**: Maximum user control over workflow progression with step-by-step approval
-- **Risk Mitigation**: Human oversight at each phase transition and every workflow step
+Each agent defines its own execution mode patterns based on its operational needs and workflow types. Refer to agent-specific Reference folders for detailed execution mode definitions:
 
-### Auto Mode
-**Behavior**: Don't continue on failures (auto-stop on errors)
-- **Checkpoint Handling**: Proceed automatically to next phase
-- **Failure Handling**: Stop workflow automatically without requiring human intervention
-- **Efficiency**: Balanced efficiency with failure detection
-- **Risk Mitigation**: Automatic failure detection and stopping
+### Architect Execution Mode Patterns
+- **Location**: Workflow/Architect/Reference/Execution_Mode_Patterns.md
+- **Modes**: Full Comprehensive, Basic Essential, Targeted, Quick Check
+- **Focus**: Architecture consistency validation workflows
+- **Use Case**: Infrastructure and governance validation
 
-### Complete Mode
-**Behavior**: Continue past failures (ignore all errors)
-- **Checkpoint Handling**: Proceed automatically to next phase
-- **Failure Handling**: Continue workflow automatically, ignoring failures
-- **Efficiency**: Maximum efficiency with failure tolerance
-- **Risk Mitigation**: Minimal risk mitigation
+### Reviewer Execution Mode Patterns
+- **Location**: Workflow/Reviewer/Reference/Execution_Mode_Patterns.md
+- **Modes**: Manual, Manual Batched, Automatic Batched
+- **Focus**: File processing and compliance scanning workflows
+- **Use Case**: Code review and best practice verification
 
-## Execution Mode Handling Patterns
+### Other Agent Execution Modes
+- **Executor**: Implementation and execution patterns (see Workflow/Executor/Reference/)
+- **Planner**: Planning and strategy patterns (see Workflow/Planner/Reference/)
+- **Researcher**: Research and analysis patterns (see Workflow/Researcher/Reference/)
 
-### Phase Transition Handling
-**Manual Mode Pattern**:
-1. Complete current step action
-2. **EXECUTION MODE HANDLING**: Require user confirmation via popup menu before proceeding to next step (CHECKPOINT at every step)
-3. **STATUS TRACKING**: Update workflow status to "step_{N}_complete"
-4. **PRINT**: Step completion message with checkpoint confirmation
-5. Wait for user approval before proceeding to next step
+## Universal Execution Mode Concepts
 
-**Auto Mode Pattern**:
-1. Complete current step action
-2. **EXECUTION MODE HANDLING**: Proceed automatically to next step if step succeeded, stop if step failed
-3. **STATUS TRACKING**: Update workflow status to "step_{N}_complete" (success) or "step_{N}_failed" (failure)
-4. **PRINT**: Step completion message (success) or failure message with retry attempt information
-5. Proceed automatically to next step on success, apply retry logic on failure
+### Common Execution Mode Elements
+All agent-specific execution modes should include:
+- **Mode Definitions**: Clear behavior specifications for each mode
+- **Checkpoint Handling**: How checkpoints are managed in each mode
+- **Failure Handling**: How failures are handled in each mode
+- **User Control**: Level of user control in each mode
+- **Use Cases**: When to use each mode
+- **Handling Patterns**: Step-by-step execution patterns
+- **Failure Patterns**: Failure recovery patterns
+- **Retry Logic**: Retry configuration and implementation
 
-**Complete Mode Pattern**:
-1. Complete current step action (even if failures occur)
-2. **EXECUTION MODE HANDLING**: Proceed automatically to next step regardless of success/failure
-3. **STATUS TRACKING**: Update workflow status to "step_{N}_complete" (even if step failed)
-4. **PRINT**: Step completion message (including any failures but continue workflow)
-5. Proceed to next step automatically
-
-### Failure Handling Patterns
-**Manual Mode Failure Pattern**:
-1. Detect failure in current step
-2. **EXECUTION MODE HANDLING**: Stop workflow and await user intervention for retry/modify/abort decision (CHECKPOINT)
-3. **STATUS TRACKING**: Update workflow status to "step_{N}_failed"
-4. **PRINT**: Failure message with error details
-5. Await user decision on recovery action
-
-**Auto Mode Failure Pattern**:
-1. Detect failure in current step
-2. **EXECUTION MODE HANDLING**: Stop workflow automatically without requiring human intervention
-3. **RETRY LOGIC**: Implement configurable retry with exponential backoff (max 3 retries)
-4. **STATUS TRACKING**: Update workflow status to "step_{N}_failed"
-5. **PRINT**: Failure message with retry attempt information
-6. Proceed with retry logic automatically
-
-**Complete Mode Failure Pattern**:
-1. Detect failure in current step
-2. **EXECUTION MODE HANDLING**: Continue workflow automatically, ignoring the failure
-3. **RETRY LOGIC**: Implement configurable retry with exponential backoff (max 3 retries)
-4. **STATUS TRACKING**: Update workflow status to "step_{N}_complete" (despite failure)
-5. **PRINT**: Failure message but continue workflow
-6. Proceed to next step automatically
-
-## Retry Logic with Exponential Backoff
-
-### Retry Configuration
+### Universal Retry Logic
+All execution modes should implement consistent retry logic:
 - **Max Retries**: 3 retries maximum
 - **Backoff Pattern**: Exponential backoff (1s, 2s, 4s, 8s, etc.)
 - **Retry Criteria**: Configurable based on error type
 - **Retry Logging**: Log each retry attempt with metadata
 
-### Retry Implementation
-```python
-retry_count = 0
-max_retries = 3
-backoff_time = 1
-
-while retry_count < max_retries:
-    try:
-        # Execute phase
-        execute_phase()
-        break  # Success, exit retry loop
-    except Exception as error:
-        retry_count += 1
-        if retry_count >= max_retries:
-            raise  # Max retries reached
-        time.sleep(backoff_time)
-        backoff_time *= 2  # Exponential backoff
-```
-
-## Execution Mode Tracking
-
-### State Management
+### Universal State Management
+All execution modes should implement consistent state management:
 - **Mode Storage**: Store selected execution mode in workflow state
-- **Mode Changes**: Track mode changes with reasoning
-- **Mode Effectiveness**: Track mode effectiveness metrics
-- **Mode Optimization**: Optimize mode selection based on patterns
+- **Progress Tracking**: Track progress according to mode requirements
+- **Audit Trail**: Log mode-specific actions for audit trail
 
-### Audit Trail
-- **Mode Selection**: Log mode selection with reasoning
-- **Mode Changes**: Log mode changes with trigger events
-- **Checkpoint Outcomes**: Log checkpoint outcomes in Manual mode
-- **Failure Handling**: Log failure handling patterns and outcomes
+## Execution Mode Design Principles
 
-## Usage Guidelines
+### Agent-Specific Customization
+- Each agent defines execution modes based on its operational needs
+- Modes should reflect the agent's specific workflow types and use cases
+- Agent-specific patterns are stored in agent Reference folders
 
-### Mode Selection Process
-1. **Assess Task**: Evaluate task complexity and risk
-2. **Present Options**: Present execution mode options to user
-3. **Recommend**: Recommend appropriate mode based on assessment
-4. **User Selection**: User selects mode via popup menu
-5. **Store Mode**: Store selected mode in workflow state
+### Universal Consistency
+- All execution modes should follow universal retry logic patterns
+- All execution modes should implement consistent state management
+- All execution modes should provide clear checkpoint and failure handling
 
-### Mode Execution
-1. **Apply Pattern**: Apply appropriate execution mode pattern
-2. **Handle Checkpoints**: Handle checkpoints according to mode
-3. **Handle Failures**: Handle failures according to mode
-4. **Track Progress**: Track progress according to mode requirements
-5. **Log Actions**: Log mode-specific actions for audit trail
+### Workflow Integration
+- Execution modes are defined in workflow headers
+- Phase 1 of each workflow presents execution mode options
+- Workflows reference their agent-specific execution mode patterns
 
-### Mode Evaluation
-1. **Track Success Rates**: Track success rates by mode
-2. **Track User Satisfaction**: Track user satisfaction by mode
-3. **Analyze Patterns**: Analyze which modes work best for which task types
-4. **Refine Criteria**: Refine mode selection criteria based on patterns
-5. **Optimize Patterns**: Optimize execution mode patterns over time
+## Template Integration
+
+Workflow templates should reference agent-specific execution mode patterns:
+- **Phase 1**: Present agent-specific execution mode options
+- **Header**: Include "Execution Modes" field with agent-specific options
+- **References**: Link to agent-specific Execution_Mode_Patterns.md
+- **Patterns**: Apply agent-specific handling and failure patterns

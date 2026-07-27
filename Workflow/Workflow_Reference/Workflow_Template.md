@@ -46,6 +46,7 @@ Architect creates two types of workflows with different Phase 10 patterns:
 **Frequency**: {Frequency}  
 **Duration**: {Duration}  
 **Priority**: {Priority}
+**Execution Modes**: {Workflow-specific execution mode options}
 
 ## Purpose
 {What this workflow accomplishes and why it exists}
@@ -67,13 +68,15 @@ Architect creates two types of workflows with different Phase 10 patterns:
 - 4. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
 - 5. **PRINT** "{Agent} rules loaded from Rules/{Agent}/{Agent}_Rules.md"
 
-### Phase 1. Select Execution Mode
+### Phase 1. Select Execution Mode (Workflow-Specific)
 - 6. Ask user to select execution mode for this workflow using popup menu:
-  - **Manual**: Stop at failures for human oversight
-  - **Auto**: Don't continue on failures (auto-stop on errors)
-  - **Complete**: Continue past failures (ignore all errors)
+  - **Workflow-Specific Options**: Each workflow defines its own execution mode options based on its operational needs
+  - **Common Patterns**: 
+    - Manual/Auto/Complete (traditional phase-based workflows)
+    - Manual/Manual Batched/Automatic Batched (file/item processing workflows)
+    - Custom modes defined by workflow requirements
 - 7. Store selected execution mode for failure handling throughout workflow
-- 8. **PRINT** "Execution mode selected - [Manual/Auto/Complete] will govern failure handling"
+- 8. **PRINT** "Execution mode selected - [workflow-specific modes] will govern failure handling"
 
 ### Phase 2. {Agent} Interaction
 - 9. Ask user: "Hi, {Agent} here - how can I help you today?"
@@ -178,10 +181,11 @@ Architect creates two types of workflows with different Phase 10 patterns:
 
 ### Mandated Sections (Required)
 All workflows must include:
-- **Workflow Header**: ID, Owner, Frequency, Duration, Priority, Purpose, Roles, Trigger and End State
+- **Workflow Header**: ID, Owner, Frequency, Duration, Priority, Execution Modes, Purpose, Roles, Trigger and End State
 - **Universal Framework References** section at the end
 - References to all universal frameworks relevant to the workflow
 - **Relevance Requirement**: Only include universal framework references that are actually relevant to the agent's specific purpose
+- **Execution Modes Definition**: Each workflow must define its specific execution mode options in the header and Phase 1
 
 ### Suggested Phases (Recommended but Flexible)
 The following phases are suggested patterns that work well for most workflows, but agents should adapt them based on their specific needs:
