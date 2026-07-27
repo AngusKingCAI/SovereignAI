@@ -28,7 +28,7 @@ Systematic validation of harness architecture consistency across the entire proj
 
 ### Phase 0. Read Architect Rules + Scan Scope
 - 1. Read Rules/Architect/Architect_Rules.md to understand governance constraints
-- 2. Read Workflow/Architect/Reference/Workflow_Template.md for workflow structure patterns
+- 2. Read Workflow/Workflow_Reference/Workflow_Template.md for workflow structure patterns
 - 3. Determine scan scope (full harness vs specific components)
 - 4. Store governance context for reference throughout scan
 - 5. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
@@ -61,7 +61,7 @@ Systematic validation of harness architecture consistency across the entire proj
 - 21. **PRINT**: "File reference check complete - {N} broken references found"
 
 ### Phase 4. Terminology Consistency Check
-- 22. Search for outdated terminology: `grep -r "gate" /c/SovereignAI/Workflow/` (should return no results if cleanup complete)
+- 22. Search for outdated terminology: `grep -r "gate" /c/SovereignAI/Workflow/` (should return no results if cleanup complete, except in meta-references like this line)
 - 23. Check for "Workflow_Template.md" location references
 - 24. Validate framework naming (Quality_Metrics vs Performance_Metrics)
 - 25. Check agent naming convention consistency
@@ -70,12 +70,12 @@ Systematic validation of harness architecture consistency across the entire proj
 - 28. **PRINT**: "Terminology check complete - {N} terminology inconsistencies found"
 
 ### Phase 5. Workflow Structure Consistency Check
-- 29. Compare each workflow against Workflow/Architect/Reference/Workflow_Template.md
-- 30. Check for Phase 0, Phase 3, Phase 10 presence
-- 31. Validate STATUS TRACKING entries in each phase
-- 32. Validate VALIDATION entries in each phase
-- 33. Check Universal Framework References section presence
-- 34. Validate step numbering sequential consistency
+- 29. Compare each workflow against Workflow/Workflow_Reference/Workflow_Template.md
+- 30. Check for mandated sections: Workflow Header, Universal Framework References
+- 31. Validate workflow follows header structure requirements (ID, Owner, Frequency, Duration, Priority, Purpose, Roles, Trigger and End State)
+- 32. Check Universal Framework References section presence and completeness
+- 33. Note any missing suggested phases (Phase 0, Phase 3, Phase 10) as informational, not as issues
+- 34. Validate step numbering sequential consistency (if steps are used)
 - 35. **VALIDATION**: Validate workflow structure check completed successfully
 - 36. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
 - 37. **PRINT**: "Workflow structure check complete - {N} structure issues found"
@@ -138,7 +138,7 @@ Systematic validation of harness architecture consistency across the entire proj
 - **Focus**: Scan execution environment and report generation infrastructure
 
 ### Workflow Template
-- **Architect Tool**: Workflow/Architect/Reference/Workflow_Template.md
+- **Architect Tool**: Workflow/Workflow_Reference/Workflow_Template.md
 - **Architect Customization**: Template compliance validation during scans
 - **Focus**: Ensuring workflows maintain template compliance
 
@@ -161,7 +161,7 @@ Systematic validation of harness architecture consistency across the entire proj
 - **Check**: Consistent terminology across all governance files
 - **Scope**: All markdown files in harness architecture
 - **Variables**:
-  - "gate" terminology (should be eliminated in favor of "validation")
+  - "gate" terminology (should be eliminated in favor of "validation", except in meta-references describing the check itself)
   - "Workflow_Template.md" location references
   - Framework naming (Quality_Metrics vs Performance_Metrics)
   - Agent naming conventions
@@ -171,14 +171,14 @@ Systematic validation of harness architecture consistency across the entire proj
 - **Check**: All workflows follow Architect template structure
 - **Scope**: All workflow files in Workflow/ directory
 - **Variables**:
-  - Phase 0-10 structure compliance
-  - STATUS TRACKING entries presence
-  - VALIDATION entries presence
-  - PRINT commands presence
-  - Universal Framework References section
-  - Universal framework coverage (6 frameworks)
-  - Step numbering sequential consistency
-  - Header metadata completeness
+  - Mandated sections: Workflow Header, Universal Framework References
+  - Header metadata completeness (ID, Owner, Frequency, Duration, Priority, Purpose, Roles, Trigger and End State)
+  - Universal framework coverage (relevant frameworks)
+  - Suggested phases (Phase 0, Phase 3, Phase 10) - informational only
+  - STATUS TRACKING entries presence (informational)
+  - VALIDATION entries presence (informational)
+  - PRINT commands presence (informational)
+  - Step numbering sequential consistency (if steps are used)
 
 ### 4. Governance Rule Consistency
 - **Check**: Rules files are properly structured and consistent
@@ -261,7 +261,7 @@ Systematic validation of harness architecture consistency across the entire proj
 
 ### Phase 2: Detailed Variable Analysis
 1. **File Reference Validation**: Check each referenced file exists
-2. **Workflow Structure Validation**: Compare workflows against template
+2. **Workflow Structure Validation**: Compare workflows against template for mandated sections only
 3. **Governance Rule Validation**: Check rule file structure consistency
 4. **Documentation Validation**: Verify INDEX.md and documentation structure
 5. **Framework Coverage Validation**: Check universal framework usage
@@ -393,7 +393,7 @@ find /c/SovereignAI -name "*.md" -path "*/Workflow/*" -o -path "*/Rules/*" -o -p
 ```bash
 grep -r "Workflow/" /c/SovereignAI/Workflow/
 grep -r "Rules/" /c/SovereignAI/Workflow/
-grep -r "gate" /c/SovereignAI/Workflow/ (should return no results if cleanup complete)
+grep -r "gate" /c/SovereignAI/Workflow/ (should return no results if cleanup complete, except in meta-references)
 ```
 
 ### Cross-Reference Validation

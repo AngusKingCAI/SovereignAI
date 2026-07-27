@@ -29,7 +29,7 @@
   - `Researcher/`
   - `Reviewer/`
 - `Scripts/` - Implementation scripts organized by category
-  - `Gating/` - Hook-based workflow gating system scripts (session_init.py, workflow_gate.py, progress_tracker.py)
+  - `Logging/` - Logging-related scripts
   - `Tests/` - Test files organized by app section
 - `Workflow/` - Workflow definitions for all agents
   - `Architect/`

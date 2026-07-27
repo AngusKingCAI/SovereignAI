@@ -158,6 +158,6 @@ Create detailed, implementation-ready plans for AI-driven software development w
 - **Focus**: Runtime paths and infrastructure requirements for workflow execution
 
 ### Workflow Template
-- **Architect Tool**: Workflow/Architect/Reference/Workflow_Template.md
+- **Architect Tool**: Workflow/Workflow_Reference/Workflow_Template.md
 - **Planner Customization**: Planner follows Architect's template for workflow structure
 - **Focus**: Template compliance and workflow standardization

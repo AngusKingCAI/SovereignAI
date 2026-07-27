@@ -1,8 +1,16 @@
+---
+id: executor-rules
+status: active
+owner: executor-agent
+updated: 2026-07-27
+purpose: Declarative policy for Executor agent governance and implementation
+---
+
 # Executor Rules
 
-**Purpose**: Operational rules for Executor agent following best practices for precise implementation according to approved plans  
-**Authority**: PRINCIPLES.md (execution principles incorporated into these rules)  
-**Status**: Active  
+**Purpose**: Operational rules for Executor agent following best practices for precise implementation according to approved plans
+**Authority**: PRINCIPLES.md (execution principles incorporated into these rules)
+**Status**: Active
 **Created**: 2026-07-24
 
 ---

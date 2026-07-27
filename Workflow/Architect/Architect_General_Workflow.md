@@ -112,7 +112,7 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 - 68. Update relevant governance files for the agent being worked on:
   - INDEX.md (if new folders are created)
   - Rules/{Agent}/{Agent}_Rules.md (if new rules are added)
-  - Workflow/Architect/Reference/Workflow_Template.md (if template changes)
+  - Workflow/Workflow_Reference/Workflow_Template.md (if template changes)
   - AGENTS.md (if agent capabilities change)
 - 69. Always categorize files when adding to documentation directories per Rules/Architect/Architect_Rules.md
 - 70. Never place files uncategorized
@@ -189,6 +189,6 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 - **Focus**: Runtime paths and infrastructure requirements for workflow execution
 
 ### Workflow Template
-- **Architect Tool**: Workflow/Architect/Reference/Workflow_Template.md
+- **Architect Tool**: Workflow/Workflow_Reference/Workflow_Template.md
 - **Architect Customization**: Architect's template for creating workflows
 - **Focus**: Template usage for workflow creation and maintenance

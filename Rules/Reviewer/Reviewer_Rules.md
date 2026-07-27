@@ -1,8 +1,16 @@
+---
+id: reviewer-rules
+status: active
+owner: reviewer-agent
+updated: 2026-07-27
+purpose: Declarative policy for Reviewer agent governance and implementation
+---
+
 # Reviewer Rules
 
-**Purpose**: Operational rules for Reviewer agent following best practices for comprehensive quality review and assessment  
-**Authority**: PRINCIPLES.md (review principles incorporated into these rules)  
-**Status**: Active  
+**Purpose**: Operational rules for Reviewer agent following best practices for comprehensive quality review and assessment
+**Authority**: PRINCIPLES.md (review principles incorporated into these rules)
+**Status**: Active
 **Created**: 2026-07-24
 
 ---

@@ -2,7 +2,7 @@
 id: architect-rules
 status: active
 owner: architect-agent
-updated: 2026-07-26
+updated: 2026-07-27
 purpose: Declarative policy for Architect agent governance and implementation
 ---
 

@@ -149,7 +149,7 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 ### Execution Strategy
 - **Universal Framework**: Workflow/Workflow_Reference/Execution_Strategy_Guidelines.md
 - **Architect Customization**: Hook implementation execution patterns (one-hook-at-a-time, extensive testing)
-- **Focus**: Execution strategy for systematic hook implementation with validation gates
+- **Focus**: Execution strategy for systematic hook implementation with validation points
 
 ### Runtime Prerequisites
 - **Universal Framework**: Workflow/Workflow_Reference/Runtime_Prerequisites.md
@@ -159,7 +159,7 @@ Systematic implementation and testing of hooks for SovereignAI harness using Dev
 ### Validation Enforcement
 - **Universal Framework**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md
 - **Architect Customization**: Hook implementation validation patterns (functionality testing, integration testing, governance compliance)
-- **Focus**: Validation enforcement patterns for hook implementation quality gates
+- **Focus**: Validation enforcement patterns for hook implementation quality checks
 
 ### Convergence Loops
 - **Universal Framework**: Workflow/Workflow_Reference/Convergence_Loop_Patterns.md

@@ -1,8 +1,16 @@
+---
+id: planner-rules
+status: active
+owner: planner-agent
+updated: 2026-07-27
+purpose: Declarative policy for Planner agent governance and implementation
+---
+
 # Planner Rules
 
-**Purpose**: Operational rules for Planner agent following best practices for infrastructure development planning  
-**Authority**: PRINCIPLES.md (infrastructure principles incorporated into these rules)  
-**Status**: Active  
+**Purpose**: Operational rules for Planner agent following best practices for infrastructure development planning
+**Authority**: PRINCIPLES.md (infrastructure principles incorporated into these rules)
+**Status**: Active
 **Created**: 2026-07-24
 
 ---

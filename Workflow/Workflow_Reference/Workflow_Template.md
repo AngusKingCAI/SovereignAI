@@ -30,7 +30,7 @@ Architect creates two types of workflows with different Phase 10 patterns:
 
 ## Template Reference
 
-- **Location**: Workflow/Architect/Reference/Workflow_Template.md
+- **Location**: Workflow/Workflow_Reference/Workflow_Template.md
 - **Owner**: Architect Agent
 - **Usage**: Architect uses this template to create workflows for all agents
 - **Updates**: Only Architect should modify this template
@@ -176,24 +176,29 @@ Architect creates two types of workflows with different Phase 10 patterns:
 
 ## Template Requirements
 
-### Mandatory Phases
+### Mandated Sections (Required)
 All workflows must include:
+- **Workflow Header**: ID, Owner, Frequency, Duration, Priority, Purpose, Roles, Trigger and End State
+- **Universal Framework References** section at the end
+- References to all universal frameworks relevant to the workflow
+
+### Suggested Phases (Recommended but Flexible)
+The following phases are suggested patterns that work well for most workflows, but agents should adapt them based on their specific needs:
 - **Phase 0**: Read {Agent} Rules (loads governance constraints)
 - **Phase 1**: Select Execution Mode (Manual/Auto/Complete)
 - **Phase 2**: {Agent} Interaction (user task specification)
 - **Phase 3**: Research Best Practices (web search required before major decisions)
 
-### Phase 10 (Workflow Type Dependent)
-- **Continuous Operation Workflows**: Include Phase 10 with "Return to step 1" for continuous operation
-- **Single-Execution Workflows**: Include Phase 10 with "TERMINATE" (no "Return to step 1")
+### Suggested Elements (Recommended but Flexible)
+The following elements are suggested patterns for good workflow design:
+- **VALIDATION** entries in phases where quality checks are needed
+- **STATUS TRACKING** entries for workflow state management
+- **PRINT** commands for status updates and user communication
 
-### Mandatory Elements
-All workflows must include:
-- **VALIDATION** entries in each phase
-- **STATUS TRACKING** entries in each phase
-- **PRINT** commands for status updates
-- **Universal Framework References** section at the end
-- References to all 6 universal frameworks
+### Phase 10 (Workflow Type Dependent - Optional)
+- **Continuous Operation Workflows**: May include Phase 10 with "Return to step 1" for continuous operation
+- **Single-Execution Workflows**: May include Phase 10 with "TERMINATE" (no "Return to step 1")
+- **Note**: Phase 10 is optional and should only be included if the workflow requires it
 
 ### Naming Convention
 Workflow files should follow: `{Agent}_{WorkflowType}_Workflow.md`
