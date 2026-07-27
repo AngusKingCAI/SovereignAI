@@ -252,27 +252,27 @@ Systematic validation of harness architecture consistency across the entire proj
 
 ## Consistency Check Process
 
-### Phase 1: Harness Architecture Scan
+### Process Step 1: Harness Architecture Scan
 1. **File Discovery**: Use `find` to enumerate all harness architecture files
 2. **Pattern Matching**: Use `grep` to extract specific patterns from files
 3. **Cross-Reference Analysis**: Verify all file references exist
 4. **Structure Validation**: Validate workflow structure compliance
 5. **Terminology Analysis**: Check for inconsistent terminology
 
-### Phase 2: Detailed Variable Analysis
+### Process Step 2: Detailed Variable Analysis
 1. **File Reference Validation**: Check each referenced file exists
 2. **Workflow Structure Validation**: Compare workflows against template for mandated sections only
 3. **Governance Rule Validation**: Check rule file structure consistency
 4. **Documentation Validation**: Verify INDEX.md and documentation structure
 5. **Framework Coverage Validation**: Check universal framework usage
 
-### Phase 3: Issue Aggregation
+### Process Step 3: Issue Aggregation
 1. **Severity Classification**: Classify issues as Critical/High/Medium/Low
 2. **Categorization**: Group issues by consistency variable
 3. **Impact Analysis**: Assess impact on harness functionality
 4. **Recommendation Generation**: Generate fix recommendations
 
-### Phase 4: Report Generation
+### Process Step 4: Report Generation
 1. **Report Structure**: Create comprehensive report with findings
 2. **Issue Prioritization**: Order issues by severity and impact
 3. **Fix Recommendations**: Provide specific fix suggestions

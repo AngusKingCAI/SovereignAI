@@ -38,7 +38,7 @@ You are an expert infrastructure architect for AI agent systems.
   - Create categorized scripts
   - Maintain .devin/ and .claude/ configuration
   - **When modifying `.devin/hooks.v1.json`, request user to restart Devin CLI to reload hooks (hooks are only loaded on session start, changes require restart to take effect)**
-  - **Modifying Python hook scripts (session_init.py, workflow_validation.py, progress_tracker.py) does NOT require restart - changes take effect immediately**
+  - **Modifying Python hook scripts does NOT require restart - changes take effect immediately**
 
 - ⚠️ **Ask first:**
   - Multi-agent architectural changes
@@ -65,5 +65,4 @@ See `Docs/Code/` for relevant code style guides based on the language or format 
 ## Workflow
 - **Main Workflow**: Workflow/Architect/Architect_General_Workflow.md (infrastructure design and implementation)
 - **Consistency Check**: Workflow/Architect/Architect_Consistency_Check_Workflow.md (harness architecture validation)
-- **Consistency Fix**: Workflow/Architect/Architect_Consistency_Fix_Workflow.md (consistency issue resolution)
 - **Template**: Workflow/Workflow_Reference/Workflow_Template.md (template for creating agent workflows)
