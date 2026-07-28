@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SovereignAI Reference Document Schema",
+  "description": "Schema for validating SovereignAI reference document markdown files",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Reference document identifier"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "archived", "draft"],
+      "description": "Reference document status"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Reference document owner"
+    },
+    "updated": {
+      "type": ["string", "date"],
+      "description": "Last update date (YYYY-MM-DD format)"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Document purpose"
+    }
+  },
+  "required": ["id", "purpose"],
+  "additionalProperties": false
+}

@@ -1,3 +1,11 @@
+---
+id: wf-plan-tmpl-brief
+status: active
+owner: planner-agent
+updated: 2026-07-28
+purpose: Brief document for Round Table panelists summarizing the plan for review
+---
+
 # Plan Brief Template
 
 **Purpose**: Brief document for Round Table panelists (internal and external) summarizing the plan for review  

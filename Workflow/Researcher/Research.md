@@ -1,3 +1,11 @@
+---
+id: wf-researcher-research
+status: active
+owner: researcher-agent
+updated: 2026-07-28
+purpose: Step-by-step workflow for Researcher agent to perform external research and create design documents
+---
+
 # Researcher Workflow
 
 **File**: Research.md  

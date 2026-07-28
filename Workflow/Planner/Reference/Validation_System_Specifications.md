@@ -1,3 +1,11 @@
+---
+id: wf-plan-ref-validation-system
+status: active
+owner: planner-agent
+updated: 2026-07-28
+purpose: Planner-specific validation system specifications for plan quality control and compliance enforcement
+---
+
 # Planner Validation System Specifications
 
 **Purpose**: Planner-specific validation system specifications for plan quality control and compliance enforcement.

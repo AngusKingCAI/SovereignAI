@@ -1,3 +1,11 @@
+---
+id: wf-rev-ref-review-mode-patterns
+status: active
+owner: reviewer-agent
+updated: 2026-07-28
+purpose: Reviewer-specific execution mode patterns for comprehensive code review workflows
+---
+
 # Review Mode Patterns
 
 **Purpose**: Reviewer-specific execution mode patterns for comprehensive code review workflows.

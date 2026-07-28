@@ -1,3 +1,11 @@
+---
+id: wf-arch-ref-impl-mode-patterns
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Architect-specific when-to-use scenarios for implementation mode selection
+---
+
 # Architect Implementation Mode When-to-Use Scenarios
 
 **Purpose**: Architect-specific when-to-use scenarios for implementation mode selection.

@@ -1,3 +1,11 @@
+---
+id: wf-plan-tmpl-prompt
+status: active
+owner: planner-agent
+updated: 2026-07-28
+purpose: Explicit instructions for Round Table panelists on how to adopt personas and conduct reviews
+---
+
 # Plan Review Prompt Template
 
 **Purpose**: Explicit instructions for Round Table panelists on how to adopt personas and conduct reviews  

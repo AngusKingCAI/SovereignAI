@@ -1,3 +1,11 @@
+---
+id: wf-exec-ref-exec-mode-patterns
+status: active
+owner: executor-agent
+updated: 2026-07-28
+purpose: Executor-specific execution mode patterns for plan execution workflows
+---
+
 # Executor Execution Mode Patterns
 
 **Purpose**: Executor-specific execution mode patterns for plan execution workflows.

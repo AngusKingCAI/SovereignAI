@@ -1,3 +1,11 @@
+---
+id: wf-exec-impl-cycle
+status: active
+owner: executor-agent
+updated: 2026-07-28
+purpose: Systematic plan execution ensuring implementation follows best practices and maintains compliance with governance rules
+---
+
 # Executor Implementation Cycle Workflow
 
 **ID**: WF-EXEC-001  

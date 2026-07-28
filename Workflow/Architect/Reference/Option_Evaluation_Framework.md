@@ -1,3 +1,11 @@
+---
+id: wf-arch-ref-option-eval
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Architect-specific criteria for generating and evaluating implementation options
+---
+
 # Architect Option Criteria
 
 **Purpose**: Architect-specific criteria for generating and evaluating implementation options.

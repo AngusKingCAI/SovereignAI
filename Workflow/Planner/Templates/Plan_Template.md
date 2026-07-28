@@ -1,3 +1,11 @@
+---
+id: wf-plan-tmpl-plan
+status: active
+owner: planner-agent
+updated: 2026-07-28
+purpose: Standard format for infrastructure development plans
+---
+
 # Plan Template
 
 **Purpose**: Standard format for infrastructure development plans  

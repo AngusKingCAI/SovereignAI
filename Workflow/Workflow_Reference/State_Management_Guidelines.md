@@ -1,3 +1,11 @@
+---
+id: wf-ref-state-mgmt
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Universal state management guidelines for all agent workflows
+---
+
 # State Management Guidelines
 
 **Purpose**: Universal state management guidelines for all agent workflows.

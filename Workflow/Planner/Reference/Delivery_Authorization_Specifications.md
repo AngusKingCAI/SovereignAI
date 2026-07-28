@@ -1,3 +1,11 @@
+---
+id: wf-plan-ref-delivery-auth
+status: active
+owner: planner-agent
+updated: 2026-07-28
+purpose: Planner-specific delivery authorization specifications for plan delivery to executor
+---
+
 # Planner Delivery Authorization Specifications
 
 **Purpose**: Planner-specific delivery authorization specifications for plan delivery to executor.

@@ -1,3 +1,11 @@
+---
+id: wf-rev-ref-compliance-criteria
+status: active
+owner: reviewer-agent
+updated: 2026-07-28
+purpose: Single source of truth for detailed compliance criteria used in review workflows
+---
+
 # Compliance Criteria Reference for Reviewer Agent
 
 ## Purpose

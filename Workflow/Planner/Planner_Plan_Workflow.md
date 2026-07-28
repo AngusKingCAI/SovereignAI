@@ -1,3 +1,11 @@
+---
+id: wf-plan-plan-workflow
+status: active
+owner: planner-agent
+updated: 2026-07-28
+purpose: Create detailed implementation-ready plans for AI-driven software development with comprehensive analysis and validation
+---
+
 # Planner Plan Workflow
 
 **ID**: WF-PLAN-001  

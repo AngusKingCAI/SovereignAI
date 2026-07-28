@@ -1,3 +1,11 @@
+---
+id: wf-ref-role-resp
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Universal role responsibility framework for all agent workflows
+---
+
 # Role Responsibilities Framework
 
 **Purpose**: Universal role responsibility framework for all agent workflows.

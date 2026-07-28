@@ -1,3 +1,11 @@
+---
+id: wf-plan-ref-convergence-loop
+status: active
+owner: planner-agent
+updated: 2026-07-28
+purpose: Planner-specific implementation of universal convergence loop patterns for Round Table review cycles
+---
+
 # Planner Convergence Loop Specifications
 
 **Purpose**: Planner-specific implementation of universal convergence loop patterns for Round Table review cycles.

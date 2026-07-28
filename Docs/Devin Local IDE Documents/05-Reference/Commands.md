@@ -1,3 +1,11 @@
+---
+id: commands-reference
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Complete reference for command arguments, subcommands, and interactive slash commands
+---
+
 # Commands & Flags
 
 Complete reference for command arguments, subcommands, and interactive slash commands

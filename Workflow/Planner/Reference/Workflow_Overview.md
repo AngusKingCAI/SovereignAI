@@ -1,3 +1,11 @@
+---
+id: wf-plan-ref-workflow-overview
+status: active
+owner: planner-agent
+updated: 2026-07-28
+purpose: Overview of Planner workflow best practices and operational patterns
+---
+
 # Planner Workflow Overview
 
 ## Best Practices

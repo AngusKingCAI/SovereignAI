@@ -1,3 +1,11 @@
+---
+id: wf-ref-quality-assessment
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Universal quality assessment framework for all agent workflows
+---
+
 # Quality Assessment Framework
 
 **Purpose**: Universal quality assessment framework for all agent workflows.

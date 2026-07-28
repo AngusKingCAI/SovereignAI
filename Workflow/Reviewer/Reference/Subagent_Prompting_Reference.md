@@ -1,3 +1,11 @@
+---
+id: wf-rev-ref-subagent-prompting
+status: active
+owner: reviewer-agent
+updated: 2026-07-28
+purpose: Single source of truth for subagent prompting patterns and templates used in review workflows
+---
+
 # Subagent Prompting Reference for Reviewer Agent
 
 ## Purpose

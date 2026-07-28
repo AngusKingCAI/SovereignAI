@@ -1,3 +1,11 @@
+---
+id: wf-ref-terminology
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Single source of truth for all capitalized terminology used across the SovereignAI harness architecture
+---
+
 # SovereignAI Harness Terminology Glossary
 
 **Purpose**: Single source of truth (SSOT) for all capitalized terminology used across the SovereignAI harness architecture. This glossary ensures consistent understanding of governance terminology across all agents and workflows.

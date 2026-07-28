@@ -1,3 +1,11 @@
+---
+id: wf-ref-runtime-prereq
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Documentation of runtime directories and files required for workflow execution
+---
+
 # Runtime Prerequisites
 
 **Purpose**: Documentation of runtime directories and files required for workflow execution.

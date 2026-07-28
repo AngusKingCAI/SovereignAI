@@ -1,3 +1,11 @@
+---
+id: wf-plan-ref-role-resp
+status: active
+owner: planner-agent
+updated: 2026-07-28
+purpose: Planner-specific role responsibilities for plan creation and delivery
+---
+
 # Planner Role Responsibilities
 
 **Purpose**: Planner-specific role responsibilities for plan creation and delivery.

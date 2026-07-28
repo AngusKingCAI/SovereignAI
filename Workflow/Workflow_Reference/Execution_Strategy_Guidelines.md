@@ -1,3 +1,11 @@
+---
+id: wf-ref-exec-strategy
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Universal execution strategy specifications for all agent workflows
+---
+
 # Execution Strategy Guidelines
 
 **Purpose**: Universal execution strategy specifications for all agent workflows.

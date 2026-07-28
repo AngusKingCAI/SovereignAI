@@ -1,3 +1,11 @@
+---
+id: permissions-reference
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Control what the agent can do with fine-grained permission rules
+---
+
 # Permissions
 
 Control what the agent can do with fine-grained permission rules

@@ -13,8 +13,8 @@ from pathlib import Path
 def main():
     """Main hook execution"""
     try:
-        # Create logs directory for hook debugging
-        hook_logs_dir = Path("C:/SovereignAI/Logs/Hooks")
+        # Create logs directory for hook debugging in same folder as script
+        hook_logs_dir = Path(__file__).parent / "HookLogs"
         hook_logs_dir.mkdir(parents=True, exist_ok=True)
         
         # Debug: Create a file to verify hook execution in proper location
@@ -92,8 +92,8 @@ def main():
         print(json.dumps(output))
         
     except Exception as e:
-        # Log error but don't fail the hook - use proper log location
-        hook_logs_dir = Path("C:/SovereignAI/Logs/Hooks")
+        # Log error but don't fail the hook - use proper log location in same folder as script
+        hook_logs_dir = Path(__file__).parent / "HookLogs"
         hook_logs_dir.mkdir(parents=True, exist_ok=True)
         debug_file = hook_logs_dir / "hook_error.txt"
         debug_file.write_text(f"Hook error at {__import__('datetime').datetime.now()}: {e}")

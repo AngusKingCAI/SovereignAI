@@ -1,3 +1,11 @@
+---
+id: wf-exec-ref-impl-mode-patterns
+status: active
+owner: executor-agent
+updated: 2026-07-28
+purpose: Executor-specific when-to-use scenarios for implementation mode selection
+---
+
 # Executor Implementation Mode When-to-Use Scenarios
 
 **Purpose**: Executor-specific when-to-use scenarios for implementation mode selection.

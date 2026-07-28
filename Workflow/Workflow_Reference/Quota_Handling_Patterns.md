@@ -1,3 +1,11 @@
+---
+id: wf-ref-quota-handling
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Universal quota handling patterns for agent workflows
+---
+
 # Quota Handling Patterns
 
 **Purpose**: Universal quota handling patterns for agent workflows.

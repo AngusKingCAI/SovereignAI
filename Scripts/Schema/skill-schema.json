@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SovereignAI Skill File Schema",
+  "description": "Schema for validating SovereignAI skill markdown files",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z]+$",
+      "description": "Skill identifier in lowercase"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Skill description"
+    },
+    "argument-hint": {
+      "type": "string",
+      "description": "Argument hint for skill usage"
+    },
+    "triggers": {
+      "type": "array",
+      "description": "Trigger conditions for skill activation",
+      "items": {
+        "type": "string",
+        "enum": ["user", "system", "file_change", "schedule"]
+      }
+    }
+  },
+  "required": ["name", "description", "triggers"],
+  "additionalProperties": false
+}

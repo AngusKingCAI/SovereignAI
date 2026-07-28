@@ -1,15 +1,23 @@
+---
+id: wf-arch-cons-check
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Workflow for Architect agent to perform comprehensive consistency checks on governance systems
+---
+
 # Architect Consistency Check Workflow
 
 **ID**: WF-ARCH-CONS-CHECK  
 **Owner**: Architect Agent  
 **Frequency**: On-demand (recommended: weekly basic, monthly comprehensive)  
-**Duration**: Variable (15-60 minutes depending on scope)  
+**Duration**: Variable (30-90 minutes depending on scope)  
 **Priority**: High
-**Workflow Type**: Single-Execution
+**Workflow Type**: Single-Execution (Utility/Tool Workflow)
 **Execution Modes**: Full Comprehensive, Basic Essential, Targeted, Quick Check
 
 ## Purpose
-Systematic validation of harness architecture consistency across the entire project to identify structural issues, broken references, terminology inconsistencies, and governance gaps.
+Systematic validation of harness architecture consistency across the entire project to identify structural issues, broken references, terminology inconsistencies, governance gaps, and architectural health using advanced fitness functions and multi-agent validation. The workflow continues through all phases even if individual validation steps fail, treating failures as informational for the final report rather than blocking progress.
 
 ## Scope
 **Harness Architecture Only**: Governance files, workflows, rules, documentation (excludes /app folder)
@@ -25,7 +33,9 @@ Systematic validation of harness architecture consistency across the entire proj
 - **Trigger**: User requests consistency check OR before/after major architectural changes
 - **End State**: Comprehensive consistency report generated in Logs/Architect/Consistency Review/
 
-## Workflow Steps (73 steps)
+## Workflow Steps (176 steps)
+
+**IMPORTANT**: All phases execute sequentially. Phase validation failures are treated as informational warnings and do not block workflow progression. All findings are aggregated in the final report for comprehensive review.
 
 ### Phase 0. Read Architect Rules + Scan Scope
 - 1. Read Rules/Architect/Architect_Rules.md to understand governance constraints
@@ -37,14 +47,14 @@ Systematic validation of harness architecture consistency across the entire proj
 - 7. **PRINT**: "Architect rules loaded - initiating harness architecture consistency scan"
 
 ### Phase 1. Select Scan Strategy
-- 7. Ask user to select scan strategy using popup menu:
-  - **Full Comprehensive**: All 13 consistency variables (recommended monthly)
+- 8. Ask user to select scan strategy using popup menu:
+  - **Full Comprehensive**: All consistency variables (recommended monthly)
   - **Basic Essential**: File references + terminology + workflow structure (recommended weekly)
   - **Targeted**: User selects specific consistency variables
   - **Quick Check**: File references only (recommended before changes)
-- 8. Store selected scan strategy for execution
-- 9. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
-- 10. **PRINT**: "Scan strategy selected - {Strategy} will govern consistency check scope"
+- 9. Store selected scan strategy for execution
+- 10. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Architect/Reference/Execution_Mode_Patterns.md)
+- 11. **PRINT**: "Scan strategy selected - {Strategy} will govern consistency check scope"
 
 ### Phase 2. Harness Architecture File Discovery
 - 12. Use `find` to enumerate all harness architecture files:
@@ -54,74 +64,189 @@ Systematic validation of harness architecture consistency across the entire proj
 - 15. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
 - 16. **PRINT**: "File discovery complete - {N} harness architecture files identified"
 
-### Phase 3. File Reference Consistency Check
-- 17. **SCAN**: Read each harness architecture file line by line to extract all file references
-- 18. Extract all file references using `grep -r "Workflow/[A-Za-z/]*\.md" /c/SovereignAI/Workflow/` as supplemental check
-- 19. Extract all Rules/ references using `grep -r "Rules/[A-Za-z/]*\.md" /c/SovereignAI/Workflow/` as supplemental check
-- 20. Validate each referenced file exists at specified path
-- 21. Log broken references with file locations
-- 22. **VALIDATION**: Validate file reference extraction completed successfully
-- 23. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
-- 24. **PRINT**: "File reference check complete - {N} broken references found"
+### Phase 3. Schema and Categorization Validation (if full scan)
+- 17. **AUTOMATED**: Run schema validation script: `python Scripts/Schema/validate_schemas.py`
+- 18. Schema Validation: Validate YAML frontmatter structure against JSON schemas for workflow, rules, agents, skill, reference, and template files
+- 19. Categorization Validation: Validate file placement and directory structure against categorization rules in Scripts/Schema/validate_schemas.py
+- 20. Parse validation output to extract schema validation failures and categorization violations
+- 21. **WARNING HANDLING**: Continue workflow even if schema validation fails - treat issues as informational for report generation
+- 22. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
+- 23. **PRINT**: "Schema and categorization validation complete - {N} schema issues, {N} categorization issues found (will be included in final report)"
 
-### Phase 4. Terminology Consistency Check
-- 25. **SCAN**: Read each harness architecture file line by line to check for outdated terminology
-- 26. Search for outdated terminology: `grep -r "gate" /c/SovereignAI/Workflow/` (should return no results if cleanup complete, except in meta-references like this line) as supplemental check
-- 27. Check for "Workflow_Template.md" location references
-- 28. Check agent naming convention consistency
-- 29. **VALIDATION**: Validate terminology check completed successfully
+### Phase 4. File Reference Consistency Check
+- 24. **SCAN**: Read each harness architecture file line by line to extract all file references
+- 25. Extract all file references using `grep -r "Workflow/[A-Za-z/]*\.md" /c/SovereignAI/Workflow/` as supplemental check
+- 26. Extract all Rules/ references using `grep -r "Rules/[A-Za-z/]*\.md" /c/SovereignAI/Workflow/` as supplemental check
+- 27. Validate each referenced file exists at specified path
+- 28. Log broken references with file locations
+- 29. **WARNING HANDLING**: Continue workflow even if file reference extraction fails - treat issues as informational for report generation
 - 30. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
-- 31. **PRINT**: "Terminology check complete - {N} terminology inconsistencies found"
+- 31. **PRINT**: "File reference check complete - {N} broken references found"
 
-### Phase 5. Workflow Structure Consistency Check
-- 32. **SCAN**: Read each workflow file line by line to compare against Workflow/Workflow_Reference/Workflow_Template.md
-- 33. Check for mandated sections: Workflow Header, Universal Framework References
-- 34. Validate workflow follows header structure requirements (ID, Owner, Frequency, Duration, Priority, Execution Modes, Purpose, Roles, Trigger and End State)
-- 35. Check Universal Framework References section presence and completeness
-- 36. Note any missing suggested phases (Phase 0, Phase 3, Phase 10) as informational, not as issues
-- 37. Validate step numbering sequential consistency (if steps are used)
-- 38. **EXECUTION MODES VALIDATION**: Validate that workflow defines its specific execution mode options in header and Phase 1 (accept workflow-specific mode definitions)
-- 39. **VALIDATION**: Validate workflow structure check completed successfully
-- 40. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
-- 41. **PRINT**: "Workflow structure check complete - {N} structure issues found"
+### Phase 5. Terminology Consistency Check
+- 32. **SCAN**: Read each harness architecture file line by line to check for outdated terminology
+- 33. Search for outdated terminology: `grep -r "gate" /c/SovereignAI/Workflow/` (should return no results if cleanup complete, except in meta-references like this line) as supplemental check
+- 34. Check for "Workflow_Template.md" location references
+- 35. Check agent naming convention consistency
+- 36. **WARNING HANDLING**: Continue workflow even if terminology check fails - treat issues as informational for report generation
+- 37. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
+- 38. **PRINT**: "Terminology check complete - {N} terminology inconsistencies found"
 
-### Phase 6. Additional Consistency Checks (if full scan)
-- 42. **SCAN**: Read each Rules/ file line by line to check structure and patterns
-- 43. Governance Rule Consistency: Check Rules/ files structure and patterns
-- 44. **SCAN**: Read INDEX.md and documentation files line by line to validate conventions
-- 45. Documentation Structure: Validate INDEX.md and documentation conventions
-- 46. **SCAN**: Read AGENTS.md line by line to compare with actual capabilities
-- 47. Agent Capability Alignment: Compare AGENTS.md with actual capabilities
-- 48. **SCAN**: Read framework files line by line to check proper separation and references with relevance requirement
-- 49. Universal Framework Coverage: Check proper separation and references with relevance requirement
-- 50. **SCAN**: Read workflow files line by line to validate execution patterns across agents
-- 51. Execution Strategy Consistency: Validate execution patterns across agents
-- 52. **SCAN**: Read workflow files line by line to check state schemas and tracking patterns
-- 53. State Management Consistency: Check state schemas and tracking patterns
-- 54. **SCAN**: Read configuration files line by line to validate runtime infrastructure documentation
-- 55. Runtime Prerequisites: Validate runtime infrastructure documentation
-- 56. **SCAN**: Read quality assessment files line by line to validate 1-5 scoring scale consistency
-- 57. Scoring Scale Consistency: Validate 1-5 scoring scale consistency across quality assessments
-- 58. **SCAN**: Read AGENTS.md line by line to validate behavior rules are properly defined
-- 59. Agent Behavior Rules Consistency: Validate AGENTS.md behavior rules are properly defined
-- 60. **SCAN**: Read each workflow file line by line to ensure Workflow/Workflow_Reference/Terminology_Glossary.md is referenced in Phase 0
-- 61. Terminology Glossary Reference Consistency: Ensure all workflows reference Workflow/Workflow_Reference/Terminology_Glossary.md in Phase 0
+### Phase 6. Workflow Structure Consistency Check
+- 39. **SCAN**: Read each workflow file line by line to compare against Workflow/Workflow_Reference/Workflow_Template.md
+- 40. Check for mandated sections: Workflow Header, Universal Framework References
+- 41. Validate workflow follows header structure requirements (ID, Owner, Frequency, Duration, Priority, Execution Modes, Purpose, Roles, Trigger and End State)
+- 42. Check Universal Framework References section presence and completeness
+- 43. Note any missing suggested phases (Phase 0, Phase 3, Phase 7) as informational, not as issues
+- 44. Validate step numbering sequential consistency (if steps are used)
+- 45. **EXECUTION MODES VALIDATION**: Validate that workflow defines its specific execution mode options in header and Phase 1 (accept workflow-specific mode definitions)
+- 46. **WARNING HANDLING**: Continue workflow even if workflow structure check fails - treat issues as informational for report generation
+- 47. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
+- 48. **PRINT**: "Workflow structure check complete - {N} structure issues found"
+
+### Phase 7. Markdown Structure Validation (if full scan)
+- 49. **SCAN**: Validate markdown document structure using mdsmith/mdschema patterns
+- 50. Heading Consistency: Check heading hierarchy and markdown heading levels
+- 51. Section Completeness: Validate required sections are present in documents
+- 52. Frontmatter Validation: Ensure YAML frontmatter follows proper structure
+- 53. Link Validation: Check internal and external links are valid
+- 54. Code Block Validation: Ensure code blocks have proper language tags
+- 55. **WARNING HANDLING**: Continue workflow even if markdown structure checks fail - treat issues as informational for report generation
+- 56. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
+- 57. **PRINT**: "Markdown structure validation complete - {N} structure issues found"
+
+### Phase 8. Basic Governance Validation (if full scan)
+- 58. **SCAN**: Read each Rules/ file line by line to check structure and patterns
+- 59. Governance Rule Consistency: Check Rules/ files structure and patterns
+- 60. **SCAN**: Read INDEX.md and documentation files line by line to validate conventions
+- 61. Documentation Structure: Validate INDEX.md and documentation conventions
 - 62. **SCAN**: Validate Logs/ directory structure follows agent-specific organization (Logs/{Agent}/BP/{App/Harness}/)
 - 63. Directory Structure Consistency: Validate Logs/ directory structure matches workflow output locations
-- 64. **VALIDATION**: Validate additional checks completed successfully
-- 65. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
-- 66. **PRINT**: "Additional consistency checks complete - full scan analysis finished"
+- 64. **WARNING HANDLING**: Continue workflow even if basic governance checks fail - treat issues as informational for report generation
+- 65. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
+- 66. **PRINT**: "Basic governance validation complete - {N} governance issues found"
 
-### Phase 7. Report Generation
-- 67. Create Logs/Architect/Consistency Review/ directory if not exists
-- 68. Generate report with timestamp: Scan_{YYYY-MM-DD_HH-MM-SS}.md
-- 69. Include executive summary with overall consistency score
-- 70. Document findings for each consistency variable checked
-- 71. Classify issues by severity (Critical/High/Medium/Low)
-- 72. Provide actionable recommendations with timeline
-- 73. **VALIDATION**: Validate report generation completed successfully
-- 74. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
-- 75. **PRINT**: "Report generation complete - workflow terminated"
+### Phase 9. Advanced Content Validation (if full scan)
+- 67. **SCAN**: Read AGENTS.md line by line to compare with actual capabilities
+- 68. Agent Capability Alignment: Compare AGENTS.md with actual capabilities
+- 69. **SCAN**: Read framework files line by line to check proper separation and references with relevance requirement
+- 70. Universal Framework Coverage: Check proper separation and references with relevance requirement
+- 71. **SCAN**: Read each workflow file line by line to ensure Workflow/Workflow_Reference/Terminology_Glossary.md is referenced in Phase 0
+- 72. Terminology Glossary Reference Consistency: Ensure all workflows reference Workflow/Workflow_Reference/Terminology_Glossary.md in Phase 0
+- 73. **WARNING HANDLING**: Continue workflow even if advanced content checks fail - treat issues as informational for report generation
+- 74. **STATUS TRACKING**: Update workflow status to "phase_9_complete"
+- 75. **PRINT**: "Advanced content validation complete - {N} content issues found"
+
+### Phase 10. Dependency Graph Analysis (if full scan)
+- 76. **ANALYZE**: Build dependency graph for harness architecture files
+- 77. Circular Dependency Detection: Identify circular dependencies in architecture
+- 78. Layer Violation Check: Validate layer boundaries and dependency direction
+- 79. Dependency Depth Analysis: Measure depth of dependency chains
+- 80. Coupling Analysis: Calculate coupling metrics between components
+- 81. Dependency Visualization: Generate dependency graph for review
+- 82. **WARNING HANDLING**: Continue workflow even if dependency graph analysis fails - treat issues as informational for report generation
+- 83. **STATUS TRACKING**: Update workflow status to "phase_10_complete"
+- 84. **PRINT**: "Dependency graph analysis complete - {N} circular dependencies, {N} layer violations"
+
+### Phase 11. Architecture as Code Validation (FUTURE IMPLEMENTATION)
+- 85. **FUTURE**: This phase requires deterministic compiler infrastructure not yet implemented
+- 86. **COMPILE**: Compile architecture specifications using deterministic compiler
+- 87. Intent Validation: Verify structural constraints against codebase using static analysis
+- 88. Behavioral Specifications: Compile behavioral specs to TLA+ for model verification
+- 89. Design Rationale: Capture and validate design rationale in machine-readable format
+- 90. Architecture Lint: Validate architecture structure and lint rules
+- 91. **WARNING HANDLING**: Continue workflow even if architecture compilation fails - treat issues as informational for report generation
+- 92. **STATUS TRACKING**: Update workflow status to "phase_11_complete"
+- 93. **PRINT**: "Architecture as code validation complete - {N} structural issues, {N} behavioral issues (FUTURE IMPLEMENTATION - infrastructure not available)"
+
+### Phase 12. Architecture Fitness Functions (FUTURE IMPLEMENTATION)
+- 94. **FUTURE**: This phase requires fitness function calculation infrastructure not yet implemented
+- 95. **ANALYZE**: Calculate architectural health metrics using fitness functions
+- 96. Cohesion Analysis: Measure module cohesion within agent-specific directories
+- 97. Coupling Analysis: Calculate coupling between different agent components
+- 98. Complexity Metrics: Assess complexity of workflow and rule structures
+- 99. Dependency Depth: Measure depth of dependency chains across architecture
+- 100. Baseline Comparison: Compare against previous fitness function results
+- 101. **WARNING HANDLING**: Continue workflow even if fitness function calculations fail - treat issues as informational for report generation
+- 102. **STATUS TRACKING**: Update workflow status to "phase_12_complete"
+- 103. **PRINT**: "Architecture fitness functions complete - cohesion: {X}%, coupling: {X}%, complexity: {X}% (FUTURE IMPLEMENTATION - infrastructure not available)"
+
+### Phase 13. Continuous Conformance Tracking (FUTURE IMPLEMENTATION)
+- 104. **FUTURE**: This phase requires conformance tracking infrastructure not yet implemented
+- 105. **ANALYZE**: Calculate distance-based conformance metrics against reference architecture
+- 106. Baseline Comparison: Compare current architecture against established baseline
+- 107. Drift Detection: Identify architectural drift since last consistency check
+- 108. Trend Analysis: Track conformance trends over time
+- 109. Distance Metrics: Calculate architectural distance using conformance functions
+- 110. Conformance Thresholds: Check against acceptable deviation limits
+- 111. **WARNING HANDLING**: Continue workflow even if conformance tracking fails - treat issues as informational for report generation
+- 112. **STATUS TRACKING**: Update workflow status to "phase_13_complete"
+- 113. **PRINT**: "Conformance tracking complete - distance: {X}, drift: {X}, trend: {X} (FUTURE IMPLEMENTATION - infrastructure not available)"
+
+### Phase 14. Runtime and Execution Validation (if full scan)
+- 114. **SCAN**: Read workflow files line by line to validate execution patterns across agents
+- 115. Execution Strategy Consistency: Validate execution patterns across agents
+- 116. **SCAN**: Read workflow files line by line to check state schemas and tracking patterns
+- 117. State Management Consistency: Check state schemas and tracking patterns
+- 118. **SCAN**: Read configuration files line by line to validate runtime infrastructure documentation
+- 119. Runtime Prerequisites: Validate runtime infrastructure documentation
+- 120. **SCAN**: Read quality assessment files line by line to validate 1-5 scoring scale consistency
+- 121. Scoring Scale Consistency: Validate 1-5 scoring scale consistency across quality assessments
+- 122. **SCAN**: Read AGENTS.md line by line to validate behavior rules are properly defined
+- 123. Agent Behavior Rules Consistency: Validate AGENTS.md behavior rules are properly defined
+- 124. **WARNING HANDLING**: Continue workflow even if runtime and execution checks fail - treat issues as informational for report generation
+- 125. **STATUS TRACKING**: Update workflow status to "phase_14_complete"
+- 126. **PRINT**: "Runtime and execution validation complete - {N} runtime issues found"
+
+### Phase 15. ADR Enforcement Integration (FUTURE IMPLEMENTATION)
+- 127. **FUTURE**: This phase requires ADR enforcement infrastructure (archgate/adr-kit) not yet implemented
+- 128. **ENFORCE**: Validate code against documented architectural decision records
+- 129. ADR Validation: Check that code complies with accepted ADRs using archgate/adr-kit patterns
+- 130. Rule Generation: Generate lint rules from ADRs for automated enforcement
+- 131. Context Injection: Ensure relevant ADRs are available to AI agents during implementation
+- 132. Anti-Rationalization Guards: Check for excuses that skip ADR documentation
+- 133. Verification Gates: Run ADR quality gates (Completeness, Evidence, Clarity, Consistency)
+- 134. Enforcement Hooks: Validate ADR compliance in pre-commit and CI pipelines
+- 135. **WARNING HANDLING**: Continue workflow even if ADR enforcement fails - treat issues as informational for report generation
+- 136. **STATUS TRACKING**: Update workflow status to "phase_15_complete"
+- 137. **PRINT**: "ADR enforcement complete - {N} ADR violations detected (FUTURE IMPLEMENTATION - infrastructure not available)"
+
+### Phase 16. Multi-Agent Architecture Validation (FUTURE IMPLEMENTATION)
+- 138. **FUTURE**: This phase requires multi-agent council infrastructure not yet implemented
+- 139. **COUNCIL**: Execute multi-agent validation using council approach for complex decisions
+- 140. Specialized Agents: Security, Performance, Structure agents analyze architecture
+- 141. AST-Aware RAG: Bridge semantic-structural gap using AST-aware retrieval
+- 142. LangGraph Orchestration: 5-node state machine for comprehensive validation
+- 143. Council Synthesis: Specialized agents synthesize comprehensive verdict
+- 144. Formal Verification: Optional Z3 formal verification for critical constraints
+- 145. **WARNING HANDLING**: Continue workflow even if multi-agent validation fails - treat issues as informational for report generation
+- 146. **STATUS TRACKING**: Update workflow status to "phase_16_complete"
+- 147. **PRINT**: "Multi-agent validation complete - {N} critical issues identified (FUTURE IMPLEMENTATION - infrastructure not available)"
+
+### Phase 17. Production Readiness Scoring (FUTURE IMPLEMENTATION)
+- 148. **FUTURE**: This phase requires production readiness scoring infrastructure not yet implemented
+- 149. **SCORE**: Calculate 0-100 production readiness score across dimensions
+- 150. Auth Coverage: Measure route auth coverage and security enforcement
+- 151. Secrets Hygiene: Validate secrets management and token storage practices
+- 152. Test Footprint: Assess test coverage and quality metrics
+- 153. Migration Discipline: Check database migration practices and data layer discipline
+- 154. Ops Readiness: Validate Docker, CI, and .env contract compliance
+- 155. Documentation/API Contract: Check API documentation completeness
+- 156. **WARNING HANDLING**: Continue workflow even if production readiness scoring fails - treat issues as informational for report generation
+- 157. **STATUS TRACKING**: Update workflow status to "phase_17_complete"
+- 158. **PRINT**: "Production readiness scoring complete - score: {X}/100, top issues prioritized (FUTURE IMPLEMENTATION - infrastructure not available)"
+
+### Phase 18. Report Generation
+- 159. Create Logs/Architect/Consistency Review/ directory if not exists
+- 160. Generate report with timestamp: Scan_{YYYY-MM-DD_HH-MM-SS}.md
+- 161. Include executive summary with overall consistency score
+- 162. Document findings for each consistency variable checked
+- 163. Classify issues by severity (Critical/High/Medium/Low)
+- 164. Provide actionable recommendations with timeline
+- 165. Include infrastructure gap analysis for FUTURE IMPLEMENTATION phases
+- 166. **WARNING HANDLING**: Continue workflow even if report generation fails - attempt manual report creation
+- 167. **STATUS TRACKING**: Update workflow status to "phase_18_complete"
+- 168. **PRINT**: "Report generation complete - workflow terminated"
 
 ---
 
@@ -195,7 +320,7 @@ Systematic validation of harness architecture consistency across the entire proj
   - Header metadata completeness (ID, Owner, Frequency, Duration, Priority, Execution Modes, Purpose, Roles, Trigger and End State)
   - Universal framework coverage (relevant frameworks)
   - Execution Modes definition in header and Phase 1 (workflow-specific options accepted)
-  - Suggested phases (Phase 0, Phase 3, Phase 10) - informational only
+  - Suggested phases (Phase 0, Phase 3, Phase 7) - informational only
   - STATUS TRACKING entries presence (informational)
   - VALIDATION entries presence (informational)
   - PRINT commands presence (informational)
@@ -305,6 +430,117 @@ Systematic validation of harness architecture consistency across the entire proj
   - Incremental report locations match workflow specifications
   - Directory structure supports workflow separation (App vs Harness outputs)
 
+### 14. Schema and Categorization Consistency
+- **Check**: File placement and YAML frontmatter structure comply with governance rules
+- **Scope**: All repository files, especially governance files
+- **Variables**:
+  - YAML frontmatter structure compliance with JSON schemas
+  - File placement compliance with categorization rules
+  - Directory structure adherence to Scripts/, Workflow/, Rules/, Docs/, Logs/, Agents/, .devin/ categories
+  - Subdirectory structure compliance with categorization system
+  - Naming convention adherence (workflow, rules, agents, skill, reference, template files)
+  - Root directory file placement compliance (only approved files at root)
+  - Schema validation errors and missing frontmatter
+  - Categorization violations (wrong directory, wrong subdirectory, naming violations)
+
+### 15. Architecture Fitness Functions (FUTURE IMPLEMENTATION)
+- **Check**: Architectural health metrics using fitness functions for quantitative assessment
+- **Scope**: Harness architecture structure and dependencies
+- **Variables**:
+  - Cohesion metrics (how well-related components are grouped together)
+  - Coupling metrics (interdependencies between components)
+  - Complexity metrics (structural complexity of workflows and rules)
+  - Dependency depth metrics (depth of dependency chains)
+  - Architectural health score (aggregated fitness function results)
+  - Trend analysis over time (baseline comparison)
+  - Fitness function thresholds and alerts
+
+### 16. Continuous Conformance Tracking (FUTURE IMPLEMENTATION)
+- **Check**: Distance-based conformance metrics against reference architecture
+- **Scope**: Overall architecture alignment with reference standards
+- **Variables**:
+  - Baseline conformance metrics (established reference architecture baseline)
+  - Architectural distance metrics (quantitative distance from reference)
+  - Drift detection (changes since last consistency check)
+  - Trend analysis (conformance improvement/degradation over time)
+  - Conformance thresholds (acceptable deviation limits)
+  - Alert conditions (when conformance falls below thresholds)
+  - Multi-level checking (incremental and non-blocking validation)
+
+### 17. Markdown Structure Validation
+- **Check**: Markdown document structure using mdsmith/mdschema patterns
+- **Scope**: All markdown files in harness architecture
+- **Variables**:
+  - Heading hierarchy consistency (proper markdown heading levels)
+  - Section completeness (required sections present)
+  - Frontmatter structure (YAML frontmatter compliance)
+  - Link validity (internal and external links work)
+  - Code block formatting (proper language tags)
+  - Table structure (markdown table formatting)
+  - List formatting (consistent list markers)
+  - Document schema compliance (matches defined schemas)
+
+### 18. Dependency Graph Analysis
+- **Check**: Dependency graph analysis for harness architecture files
+- **Scope**: All architectural dependencies and relationships
+- **Variables**:
+  - Circular dependencies (modules that depend on each other)
+  - Layer violations (dependencies crossing layer boundaries)
+  - Dependency depth (depth of dependency chains)
+  - Coupling metrics (interdependencies between components)
+  - Dependency graph structure (overall dependency topology)
+  - Fan-in/fan-out metrics (incoming/outgoing dependencies)
+  - Critical paths (dependencies that affect multiple components)
+  - Dependency violations (forbidden or unexpected dependencies)
+
+### 19. Architecture as Code Validation (FUTURE IMPLEMENTATION)
+- **Check**: Architecture compilation and verification using deterministic patterns
+- **Scope**: Architecture specifications and structural constraints
+- **Variables**:
+  - Structural constraints verification (layering, dependency boundaries, module containment)
+  - Behavioral specifications (TLA+ compilation and model verification)
+  - Design rationale capture (machine-readable decision records)
+  - Architecture lint validation (structural rule compliance)
+  - Deterministic verification (same inputs always produce same outputs)
+  - Contract validation (architecture contract compliance)
+
+### 20. ADR Enforcement Integration (FUTURE IMPLEMENTATION)
+- **Check**: Architectural decision records enforcement against implementation
+- **Scope**: ADR files, code changes, AI agent outputs
+- **Variables**:
+  - ADR compliance (code matches documented decisions)
+  - Rule generation (ADR-based lint rules)
+  - Context injection (relevant ADRs available to agents)
+  - Anti-rationalization guards (prevent ADR documentation skipping)
+  - Verification gates (ADR quality: Completeness, Evidence, Clarity, Consistency)
+  - Enforcement hooks (pre-commit and CI pipeline integration)
+  - ADR lifecycle management (supersession, retirement)
+
+### 21. Multi-Agent Architecture Validation (FUTURE IMPLEMENTATION)
+- **Check**: Multi-agent council approach for complex architectural decisions
+- **Scope**: Complex architectural decisions requiring multiple perspectives
+- **Variables**:
+  - Specialized agent analysis (Security, Performance, Structure)
+  - AST-aware RAG (semantic-structural gap bridging)
+  - LangGraph orchestration (multi-agent state machine)
+  - Council synthesis (specialized agent verdict integration)
+  - Formal verification (Z3 constraint solving)
+  - Confidence scoring (validation confidence levels)
+  - Multi-agent consensus (agreement on architectural issues)
+
+### 22. Production Readiness Scoring (FUTURE IMPLEMENTATION)
+- **Check**: Production readiness score across multiple dimensions
+- **Scope**: Overall system readiness for production deployment
+- **Variables**:
+  - Auth coverage (route auth coverage and security enforcement)
+  - Secrets hygiene (secrets management and token storage)
+  - Test footprint (test coverage and quality metrics)
+  - Migration discipline (database migration practices)
+  - Ops readiness (Docker, CI, .env contract compliance)
+  - Documentation/API contract (API documentation completeness)
+  - Production readiness score (0-100 overall score)
+  - Top issues prioritization (highest-impact fixes ranked)
+
 ## Consistency Check Process
 
 ### Process Step 1: Harness Architecture Scan
@@ -351,6 +587,12 @@ Systematic validation of harness architecture consistency across the entire proj
 **Medium Issues**: {N}
 **Low Issues**: {N}
 
+## Infrastructure Gap Analysis
+
+**Future Implementation Phases**: {N}
+**Missing Infrastructure**: {List of required tools/scripts}
+**Recommended Actions**: {Infrastructure implementation priorities}
+
 ## Consistency Variable Results
 
 ### 1. File Reference Consistency
@@ -360,14 +602,7 @@ Systematic validation of harness architecture consistency across the entire proj
 
 {Detailed findings}
 
-### 2. Terminology Consistency
-**Status**: {PASS/FAIL/WARNING}
-**Issues Found**: {N}
-**Critical Issues**: {N}
-
-{Detailed findings}
-
-[... continue for all 10 variables]
+[... continue for all 22 variables]
 
 ## Critical Issues Summary
 
@@ -399,6 +634,16 @@ Systematic validation of harness architecture consistency across the entire proj
 **Runtime Prerequisites Accuracy**: {X}%
 **Scoring Scale Consistency**: {X}%
 **Agent Behavior Rules Consistency**: {X}%
+**Directory Structure Consistency**: {X}%
+**Schema and Categorization Compliance**: {X}%
+**Architecture Fitness Functions**: {X}% (FUTURE IMPLEMENTATION)
+**Continuous Conformance Tracking**: {X}% (FUTURE IMPLEMENTATION)
+**Markdown Structure Validation**: {X}%
+**Dependency Graph Analysis**: {X}%
+**Architecture as Code Validation**: {X}% (FUTURE IMPLEMENTATION)
+**ADR Enforcement Integration**: {X}% (FUTURE IMPLEMENTATION)
+**Multi-Agent Architecture Validation**: {X}% (FUTURE IMPLEMENTATION)
+**Production Readiness Scoring**: {X}% (FUTURE IMPLEMENTATION)
 
 ## Recommendations
 
@@ -411,78 +656,26 @@ Systematic validation of harness architecture consistency across the entire proj
 ### Long-term Improvements (Medium/Low Priority)
 [Recommendations for medium/low priority issues]
 
-## Next Steps
-
-1. Review critical issues
-2. Implement immediate fixes
-3. Schedule short-term improvements
-4. Plan long-term architectural enhancements
+### Infrastructure Implementation Priorities
+[Recommendations for enabling future implementation phases]
 ```
 
-## Implementation Workflow
+---
 
-Yes, we need a separate workflow for implementing these changes. This should be:
+**Current Status**: Active  
+**Last Updated**: 2026-07-28  
+**Maintained By**: Architect Agent  
+**Review Frequency**: Monthly or when consistency needs change
 
-**Architect Consistency Fix Workflow**: 
-- Triggered after consistency check report review
-- Focuses on systematic resolution of identified issues
-- Prioritizes critical and high-priority issues
-- Maintains audit trail of changes
-- Includes validation after each fix
+## Changelog
 
-## Scan Frequency
-
-**Recommended Scan Schedule**:
-- **Before major architectural changes**: Full consistency check
-- **After architectural refactoring**: Full consistency check  
-- **Weekly automated scan**: Basic consistency check (file references only)
-- **Monthly comprehensive scan**: Full consistency check with detailed report
-
-**Note**: Workflow terminates after single scan execution. Do not loop automatically.
-
-## Scan Execution Commands
-
-### File Discovery
-```bash
-find /c/SovereignAI -name "*.md" -path "*/Workflow/*" -o -path "*/Rules/*" -o -path "*/.devin/*" -o -path "*/INDEX.md"
-```
-
-### Primary Scanning Method (MANDATORY)
-**CRITICAL**: All files must be read line by line using the `read` tool for comprehensive examination. This is the primary scanning method required for governance compliance.
-
-### Supplemental Pattern Extraction (NOT PRIMARY)
-```bash
-grep -r "Workflow/" /c/SovereignAI/Workflow/
-grep -r "Rules/" /c/SovereignAI/Workflow/
-grep -r "gate" /c/SovereignAI/Workflow/ (should return no results if cleanup complete, except in meta-references)
-```
-**Note**: These grep commands are supplemental checks only and must not replace comprehensive line-by-line scanning.
-
-### Cross-Reference Validation
-```bash
-# Extract all Workflow/ references and validate file existence
-grep -rh "Workflow/[A-Za-z/]*\.md" /c/SovereignAI/Workflow/ | sort -u
-```
-
-## Consistency Scoring
-
-**Overall Score Calculation**:
-- File Reference Consistency: 18%
-- Terminology Consistency: 9%
-- Workflow Structure Consistency: 18%
-- Governance Rule Consistency: 9%
-- Documentation Structure: 9%
-- Agent Capability Alignment: 9%
-- Universal Framework Coverage: 9%
-- Execution Strategy Consistency: 4%
-- State Management Consistency: 3%
-- Runtime Prerequisites: 2%
-- Scoring Scale Consistency: 5%
-- Agent Behavior Rules Consistency: 4%
-
-**Score Thresholds**:
-- 90-100: Excellent - No critical issues
-- 80-89: Good - Minor issues only
-- 70-79: Fair - Some medium issues
-- 60-69: Poor - High priority issues present
-- Below 60: Critical - Architectural integrity at risk
+**2026-07-28**: Workflow restructured for logical phase ordering
+- Reordered phases to follow logical progression: Setup → Basic Structure → Content Validation → Dependency Analysis → Advanced Analysis
+- Moved File Reference Consistency (Phase 7 → Phase 4)
+- Moved Terminology Consistency (Phase 9 → Phase 5)
+- Moved Workflow Structure Consistency (Phase 11 → Phase 6)
+- Extracted and reorganized Phase 12 into logical sub-phases (Phase 8, Phase 9, Phase 14)
+- Marked infrastructure-missing phases as FUTURE IMPLEMENTATION (Phases 11, 12, 13, 15, 16, 17)
+- Updated workflow step count from 159 to 180 steps
+- Added infrastructure gap analysis to report structure
+- Detailed consistency variables maintained at 22 total variables

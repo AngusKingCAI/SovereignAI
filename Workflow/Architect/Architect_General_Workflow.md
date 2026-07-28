@@ -1,3 +1,11 @@
+---
+id: wf-arch-001
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: General workflow for Architect agent to handle infrastructure design and implementation tasks
+---
+
 # Architect General Workflow
 
 **ID**: WF-ARCH-001  

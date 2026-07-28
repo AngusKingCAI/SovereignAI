@@ -1,3 +1,11 @@
+---
+id: wf-rev-bp-app-scanner
+status: active
+owner: reviewer-agent
+updated: 2026-07-28
+purpose: Comprehensive line-by-line scan of App/ directory files to verify compliance with Executor rules for modularity testing and best practices
+---
+
 # Reviewer BP App Scanner Workflow (Clean Version)
 
 **ID**: WF-REV-APP-001  

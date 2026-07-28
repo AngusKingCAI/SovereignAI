@@ -1,3 +1,11 @@
+---
+id: wf-plan-ref-exec-mode-patterns
+status: active
+owner: planner-agent
+updated: 2026-07-28
+purpose: Planner-specific when-to-use scenarios for execution mode selection
+---
+
 # Planner Execution Mode When-to-Use Scenarios
 
 **Purpose**: Planner-specific when-to-use scenarios for execution mode selection.

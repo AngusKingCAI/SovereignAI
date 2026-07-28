@@ -1,3 +1,11 @@
+---
+id: plan-workflow-fix-6
+status: completed
+owner: architect-agent
+updated: 2026-07-28
+purpose: Completed workflow fix plan for test path fixes and suggestion evaluation
+---
+
 Depends on: workflow-fix-5
 Vision principles: P1, P5, P11
 Open questions resolved: none

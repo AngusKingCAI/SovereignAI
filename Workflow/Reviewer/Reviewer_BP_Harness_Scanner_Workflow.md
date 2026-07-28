@@ -1,3 +1,11 @@
+---
+id: wf-rev-bp-harness-scanner
+status: active
+owner: reviewer-agent
+updated: 2026-07-28
+purpose: Comprehensive line-by-line scan of harness governance files to verify compliance with governance best practices and architectural consistency
+---
+
 # Reviewer BP Harness Scanner Workflow
 
 **ID**: WF-REV-HARNESS-001  

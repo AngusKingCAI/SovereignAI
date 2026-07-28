@@ -1,40 +1,78 @@
 # SovereignAI Repository INDEX
 
+**Project Root Files:**
+- `AGENTS.md` - Main agent configuration
+- `PRINCIPLES.md` - Constitutional framework  
+- `INDEX.md` - This file (repository index)
+- `STRUCTURE.md` - File placement reference
+
 **Folder Structure:**
 - `Agents/` - Other agents' governance files
-  - `Executor/`
-  - `Planner/`
-  - `Researcher/`
-  - `Reviewer/`
-- `App/` - SovereignAI application code
+  - `Architect/` - Architect agent governance
+  - `Executor/` - Executor agent governance
+  - `Planner/` - Planner agent governance
+  - `Researcher/` - Researcher agent governance
+  - `Reviewer/` - Reviewer agent governance
+- `App/` - SovereignAI application code (reference only)
 - `Docs/` - Documentation and research
-  - `Architecture/`
-  - `Claude Hooks/`
+  - `Architect/` - Architect agent documentation
+  - `Planner/` - Planner agent documentation
+  - `Executor/` - Executor agent documentation
+  - `Researcher/` - Researcher agent documentation
+  - `Reviewer/` - Reviewer agent documentation
   - `Code/` - Code documentation and references
-  - `Decisions/`
-  - `Devin Local IDE Documents/`
-  - `Governance/`
-  - `Guides/`
-  - `Implementation/`
-  - `Research/`
-  - `Sovereign AI Design Docs/`
-  - `Websites/`
+  - `Research/` - Research documentation
+  - `Architecture/` - Architecture documentation
+  - `Governance/` - Governance documentation
+  - `Repository/` - Repository documentation
+  - `Devin Local IDE Documents/` - Devin CLI documentation
+  - `External AI Reviews/` - External AI review documentation
+  - `Sovereign AI Design Docs/` - Sovereign AI design documentation
 - `.devin/` - Devin CLI configuration, skills, and hooks
+  - `skills/architect/` - Architect skill
+  - `skills/planner/` - Planner skill
+  - `skills/executor/` - Executor skill
+  - `skills/researcher/` - Researcher skill
+  - `skills/reviewer/` - Reviewer skill
 - `Logs/` - Agent logs and conversation history
+  - `Architect/` - Architect logs
+  - `Planner/` - Planner logs
+  - `Executor/` - Executor logs
+  - `Researcher/` - Researcher logs
+  - `Reviewer/` - Reviewer logs
+  - `.Archived/` - Archived logs
 - `Plans/` - Project planning documents
+  - `Completed/` - Completed plans
+  - `Queued/` - Queued plans
 - `Rules/` - Rule definitions for all agents
-  - `Architect/`
-  - `Executor/`
-  - `Planner/`
-  - `Researcher/`
-  - `Reviewer/`
+  - `Architect/` - Architect rules
+  - `Executor/` - Executor rules
+  - `Planner/` - Planner rules
+  - `Researcher/` - Researcher rules
+  - `Reviewer/` - Reviewer rules
 - `Scripts/` - Implementation scripts organized by category
-  - `Logging/` - Logging-related scripts
-  - `Tests/` - Test files organized by app section
+  - `Schema/` - Schema validation scripts
+  - `Infrastructure/` - Infrastructure automation scripts
+  - `Testing/` - Testing scripts
+  - `Build/` - Build scripts
+  - `Deployment/` - Deployment scripts
+  - `Maintenance/` - Maintenance scripts
+  - `Utilities/` - Utilities scripts
+  - `Logging/` - Logging scripts
+  - `Analysis/` - Analysis scripts
+  - `Misc/` - Miscellaneous scripts
+  - `Tests/` - Test files
 - `Workflow/` - Workflow definitions for all agents
-  - `Architect/`
-  - `Executor/`
-  - `Planner/`
-  - `Researcher/`
-  - `Reviewer/`
-  - `Workflow_Reference/`
+  - `Architect/` - Architect workflows
+  - `Executor/` - Executor workflows
+  - `Planner/` - Planner workflows
+  - `Researcher/` - Researcher workflows
+  - `Reviewer/` - Reviewer workflows
+  - `Workflow_Reference/` - Universal frameworks
+
+**Agent Types:**
+- **Architect** - System-level designer and infrastructure architect
+- **Planner** - Planning and task coordination agent
+- **Executor** - Implementation and execution agent
+- **Researcher** - Research and analysis agent
+- **Reviewer** - Review and compliance checking agent

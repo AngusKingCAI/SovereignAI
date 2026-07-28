@@ -1,3 +1,11 @@
+---
+id: wf-rev-ref-exec-mode-patterns
+status: active
+owner: reviewer-agent
+updated: 2026-07-28
+purpose: Reviewer-specific execution mode patterns for file processing workflows
+---
+
 # Reviewer Execution Mode Patterns
 
 **Purpose**: Reviewer-specific execution mode patterns for file processing workflows.

@@ -1,3 +1,11 @@
+---
+id: wf-arch-ref-exec-mode-patterns
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Architect-specific execution mode patterns for infrastructure and governance workflows
+---
+
 # Architect Execution Mode Patterns
 
 **Purpose**: Architect-specific execution mode patterns for infrastructure and governance workflows.

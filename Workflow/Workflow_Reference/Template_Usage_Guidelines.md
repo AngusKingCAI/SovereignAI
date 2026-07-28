@@ -1,3 +1,11 @@
+---
+id: wf-ref-template-usage
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Universal template usage guidelines for all agent workflows
+---
+
 # Template Usage Guidelines
 
 **Purpose**: Universal template usage guidelines for all agent workflows.

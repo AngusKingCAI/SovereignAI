@@ -1,3 +1,11 @@
+---
+id: wf-ref-convergence-loop
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Universal convergence loop patterns for iterative improvement processes across all agent workflows
+---
+
 # Convergence Loop Patterns
 
 **Purpose**: Universal convergence loop patterns for iterative improvement processes across all agent workflows.

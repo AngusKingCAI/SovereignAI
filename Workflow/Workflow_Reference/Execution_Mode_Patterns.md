@@ -1,3 +1,11 @@
+---
+id: wf-ref-exec-mode-patterns
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: General reference for execution mode patterns across all agent workflows
+---
+
 # Execution Mode Patterns (General Reference)
 
 **Purpose**: General reference for execution mode patterns across all agent workflows.

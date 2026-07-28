@@ -1,3 +1,11 @@
+---
+id: execution-log-workflow-fix-3
+status: archived
+owner: architect-agent
+updated: 2026-07-28
+purpose: Archived execution log for workflow-fix-3
+---
+
 # Execution Log: workflow-fix-3
 
 **Date**: 2026-07-18

@@ -1,3 +1,11 @@
+---
+id: wf-plan-scanner
+status: active
+owner: planner-agent
+updated: 2026-07-28
+purpose: Create implementation-ready plans from existing governance scan results
+---
+
 # Planner Plan Creation Workflow
 
 **ID**: WF-PLAN-SCAN-001  

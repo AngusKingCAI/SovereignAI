@@ -1,3 +1,11 @@
+---
+id: wf-plan-ref-batch-specs
+status: active
+owner: planner-agent
+updated: 2026-07-28
+purpose: Planner-specific plan batch execution patterns and scan plan categorization
+---
+
 # Planner Plan Batch Specifications
 
 **Purpose**: Planner-specific plan batch execution patterns and scan plan categorization.

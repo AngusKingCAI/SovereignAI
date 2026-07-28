@@ -1,3 +1,11 @@
+---
+id: execution-attestation-plan-workflow-fix
+status: archived
+owner: architect-agent
+updated: 2026-07-28
+purpose: Archived execution attestation for workflow-fix plan
+---
+
 # Execution Attestation — workflow-fix
 
 ## Phase Sequence Verification

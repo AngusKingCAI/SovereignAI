@@ -1,3 +1,11 @@
+---
+id: wf-exec-tmpl-handoff
+status: active
+owner: executor-agent
+updated: 2026-07-28
+purpose: Template for structured handoff files from Executor agent to Reviewer agent
+---
+
 # Executor Handoff Template
 
 **Purpose**: Template for structured handoff files from Executor agent to Reviewer agent

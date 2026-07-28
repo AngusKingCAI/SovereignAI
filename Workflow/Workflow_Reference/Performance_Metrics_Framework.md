@@ -1,3 +1,11 @@
+---
+id: wf-ref-perf-metrics
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Universal performance metrics framework for all agent workflows
+---
+
 # Performance Metrics Framework
 
 **Purpose**: Universal performance metrics framework for all agent workflows.

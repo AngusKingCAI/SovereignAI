@@ -1,3 +1,11 @@
+---
+id: wf-ref-impl-mode-patterns
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Universal implementation mode patterns for all agent workflows
+---
+
 # Implementation Mode Patterns
 
 **Purpose**: Universal implementation mode patterns for all agent workflows.

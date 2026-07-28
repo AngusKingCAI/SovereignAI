@@ -1,3 +1,11 @@
+---
+id: execution-log-prompt-workflow-fix-6
+status: archived
+owner: architect-agent
+updated: 2026-07-28
+purpose: Archived execution log for prompt-workflow-fix-6
+---
+
 # Execution Log: prompt-workflow-fix-6
 
 **Date**: 2026-07-18

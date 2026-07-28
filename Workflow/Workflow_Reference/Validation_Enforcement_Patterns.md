@@ -1,3 +1,11 @@
+---
+id: wf-ref-validation-enforcement
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Universal validation enforcement patterns for all agent workflows
+---
+
 # Validation Enforcement Patterns
 
 **Purpose**: Universal validation enforcement patterns for all agent workflows.

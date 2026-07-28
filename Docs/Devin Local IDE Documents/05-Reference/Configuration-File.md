@@ -1,3 +1,11 @@
+---
+id: configuration-file-reference
+status: active
+owner: architect-agent
+updated: 2026-07-28
+purpose: Complete reference for the Devin CLI config file format
+---
+
 # Configuration File
 
 Complete reference for the Devin CLI config file format

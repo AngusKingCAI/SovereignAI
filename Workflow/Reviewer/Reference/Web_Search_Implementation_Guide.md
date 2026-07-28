@@ -1,3 +1,11 @@
+---
+id: wf-rev-ref-web-search-guide
+status: active
+owner: reviewer-agent
+updated: 2026-07-28
+purpose: Practical implementation instructions for using robust web search infrastructure to prevent BP search failures
+---
+
 # Web Search Implementation Guide for Reviewer Agent
 
 ## Purpose
