@@ -97,8 +97,14 @@ def create_writer(report_dir: str, report_name: str) -> EfficientReportWriter:
 
 
 if __name__ == "__main__":
-    # Test the writer
-    writer = create_writer("Logs/Reviewer/BP/App", "SCAN-REPORT")
+    import sys
+    
+    # Parse command-line arguments
+    report_dir = sys.argv[1] if len(sys.argv) > 1 else "Logs/Reviewer/BP/App"
+    report_name = sys.argv[2] if len(sys.argv) > 2 else "SCAN-REPORT"
+    
+    # Create writer with provided arguments
+    writer = create_writer(report_dir, report_name)
     
     # Test file analysis
     test_analysis = {

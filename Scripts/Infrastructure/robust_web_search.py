@@ -90,6 +90,7 @@ class RobustWebSearch:
         self.rate_limiter = RateLimiter(min_delay_seconds=2.0)
         self.search_count = 0
         self.cache_hits = 0
+        self.cache_dir = cache_dir
     
     def search(self, query: str, force_refresh: bool = False) -> dict:
         """Perform web search with caching and rate limiting"""
@@ -143,8 +144,13 @@ def create_robust_search(cache_dir: str = "Logs/Reviewer/Cache/WebSearch") -> Ro
 
 
 if __name__ == "__main__":
+    import sys
+    
+    # Parse command-line arguments
+    cache_dir = sys.argv[1] if len(sys.argv) > 1 else "Logs/Reviewer/Cache/WebSearch"
+    
     # Test the robust web search
-    search = create_robust_search()
+    search = create_robust_search(cache_dir)
     
     test_queries = [
         "Python best practices 2024",
@@ -154,6 +160,7 @@ if __name__ == "__main__":
     
     print("Testing Robust Web Search")
     print("=" * 60)
+    print(f"Cache Directory: {cache_dir}")
     
     for query in test_queries:
         print(f"\nSearching: {query}")

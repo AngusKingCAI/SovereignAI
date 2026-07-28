@@ -74,7 +74,7 @@ Comprehensive line-by-line scan of every single file in the App/ directory to ve
 
 ### Phase 3. File Discovery + Categorization (Alphabetical Order)
 - 1. **PRE-FLIGHT VALIDATION**: Run file discovery validation script to ensure comprehensive App/ coverage:
-  - Execute: `python Scripts/Infrastructure/file_discovery_validation.py C:/SovereignAI/App --baseline Scripts/Infrastructure/app_directory_baseline.json`
+  - Execute: `python Scripts/Infrastructure/file_discovery_validation.py C:/SovereignAI/App --baseline Scripts/Infrastructure/app_directory_baseline.json --exclude ".git/*"`
   - **CRITICAL**: If validation fails (non-zero exit code), halt workflow and report missing directories
   - **CRITICAL**: Only proceed with scanning if validation passes (exit code 0)
 - 2. Discover every single file in App/ directory using find command - verify no files are missed
@@ -103,8 +103,8 @@ Comprehensive line-by-line scan of every single file in the App/ directory to ve
 - 5. **CRITICAL REQUIREMENT**: For each file, **SCAN** line by line for compliance against Executor rules and best practices - no file may be skipped
 - 6. **CRITICAL REQUIREMENT**: For each file, perform **{BP}** web search for current best practices - this is mandatory for every file
 - 7. **CRITICAL REQUIREMENT**: Process files in alphabetical order by full path as discovered in Phase 3
-- 8. **INFRASTRUCTURE SETUP**: Initialize efficient report writer using Scripts/Infrastructure/efficient_report_writer.py for better performance
-- 9. **WEB SEARCH ROBUSTNESS**: Use robust web search with caching and rate limiting (Scripts/Infrastructure/robust_web_search.py) to prevent failures
+- 8. **INFRASTRUCTURE SETUP**: Initialize efficient report writer using Scripts/Infrastructure/efficient_report_writer.py Logs/Reviewer/BP/App SCAN-REPORT for better performance
+- 9. **WEB SEARCH ROBUSTNESS**: Use robust web search with caching and rate limiting (Scripts/Infrastructure/robust_web_search.py Logs/Reviewer/BP/App/Cache/WebSearch) to prevent failures
 - 10. **VERBOSE OUTPUT**: Use **PRINT** commands after each file scan to maintain user visibility into progress, and explicitly output web search results to chat (not just to report) for maximum transparency
 - 11. **EXECUTION MODE SPECIFIC PROCESS**:
   - **Manual**: For each file individually: **SCAN** → **{BP}** web search → output web search results to chat → document findings → **PRINT** progress → user confirmation → next file

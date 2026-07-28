@@ -19,6 +19,10 @@
 | 33 | Model registry with provider sync, offline mode, SSE updates, and API layer | Complete (Rev17) | 2026-07-21 | Plans/completed/30-39/plan-33-Rev17.md |
 | 34 | Options Panel persistence with encryption, migrations, and EventBus integration | Complete (Rev17) | 2026-07-21 | Plans/completed/30-39/plan-34-Rev17.md |
 
+### Queued Plans (Plans 35-39)
+
+No queued plans currently.
+
 ### Current Plan Number: 35
 
 **Next Available Plan Number**: 35  
@@ -58,7 +62,7 @@
 - **Plan 32**: Depends on Plan 31 (UI tracing)
 - **Plan 33**: Depends on Plan 32 (Model registry)
 - **Plan 34**: Depends on Plan 33 (Options panel)
-- **Plan 35**: Next in sequence (governance scanning)
+- **Plan 35**: Next in sequence (available for assignment)
 
 ### Dependency Graph
 ```
@@ -72,7 +76,7 @@ Plan 33 (Model Registry)
     ↓
 Plan 34 (Options Panel)
     ↓
-Plan 35 (Governance Scanning) - NEXT
+Plan 35 (Next Plan) - AVAILABLE
 ```
 
 ---
@@ -92,7 +96,7 @@ Plan 35 (Governance Scanning) - NEXT
 - **Individual Plans**: plan-{N}-Rev{X}.md
 - **Batch Plans**: batch{N}-{M}-governance-plan.md
 - **Completed Plans**: Moved to Plans/completed/{range}/
-- **Active Plans**: Stored in Plans/ root directory
+- **Queued Plans**: Stored in Plans/Queued/ directory
 
 ---
 

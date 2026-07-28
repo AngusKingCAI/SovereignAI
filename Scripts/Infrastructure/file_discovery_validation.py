@@ -21,14 +21,16 @@ import json
 class FileDiscoveryValidator:
     """Validates comprehensive file discovery for code scanning workflows."""
 
-    def __init__(self, target_directory: str):
+    def __init__(self, target_directory: str, exclude_patterns: List[str] = None):
         """
         Initialize validator with target directory.
 
         Args:
             target_directory: Root directory to validate (e.g., "C:/SovereignAI/App")
+            exclude_patterns: List of directory patterns to exclude from validation (e.g., [".git/objects/*"])
         """
         self.target_directory = Path(target_directory)
+        self.exclude_patterns = exclude_patterns or [".git/objects/*"]
         self.expected_directories = set()
         self.discovered_files = set()
         self.discovered_directories = set()
@@ -41,6 +43,32 @@ class FileDiscoveryValidator:
             "validation_passed": False,
             "errors": []
         }
+
+    def _filter_excluded_directories(self, directories: Set[str]) -> Set[str]:
+        """
+        Filter out directories matching exclude patterns.
+
+        Args:
+            directories: Set of directory paths to filter
+
+        Returns:
+            Filtered set of directories excluding matched patterns
+        """
+        filtered = set()
+        for directory in directories:
+            exclude = False
+            for pattern in self.exclude_patterns:
+                # Normalize path separators for pattern matching
+                normalized_dir = directory.replace("\\", "/")
+                normalized_pattern = pattern.replace("\\", "/")
+                
+                # Simple pattern matching - check if pattern appears in path
+                if normalized_pattern.replace("*", "") in normalized_dir:
+                    exclude = True
+                    break
+            if not exclude:
+                filtered.add(directory)
+        return filtered
 
     def set_expected_directories(self, directories: List[str]):
         """
@@ -103,8 +131,12 @@ class FileDiscoveryValidator:
             )
             return True
 
+        # Filter out excluded directories from both sets
+        filtered_expected = self._filter_excluded_directories(self.expected_directories)
+        filtered_discovered = self._filter_excluded_directories(self.discovered_directories)
+
         # Check for missing directories
-        missing_dirs = self.expected_directories - self.discovered_directories
+        missing_dirs = filtered_expected - filtered_discovered
         self.validation_results["missing_directories"] = sorted(missing_dirs)
 
         if missing_dirs:
@@ -234,11 +266,19 @@ def main():
         help="Comma-separated list of expected directories",
         default=None
     )
+    parser.add_argument(
+        "--exclude",
+        help="Comma-separated list of directory patterns to exclude (e.g., .git/objects/*)",
+        default=".git/objects/*"
+    )
 
     args = parser.parse_args()
 
-    # Initialize validator
-    validator = FileDiscoveryValidator(args.target_directory)
+    # Parse exclude patterns
+    exclude_patterns = [p.strip() for p in args.exclude.split(',')] if args.exclude else None
+
+    # Initialize validator with exclude patterns
+    validator = FileDiscoveryValidator(args.target_directory, exclude_patterns)
 
     # Load baseline if provided
     if args.baseline:
