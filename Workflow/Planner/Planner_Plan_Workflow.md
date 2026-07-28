@@ -31,10 +31,12 @@ Create detailed, implementation-ready plans for AI-driven software development w
 - 8. **PRINT** "Planner rules, template, and batch specifications loaded"
 
 ### Phase 1. Select Execution Mode
-- 8. Ask user to select execution mode for this workflow using popup menu (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md for execution mode definitions)
+- 8. Ask user to select execution mode for this workflow using popup menu (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md for execution mode definitions):
+  - **Manual**: Stop at failures for human oversight - workflow halts at any failure point and awaits user intervention
+  - **Automatic**: Process automatically without user confirmation - workflow automatically stops on any failure without requiring human intervention
 - 9. Ask user to select workflow mode: Batch Mode (process plans sequentially, return to Phase 0 after each plan) or Single Plan Mode (process single plan and terminate)
 - 10. Store selected execution mode and workflow mode for failure handling throughout workflow
-- 11. **PRINT** "Execution mode selected - [Manual/Auto/Complete] will govern failure handling"
+- 11. **PRINT** "Execution mode selected - [Manual/Automatic] will govern failure handling"
 - 12. **PRINT** "Workflow mode selected - [Batch Mode/Single Plan Mode] will govern plan processing pattern"
 
 ### Phase 2. Planner Interaction

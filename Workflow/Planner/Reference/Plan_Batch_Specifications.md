@@ -8,11 +8,11 @@
 Plans are organized in batches of 5 plans per batch for systematic processing and issue resolution.
 
 ### Plan Numbering Pattern
-- **Standard Plans**: Plans 1-4, 6-9, 11-14, 16-19, 21-24, 26-29 (regular planning tasks)
-- **Scan Plans**: Plans 5, 10, 15, 20, 25, 30 (every 5th plan is a scan plan)
+- **Standard Plans**: Plans 1-4, 6-9, 11-14, 16-19, 21-24, 26-29, 31-34, 36-39 (regular planning tasks)
+- **Scan Plans**: Plans 5, 10, 15, 20, 25, 30, 35, 40 (every 5th plan is a scan plan)
 
 ### Scan Plan Purpose
-Scan plans (5, 10, 15, 20, 25, 30) are specifically designed to:
+Scan plans (5, 10, 15, 20, 25, 30, 35, 40) are specifically designed to:
 - Identify and fix issues discovered in previous plans
 - Perform systematic system scans for problems
 - Address accumulated issues from previous batch execution
@@ -28,6 +28,8 @@ Batch 3: Plans 11, 12, 13, 14, 15 (Plan 15 = Scan Plan)
 Batch 4: Plans 16, 17, 18, 19, 20 (Plan 20 = Scan Plan)
 Batch 5: Plans 21, 22, 23, 24, 25 (Plan 25 = Scan Plan)
 Batch 6: Plans 26, 27, 28, 29, 30 (Plan 30 = Scan Plan)
+Batch 7: Plans 31, 32, 33, 34, 35 (Plan 35 = Scan Plan)
+Batch 8: Plans 36, 37, 38, 39, 40 (Plan 40 = Scan Plan)
 ```
 
 ### Standard Plan Characteristics
@@ -49,7 +51,7 @@ The Planner workflow should:
 1. **Batch Mode**: Process plans sequentially through batch (return to Phase 0 after each plan for next plan in sequence)
 2. **Single Plan Mode**: Process single plan and terminate (no return to Phase 0)
 3. **Follow batch sequence**: Process plans in numerical order when in batch mode
-4. **Identify scan plans**: Recognize plan numbers 5, 10, 15, 20, 25, 30
+4. **Identify scan plans**: Recognize plan numbers 5, 10, 15, 20, 25, 30, 35, 40
 5. **Apply scan plan logic**: Use different approach for scan plans
 6. **Track batch progress**: Monitor batch completion status
 
