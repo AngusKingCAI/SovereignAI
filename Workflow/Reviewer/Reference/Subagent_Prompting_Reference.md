@@ -14,7 +14,7 @@ Single source of truth (SSOT) for subagent prompting patterns and templates used
 ## Subagent Usage Guidelines
 
 ### When to Use Subagents
-- **Large-Scale Scanning**: When scanning >150 files in App/ directory
+- **Large-Scale Scanning**: When scanning >150 files in target directory
 - **Module-Based Analysis**: When analyzing distinct module categories independently
 - **Parallel Processing**: When multiple independent analysis tasks can run concurrently
 - **Specialized Expertise**: When specific domain knowledge is required
@@ -27,30 +27,30 @@ Single source of truth (SSOT) for subagent prompting patterns and templates used
 
 ## Subagent Prompt Templates
 
-### Memory Components Subagent Prompt
+### Generic Subagent Prompt Template
 
-**Purpose**: Scan memory backend components for compliance
+**Purpose**: Scan specified files for compliance with governance best practices
 
-**Scope**: App/sovereignai/memory/ directory
+**Scope**: Target directory as specified in workflow
 
-**Files**: episodic_backend, persistent_graph, procedural_backend, trace_backend, working_backend, graph_backend, gateway, episodic_consumer (all file types)
+**Files**: [File list as specified in workflow] (all file types)
 
 **Prompt Template**:
 ```
-**SCAN** the following memory component files in App/sovereignai/memory/ directory line by line without skipping anything:
-- episodic_backend, persistent_graph, procedural_backend, trace_backend, working_backend, graph_backend, gateway, episodic_consumer (all file types)
+**SCAN** the following files in [target directory] line by line without skipping anything:
+- [file list as specified in workflow] (all file types)
 
 For each file:
 1. **SCAN** line by line without skipping anything
-2. **{BP}** web search for current best practices for memory component patterns (MANDATORY for every file)
-3. Verify compliance with Executor rules based on file type using Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md
+2. **{BP}** web search for current best practices for [file type/directory type] patterns (MANDATORY for every file)
+3. Verify compliance with compliance criteria based on file type using Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md
 4. Document specific changes needed based on **SCAN** results and **{BP}** best practice research
 
 Output format for each file:
 - File path
 - File type and complexity assessment
 - Compliance status based on file type (PASS/FAIL with details)
-- Modularity violations found (with line numbers for code files)
+- Violations found (with line numbers for code files)
 - Best practices issues found (with line numbers)
 - Specific changes needed with line references
 - Severity rating (CRITICAL/HIGH/MEDIUM/LOW) per Compliance_Criteria_Reference.md
@@ -58,92 +58,93 @@ Output format for each file:
 - Best practices research findings with sources
 ```
 
-### Agent System Components Subagent Prompt
+### Code-Specific Subagent Prompt Template
 
-**Purpose**: Scan agent system components for compliance
+**Purpose**: Scan code files for modularity and testing compliance
 
-**Scope**: App/sovereignai/agent/ directory
+**Scope**: Target directory containing code files
 
-**Files**: react, factory, history, prompts, structured_output, tool_session, types, config, protocols (all file types)
+**Files**: [code file list] (.py, .js, .ts, etc.)
 
 **Prompt Template**:
 ```
-**SCAN** the following agent system files in App/sovereignai/agent/ directory line by line without skipping anything:
-- react, factory, history, prompts, structured_output, tool_session, types, config, protocols (all file types)
+**SCAN** the following code files in [target directory] line by line without skipping anything:
+- [code file list] (.py, .js, .ts, etc.)
 
 For each file:
 1. **SCAN** line by line without skipping anything
-2. **{BP}** web search for current best practices for agent system patterns (MANDATORY for every file)
-3. Verify compliance with Executor rules based on file type using Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md
+2. **{BP}** web search for current best practices for [language] modularity and testing (MANDATORY for every file)
+3. Verify compliance with modularity and testing requirements using Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md
 4. Document specific changes needed based on **SCAN** results and **{BP}** best practice research
 
 Output format for each file:
 - File path
 - File type and complexity assessment
-- Compliance status based on file type (PASS/FAIL with details)
-- Modularity violations found (with line numbers for code files)
-- Best practices issues found (with line numbers)
+- Compliance status based on modularity requirements (PASS/FAIL with details)
+- Modularity violations found (with line numbers)
+- Testing violations found (with line numbers)
 - Specific changes needed with line references
 - Severity rating (CRITICAL/HIGH/MEDIUM/LOW) per Compliance_Criteria_Reference.md
 - Specific actionable recommendations
 - Best practices research findings with sources
 ```
 
-### Messaging/Event System Subagent Prompt
+### Configuration-Specific Subagent Prompt Template
 
-**Purpose**: Scan messaging and event system components for compliance
+**Purpose**: Scan configuration files for structure and security compliance
 
-**Scope**: App/sovereignai/shared/ and App/sovereignai/messaging/ directories
+**Scope**: Target directory containing configuration files
 
-**Files**: event_bus, trace_emitter, event_registry, bus, security, adapter, schema (all file types)
+**Files**: [configuration file list] (.json, .yaml, .toml, .ini, etc.)
 
 **Prompt Template**:
 ```
-**SCAN** the following messaging/event files in App/sovereignai/shared/ and App/sovereignai/messaging/ directories line by line without skipping anything:
-- event_bus, trace_emitter, event_registry, bus, security, adapter, schema (all file types)
+**SCAN** the following configuration files in [target directory] line by line without skipping anything:
+- [configuration file list] (.json, .yaml, .toml, .ini, etc.)
 
 For each file:
 1. **SCAN** line by line without skipping anything
-2. **{BP}** web search for current best practices for messaging/event patterns (MANDATORY for every file)
-3. Verify compliance with Executor rules based on file type using Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md
+2. **{BP}** web search for current best practices for [file type] configuration (MANDATORY for every file)
+3. Verify compliance with configuration requirements using Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md
 4. Document specific changes needed based on **SCAN** results and **{BP}** best practice research
 
 Output format for each file:
 - File path
 - File type and complexity assessment
-- Compliance status based on file type (PASS/FAIL with details)
-- Modularity violations found (with line numbers for code files)
-- Best practices issues found (with line numbers)
+- Compliance status based on configuration requirements (PASS/FAIL with details)
+- Structure violations found (with line numbers)
+- Security violations found (with line numbers)
 - Specific changes needed with line references
 - Severity rating (CRITICAL/HIGH/MEDIUM/LOW) per Compliance_Criteria_Reference.md
 - Specific actionable recommendations
 - Best practices research findings with sources
 ```
 
-### Other Modules Subagent Prompt
+### Documentation-Specific Subagent Prompt Template
 
-**Purpose**: Scan remaining modules not covered by specialized subagents
+**Purpose**: Scan documentation files for structure and content compliance
 
-**Scope**: App/sovereignai/ (excluding memory, agent, messaging directories)
+**Scope**: Target directory containing documentation files
 
-**Files**: model_registry/, orchestrator/, librarian/, lifecycle/, managers/, options/, skills/, etc. (all file types)
+**Files**: [documentation file list] (.md, .txt, .rst, etc.)
 
 **Prompt Template**:
 ```
-**SCAN** the remaining files in App/sovereignai/ (model_registry/, orchestrator/, librarian/, lifecycle/, managers/, options/, skills/, etc.) line by line without skipping anything (all file types).
+**SCAN** the following documentation files in [target directory] line by line without skipping anything:
+- [documentation file list] (.md, .txt, .rst, etc.)
 
 For each file:
 1. **SCAN** line by line without skipping anything
-2. **{BP}** web search for current best practices for specific module types (MANDATORY for every file)
-3. Verify compliance with Executor rules based on file type using Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md
+2. **{BP}** web search for current best practices for [file type] documentation (MANDATORY for every file)
+3. Verify compliance with documentation requirements using Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md
 4. Document specific changes needed based on **SCAN** results and **{BP}** best practice research
 
 Output format for each file:
 - File path
 - File type and complexity assessment
-- Compliance status based on file type (PASS/FAIL with details)
-- Modularity violations found (with line numbers for code files)
-- Best practices issues found (with line numbers)
+- Compliance status based on documentation requirements (PASS/FAIL with details)
+- Structure violations found (with line numbers)
+- Content violations found (with line numbers)
 - Specific changes needed with line references
 - Severity rating (CRITICAL/HIGH/MEDIUM/LOW) per Compliance_Criteria_Reference.md
 - Specific actionable recommendations

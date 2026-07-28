@@ -23,7 +23,7 @@ Single source of truth (SSOT) for detailed compliance criteria used in review wo
 - **Separation of Concerns**: Business logic should be separated from I/O operations
 
 #### Testing Requirements
-- **Test Location**: Tests must be in Scripts/Tests/ (never in App/ directory)
+- **Test Location**: Tests must be in Scripts/Tests/ (never in application code directories)
 - **Test Coverage**: Minimum 90% coverage for all functions
 - **Dependency Injection**: Tests should use dependency injection for isolation
 - **Mocking**: External dependencies (I/O, databases, APIs) must be mocked

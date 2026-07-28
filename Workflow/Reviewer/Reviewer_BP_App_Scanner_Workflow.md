@@ -118,7 +118,7 @@ Comprehensive line-by-line scan of every single file in the App/ directory to ve
 - 16. **VALIDATION**: Validate that **{BP}** web search was performed for every single file without exception
 - 17. **VALIDATION**: Validate that findings were documented to report file after each file/batch scan
 - 18. **VALIDATION**: Validate that files were processed in alphabetical order
-- 19. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Reviewer/Reference/Execution_Mode_Patterns.md)
+- 19. **EXECUTION MODE HANDLING**: Apply review mode handling patterns (see Workflow/Reviewer/Reference/Review_Mode_Patterns.md)
 - 20. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
 - 21. **PRINT** "Compliance scanning complete - [N] files **SCAN**ned line by line with **{BP}** best practice research for each file in alphabetical order - findings documented to SCAN-REPORT"
 

@@ -3,113 +3,200 @@ id: wf-rev-ref-review-mode-patterns
 status: active
 owner: reviewer-agent
 updated: 2026-07-28
-purpose: Reviewer-specific execution mode patterns for comprehensive code review workflows
+purpose: Reviewer-specific execution mode patterns for comprehensive file scanning workflows
 ---
 
-# Review Mode Patterns
+# Reviewer Execution Mode Patterns
 
-**Purpose**: Reviewer-specific execution mode patterns for comprehensive code review workflows.
+**Purpose**: Reviewer-specific execution mode patterns for comprehensive file scanning workflows.
 
-## Review Mode Definitions
+## Execution Mode Definitions
 
-### Manual Review Mode
-**Behavior**: Require user confirmation at every single review step for maximum oversight
-- **Checkpoint Handling**: Require user confirmation via popup menu before proceeding to each next review step (every step, not just failures)
-- **Failure Handling**: Stop review and await user intervention for retry/modify/abort decision
-- **User Control**: Maximum user control over review progression with step-by-step approval
-- **Risk Mitigation**: Human oversight at each review transition and every workflow step
+### Manual Mode
+**Behavior**: Process files one by one in alphabetical order, requiring user confirmation at each file for maximum oversight
+- **Checkpoint Handling**: Require user confirmation via popup menu before proceeding to each next file
+- **Failure Handling**: Stop workflow and await user intervention for retry/modify/abort decision
+- **User Control**: Maximum user control over file-by-file progression
+- **Risk Mitigation**: Human oversight at each file transition
+- **Use Case**: First comprehensive scan, high-risk files, learning phase
 
-### Auto Review Mode
-**Behavior**: Don't continue on review failures (auto-stop on errors, proceed automatically through successes)
-- **Checkpoint Handling**: Proceed automatically to next review step
-- **Failure Handling**: Stop review automatically without requiring human intervention
-- **Efficiency**: Balanced efficiency with failure detection
-- **Risk Mitigation**: Automatic failure detection and stopping
+### Manual Batched Mode
+**Behavior**: Process files in batches of 5-10 files in alphabetical order, requiring user confirmation between batches
+- **Checkpoint Handling**: Require user confirmation via popup menu before proceeding to each next batch
+- **Failure Handling**: Stop workflow and await user intervention if batch fails
+- **User Control**: Balanced user control with batch-level approval
+- **Risk Mitigation**: Human oversight at each batch transition with automated intra-batch processing
+- **Use Case**: Balanced efficiency with oversight, medium-risk scans
 
-### Complete Review Mode
-**Behavior**: Continue past review failures (ignore all errors for maximum coverage)
-- **Checkpoint Handling**: Proceed automatically to next review step
-- **Failure Handling**: Continue review automatically, ignoring failures
-- **Efficiency**: Maximum efficiency with failure tolerance
-- **Risk Mitigation**: Minimal risk mitigation
+### Automatic Mode
+**Behavior**: Process files one by one in alphabetical order automatically without user confirmation for maximum efficiency
+- **Checkpoint Handling**: Proceed automatically to next file without user intervention
+- **Failure Handling**: Stop workflow automatically if a file fails (auto-stop on errors)
+- **User Control**: Minimal user control with maximum automated processing efficiency
+- **Risk Mitigation**: Automatic failure detection and stopping at file level
+- **Use Case**: Large codebases, established processes, maximum efficiency
 
-## Review Mode Handling Patterns
+### Automatic Batched Mode
+**Behavior**: Process files in batches of 5-10 files in alphabetical order automatically without user confirmation
+- **Checkpoint Handling**: Proceed automatically through all batches without user intervention
+- **Failure Handling**: Stop workflow automatically if a batch fails (auto-stop on errors)
+- **User Control**: Minimal user control with maximum automated processing efficiency
+- **Risk Mitigation**: Automatic failure detection and stopping at batch level
+- **Use Case**: Large codebases, established processes, maximum efficiency
 
-### Step Transition Handling
-**Manual Review Mode Pattern**:
-1. Complete current review step action
-2. **EXECUTION MODE HANDLING**: Require user confirmation via popup menu before proceeding to next review step (CHECKPOINT at every step)
-3. **STATUS TRACKING**: Update workflow status to "step_{N}_complete"
-4. **PRINT**: Review step completion message with checkpoint confirmation
-5. Wait for user approval before proceeding to next review step
+## Execution Mode Handling Patterns
 
-**Auto Review Mode Pattern**:
-1. Complete current review step action
-2. **EXECUTION MODE HANDLING**: Proceed automatically to next review step if step succeeded, stop if step failed
-3. **STATUS TRACKING**: Update workflow status to "step_{N}_complete" (success) or "step_{N}_failed" (failure)
-4. **PRINT**: Review step completion message (success) or failure message with retry attempt information
-5. Proceed automatically to next review step on success, apply retry logic on failure
+### Manual Mode Pattern
+1. **SCAN** single file line by line
+2. **{BP}** web search for current best practices (MANDATORY)
+3. Document findings to incremental report
+4. **EXECUTION MODE HANDLING**: Require user confirmation via popup menu before proceeding to next file (CHECKPOINT)
+5. **STATUS TRACKING**: Update workflow status to "file_{N}_complete"
+6. **PRINT**: File completion message with checkpoint confirmation
+7. Wait for user approval before proceeding to next file
 
-**Complete Review Mode Pattern**:
-1. Complete current review step action (even if failures occur)
-2. **EXECUTION MODE HANDLING**: Proceed automatically to next review step regardless of success/failure
-3. **STATUS TRACKING**: Update workflow status to "step_{N}_complete" (even if step failed)
-4. **PRINT**: Review step completion message (including any failures but continue review)
-5. Proceed to next review step automatically
+### Manual Batched Mode Pattern
+1. **SCAN** batch of 5-10 files line by line
+2. **{BP}** web search for all files in batch (MANDATORY)
+3. Document findings to incremental report for all files
+4. **EXECUTION MODE HANDLING**: Require user confirmation via popup menu before proceeding to next batch (CHECKPOINT)
+5. **STATUS TRACKING**: Update workflow status to "batch_{N}_complete"
+6. **PRINT**: Batch completion message with checkpoint confirmation
+7. Wait for user approval before proceeding to next batch
 
-### Failure Handling Patterns
-**Manual Review Mode Failure Pattern**:
-1. Detect failure in current review step
-2. **EXECUTION MODE HANDLING**: Stop review and await user intervention for retry/modify/abort decision (CHECKPOINT)
-3. **STATUS TRACKING**: Update workflow status to "step_{N}_failed"
-4. **PRINT**: Failure message with error details
-5. Await user decision on recovery action
+### Automatic Mode Pattern
+1. **SCAN** single file line by line
+2. **{BP}** web search for current best practices (MANDATORY)
+3. Document findings to incremental report
+4. **EXECUTION MODE HANDLING**: Proceed automatically to next file if file succeeded, stop if file failed
+5. **STATUS TRACKING**: Update workflow status to "file_{N}_complete" (success) or "file_{N}_failed" (failure)
+6. **PRINT**: File completion message (success) or failure message with retry attempt information
+7. Proceed automatically to next file on success, apply retry logic on failure
 
-**Auto Review Mode Failure Pattern**:
-1. Detect failure in current review step
-2. **EXECUTION MODE HANDLING**: Stop review automatically without requiring human intervention
+### Automatic Batched Mode Pattern
+1. **SCAN** batch of 5-10 files line by line
+2. **{BP}** web search for all files in batch (MANDATORY)
+3. Document findings to incremental report for all files
+4. **EXECUTION MODE HANDLING**: Proceed automatically to next batch if batch succeeded, stop if batch failed
+5. **STATUS TRACKING**: Update workflow status to "batch_{N}_complete" (success) or "batch_{N}_failed" (failure)
+6. **PRINT**: Batch completion message (success) or failure message with retry attempt information
+7. Proceed automatically to next batch on success, apply retry logic on failure
+
+## Failure Handling Patterns
+
+### Manual Mode Failure Pattern
+1. Detect failure in current file scan
+2. **EXECUTION MODE HANDLING**: Stop workflow and await user intervention for retry/modify/abort decision (CHECKPOINT)
+3. **RETRY LOGIC**: Implement configurable retry with exponential backoff (max 3 retries) upon user approval
+4. **STATUS TRACKING**: Update workflow status to "file_{N}_failed"
+5. **PRINT**: Failure message with file-level error details
+6. Await user decision on recovery action
+
+### Manual Batched Mode Failure Pattern
+1. Detect failure in current batch
+2. **EXECUTION MODE HANDLING**: Stop workflow and await user intervention for retry/modify/abort decision (CHECKPOINT)
+3. **RETRY LOGIC**: Implement configurable retry with exponential backoff (max 3 retries) upon user approval
+4. **STATUS TRACKING**: Update workflow status to "batch_{N}_failed"
+5. **PRINT**: Failure message with batch-level error details
+6. Await user decision on recovery action
+
+### Automatic Mode Failure Pattern
+1. Detect failure in current file scan
+2. **EXECUTION MODE HANDLING**: Stop workflow automatically without requiring human intervention
 3. **RETRY LOGIC**: Implement configurable retry with exponential backoff (max 3 retries)
-4. **STATUS TRACKING**: Update workflow status to "step_{N}_failed"
+4. **STATUS TRACKING**: Update workflow status to "file_{N}_failed"
 5. **PRINT**: Failure message with retry attempt information
 6. Proceed with retry logic automatically
 
-**Complete Review Mode Failure Pattern**:
-1. Detect failure in current review step
-2. **EXECUTION MODE HANDLING**: Continue review automatically, ignoring the failure
+### Automatic Batched Mode Failure Pattern
+1. Detect failure in current batch
+2. **EXECUTION MODE HANDLING**: Stop workflow automatically without requiring human intervention
 3. **RETRY LOGIC**: Implement configurable retry with exponential backoff (max 3 retries)
-4. **STATUS TRACKING**: Update workflow status to "step_{N}_complete" (despite failure)
-5. **PRINT**: Failure message but continue review
-6. Proceed to next review step automatically
+4. **STATUS TRACKING**: Update workflow status to "batch_{N}_failed"
+5. **PRINT**: Failure message with retry attempt information
+6. Proceed with retry logic automatically
 
-## Review-Specific Patterns
+## Batch Configuration
 
-### File-by-File Review Pattern
-**Manual Mode**: Require user confirmation before proceeding to examine each file
-**Auto Mode**: Automatically proceed through files sequentially, stop on critical failures
-**Complete Mode**: Automatically proceed through all files regardless of findings
+### Batch Size Configuration
+- **Default Batch Size**: 5-10 files per batch
+- **Batch Size Criteria**: Based on file complexity and token usage
+- **Dynamic Adjustment**: Adjust batch size based on available context budget
+- **Batch Logging**: Log each batch with file list and processing metadata
 
-### Subagent Coordination Pattern
-**Manual Mode**: Require user confirmation before launching each subagent
-**Auto Mode**: Automatically launch subagents according to coordination strategy
-**Complete Mode**: Automatically launch all subagents regardless of individual failures
+### Batch Processing Order
+- **Alphabetical Order**: Files processed in alphabetical order by full path
+- **Batch Integrity**: All files in batch must complete before proceeding
+- **Context Management**: PostCompaction hook reloads governance files when context is compressed
+- **Incremental Documentation**: Findings documented immediately after each batch
 
-### Findings Consolidation Pattern
-**Manual Mode**: Require user confirmation before proceeding to consolidate each category of findings
-**Auto Mode**: Automatically consolidate findings as subagent results arrive
-**Complete Mode**: Automatically consolidate all findings regardless of subagent failures
+## Execution Mode Selection Guidelines
 
-## Usage Guidelines
+### Manual Mode Selection
+- First comprehensive scan of codebase
+- High-risk or security-critical files
+- Learning phase for new team members
+- When detailed review of each file is required
+- Unknown codebase or unfamiliar patterns
 
-### Mode Selection Process
-1. **Assess Review Scope**: Evaluate review complexity and file count
-2. **Present Options**: Present review mode options to user
-3. **Recommend**: Recommend appropriate mode based on assessment
-4. **User Selection**: User selects mode via popup menu
-5. **Store Mode**: Store selected review mode in workflow state
+### Manual Batched Mode Selection
+- Established scanning process
+- Medium-risk codebase
+- Balance between efficiency and oversight
+- Regular compliance scans
+- When batch-level review is sufficient
 
-### Mode Execution
-1. **Apply Pattern**: Apply appropriate review mode pattern
-2. **Handle Checkpoints**: Handle checkpoints according to mode
-3. **Handle Failures**: Handle failures according to mode
-4. **Track Progress**: Track progress according to mode requirements
-5. **Log Actions**: Log mode-specific actions for audit trail
+### Automatic Mode Selection
+- Well-established scanning process
+- Low-risk routine scans
+- Time-constrained individual file processing
+- When maximum efficiency for single files is required
+
+### Automatic Batched Mode Selection
+- Large codebases (>150 files)
+- Well-established scanning process
+- Low-risk routine scans
+- Time-constrained comprehensive scans
+- When maximum efficiency is required
+
+## Retry Logic with Exponential Backoff
+
+### Retry Configuration
+- **Max Retries**: 3 retries maximum
+- **Backoff Pattern**: Exponential backoff (1s, 2s, 4s, 8s, etc.)
+- **Retry Criteria**: Configurable based on error type
+- **Retry Logging**: Log each retry attempt with metadata
+- **Batch Retry**: For batched modes, retry entire batch or individual items based on failure scope
+
+### Retry Implementation
+```python
+retry_count = 0
+max_retries = 3
+backoff_time = 1
+
+while retry_count < max_retries:
+    try:
+        # Execute file or batch scan
+        execute_scan()
+        break  # Success, exit retry loop
+    except Exception as error:
+        retry_count += 1
+        if retry_count >= max_retries:
+            raise  # Max retries reached
+        time.sleep(backoff_time)
+        backoff_time *= 2  # Exponential backoff
+```
+
+## State Management
+
+### Mode Storage
+- **Mode Storage**: Store selected execution mode in workflow state
+- **Batch Size**: Store configured batch size for consistency
+- **Current Batch**: Track current batch number and file indices
+- **Failure Context**: Store failure context for retry logic
+
+### Audit Trail
+- **Mode Selection**: Log mode selection with reasoning
+- **Batch Processing**: Log each batch with file list and outcomes
+- **Failure Handling**: Log failure handling patterns and recovery actions
+- **User Checkpoints**: Log user checkpoint decisions in Manual modes

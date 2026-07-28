@@ -9,7 +9,7 @@ purpose: Practical implementation instructions for using robust web search infra
 # Web Search Implementation Guide for Reviewer Agent
 
 ## Purpose
-This guide provides practical implementation instructions for using the robust web search infrastructure to prevent BP (Best Practice) search failures during the Reviewer BP App Scanner Workflow.
+This guide provides practical implementation instructions for using the robust web search infrastructure to prevent BP (Best Practice) search failures during Reviewer BP Scanner workflows.
 
 ## Infrastructure Components
 
@@ -28,8 +28,8 @@ This guide provides practical implementation instructions for using the robust w
 # Instead of using edit tool for each file:
 from Scripts.Infrastructure.efficient_report_writer import create_writer
 
-# Initialize writer at workflow start
-writer = create_writer("Logs/Reviewer/BP/App", "SCAN-REPORT")
+# Initialize writer at workflow start (use appropriate subdirectory)
+writer = create_writer("Logs/Reviewer/BP/[App|Harness]", "SCAN-REPORT")
 
 # For each file analysis:
 analysis = {
@@ -62,8 +62,8 @@ writer.append_file_analysis(file_number, file_path, analysis)
 ```python
 from Scripts.Infrastructure.robust_web_search import create_robust_search
 
-# Initialize at workflow start
-search = create_robust_search("Logs/Reviewer/Cache/WebSearch")
+# Initialize at workflow start (use appropriate subdirectory)
+search = create_robust_search("Logs/Reviewer/BP/[App|Harness]/Cache/WebSearch")
 
 # For each file BP search:
 result = search.search(query)
@@ -86,7 +86,7 @@ else:
 python Scripts/Infrastructure/test_web_search.py
 ```
 
-## Integration with Reviewer BP App Scanner Workflow
+## Integration with Reviewer BP Scanner Workflows
 
 ### Phase 4 Enhancement
 
@@ -96,7 +96,7 @@ python Scripts/Infrastructure/test_web_search.py
 - 1. **INFRASTRUCTURE SETUP**: 
   - Initialize efficient report writer using Scripts/Infrastructure/efficient_report_writer.py
   - Initialize robust web search using Scripts/Infrastructure/robust_web_search.py
-  - Create cache directory at Logs/Reviewer/Cache/WebSearch
+  - Create cache directory at Logs/Reviewer/BP/[App|Harness]/Cache/WebSearch
   - Run diagnostic check using Scripts/Infrastructure/test_web_search.py
 ```
 
@@ -141,7 +141,7 @@ python Scripts/Infrastructure/test_web_search.py
 - **Technology-Specific Queries**: 24 hours (changes frequently)
 
 ### Cache Location
-- **Directory**: `Logs/Reviewer/Cache/WebSearch`
+- **Directory**: `Logs/Reviewer/BP/[App|Harness]/Cache/WebSearch`
 - **File Format**: JSON files with MD5 hash keys
 - **Automatic Cleanup**: Expired files removed on access
 
@@ -197,8 +197,9 @@ Include in **PRINT** commands:
 from Scripts.Infrastructure.efficient_report_writer import create_writer
 from Scripts.Infrastructure.robust_web_search import create_robust_search
 
-writer = create_writer("Logs/Reviewer/BP/App", "SCAN-REPORT")
-search = create_robust_search("Logs/Reviewer/Cache/WebSearch")
+# Use appropriate subdirectory based on scope (App or Harness)
+writer = create_writer("Logs/Reviewer/BP/[App|Harness]", "SCAN-REPORT")
+search = create_robust_search("Logs/Reviewer/BP/[App|Harness]/Cache/WebSearch")
 
 # For each file
 for file_number, file_path in enumerate(files, 1):
@@ -235,6 +236,6 @@ for file_number, file_path in enumerate(files, 1):
 - Web search failure rate < 5%
 - Cache hit rate > 30%
 - Report writing time reduced by 50%
-- All 140 files receive BP search
+- All files in scope receive BP search
 - No workflow stops due to web search issues
 - User visibility maintained throughout process
