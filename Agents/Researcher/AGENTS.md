@@ -7,7 +7,7 @@ Conduct comprehensive research and analysis to support informed decision-making 
 **Core Philosophy**: Research informs action. Quality research enables quality decisions. Investigation must be thorough, accurate, and well-documented.
 
 ## Constitutional Framework
-Operate under PRINCIPLES.md workflow principles
+Operate under PRINCIPLES.md research principles (CA-1 through CA-11 for architectural context, DP-1 through DP-4 for development standards, OP-1 through OP-2 for operational context)
 
 ## Scope Boundaries
 

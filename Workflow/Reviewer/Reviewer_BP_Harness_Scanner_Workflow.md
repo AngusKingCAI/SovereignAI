@@ -6,13 +6,13 @@
 **Duration**: Extended (comprehensive per-file analysis with mandatory **{BP}** web search for each file)  
 **Priority**: High
 **Workflow Type**: Single-Execution (Utility Workflow)
-**Execution Modes**: Manual, Manual Batched, Automatic Batched
+**Execution Modes**: Manual, Manual Batched, Automatic, Automatic Batched
 
 ## Purpose
 Comprehensive line-by-line scan of all harness governance files to verify compliance with governance best practices, documentation standards, and architectural consistency. Unlike the App scanner (Reviewer_BP_App_Scanner_Workflow) which focuses on code quality and modularity, this workflow focuses on governance quality: workflow structure compliance, rule definition standards, configuration validity, markdown consistency, and cross-reference accuracy. Every governance file must be checked against governance-specific best practices without exception, with mandatory **{BP}** web search for documentation and governance best practices.
 
 ## Scope
-**Harness Governance Only**: Workflow/, Rules/, .devin/, AGENTS.md, INDEX.md (excludes Docs/, Logs/, Plans/, App/ folders)
+**Harness Governance Only**: All files in Workflow/, Rules/, .devin/, AGENTS.md, INDEX.md (excludes Docs/, Logs/, Plans/, App/ folders)
 
 **Report Location**: Logs/Reviewer/BP/Harness/harness-best-practice-scan-[YYYY-MM-DD_HH-MM-SS].md
 
@@ -27,7 +27,7 @@ Comprehensive line-by-line scan of all harness governance files to verify compli
 - **Trigger**: User requests best practice compliance scan of harness governance files
 - **End State**: Comprehensive compliance report with findings, severity ratings, and actionable recommendations for governance improvements
 
-## Workflow Steps (68 steps)
+## Workflow Steps (69 steps)
 
 ### Phase 0. Read Reviewer Rules + Governance
 - 1. Read Rules/Reviewer/Reviewer_Rules.md to understand review criteria and governance compliance requirements
@@ -42,9 +42,10 @@ Comprehensive line-by-line scan of all harness governance files to verify compli
 - 8. Ask user to select execution mode for this workflow using popup menu:
   - **Manual**: Process files one by one in alphabetical order, requiring user confirmation at each file for maximum oversight (recommended for first comprehensive scan)
   - **Manual Batched**: Process files in batches of 5-10 files in alphabetical order, requiring user confirmation between batches for balanced efficiency with oversight
+  - **Automatic**: Process files one by one in alphabetical order automatically without user confirmation for maximum efficiency
   - **Automatic Batched**: Process files in batches of 5-10 files in alphabetical order automatically without user confirmation for maximum efficiency
 - 9. Store selected execution mode for file processing strategy throughout workflow
-- 10. **PRINT** "Execution mode selected - [Manual/Manual Batched/Automatic Batched] will govern file processing strategy"
+- 10. **PRINT** "Execution mode selected - [Manual/Manual Batched/Automatic/Automatic Batched] will govern file processing strategy"
 
 ### Phase 2. Scan Scope Definition
 - 11. Define scan scope: Harness governance files (Workflow/, Rules/, .devin/, AGENTS.md, INDEX.md)
@@ -59,108 +60,119 @@ Comprehensive line-by-line scan of all harness governance files to verify compli
 - 17. **PRINT** "Scan scope defined - Harness governance comprehensive compliance verification - every governance file will be examined"
 
 ### Phase 3. File Discovery + Categorization (Alphabetical Order)
-- 18. Discover every single markdown file in harness using find command - verify no files are missed:
-  - `find /c/SovereignAI -name "*.md" -path "*/Workflow/*" -o -path "*/Rules/*" -o -path "*/.devin/*" -o -path "*/INDEX.md" -o -path "*/AGENTS.md"`
-- 19. **CRITICAL REQUIREMENT**: Sort files alphabetically by full path from first folder to last folder (chronological scanning order)
-- 20. Categorize each file by type and complexity with detailed analysis:
+- 18. **PRE-FLIGHT VALIDATION**: Run file discovery validation script to ensure comprehensive harness coverage:
+  - Execute: `python Scripts/Infrastructure/file_discovery_validation.py C:/SovereignAI --baseline Scripts/Infrastructure/harness_directory_baseline.json`
+  - **CRITICAL**: If validation fails (non-zero exit code), halt workflow and report missing directories
+  - **CRITICAL**: Only proceed with scanning if validation passes (exit code 0)
+- 19. Discover every single file in harness using find command - verify no files are missed:
+  - `find /c/SovereignAI -path "*/Workflow/*" -o -path "*/Rules/*" -o -path "*/.devin/*" -o -path "*/INDEX.md" -o -path "*/AGENTS.md"`
+- 20. **CRITICAL REQUIREMENT**: Sort files alphabetically by full path from first folder to last folder (chronological scanning order)
+- 21. Categorize each file by type and complexity with detailed analysis:
   - Workflow files (Agent workflows, Reference files, Templates)
   - Rules files (Agent rules, governance rules)
   - Configuration files (.devin configuration, skills, hooks)
   - Governance files (AGENTS.md, INDEX.md)
-- 21. **CRITICAL REQUIREMENT**: Verify that all governance files are accounted for and no files are excluded from scanning scope
-- 22. **VALIDATION**: Validate that file discovery completed successfully and every single governance file is categorized without exception
-- 23. **VALIDATION**: Validate that files are sorted alphabetically by full path for consistent scanning order
-- 24. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
-- 25. **PRINT** "File discovery complete - [N] governance files categorized by type and sorted alphabetically - every governance file will be examined against best practices in chronological order"
+  - Script files (Python scripts, shell scripts)
+  - Data files (JSON, YAML, TOML, etc.)
+  - Documentation files (Markdown, text, etc.)
+- 22. **CRITICAL REQUIREMENT**: Verify that all governance files are accounted for and no files are excluded from scanning scope
+- 23. **VALIDATION**: Validate that file discovery completed successfully and every single governance file is categorized without exception
+- 24. **VALIDATION**: Validate that files are sorted alphabetically by full path for consistent scanning order
+- 25. **CROSS-CHECK VALIDATION**: Compare discovered files against validation baseline to ensure no governance directories were missed
+- 26. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
+- 27. **PRINT** "File discovery complete - [N] governance files categorized by type and sorted alphabetically - pre-flight validation passed - every governance file will be examined against best practices in chronological order"
 
 ### Phase 4. Compliance Scanning Execution (Execution Mode Dependent)
-- 26. **IF Manual mode**: Process files one by one in alphabetical order, requiring user confirmation at each file before proceeding
-- 27. **IF Manual Batched mode**: Process files in batches of 5-10 files in alphabetical order, requiring user confirmation between batches
-- 28. **IF Automatic Batched mode**: Process files in batches of 5-10 files in alphabetical order automatically without user confirmation
-- 29. **CRITICAL REQUIREMENT**: For each file, **SCAN** line by line for compliance against governance best practices - no file may be skipped
-- 30. **CRITICAL REQUIREMENT**: For each file, perform **{BP}** web search for current best practices - this is mandatory for every file
-- 31. **CRITICAL REQUIREMENT**: Process files in alphabetical order by full path as discovered in Phase 3
-- 32. **EXECUTION MODE SPECIFIC PROCESS**:
+- 28. **IF Manual mode**: Process files one by one in alphabetical order, requiring user confirmation at each file before proceeding
+- 29. **IF Manual Batched mode**: Process files in batches of 5-10 files in alphabetical order, requiring user confirmation between batches
+- 30. **IF Automatic mode**: Process files one by one in alphabetical order automatically without user confirmation
+- 31. **IF Automatic Batched mode**: Process files in batches of 5-10 files in alphabetical order automatically without user confirmation
+- 32. **CRITICAL REQUIREMENT**: For each file, **SCAN** line by line for compliance against governance best practices - no file may be skipped
+- 33. **CRITICAL REQUIREMENT**: For each file, perform **{BP}** web search for current best practices - this is mandatory for every file
+- 34. **CRITICAL REQUIREMENT**: Process files in alphabetical order by full path as discovered in Phase 3
+- 35. **EXECUTION MODE SPECIFIC PROCESS**:
   - **Manual**: For each file individually: **SCAN** → **{BP}** web search → document findings → user confirmation → next file
   - **Manual Batched**: For each batch of 5-10 files: **SCAN** all files in batch → **{BP}** web search for all files → document findings → user confirmation → next batch
+  - **Automatic**: For each file individually: **SCAN** → **{BP}** web search → document findings → next file (auto-stop on errors)
   - **Automatic Batched**: For each batch of 5-10 files: **SCAN** all files in batch → **{BP}** web search for all files → document findings → next batch (auto-stop on errors)
-- 33. For each file, verify governance-specific compliance criteria:
-  - **Workflow Files**: Template compliance (header structure, mandated sections), execution mode definition consistency, phase organization, universal framework references relevance, step numbering, terminology glossary references
-  - **Rules Files**: YAML frontmatter validity, rule categorization patterns, enforcement logic clarity, dependency documentation, behavioral rule consistency with AGENTS.md
-  - **Configuration Files**: JSON/YAML syntax validity, schema compliance, hook configuration patterns, skill definition completeness, cross-reference accuracy
-  - **Markdown Standards**: Heading hierarchy (H1-H6 consistency), list formatting (bullet/numbered), link validity (all links resolve), code block syntax (language specification), table structure correctness
-  - **Documentation Quality**: Clear purpose statements, role definitions completeness, trigger/end state specificity, step actionability, PRINT command clarity
+- 36. For each file, verify governance-specific compliance criteria based on file type:
+  - **Workflow Files (.md)**: Template compliance (header structure, mandated sections), execution mode definition consistency, phase organization, universal framework references relevance, step numbering, terminology glossary references
+  - **Rules Files (.md)**: YAML frontmatter validity, rule categorization patterns, enforcement logic clarity, dependency documentation, behavioral rule consistency with AGENTS.md
+  - **Configuration Files (.json, .yaml, .toml)**: JSON/YAML syntax validity, schema compliance, hook configuration patterns, skill definition completeness, cross-reference accuracy
+  - **Script Files (.py, .sh, .bash)**: Code quality standards, modularity, error handling, security practices, documentation completeness
+  - **Documentation Files (.md, .txt, .rst)**: Heading hierarchy (H1-H6 consistency), list formatting (bullet/numbered), link validity (all links resolve), code block syntax (language specification), table structure correctness
+  - **Markdown Standards**: Clear purpose statements, role definitions completeness, trigger/end state specificity, step actionability, PRINT command clarity
   - **Cross-Reference Integrity**: File path accuracy, workflow-to-rule reference validity, universal framework reference relevance, agent-specific reference alignment
   - **Terminology Consistency**: Alignment with Workflow/Workflow_Reference/Terminology_Glossary.md, consistent capitalization of {CAPITALIZED} terms, no outdated terminology
   - **Governance Best Practices**: Separation of universal vs agent-specific content, relevance requirement compliance, architectural consistency, DRY principles in governance
-- 34. Document specific changes needed for each file based on **SCAN** results and **{BP}** best practice research directly to report file
-- 35. **SUBAGENT PROMPTING**: Provide precise prompts with exact scope, criteria, and output format (see Reviewer_Rules.md subagent usage section)
-- 36. **VALIDATION**: Validate that **SCAN**ning completed successfully for every single governance file without exception
-- 37. **VALIDATION**: Validate that **{BP}** web search was performed for every single governance file without exception
-- 38. **VALIDATION**: Validate that findings were documented to report file after each file/batch scan
-- 39. **VALIDATION**: Validate that files were processed in alphabetical order
-- 40. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Reviewer/Reference/Execution_Mode_Patterns.md)
-- 41. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
-- 42. **PRINT** "Compliance scanning complete - [N] governance files **SCAN**ned line by line with **{BP}** best practice research for each file in alphabetical order - findings documented incrementally"
+- 37. Document specific changes needed for each file based on **SCAN** results and **{BP}** best practice research directly to report file
+- 38. **SUBAGENT PROMPTING**: Provide precise prompts with exact scope, criteria, and output format (see Reviewer_Rules.md subagent usage section)
+- 39. **VALIDATION**: Validate that **SCAN**ning completed successfully for every single governance file without exception
+- 40. **VALIDATION**: Validate that **{BP}** web search was performed for every single governance file without exception
+- 41. **VALIDATION**: Validate that findings were documented to report file after each file/batch scan
+- 42. **VALIDATION**: Validate that files were processed in alphabetical order
+- 43. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Reviewer/Reference/Execution_Mode_Patterns.md)
+- 44. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
+- 45. **PRINT** "Compliance scanning complete - [N] governance files **SCAN**ned line by line with **{BP}** best practice research for each file in alphabetical order - findings documented incrementally"
 
 ### Phase 5. Findings Consolidation (Incremental Report Processing)
-- 43. Collect all scanning results from incremental report file (Logs/Reviewer/BP/Harness/incremental-scan-report.md)
-- 44. Consolidate findings by category and severity with detailed file-specific analysis:
+- 46. Collect all scanning results from incremental report file (Logs/Reviewer/BP/Harness/incremental-scan-report.md)
+- 47. Consolidate findings by category and severity with detailed file-specific analysis:
   - **CRITICAL**: Governance violations that must be fixed (broken file references, missing mandated sections, invalid JSON/YAML syntax, missing execution modes definition) per file
   - **HIGH**: Major governance quality issues (template non-compliance, inconsistent execution modes, missing terminology glossary references, invalid cross-references) per file
   - **MEDIUM**: Documentation best practices improvements (markdown formatting, heading hierarchy, link validity, terminology consistency) per file
   - **LOW**: Minor governance suggestions (PRINT command clarity, step description improvements, formatting enhancements) per file
-- 45. **CRITICAL REQUIREMENT**: Verify that findings exist for every single governance file in incremental report - no file may be left unexamined or unreported
-- 46. Cross-validate findings to eliminate duplicates and ensure consistency across all governance files
-- 47. **VALIDATION**: Validate that findings consolidation completed successfully for every single governance file
-- 48. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
-- 49. **PRINT** "Findings consolidated from incremental report - [N] issues categorized by severity across [N] governance files - every governance file examined"
+- 48. **CRITICAL REQUIREMENT**: Verify that findings exist for every single governance file in incremental report - no file may be left unexamined or unreported
+- 49. Cross-validate findings to eliminate duplicates and ensure consistency across all governance files
+- 50. **VALIDATION**: Validate that findings consolidation completed successfully for every single governance file
+- 51. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
+- 52. **PRINT** "Findings consolidated from incremental report - [N] issues categorized by severity across [N] governance files - every governance file examined"
 
 ### Phase 6. Compliance Report Generation
-- 50. Generate comprehensive compliance report with detailed findings for every single governance file:
+- 53. Generate comprehensive compliance report with detailed findings for every single governance file:
   - Executive summary (overall compliance score, critical findings count, governance files examined)
   - Detailed findings by file with line numbers and specific violations for each governance file
   - Severity ratings with context for why each issue matters per governance file
   - Actionable recommendations with clear improvement paths per governance file
   - Compliance statistics (workflows compliant, rules properly structured, configuration valid) per governance file
-- 51. **CRITICAL REQUIREMENT**: Ensure report includes analysis for every single governance file - no governance file may be omitted from the report
-- 52. Save report to Logs/Reviewer/BP/Harness/harness-best-practice-scan-[YYYY-MM-DD_HH-MM-SS].md
-- 53. **VALIDATION**: Validate that report generation completed successfully and every governance file is included
-- 54. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
-- 55. **PRINT** "Compliance report generated - saved to Logs/Reviewer/BP/Harness/ - includes detailed analysis for every single governance file"
+- 54. **CRITICAL REQUIREMENT**: Ensure report includes analysis for every single governance file - no governance file may be omitted from the report
+- 55. Save report to Logs/Reviewer/BP/Harness/harness-best-practice-scan-[YYYY-MM-DD_HH-MM-SS].md
+- 56. **VALIDATION**: Validate that report generation completed successfully and every governance file is included
+- 57. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
+- 58. **PRINT** "Compliance report generated - saved to Logs/Reviewer/BP/Harness/ - includes detailed analysis for every single governance file"
 
 ### Phase 7. Final Validation + User Review
-- 56. Verify report completeness and accuracy
-- 57. Ensure all findings are properly documented with specific references
-- 58. Check that recommendations are actionable and clear
-- 59. **VALIDATION**: Validate that final validation completed successfully
-- 60. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns
-- 61. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
-- 62. **PRINT** "Final validation complete - compliance report ready for user review"
+- 59. Verify report completeness and accuracy
+- 60. Ensure all findings are properly documented with specific references
+- 61. Check that recommendations are actionable and clear
+- 62. **VALIDATION**: Validate that final validation completed successfully
+- 63. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns
+- 64. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
+- 65. **PRINT** "Final validation complete - compliance report ready for user review"
 
 ### Phase 8. Planner-Ready Document Generation
-- 63. Generate planner-ready implementation document structured for Planner agent consumption from consolidated findings:
+- 66. Generate planner-ready implementation document structured for Planner agent consumption from consolidated findings:
   - Implementation requirements organized by priority and dependency
   - Specific governance changes needed with file paths and line references
   - Template compliance improvements with refactoring guidance
   - Best practices implementations with specific recommendations
   - Cross-reference validation improvements
   - Distinguished from code-focused improvements in Reviewer_BP_App_Scanner_Workflow
-- 64. Structure document for Planner workflow compatibility:
+- 67. Structure document for Planner workflow compatibility:
   - Clear implementation phases with logical sequencing
   - Dependency mappings between governance changes
   - Risk assessment for each implementation block
   - Resource requirements and complexity estimates
-- 65. Save planner-ready document to Plans/Reviewer/harness-reviewer-implementation-plan-[timestamp].md
-- 66. **VALIDATION**: Validate that planner-ready document is complete and actionable
-- 67. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
-- 68. **PRINT** "Planner-ready document generated - saved to Plans/Reviewer/ - ready for Planner agent consumption"
+- 68. Save planner-ready document to Plans/Reviewer/harness-reviewer-implementation-plan-[timestamp].md
+- 69. **VALIDATION**: Validate that planner-ready document is complete and actionable
+- 70. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
+- 71. **PRINT** "Planner-ready document generated - saved to Plans/Reviewer/ - ready for Planner agent consumption"
 
 ### Phase 9. Workflow Termination (SINGLE-EXECUTION WORKFLOW)
-- 69. **PRINT** "Harness Best Practice Scanner workflow execution complete - workflow terminated"
-- 70. **PRINT** "Compliance report available in Logs/Reviewer/BP/Harness/ for review and action"
-- 71. **PRINT** "Planner-ready document available in Plans/Reviewer/ for implementation planning"
-- 72. **TERMINATE**: End workflow execution (do not return to step 1)
+- 72. **PRINT** "Harness Best Practice Scanner workflow execution complete - workflow terminated"
+- 73. **PRINT** "Compliance report available in Logs/Reviewer/BP/Harness/ for review and action"
+- 74. **PRINT** "Planner-ready document available in Plans/Reviewer/ for implementation planning"
+- 75. **TERMINATE**: End workflow execution (do not return to step 1)
 
 ---
 
@@ -199,28 +211,25 @@ For harness governance scanning (>150 files), use parallel subagents by director
 **Workflow Files Subagent Prompt:**
 ```
 **SCAN** the following workflow files in Workflow/ directory line by line without skipping anything:
-- All .md files in Workflow/Architect/, Workflow/Planner/, Workflow/Executor/, Workflow/Reviewer/, Workflow/Researcher/
-- All .md files in Workflow/Workflow_Reference/
+- All files in Workflow/Architect/, Workflow/Planner/, Workflow/Executor/, Workflow/Reviewer/, Workflow/Researcher/
+- All files in Workflow/Workflow_Reference/
 
 For each file:
 1. **SCAN** line by line without skipping anything
 2. **{BP}** web search for current best practices for workflow documentation and governance patterns (MANDATORY for every file)
-3. Verify compliance with governance best practices:
-   - Header structure (ID, Owner, Frequency, Duration, Priority, Execution Modes, Purpose, Roles, Trigger and End State)
-   - Phase organization and step numbering
-   - Universal Framework References presence and completeness
-   - Execution Modes definition in header and Phase 1
-   - Cross-reference accuracy to other governance files
-   - Markdown quality and formatting standards
+3. Verify compliance with governance best practices based on file type:
+   - Markdown files: Header structure (ID, Owner, Frequency, Duration, Priority, Execution Modes, Purpose, Roles, Trigger and End State), Phase organization and step numbering, Universal Framework References presence and completeness, Execution Modes definition in header and Phase 1, Cross-reference accuracy to other governance files, Markdown quality and formatting standards
+   - Script files: Code quality standards, modularity, error handling, security practices, documentation completeness
+   - Configuration files: JSON/YAML syntax validity, schema compliance, cross-reference accuracy
 4. Document specific changes needed based on **SCAN** results and **{BP}** best practice research
 
 Output format for each file:
 - File path
-- Workflow type and complexity assessment
-- Header compliance status (PASS/FAIL with details)
-- Structure compliance status (PASS/FAIL with details)
+- File type and complexity assessment
+- Compliance status based on file type (PASS/FAIL with details)
+- Header/structure compliance status (for markdown files)
 - Cross-reference validation (PASS/FAIL with details)
-- Markdown quality issues found (with line numbers)
+- Quality issues found (with line numbers)
 - Best practices issues found (with line numbers)
 - Specific changes needed with line references
 - Severity rating (CRITICAL/HIGH/MEDIUM/LOW)
@@ -231,17 +240,15 @@ Output format for each file:
 **Rules Files Subagent Prompt:**
 ```
 **SCAN** the following rules files in Rules/ directory line by line without skipping anything:
-- All .md files in Rules/Architect/, Rules/Planner/, Rules/Executor/, Rules/Reviewer/, Rules/Researcher/
+- All files in Rules/Architect/, Rules/Planner/, Rules/Executor/, Rules/Reviewer/, Rules/Researcher/
 
 For each file:
 1. **SCAN** line by line without skipping anything
 2. **{BP}** web search for current best practices for rule documentation and governance patterns (MANDATORY for every file)
-3. Verify compliance with governance best practices:
-   - YAML frontmatter structure and completeness
-   - Rule categorization and naming conventions
-   - Rule enforcement patterns and dependencies
-   - Cross-reference accuracy to workflows and other rules
-   - Markdown quality and formatting standards
+3. Verify compliance with governance best practices based on file type:
+   - Markdown files: YAML frontmatter structure and completeness, Rule categorization and naming conventions, Rule enforcement patterns and dependencies, Cross-reference accuracy to workflows and other rules, Markdown quality and formatting standards
+   - Script files: Code quality standards, modularity, error handling, security practices, documentation completeness
+   - Configuration files: JSON/YAML syntax validity, schema compliance, cross-reference accuracy
 4. Document specific changes needed based on **SCAN** results and **{BP}** best practice research
 
 [Same output format as workflow files]
@@ -250,19 +257,17 @@ For each file:
 **Configuration Files Subagent Prompt:**
 ```
 **SCAN** the following configuration files in .devin/ directory line by line without skipping anything:
-- All .md files in .devin/skills/
-- All .json files in .devin/ (hooks, config)
+- All files in .devin/skills/
+- All files in .devin/ (hooks, config)
 - AGENTS.md and INDEX.md in project root
 
 For each file:
 1. **SCAN** line by line without skipping anything
 2. **{BP}** web search for current best practices for configuration management and documentation (MANDATORY for every file)
-3. Verify compliance with governance best practices:
-   - JSON/YAML syntax validity and schema compliance
-   - Hook configuration structure and patterns
-   - Skill definition completeness and patterns
-   - Governance file documentation standards
-   - Cross-reference accuracy to workflows and rules
+3. Verify compliance with governance best practices based on file type:
+   - JSON/YAML files: Syntax validity and schema compliance, Hook configuration structure and patterns, Skill definition completeness and patterns, Cross-reference accuracy to workflows and rules
+   - Markdown files: Governance file documentation standards, cross-reference accuracy, markdown quality and formatting
+   - Script files: Code quality standards, modularity, error handling, security practices, documentation completeness
 4. Document specific changes needed based on **SCAN** results and **{BP}** best practice research
 
 [Same output format as workflow files]
@@ -346,3 +351,31 @@ Based on harness governance scan:
 - Rule reference validity
 - Universal framework reference relevance
 - Agent-specific reference alignment
+- Cross-reference integrity validation
+
+## Infrastructure Requirements
+
+### Required Scripts
+- **File Discovery Validation**: Scripts/Infrastructure/file_discovery_validation.py (for pre-flight directory coverage validation)
+- **Harness Baseline**: Scripts/Infrastructure/harness_directory_baseline.json (for expected governance directory structure)
+- **Efficient Report Writer**: Scripts/Infrastructure/efficient_report_writer.py (for fast file writing)
+- **Robust Web Search**: Scripts/Infrastructure/robust_web_search.py (for reliable web search with caching)
+- **Web Search Diagnostic**: Scripts/Infrastructure/test_web_search.py (for pre-flight testing)
+
+### Required Reference Files
+- **Compliance Criteria**: Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md
+- **Subagent Prompting**: Workflow/Reviewer/Reference/Subagent_Prompting_Reference.md
+- **Web Search Implementation**: Workflow/Reviewer/Reference/Web_Search_Implementation_Guide.md
+
+### Required Directory Structure
+- **Reports**: Logs/Reviewer/BP/Harness/ (for scan reports and final reports)
+- **Incremental**: Logs/Reviewer/BP/Harness/incremental-scan-report.md (for incremental scan results)
+- **Cache**: Logs/Reviewer/Cache/WebSearch/ (for web search caching)
+- **Plans**: Plans/Reviewer/ (for planner-ready documents)
+- **Baselines**: Scripts/Infrastructure/ (for directory validation baselines)
+
+### Pre-Flight Validation Requirements
+- **File Discovery Validation**: Must run validation script before scanning (Phase 3, Step 18)
+- **Baseline Comparison**: Must use harness_directory_baseline.json for expected structure
+- **Fail-Fast Enforcement**: Workflow must halt if validation fails (non-zero exit code)
+- **Cross-Check Validation**: Must compare discovered files against baseline (Phase 3, Step 25)

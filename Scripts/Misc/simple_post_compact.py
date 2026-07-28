@@ -13,15 +13,19 @@ from pathlib import Path
 def main():
     """Main hook execution"""
     try:
-        # Debug: Create a file to verify hook execution
-        debug_file = Path("C:/SovereignAI/.hook_execution_test.txt")
+        # Create logs directory for hook debugging
+        hook_logs_dir = Path("C:/SovereignAI/Logs/Hooks")
+        hook_logs_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Debug: Create a file to verify hook execution in proper location
+        debug_file = hook_logs_dir / "hook_execution_test.txt"
         debug_file.write_text(f"Hook executed at {__import__('datetime').datetime.now()}")
         
         # Read stdin for hook event data
         stdin_data = sys.stdin.read()
         
-        # Debug: Log stdin data to understand structure
-        debug_data_file = Path("C:/SovereignAI/.hook_stdin_debug.txt")
+        # Debug: Log stdin data to understand structure in proper location
+        debug_data_file = hook_logs_dir / "stdin_debug.txt"
         debug_data_file.write_text(f"Stdin data at {__import__('datetime').datetime.now()}:\n{stdin_data}")
         
         # Try to determine current agent from stdin data
@@ -88,8 +92,10 @@ def main():
         print(json.dumps(output))
         
     except Exception as e:
-        # Log error but don't fail the hook
-        debug_file = Path("C:/SovereignAI/.hook_error.txt")
+        # Log error but don't fail the hook - use proper log location
+        hook_logs_dir = Path("C:/SovereignAI/Logs/Hooks")
+        hook_logs_dir.mkdir(parents=True, exist_ok=True)
+        debug_file = hook_logs_dir / "hook_error.txt"
         debug_file.write_text(f"Hook error at {__import__('datetime').datetime.now()}: {e}")
         # Still output valid JSON even on error
         output = {

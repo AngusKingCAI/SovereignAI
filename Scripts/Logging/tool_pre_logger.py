@@ -8,6 +8,10 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+# Import session state and agent detection
+sys.path.insert(0, str(Path(__file__).parent))
+from session_state import read_agent_context
+
 
 def format_readable_entry(entry: dict) -> str:
     """Format a log entry for maximum readability with markdown formatting."""
@@ -90,13 +94,16 @@ def format_readable_entry(entry: dict) -> str:
 
 def get_session_file(session_id: str) -> Path:
     """Get or create the current session file."""
-    log_dir = Path("Logs/Architect/Session")
+    # Read agent from session state, default to Architect if not found
+    agent = read_agent_context(session_id) or "Architect"
+    
+    log_dir = Path(f"Logs/{agent}/Session")
     log_dir.mkdir(parents=True, exist_ok=True)
     
     # Find existing session file with matching session_id (case-insensitive)
     try:
         session_name = session_id.title() if session_id else "Unknown"
-        md_files = list(log_dir.glob(f"Architect_*_{session_name}.md"))
+        md_files = list(log_dir.glob(f"{agent}_*_{session_name}.md"))
         
         if md_files:
             md_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
@@ -105,7 +112,6 @@ def get_session_file(session_id: str) -> Path:
         pass
     
     # Create new session file
-    agent = "Architect"
     date_time = datetime.now().strftime("%d-%m-%y_%H-%M")
     session_name = session_id.title() if session_id else "Unknown"
     log_file = log_dir / f"{agent}_{date_time}_{session_name}.md"
@@ -136,6 +142,9 @@ def log_tool_pre() -> None:
     session_id = data.get("session_id", "unknown")
     session_file = get_session_file(session_id)
     
+    # Read agent from session state for logging
+    agent = read_agent_context(session_id) or "Architect"
+    
     # Extract tool information
     tool_name = data.get("tool_name", "unknown")
     tool_input = data.get("tool_input", {})
@@ -146,6 +155,7 @@ def log_tool_pre() -> None:
         "timestamp": datetime.now().isoformat(),
         "session_id": session_id,
         "prompt_id": data.get("prompt_id", "unknown"),
+        "agent": agent,
         "tool_name": tool_name,
         "tool_input": tool_input,
         "status": "attempt"
@@ -154,7 +164,7 @@ def log_tool_pre() -> None:
     with open(session_file, 'a', encoding='utf-8') as f:
         f.write(format_readable_entry(entry))
     
-    print(f"✅ Tool attempt logged: {tool_name}", file=sys.stderr)
+    print(f"✅ Tool attempt logged: {tool_name} (Agent: {agent})", file=sys.stderr)
 
 
 if __name__ == "__main__":

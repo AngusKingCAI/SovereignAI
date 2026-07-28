@@ -9,6 +9,11 @@ import textwrap
 from datetime import datetime
 from pathlib import Path
 
+# Import session state and agent detection
+sys.path.insert(0, str(Path(__file__).parent))
+from session_state import write_agent_context
+from agent_detector import detect_agent_from_prompt
+
 
 def format_readable_entry(entry: dict) -> str:
     """Format a log entry for maximum readability with markdown formatting."""
@@ -56,20 +61,25 @@ def track_prompt() -> None:
     prompt = data.get("prompt", "")
     timestamp = datetime.now().isoformat()
     
-    # Create log directory
-    log_dir = Path("Logs/Architect/Session")
+    # Detect agent from prompt content
+    agent = detect_agent_from_prompt(prompt)
+    
+    # Store agent context in session state for other hooks to use
+    write_agent_context(session_id, agent)
+    
+    # Create log directory based on detected agent
+    log_dir = Path(f"Logs/{agent}/Session")
     log_dir.mkdir(parents=True, exist_ok=True)
     
     # Use Agent_Date_Time_Session naming format
-    agent = "Architect"
     date_time = datetime.now().strftime("%d-%m-%y_%H-%M")
     # Capitalize session name (first letter of each word)
     session_name = session_id.title() if session_id else "Unknown"
     
     # Find existing session file with matching session_id (case-insensitive)
     try:
-        # Look for .md files
-        md_files = list(log_dir.glob(f"Architect_*_{session_name}.md"))
+        # Look for .md files for the detected agent
+        md_files = list(log_dir.glob(f"{agent}_*_{session_name}.md"))
         
         if md_files:
             # Sort by date to get the most recent
@@ -104,7 +114,7 @@ def track_prompt() -> None:
     with open(log_file, 'a', encoding='utf-8') as f:
         f.write(format_readable_entry(entry))
     
-    print(f"✅ Prompt tracked: {session_id}", file=sys.stderr)
+    print(f"✅ Prompt tracked: {session_id} (Agent: {agent})", file=sys.stderr)
 
 
 if __name__ == "__main__":

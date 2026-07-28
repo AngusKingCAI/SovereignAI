@@ -1,4 +1,4 @@
-# Reviewer BP App Scanner Workflow
+# Reviewer BP App Scanner Workflow (Clean Version)
 
 **ID**: WF-REV-APP-001  
 **Owner**: Reviewer Agent  
@@ -6,17 +6,22 @@
 **Duration**: Extended (comprehensive per-file analysis with mandatory **{BP}** web search for each file)  
 **Priority**: High
 **Workflow Type**: Single-Execution (Utility Workflow)
-**Execution Modes**: Manual, Manual Batched, Automatic Batched
+**Execution Modes**: Manual, Manual Batched, Automatic, Automatic Batched
 
 ## Purpose
 Comprehensive line-by-line scan of every single file in the App/ directory to verify compliance with Executor rules for modularity, testing, and best practices. This is an extremely detailed task requiring thorough examination of each file individually against established quality standards. Every file must be checked against current best practices without exception, with mandatory **{BP}** web search for each file to ensure compliance with the latest industry standards. This process is designed to be comprehensive and token-intensive, prioritizing thoroughness over speed.
 
 ## Scope
-**App/ Directory Only**: All Python files in App/ directory (no exceptions)
+**App/ Directory Only**: All files in App/ directory (no exceptions)
 
 **Report Location**: Logs/Reviewer/BP/App/best-practice-scan-[YYYY-MM-DD_HH-MM-SS].md
 
-**Incremental Report**: Logs/Reviewer/BP/App/incremental-scan-report.md
+**SCAN-REPORT**: Logs/Reviewer/BP/App/SCAN-REPORT-[YYYY-MM-DD_HH-MM-SS].md
+
+## Reference Files (SSOT)
+- **Compliance Criteria**: Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md (detailed compliance requirements by file type)
+- **Subagent Prompting**: Workflow/Reviewer/Reference/Subagent_Prompting_Reference.md (subagent prompt templates and patterns)
+- **Web Search Implementation**: Workflow/Reviewer/Reference/Web_Search_Implementation_Guide.md (robust web search infrastructure)
 
 ## Roles and Owners
 - **Reviewer Agent**: Executes scanning workflow, coordinates subagents for large-scale scanning, consolidates findings
@@ -27,7 +32,7 @@ Comprehensive line-by-line scan of every single file in the App/ directory to ve
 - **Trigger**: User requests best practice compliance scan of App/ directory
 - **End State**: Comprehensive compliance report with findings, severity ratings, and actionable recommendations; planner-ready document for implementation planning
 
-## Workflow Steps (65 steps)
+## Workflow Steps (69 steps)
 
 ### Phase 0. Read Reviewer Rules + Governance
 - 1. Read Rules/Reviewer/Reviewer_Rules.md to understand review criteria and modular compliance requirements
@@ -42,120 +47,125 @@ Comprehensive line-by-line scan of every single file in the App/ directory to ve
 - 8. Ask user to select execution mode for this workflow using popup menu:
   - **Manual**: Process files one by one in alphabetical order, requiring user confirmation at each file for maximum oversight (recommended for first comprehensive scan)
   - **Manual Batched**: Process files in batches of 5-10 files in alphabetical order, requiring user confirmation between batches for balanced efficiency with oversight
+  - **Automatic**: Process files one by one in alphabetical order automatically without user confirmation for maximum efficiency
   - **Automatic Batched**: Process files in batches of 5-10 files in alphabetical order automatically without user confirmation for maximum efficiency
 - 9. Store selected execution mode for file processing strategy throughout workflow
-- 10. **PRINT** "Execution mode selected - [Manual/Manual Batched/Automatic Batched] will govern file processing strategy"
+- 10. **PRINT** "Execution mode selected - [Manual/Manual Batched/Automatic/Automatic Batched] will govern file processing strategy"
 
 ### Phase 2. Scan Scope Definition
-- 11. Define scan scope: App/ directory (every single Python file - no exceptions)
+- 11. Define scan scope: App/ directory (every single file - no exceptions)
 - 12. Determine scanning strategy based on file count and complexity:
   - Small scale (<50 files): Direct scanning by Reviewer agent
   - Medium scale (50-150 files): Chunked scanning with subagents
   - Large scale (>150 files): Parallel subagent scanning by module
-- 13. **CRITICAL REQUIREMENT**: Every single file must be checked against best practices - no file may be skipped or excluded
+- 13. **CRITICAL REQUIREMENT**: Every single file must be checked against best practices - no file may be skipped
 - 14. **EXECUTION MODE HANDLING**: Apply review mode handling patterns (see Workflow/Reviewer/Reference/Review_Mode_Patterns.md)
 - 15. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
 - 16. **PRINT** "Scan scope defined - App/ directory comprehensive compliance verification - every file will be examined"
 
 ### Phase 3. File Discovery + Categorization (Alphabetical Order)
-- 17. Discover every single Python file in App/ directory using find command - verify no files are missed
-- 18. **CRITICAL REQUIREMENT**: Sort files alphabetically by full path from first folder to last folder (chronological scanning order)
-- 19. Categorize each file by module and complexity with detailed analysis:
-  - Memory components (episodic_backend.py, persistent_graph.py, etc.)
-  - Agent system components (react.py, factory.py, etc.)
-  - Messaging/event system (event_bus.py, trace_emitter.py, etc.)
-  - Model registry components (sync.py, database.py, etc.)
-  - Orchestrator components (facade.py, dispatcher.py, etc.)
+- 17. **PRE-FLIGHT VALIDATION**: Run file discovery validation script to ensure comprehensive App/ coverage:
+  - Execute: `python Scripts/Infrastructure/file_discovery_validation.py C:/SovereignAI/App --baseline Scripts/Infrastructure/app_directory_baseline.json`
+  - **CRITICAL**: If validation fails (non-zero exit code), halt workflow and report missing directories
+  - **CRITICAL**: Only proceed with scanning if validation passes (exit code 0)
+- 18. Discover every single file in App/ directory using find command - verify no files are missed
+- 19. **CRITICAL REQUIREMENT**: Sort files alphabetically by full path from first folder to last folder (chronological scanning order)
+- 20. Categorize each file by module and complexity with detailed analysis:
+  - Memory components (episodic_backend, persistent_graph, etc.)
+  - Agent system components (react, factory, etc.)
+  - Messaging/event system (event_bus, trace_emitter, etc.)
+  - Model registry components (sync, database, etc.)
+  - Orchestrator components (facade, dispatcher, etc.)
   - Skills/adapters integration (various adapter and skill files)
-- 20. **CRITICAL REQUIREMENT**: Verify that all files are accounted for and no files are excluded from scanning scope
-- 21. **VALIDATION**: Validate that file discovery completed successfully and every single file is categorized without exception
-- 22. **VALIDATION**: Validate that files are sorted alphabetically by full path for consistent scanning order
-- 23. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
-- 24. **PRINT** "File discovery complete - [N] Python files categorized by module and sorted alphabetically - every file will be examined against best practices in chronological order"
+  - Configuration files (JSON, YAML, TOML, etc.)
+  - Documentation files (Markdown, text, etc.)
+- 21. **CRITICAL REQUIREMENT**: Verify that all files are accounted for and no files are excluded from scanning scope
+- 22. **VALIDATION**: Validate that file discovery completed successfully and every single file is categorized without exception
+- 23. **VALIDATION**: Validate that files are sorted alphabetically by full path for consistent scanning order
+- 24. **CROSS-CHECK VALIDATION**: Compare discovered files against validation baseline to ensure no App/ directories were missed
+- 25. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
+- 26. **PRINT** "File discovery complete - [N] files categorized by module and sorted alphabetically - pre-flight validation passed - every file will be examined against best practices in chronological order"
 
 ### Phase 4. Compliance Scanning Execution (Execution Mode Dependent)
-- 25. **IF Manual mode**: Process files one by one in alphabetical order, requiring user confirmation at each file before proceeding
-- 26. **IF Manual Batched mode**: Process files in batches of 5-10 files in alphabetical order, requiring user confirmation between batches
-- 27. **IF Automatic Batched mode**: Process files in batches of 5-10 files in alphabetical order automatically without user confirmation
-- 28. **CRITICAL REQUIREMENT**: For each file, **SCAN** line by line for compliance against Executor rules and best practices - no file may be skipped
-- 29. **CRITICAL REQUIREMENT**: For each file, perform **{BP}** web search for current best practices - this is mandatory for every file
-- 30. **CRITICAL REQUIREMENT**: Process files in alphabetical order by full path as discovered in Phase 3
-- 31. **EXECUTION MODE SPECIFIC PROCESS**:
-  - **Manual**: For each file individually: **SCAN** → **{BP}** web search → document findings → user confirmation → next file
-  - **Manual Batched**: For each batch of 5-10 files: **SCAN** all files in batch → **{BP}** web search for all files → document findings → user confirmation → next batch
-  - **Automatic Batched**: For each batch of 5-10 files: **SCAN** all files in batch → **{BP}** web search for all files → document findings → next batch (auto-stop on errors)
-- 32. For each file, verify compliance criteria:
-  - Function-by-function modularity (single responsibility, clear interfaces, independent testability)
-  - Testing requirements (tests exist in Scripts/Tests/, dependency injection, mocking, coverage ≥90%)
-  - Code quality standards (error handling, readability, security practices, maintainability)
-  - Best practices adherence (SOLID principles, design patterns, separation of concerns, industry standards)
-- 33. Document specific changes needed for each file based on **SCAN** results and **{BP}** best practice research directly to report file
-- 34. **SUBAGENT PROMPTING**: Provide precise prompts with exact scope, criteria, and output format (see Reviewer_Rules.md subagent usage section)
-- 35. **VALIDATION**: Validate that **SCAN**ning completed successfully for every single file without exception
-- 36. **VALIDATION**: Validate that **{BP}** web search was performed for every single file without exception
-- 37. **VALIDATION**: Validate that findings were documented to report file after each file/batch scan
-- 38. **VALIDATION**: Validate that files were processed in alphabetical order
-- 39. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Reviewer/Reference/Execution_Mode_Patterns.md)
-- 40. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
-- 41. **PRINT** "Compliance scanning complete - [N] files **SCAN**ned line by line with **{BP}** best practice research for each file in alphabetical order - findings documented incrementally"
+- 27. **IF Manual mode**: Process files one by one in alphabetical order, requiring user confirmation at each file before proceeding
+- 28. **IF Manual Batched mode**: Process files in batches of 5-10 files in alphabetical order, requiring user confirmation between batches
+- 29. **IF Automatic mode**: Process files one by one in alphabetical order automatically without user confirmation
+- 30. **IF Automatic Batched mode**: Process files in batches of 5-10 files in alphabetical order automatically without user confirmation
+- 31. **CRITICAL REQUIREMENT**: For each file, **SCAN** line by line for compliance against Executor rules and best practices - no file may be skipped
+- 32. **CRITICAL REQUIREMENT**: For each file, perform **{BP}** web search for current best practices - this is mandatory for every file
+- 33. **CRITICAL REQUIREMENT**: Process files in alphabetical order by full path as discovered in Phase 3
+- 34. **INFRASTRUCTURE SETUP**: Initialize efficient report writer using Scripts/Infrastructure/efficient_report_writer.py for better performance
+- 35. **WEB SEARCH ROBUSTNESS**: Use robust web search with caching and rate limiting (Scripts/Infrastructure/robust_web_search.py) to prevent failures
+- 36. **VERBOSE OUTPUT**: Use **PRINT** commands after each file scan to maintain user visibility into progress, and explicitly output web search results to chat (not just to report) for maximum transparency
+- 37. **EXECUTION MODE SPECIFIC PROCESS**:
+  - **Manual**: For each file individually: **SCAN** → **{BP}** web search → output web search results to chat → document findings → **PRINT** progress → user confirmation → next file
+  - **Manual Batched**: For each batch of 5-10 files: **SCAN** all files in batch → **{BP}** web search for all files → output web search results to chat → document findings → **PRINT** progress → user confirmation → next batch
+  - **Automatic**: For each file individually: **SCAN** → **{BP}** web search → output web search results to chat → document findings → **PRINT** progress → next file (auto-stop on errors)
+  - **Automatic Batched**: For each batch of 5-10 files: **SCAN** all files in batch → **{BP}** web search for all files → output web search results to chat → document findings → **PRINT** progress → next batch (auto-stop on errors)
+- 38. For each file, verify compliance criteria based on file type using Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md as SSOT for detailed requirements
+- 39. Document specific changes needed for each file based on **SCAN** results and **{BP}** best practice research directly to report file
+- 40. **SUBAGENT PROMPTING**: Provide precise prompts with exact scope, criteria, and output format using Workflow/Reviewer/Reference/Subagent_Prompting_Reference.md as SSOT for prompting patterns
+- 41. **VALIDATION**: Validate that **SCAN**ning completed successfully for every single file without exception
+- 42. **VALIDATION**: Validate that **{BP}** web search was performed for every single file without exception
+- 43. **VALIDATION**: Validate that findings were documented to report file after each file/batch scan
+- 44. **VALIDATION**: Validate that files were processed in alphabetical order
+- 45. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Reviewer/Reference/Execution_Mode_Patterns.md)
+- 46. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
+- 47. **PRINT** "Compliance scanning complete - [N] files **SCAN**ned line by line with **{BP}** best practice research for each file in alphabetical order - findings documented to SCAN-REPORT"
 
-### Phase 5. Findings Consolidation (Incremental Report Processing)
-- 42. Collect all scanning results from incremental report file (Logs/Reviewer/BP/App/incremental-scan-report.md)
-- 43. Consolidate findings by category and severity with detailed file-specific analysis:
-  - **CRITICAL**: Violations that must be fixed (missing tests, hardcoded dependencies, mixed concerns) per file
-  - **HIGH**: Major quality issues that should be fixed (monolithic functions, poor modularity) per file
-  - **MEDIUM**: Best practices improvements (code readability, maintainability) per file
-  - **LOW**: Minor suggestions (comments, formatting) per file
-- 44. **CRITICAL REQUIREMENT**: Verify that findings exist for every single file in incremental report - no file may be left unexamined or unreported
-- 45. Cross-validate findings to eliminate duplicates and ensure consistency across all files
-- 46. **VALIDATION**: Validate that findings consolidation completed successfully for every single file
-- 47. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
-- 48. **PRINT** "Findings consolidated from incremental report - [N] issues categorized by severity across [N] files - every file examined"
+### Phase 5. Findings Consolidation (Scan Report Processing)
+- 48. Collect all scanning results from SCAN-REPORT file (Logs/Reviewer/BP/App/SCAN-REPORT-[YYYY-MM-DD_HH-MM-SS].md)
+- 49. Consolidate findings by category and severity using Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md severity classifications
+- 50. **CRITICAL REQUIREMENT**: Verify that findings exist for every single file in SCAN-REPORT - no file may be left unexamined or unreported
+- 51. Cross-validate findings to eliminate duplicates and ensure consistency across all files
+- 52. **VALIDATION**: Validate that findings consolidation completed successfully for every single file
+- 53. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
+- 54. **PRINT** "Findings consolidated from SCAN-REPORT - [N] issues categorized by severity across [N] files - every file examined"
 
 ### Phase 6. Compliance Report Generation
-- 49. Generate comprehensive compliance report with detailed findings for every single file:
+- 55. Generate comprehensive compliance report with detailed findings for every single file:
   - Executive summary (overall compliance score, critical findings count, files examined)
   - Detailed findings by file with line numbers and specific violations for each file
   - Severity ratings with context for why each issue matters per file
   - Actionable recommendations with clear improvement paths per file
   - Compliance statistics (modules compliant, functions reviewed, test coverage) per file
-- 50. **CRITICAL REQUIREMENT**: Ensure report includes analysis for every single file - no file may be omitted from the report
-- 51. Save report to Logs/Reviewer/BP/App/best-practice-scan-[YYYY-MM-DD_HH-MM-SS].md
-- 52. **VALIDATION**: Validate that report generation completed successfully and every file is included
-- 53. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
-- 54. **PRINT** "Compliance report generated - saved to Logs/Reviewer/BP/App/ - includes detailed analysis for every single file"
+- 56. **CRITICAL REQUIREMENT**: Ensure report includes analysis for every single file - no file may be omitted from the report
+- 57. Save report to Logs/Reviewer/BP/App/best-practice-scan-[YYYY-MM-DD_HH-MM-SS].md
+- 58. **VALIDATION**: Validate that report generation completed successfully and every file is included
+- 59. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
+- 60. **PRINT** "Compliance report generated - saved to Logs/Reviewer/BP/App/ - includes detailed analysis for every single file"
 
 ### Phase 7. Final Validation + User Review
-- 55. Verify report completeness and accuracy
-- 56. Ensure all findings are properly documented with specific references
-- 57. Check that recommendations are actionable and clear
-- 58. **VALIDATION**: Validate that final validation completed successfully
-- 59. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns
-- 60. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
-- 61. **PRINT** "Final validation complete - compliance report ready for user review"
+- 61. Verify report completeness and accuracy
+- 62. Ensure all findings are properly documented with specific references
+- 63. Check that recommendations are actionable and clear
+- 64. **VALIDATION**: Validate that final validation completed successfully
+- 65. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns
+- 66. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
+- 67. **PRINT** "Final validation complete - compliance report ready for user review"
 
 ### Phase 8. Planner-Ready Document Generation
-- 62. Generate planner-ready implementation document structured for Planner agent consumption from consolidated findings:
+- 68. Generate planner-ready implementation document structured for Planner agent consumption from consolidated findings:
   - Implementation requirements organized by priority and dependency
   - Specific code changes needed with file paths and line references
   - Test requirements and coverage gaps to address
   - Modularity improvements with refactoring guidance
   - Best practices implementations with specific recommendations
-- 63. Structure document for Planner workflow compatibility:
+- 69. Structure document for Planner workflow compatibility:
   - Clear implementation phases with logical sequencing
   - Dependency mappings between changes
   - Risk assessment for each implementation block
   - Resource requirements and complexity estimates
-- 64. Save planner-ready document to Plans/Reviewer/reviewer-implementation-plan-[timestamp].md
-- 65. **VALIDATION**: Validate that planner-ready document is complete and actionable
-- 66. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
-- 67. **PRINT** "Planner-ready document generated - saved to Plans/Reviewer/ - ready for Planner agent consumption"
+- 70. Save planner-ready document to Plans/Reviewer/reviewer-implementation-plan-[timestamp].md
+- 71. **VALIDATION**: Validate that planner-ready document is complete and actionable
+- 72. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
+- 73. **PRINT** "Planner-ready document generated - saved to Plans/Reviewer/ - ready for Planner agent consumption"
 
 ### Phase 9. Workflow Termination (SINGLE-EXECUTION WORKFLOW)
-- 68. **PRINT** "Best Practice Scanner workflow execution complete - workflow terminated"
-- 69. **PRINT** "Compliance report available in Logs/Reviewer/BP/App/ for review and action"
-- 70. **PRINT** "Planner-ready document available in Plans/Reviewer/ for implementation planning"
-- 71. **TERMINATE**: End workflow execution (do not return to step 1)
+- 74. **PRINT** "Best Practice Scanner workflow execution complete - workflow terminated"
+- 75. **PRINT** "Compliance report available in Logs/Reviewer/BP/App/ for review and action"
+- 76. **PRINT** "Planner-ready document available in Plans/Reviewer/ for implementation planning"
+- 77. **TERMINATE**: End workflow execution (do not return to step 1)
 
 ---
 
@@ -189,75 +199,7 @@ Comprehensive line-by-line scan of every single file in the App/ directory to ve
 ## Subagent Prompting Strategy
 
 ### Large-Scale Scanning Approach
-For App/ directory scanning (>150 files), use parallel subagents by module:
-
-**Memory Components Subagent Prompt:**
-```
-**SCAN** the following memory component files in App/sovereignai/memory/ directory line by line without skipping anything:
-- episodic_backend.py, persistent_graph.py, procedural_backend.py, trace_backend.py, working_backend.py, graph_backend.py, gateway.py, episodic_consumer.py
-
-For each file:
-1. **SCAN** line by line without skipping anything
-2. **{BP}** web search for current best practices for memory component patterns (MANDATORY for every file)
-3. Verify compliance with Executor rules:
-   - Function-by-function modularity (single responsibility, clear inputs/outputs)
-   - Testing requirements (tests exist in Scripts/Tests/, dependency injection, mocking)
-   - Code quality (error handling, readability, security practices)
-   - Best practices (SOLID principles, separation of concerns)
-4. Document specific changes needed based on **SCAN** results and **{BP}** best practice research
-
-Output format for each file:
-- File path
-- Function count and complexity assessment
-- Testing compliance status (PASS/FAIL with details)
-- Modularity violations found (with line numbers)
-- Best practices issues found (with line numbers)
-- Specific changes needed with line references
-- Severity rating (CRITICAL/HIGH/MEDIUM/LOW)
-- Specific actionable recommendations
-- Best practices research findings with sources
-```
-
-**Agent System Components Subagent Prompt:**
-```
-**SCAN** the following agent system files in App/sovereignai/agent/ directory line by line without skipping anything:
-- react.py, factory.py, history.py, prompts.py, structured_output.py, tool_session.py, types.py, config.py, protocols.py
-
-For each file:
-1. **SCAN** line by line without skipping anything
-2. **{BP}** web search for current best practices for agent system patterns (MANDATORY for every file)
-3. Verify compliance with Executor rules
-4. Document specific changes needed based on **SCAN** results and **{BP}** best practice research
-
-[Same output format as memory components]
-```
-
-**Messaging/Event System Subagent Prompt:**
-```
-**SCAN** the following messaging/event files in App/sovereignai/shared/ and App/sovereignai/messaging/ directories line by line without skipping anything:
-- event_bus.py, trace_emitter.py, event_registry.py, bus.py, security.py, adapter.py, schema.py
-
-For each file:
-1. **SCAN** line by line without skipping anything
-2. **{BP}** web search for current best practices for messaging/event patterns (MANDATORY for every file)
-3. Verify compliance with Executor rules
-4. Document specific changes needed based on **SCAN** results and **{BP}** best practice research
-
-[Same output format as memory components]
-```
-
-**Other Modules Subagent Prompt:**
-```
-**SCAN** the remaining files in App/sovereignai/ (model_registry/, orchestrator/, librarian/, lifecycle/, managers/, options/, etc.) line by line without skipping anything.
-
-For each file:
-1. **SCAN** line by line without skipping anything
-2. **{BP}** web search for current best practices for specific module types (MANDATORY for every file)
-3. Verify compliance with Executor rules
-4. Document specific changes needed based on **SCAN** results and **{BP}** best practice research
-
-[Same output format as memory components]
-```
+For App/ directory scanning (>150 files), use parallel subagents by module following the prompting patterns and templates defined in Workflow/Reviewer/Reference/Subagent_Prompting_Reference.md (SSOT for subagent prompting).
 
 ### Subagent Coordination
 - Launch 4-5 parallel subagents for independent module categories
@@ -269,13 +211,13 @@ For each file:
 ## Scan Complexity Assessment
 
 Based on App/ directory scan:
-- **Total Python Files**: [Determined at runtime via file discovery]
+- **Total Files**: [Determined at runtime via file discovery]
 - **Scanning Order**: Alphabetical by full path from first folder to last folder (chronological scanning order)
 - **Recommended Strategy**: Chunked scanning with 4-5 subagents by module category
 - **Estimated Duration**: Extended (mandatory **{BP}** web search for each file)
 - **Token Usage**: High (comprehensive **SCAN** + **{BP}** research per file)
 - **Coverage**: Line-by-line comprehensive examination per **SCAN** definition with mandatory best practices research per file
-- **Process**: **SCAN** file (alphabetical order) → **{BP}** web search → **IMMEDIATELY DOCUMENT** to incremental report (Logs/Reviewer/BP/App/incremental-scan-report.md) → Next file (repeat for all files)
+- **Process**: **SCAN** file (alphabetical order) → **{BP}** web search → **IMMEDIATELY DOCUMENT** to SCAN-REPORT (Logs/Reviewer/BP/App/SCAN-REPORT-[YYYY-MM-DD_HH-MM-SS].md) → Next file (repeat for all files)
 - **Context Management**: PostCompaction hook reloads governance files when context is compressed, maintaining scanning capability throughout process
 
 ## Execution Mode Recommendations
@@ -284,17 +226,48 @@ Based on App/ directory scan:
 - **Manual Batched Mode**: Balanced approach for efficiency with oversight - processes 5-10 files at a time with confirmation between batches
 - **Automatic Batched Mode**: Maximum efficiency for large codebases - processes 5-10 files at a time automatically without confirmation
 
-**Important Note**: This workflow is designed to be comprehensive and token-intensive. Each file undergoes: **SCAN** (line-by-line examination) → **{BP}** (mandatory web search for current best practices) → **IMMEDIATELY DOCUMENT** to incremental report (Logs/Reviewer/BP/App/incremental-scan-report.md) → Next file. This incremental process prioritizes thoroughness over speed while maintaining robustness through PostCompaction hook context management. The 200k context budget allows for substantial scanning before context compression occurs.
+**Important Note**: This workflow is designed to be comprehensive and token-intensive. Each file undergoes: **SCAN** (line-by-line examination) → **{BP}** (mandatory web search for current best practices) → **IMMEDIATELY DOCUMENT** to SCAN-REPORT (Logs/Reviewer/BP/App/SCAN-REPORT-[YYYY-MM-DD_HH-MM-SS].md) → Next file. This process prioritizes thoroughness over speed while maintaining robustness through PostCompaction hook context management. The 200k context budget allows for substantial scanning before context compression occurs.
 
 ## Context Management Strategy
 
 ### PostCompaction Hook Configuration
-- **Global Hook**: PostCompaction hook configured in user-level Devin CLI config (~/.config/devin/hooks.v1.json)
-- **Purpose**: Reload governance files when context is compressed to maintain compliance verification capability
-- **Files Reloaded**: 
-  - Agents/Reviewer/AGENTS.md (Reviewer agent configuration)
-  - Rules/Reviewer/Reviewer_Rules.md (Review criteria and compliance requirements)
-  - Workflow/Reviewer/Reviewer_Best_Practice_Scanner_Workflow.md (Current workflow)
-  - Workflow/Workflow_Reference/Terminology_Glossary.md (Terminology definitions)
-- **Trigger**: Automatically fires when Devin CLI compresses context during long scanning sessions
-- **Benefit**: Ensures scanning workflow remains robust even with very large codebases and extended context usage
+- **Hook File**: .devin/hooks.v1.json
+- **Purpose**: Reload governance files when context is compressed
+- **Configuration**: Ensure PostCompaction hook is configured to reload:
+  - Rules/Reviewer/Reviewer_Rules.md
+  - Rules/Executor/Executor_Rules.md
+  - Workflow/Workflow_Reference/Terminology_Glossary.md
+  - Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md
+  - Workflow/Reviewer/Reference/Subagent_Prompting_Reference.md
+
+### Context Preservation
+- **Governance State**: Compliance criteria and terminology definitions preserved through hook reload
+- **Scanning Progress**: File discovery and categorization results preserved
+- **Findings State**: Incremental report preserves findings through context compression
+- **Web Search Context**: Best practices research cache preserved across context boundaries
+
+## Infrastructure Requirements
+
+### Required Scripts
+- **File Discovery Validation**: Scripts/Infrastructure/file_discovery_validation.py (for pre-flight directory coverage validation)
+- **App Baseline**: Scripts/Infrastructure/app_directory_baseline.json (for expected App/ directory structure)
+- **Efficient Report Writer**: Scripts/Infrastructure/efficient_report_writer.py (for fast file writing)
+- **Robust Web Search**: Scripts/Infrastructure/robust_web_search.py (for reliable web search with caching)
+- **Web Search Diagnostic**: Scripts/Infrastructure/test_web_search.py (for pre-flight testing)
+
+### Required Reference Files
+- **Compliance Criteria**: Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md
+- **Subagent Prompting**: Workflow/Reviewer/Reference/Subagent_Prompting_Reference.md
+- **Web Search Implementation**: Workflow/Reviewer/Reference/Web_Search_Implementation_Guide.md
+
+### Required Directory Structure
+- **Reports**: Logs/Reviewer/BP/App/ (for scan reports and final reports)
+- **Cache**: Logs/Reviewer/Cache/WebSearch/ (for web search caching)
+- **Plans**: Plans/Reviewer/ (for planner-ready documents)
+- **Baselines**: Scripts/Infrastructure/ (for directory validation baselines)
+
+### Pre-Flight Validation Requirements
+- **File Discovery Validation**: Must run validation script before scanning (Phase 3, Step 17)
+- **Baseline Comparison**: Must use app_directory_baseline.json for expected structure
+- **Fail-Fast Enforcement**: Workflow must halt if validation fails (non-zero exit code)
+- **Cross-Check Validation**: Must compare discovered files against baseline (Phase 3, Step 24)
