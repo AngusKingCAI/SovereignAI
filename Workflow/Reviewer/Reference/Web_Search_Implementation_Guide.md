@@ -93,7 +93,7 @@ python Scripts/Infrastructure/test_web_search.py
 **Before Current Step 32**: Add infrastructure setup
 
 ```
-- 32. **INFRASTRUCTURE SETUP**: 
+- 1. **INFRASTRUCTURE SETUP**: 
   - Initialize efficient report writer using Scripts/Infrastructure/efficient_report_writer.py
   - Initialize robust web search using Scripts/Infrastructure/robust_web_search.py
   - Create cache directory at Logs/Reviewer/Cache/WebSearch
@@ -103,7 +103,7 @@ python Scripts/Infrastructure/test_web_search.py
 **Replace Current Documentation Step**:
 
 ```
-- 37. Document specific changes needed using efficient report writer:
+- 2. Document specific changes needed using efficient report writer:
   - Use writer.append_file_analysis() instead of edit tool
   - Include web search source (cache vs live) in documentation
   - Track cache statistics for performance monitoring
@@ -113,7 +113,7 @@ python Scripts/Infrastructure/test_web_search.py
 **Enhanced Web Search Step**:
 
 ```
-- 30. **CRITICAL REQUIREMENT**: For each file, perform **{BP}** web search with robust infrastructure:
+- 3. **CRITICAL REQUIREMENT**: For each file, perform **{BP}** web search with robust infrastructure:
   - Use robust_web_search.py for caching and rate limiting
   - Implement 2-second delay between searches (automatic via rate limiter)
   - Log cache hit/miss statistics for monitoring

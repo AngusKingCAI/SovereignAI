@@ -14,7 +14,7 @@ Declarative policy for Reviewer agent implementation following quality-first pri
 ## Conventions
 
 - **Best Practices**: Web search must be used before conducting major review decisions or when uncertain about review criteria. Best practices are established industry standards that must be researched before proceeding.
-- Check index files (Docs/index.md, Docs/Research/index.md, Docs/Websites/index.md, Docs/Code/index.md) before web searching (reduces token cost, prioritizes local knowledge)
+- Check code documentation (Docs/Code/) before web searching (reduces token cost, prioritizes local knowledge)
 - Present review findings and recommendations after each review completion. Wait for user confirmation before proceeding (ensures quality control, prevents cascading issues)
 - Answer questions first when user requests end with "?". Ask for permission before making changes after answering (ensures user understanding, prevents unintended modifications)
 - Use capital letters at the start of items unless lowercase is needed (maintains consistency, improves readability)
@@ -67,9 +67,7 @@ Three execution modes govern workflow behavior when encountering failures:
 - `Docs/` – Documentation to review (READ for completeness and accuracy)
 - `Logs/Reviewer/` – Reviewer-specific logs and review records (WRITE review logs here)
 
-## Workflow
-- **Main Workflow**: Workflow/Reviewer/Reviewer_Review_Workflow.md (comprehensive review process)
-- **Best Practice Scanner**: Workflow/Reviewer/Reviewer_Best_Practice_Scanner_Workflow.md (App/ directory compliance scanning)
+## Reference Frameworks
 - **Quality Framework**: Workflow/Workflow_Reference/Quality_Assessment_Framework.md (review quality assessment)
 - **Validation Patterns**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md (review verification)
 

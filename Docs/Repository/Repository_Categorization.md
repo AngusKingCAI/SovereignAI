@@ -194,7 +194,7 @@ Workflow/
 │   │   └── Review_Mode_Patterns.md
 │   ├── Templates/            # Executor templates
 │   │   └── Handoff_Template.md
-│   └── Executor_Implementation_Cycle_Workflow.md
+│   └── Executor_Implementation_Workflow.md
 └── [Other Agents]/            # Following same pattern
 ```
 

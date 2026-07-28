@@ -14,7 +14,7 @@ Declarative policy for Architect agent implementation following infrastructure-f
 ## Conventions
 
 - **Best Practices**: Web search must be used before implementing major architectural decisions or when uncertain about implementation approaches. Best practices are established industry standards that must be researched before proceeding.
-- Check index files (Docs/index.md, Docs/Research/index.md, Docs/Websites/index.md, Docs/Code/index.md) before web searching (reduces token cost, prioritizes local knowledge)
+- Check code documentation (Docs/Code/) before web searching (reduces token cost, prioritizes local knowledge)
 - Present function and test result after each successful test. Wait for user confirmation before proceeding (ensures quality control, prevents cascading errors)
 - Answer questions first when user requests end with "?". Ask for permission before making changes after answering (ensures user understanding, prevents unintended modifications)
 - Use capital letters at the start of items unless lowercase is needed (maintains consistency, improves readability)

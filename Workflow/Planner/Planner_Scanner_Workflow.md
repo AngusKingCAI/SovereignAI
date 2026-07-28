@@ -45,79 +45,79 @@ Create implementation-ready plans from existing governance scan results. This wo
 - **Trigger**: User provides existing scan results and requests plan creation
 - **End State**: Implementation-ready plan (with appropriate revision splitting) following Plan Template format for implementation planning, using next available sequential plan number from PLAN_TRACKING.md
 
-## Workflow Steps (20 steps)
+## Workflow Steps (43 steps)
 
 ### Phase 0. Read Planner Rules + Governance
 - 1. Read Rules/Planner/Planner_Rules.md to understand planning criteria and infrastructure compliance requirements
-- 2. Read Workflow/Workflow_Reference/Terminology_Glossary.md to understand terminology definitions
-- 3. Read Workflow/Planner/Templates/Plan_Template.md to understand planning structure and format
+- 2. Read PRINCIPLES.md to understand constitutional framework and architectural principles
+- 3. Read Workflow/Workflow_Reference/Terminology_Glossary.md to understand terminology definitions
 - 4. Parse YAML frontmatter and rule definitions for compliance verification guidance
-- 5. Store rule context, planning structure, and compliance criteria for reference throughout workflow execution
+- 5. Store rule context and compliance criteria for reference throughout workflow execution
 - 6. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
 - 7. **PRINT** "Planner rules and infrastructure compliance criteria loaded"
 
 ### Phase 1. Accept Scan Results Input
-- 8. Request user to provide existing scan results and findings from governance scanning processes
-- 9. **VALIDATION**: Validate that scan results are provided and contain sufficient information for plan creation
-- 10. **SYSTEMATIC SCAN PROCESSING**: Read entire scan log file systematically to extract all findings (not just partial results)
-- 11. **FINDINGS AGGREGATION**: Group findings by category (e.g., Single Responsibility violations, missing ABC base classes, hardcoded values)
-- 12. **PRIORITY ASSESSMENT**: Assess severity and impact of findings to determine plan structure
-- 13. **STATUS TRACKING**: Update workflow status to "phase_1_complete"
-- 14. **PRINT** "Scan results input received and systematically processed - proceeding with plan creation"
+- 1. Request user to provide existing scan results and findings from governance scanning processes
+- 2. **VALIDATION**: Validate that scan results are provided and contain sufficient information for plan creation
+- 3. **SYSTEMATIC SCAN PROCESSING**: Read entire scan log file systematically to extract all findings (not just partial results)
+- 4. **FINDINGS AGGREGATION**: Group findings by category (e.g., Single Responsibility violations, missing ABC base classes, hardcoded values)
+- 5. **PRIORITY ASSESSMENT**: Assess severity and impact of findings to determine plan structure
+- 6. **STATUS TRACKING**: Update workflow status to "phase_1_complete"
+- 7. **PRINT** "Scan results input received and systematically processed - proceeding with plan creation"
 
 ### Phase 2. Plan Creation from Scan Results
-- 15. **PLAN NUMBER ASSIGNMENT**: Read Plans/PLAN_TRACKING.md to determine next available sequential plan number
-- 16. **PLAN TEMPLATE COMPLIANCE**: Apply authoritative Plan Template format (Workflow/Planner/Templates/Plan_Template.md) to scan findings:
+- 1. **PLAN NUMBER ASSIGNMENT**: Read Plans/PLAN_TRACKING.md to determine next available sequential plan number
+- 2. **PLAN TEMPLATE COMPLIANCE**: Apply authoritative Plan Template format (Workflow/Planner/Templates/Plan_Template.md) to scan findings:
   - Follow Plan Template structure exactly as defined (Context, Steps, Dependencies)
   - Include all required sections per Plan Template specifications
   - Use planning language per Plan Template guidelines (design, specify, define, outline, structure)
-- 17. **FINDINGS INTEGRATION**: Systematically integrate all scan findings into appropriate plan sections:
+- 3. **FINDINGS INTEGRATION**: Systematically integrate all scan findings into appropriate plan sections:
   - Group related findings by category and severity
   - Ensure each finding from scan log is addressed in plan steps
   - Maintain traceability between scan findings and plan steps
-- 18. **PLAN STRUCTURE**: Create plan-{N}-Rev1.md following authoritative Plan Template format:
+- 4. **PLAN STRUCTURE**: Create plan-{N}-Rev1.md following authoritative Plan Template format:
   - Single comprehensive plan following Plan Template structure
   - All required sections per Plan Template specifications
   - Proper planning language per Plan Template guidelines
   - ≤120 lines total when possible per Plan Template constraints
-- 19. **VALIDATION**: Validate plan against Plan Template quality checks:
+- 5. **VALIDATION**: Validate plan against Plan Template quality checks:
   - All required sections present per Plan Template (Context, Steps, Dependencies)
   - Metadata complete per Plan Template specifications (Revision, Date, Goal)
   - Steps follow planning language guidelines per Plan Template
   - Dependencies clear and executable per Plan Template
   - No circular dependencies per Plan Template
   - Plan length constraints per Plan Template (≤120 lines when possible)
-- 20. Save plan to Plans/plan-{N}-Rev1.md
-- 21. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
-- 22. **PRINT** "Plan {N}-Rev1 created from scan findings - follows authoritative Plan Template format"
+- 6. Save plan to Plans/plan-{N}-Rev1.md
+- 7. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
+- 8. **PRINT** "Plan {N}-Rev1 created from scan findings - follows authoritative Plan Template format"
 - **NOTE**: PLAN_TRACKING.md update (plan completion status, dependency updates) is Executor responsibility upon plan implementation completion
 
 ### Phase 3. Internal Round Table Review
-- 23. **PLAN BRIEF CREATION**: Create plan brief using Workflow/Planner/Templates/Plan_Brief_Template.md for internal panelist review
-- 24. **PANELIST ASSIGNMENT**: Assign domain-split personas for internal review (Structure Expert, Scope Expert, Planning Language Expert)
-- 25. **PANELIST INSTRUCTIONS**: Provide panelists with persona instructions from Workflow/Planner/Templates/Plan_Prompt_Template.md
-- 26. **INTERNAL QUALITY EVALUATION**: Panelists evaluate plan using Workflow/Workflow_Reference/Quality_Assessment_Framework.md with planning language compliance focus
-- 27. **FINDINGS APPLICATION**: Apply panelist findings to improve plan quality through plan revisions
-- 28. **CONVERGENCE LOOPS**: Internal review iteration until convergence achieved (≥4.5 score or 3.5-4.4 with rationale)
-- 29. **LOOP CAPS**: Maximum 5 internal iterations before escalation to user
-- 30. **INTERNAL REVIEW LOGGING**: Log internal reviews to Logs/Planner/Roundtable/Internal/plan{N}/{Agent_Persona}.md
-- 31. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
-- 32. **PRINT** "Internal Round Table review complete - plan {N} revised based on panelist feedback"
+- 1. **PLAN BRIEF CREATION**: Create plan brief using Workflow/Planner/Templates/Plan_Brief_Template.md for internal panelist review
+- 2. **PANELIST ASSIGNMENT**: Assign domain-split personas for internal review (Structure Expert, Scope Expert, Planning Language Expert)
+- 3. **PANELIST INSTRUCTIONS**: Provide panelists with persona instructions from Workflow/Planner/Templates/Plan_Prompt_Template.md
+- 4. **INTERNAL QUALITY EVALUATION**: Panelists evaluate plan using Workflow/Workflow_Reference/Quality_Assessment_Framework.md with planning language compliance focus
+- 5. **FINDINGS APPLICATION**: Apply panelist findings to improve plan quality through plan revisions
+- 6. **CONVERGENCE LOOPS**: Internal review iteration until convergence achieved (≥4.5 score or 3.5-4.4 with rationale)
+- 7. **LOOP CAPS**: Maximum 5 internal iterations before escalation to user
+- 8. **INTERNAL REVIEW LOGGING**: Log internal reviews to Logs/Planner/Roundtable/Internal/plan{N}/{Agent_Persona}.md
+- 9. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
+- 10. **PRINT** "Internal Round Table review complete - plan {N} revised based on panelist feedback"
 
 ### Phase 4. Final Validation + User Review
-- 33. Verify plan completeness and accuracy
-- 34. Ensure all scan findings are systematically processed and reflected in plan steps
-- 35. Check that recommendations are actionable and implementation-ready
-- 36. Verify plan structure compliance with authoritative Plan Template format (Context, Steps, Dependencies)
-- 37. **VALIDATION**: Validate that final validation completed successfully
-- 38. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
-- 39. **PRINT** "Final validation complete - plan {N} ready for user review"
+- 1. Verify plan completeness and accuracy
+- 2. Ensure all scan findings are systematically processed and reflected in plan steps
+- 3. Check that recommendations are actionable and implementation-ready
+- 4. Verify plan structure compliance with authoritative Plan Template format (Context, Steps, Dependencies)
+- 5. **VALIDATION**: Validate that final validation completed successfully
+- 6. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
+- 7. **PRINT** "Final validation complete - plan {N} ready for user review"
 
 ### Phase 5. Workflow Termination (SINGLE-EXECUTION WORKFLOW)
-- 40. **PRINT** "Planner Plan Creation workflow execution complete - workflow terminated"
-- 41. **PRINT** "Plan {N}-Rev1 available in Plans/ directory for implementation"
-- 42. **PRINT** "Note: PLAN_TRACKING.md will be updated by Executor upon plan implementation completion"
-- 43. **TERMINATE**: End workflow execution (do not return to step 1)
+- 1. **PRINT** "Planner Plan Creation workflow execution complete - workflow terminated"
+- 2. **PRINT** "Plan {N}-Rev1 available in Plans/ directory for implementation"
+- 3. **PRINT** "Note: PLAN_TRACKING.md will be updated by Executor upon plan implementation completion"
+- 4. **TERMINATE**: End workflow execution (do not return to step 1)
 
 ---
 

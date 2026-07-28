@@ -103,6 +103,7 @@ CATEGORIZATION_RULES = {
             },
             "Architect/": {
                 "allowed_subdirs": ["Reference", "Templates"],
+                "allowed_patterns": ["*.md"],
                 "file_rules": {
                     "Reference/": {
                         "allowed_patterns": ["*_Patterns.md", "*_Framework.md", "*_Specifications.md"],
@@ -116,6 +117,7 @@ CATEGORIZATION_RULES = {
             },
             "Planner/": {
                 "allowed_subdirs": ["Reference", "Templates"],
+                "allowed_patterns": ["*.md"],
                 "file_rules": {
                     "Reference/": {
                         "allowed_patterns": ["*_Patterns.md", "*_Specifications.md", "*_Overview.md"],
@@ -129,6 +131,7 @@ CATEGORIZATION_RULES = {
             },
             "Executor/": {
                 "allowed_subdirs": ["Reference", "Templates"],
+                "allowed_patterns": ["*.md"],
                 "file_rules": {
                     "Reference/": {
                         "allowed_patterns": ["*_Patterns.md"],
@@ -142,10 +145,12 @@ CATEGORIZATION_RULES = {
             },
             "Researcher/": {
                 "allowed_subdirs": [],
+                "allowed_patterns": ["*.md"],
                 "file_rules": {}
             },
             "Reviewer/": {
                 "allowed_subdirs": ["Reference"],
+                "allowed_patterns": ["*.md"],
                 "file_rules": {
                     "Reference/": {
                         "allowed_patterns": ["*_Patterns.md", "*_Reference.md", "*_Guide.md"],
@@ -157,30 +162,29 @@ CATEGORIZATION_RULES = {
     },
     "Rules/": {
         "allowed_subdirs": ["Architect", "Planner", "Executor", "Researcher", "Reviewer", "Templates"],
-        "allowed_patterns": ["Rules_Template*", "*_Usage_Examples.md", "*_Rules.md"],
         "file_rules": {
             "Architect/": {
-                "allowed_patterns": ["Architect_Rules.md", "Rules_Template*", "*_Usage_Examples.md"],
+                "allowed_patterns": ["Architect_Rules.md", "Rules_Template*", "*_Usage_Examples.md", "*.md"],
                 "description": "Architect rules"
             },
             "Planner/": {
-                "allowed_patterns": ["Planner_Rules.md", "Rules_Template*", "*_Usage_Examples.md"],
+                "allowed_patterns": ["Planner_Rules.md", "Rules_Template*", "*_Usage_Examples.md", "*.md"],
                 "description": "Planner rules"
             },
             "Executor/": {
-                "allowed_patterns": ["Executor_Rules.md", "Rules_Template*", "*_Usage_Examples.md"],
+                "allowed_patterns": ["Executor_Rules.md", "Rules_Template*", "*_Usage_Examples.md", "*.md"],
                 "description": "Executor rules"
             },
             "Researcher/": {
-                "allowed_patterns": ["Researcher_Rules.md", "Rules_Template*", "*_Usage_Examples.md"],
+                "allowed_patterns": ["Researcher_Rules.md", "Rules_Template*", "*_Usage_Examples.md", "*.md"],
                 "description": "Researcher rules"
             },
             "Reviewer/": {
-                "allowed_patterns": ["Reviewer_Rules.md", "Rules_Template*", "*_Usage_Examples.md"],
+                "allowed_patterns": ["Reviewer_Rules.md", "Rules_Template*", "*_Usage_Examples.md", "*.md"],
                 "description": "Reviewer rules"
             },
             "Templates/": {
-                "allowed_patterns": ["Rules_Template*", "*_Usage_Examples.md"],
+                "allowed_patterns": ["Rules_Template*", "*_Usage_Examples.md", "*.md"],
                 "description": "Template files"
             }
         }
@@ -190,42 +194,82 @@ CATEGORIZATION_RULES = {
         "file_rules": {
             "Architect/": {
                 "allowed_subdirs": ["Code", "Research", "Architecture", "Governance", "Repository"],
+                "allowed_patterns": ["*.md"],
                 "description": "Architect agent documentation"
             },
             "Planner/": {
                 "allowed_subdirs": ["Code", "Research", "Architecture", "Governance", "Repository"],
+                "allowed_patterns": ["*.md"],
                 "description": "Planner agent documentation"
             },
             "Executor/": {
                 "allowed_subdirs": ["Code", "Research", "Architecture", "Governance", "Repository"],
+                "allowed_patterns": ["*.md"],
                 "description": "Executor agent documentation"
             },
             "Researcher/": {
                 "allowed_subdirs": ["Code", "Research", "Architecture", "Governance", "Repository"],
+                "allowed_patterns": ["*.md"],
                 "description": "Researcher agent documentation"
             },
             "Reviewer/": {
                 "allowed_subdirs": ["Code", "Research", "Architecture", "Governance", "Repository"],
+                "allowed_patterns": ["*.md"],
                 "description": "Reviewer agent documentation"
             },
             "Code/": {
                 "allowed_subdirs": ["Python", "JavaScript", "Markdown", "YAML"],
+                "file_rules": {
+                    "Python/": {
+                        "allowed_patterns": ["*.md"],
+                        "description": "Python code documentation"
+                    },
+                    "JavaScript/": {
+                        "allowed_patterns": ["*.md"],
+                        "description": "JavaScript code documentation"
+                    },
+                    "Markdown/": {
+                        "allowed_patterns": ["*.md"],
+                        "description": "Markdown code documentation"
+                    },
+                    "YAML/": {
+                        "allowed_patterns": ["*.md"],
+                        "description": "YAML code documentation"
+                    }
+                },
                 "description": "Code documentation by language"
             },
             "Research/": {
                 "allowed_subdirs": ["Architecture", "BestPractices", "CaseStudies"],
+                "allowed_patterns": ["*.md"],
                 "description": "Research documentation by domain"
             },
             "Architecture/": {
                 "allowed_subdirs": ["DesignPatterns", "SystemArchitecture", "ComponentArchitecture"],
+                "allowed_patterns": ["*.md"],
                 "description": "Architecture documentation by domain"
             },
             "Governance/": {
                 "allowed_subdirs": ["Rules", "Workflows", "Processes"],
+                "allowed_patterns": ["*.md"],
                 "description": "Governance documentation by domain"
             },
             "Repository/": {
                 "allowed_subdirs": ["Structure", "Categorization", "Guidelines"],
+                "file_rules": {
+                    "Structure/": {
+                        "allowed_patterns": ["*.md"],
+                        "description": "Repository structure documentation"
+                    },
+                    "Categorization/": {
+                        "allowed_patterns": ["*.md"],
+                        "description": "Repository categorization documentation"
+                    },
+                    "Guidelines/": {
+                        "allowed_patterns": ["*.md"],
+                        "description": "Repository guidelines documentation"
+                    }
+                },
                 "description": "Repository documentation by domain"
             },
             "Devin Local IDE Documents/": {
@@ -236,6 +280,7 @@ CATEGORIZATION_RULES = {
                         "description": "Devin IDE reference documentation"
                     }
                 },
+                "allowed_patterns": ["*.md"],
                 "description": "Devin Local IDE documentation"
             },
             "External AI Reviews/": {

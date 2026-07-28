@@ -32,6 +32,11 @@ purpose: Universal template usage guidelines for all agent workflows
 - **Steps**: PRINT completion, agent ready, either return to step 1 or terminate
 - **Output**: Workflow cycle ready for next task or workflow terminated
 
+## Workflow Creation
+- **Workflow Creator Plan**: Workflow creation will be handled by a dedicated workflow creator plan (to be implemented)
+- **Template Reference**: Template file exists for reference but is not required for workflow execution
+- **Structure Requirements**: Workflows must follow basic structure requirements defined in this document
+
 ### Universal Elements
 - **VALIDATION**: Include validation criteria for each phase
 - **STATUS TRACKING**: Update workflow state at each phase completion
@@ -74,7 +79,7 @@ purpose: Universal template usage guidelines for all agent workflows
 ### Phase Numbering
 - **Maintain 0-10**: Consistent phase numbering across all agents
 - **Core Phases**: Keep Phase 0 (rules), Phase 3 (research)
-- **Optional Phases**: Phase 10 (workflow-type dependent - see Workflow_Template.md)
+- **Optional Phases**: Phase 10 (workflow-type dependent)
 - **Customizable**: Adapt Phases 1-2, 4-9 for agent-specific needs
 - **Numbering**: Use sequential step numbering within phases
 
@@ -101,7 +106,7 @@ purpose: Universal template usage guidelines for all agent workflows
 ### Universal Elements
 - [ ] Phase 0: Read {Agent} Rules present
 - [ ] Phase 3: Research and Best Practices present
-- [ ] Phase 10: Included if workflow type requires (see Workflow_Template.md)
+- [ ] Phase 10: Included if workflow type requires
 - [ ] VALIDATION in each phase
 - [ ] STATUS TRACKING in each phase
 - [ ] PRINT commands for visibility
@@ -110,7 +115,7 @@ purpose: Universal template usage guidelines for all agent workflows
 - [ ] Phase numbering 0-10 maintained
 - [ ] Sequential step numbering within phases
 - [ ] Core phases (0, 3) preserved
-- [ ] Phase 10 included if workflow type requires (see Workflow_Template.md)
+- [ ] Phase 10 included if workflow type requires
 - [ ] Agent-specific phases added as needed
 
 ### Reference Compliance

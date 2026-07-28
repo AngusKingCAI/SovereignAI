@@ -55,7 +55,7 @@ def reload_agent_context(agent: str) -> str:
         'executor': {
             'agents_md': 'Agents/Executor/AGENTS.md',
             'rules': 'Rules/Executor/Executor_Rules.md',
-            'workflow': 'Workflow/Executor/Executor_Implementation_Cycle_Workflow.md',
+            'workflow': 'Workflow/Executor/Executor_Implementation_Workflow.md',
             'terminology': 'Workflow/Workflow_Reference/Terminology_Glossary.md'
         },
         'planner': {
@@ -188,7 +188,7 @@ def main():
             'executor': {
                 'agents_md': 'Agents/Executor/AGENTS.md',
                 'rules': 'Rules/Executor/Executor_Rules.md',
-                'workflow': 'Workflow/Executor/Executor_Implementation_Cycle_Workflow.md',
+                'workflow': 'Workflow/Executor/Executor_Implementation_Workflow.md',
                 'terminology': 'Workflow/Workflow_Reference/Terminology_Glossary.md'
             },
             'planner': {

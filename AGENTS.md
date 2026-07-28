@@ -76,4 +76,4 @@ See `Docs/Code/` for relevant code style guides based on the language or format 
 ## Workflow
 - **Main Workflow**: Workflow/Architect/Architect_General_Workflow.md (infrastructure design and implementation)
 - **Consistency Check**: Workflow/Architect/Architect_Consistency_Check_Workflow.md (harness architecture validation)
-- **Template**: Workflow/Workflow_Reference/Workflow_Template.md (template for creating agent workflows)
+- **Template**: Workflow/Templates/Workflow_Template.md (template for creating agent workflows)

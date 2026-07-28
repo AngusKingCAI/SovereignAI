@@ -93,15 +93,13 @@ These 5-10 critical rules are enforced on every task and cached separately for o
   - Refresh strategy: On-demand when complex decisions needed
 
 ### Integration Points
-- **IDE Architecture Rules**: Complies with `Rules/Architect/IDE_Architecture_Rules.md`
+
 - **Agent AGENTS.md Files**: Reference this template for rule creation
 - **Validation System**: Includes validation enforcement hook points at each rule
 - **Audit Logging**: Violations logged to `Logs/{AgentName}/Validation/`
 - **MCP Integration**: Designed for future rule repository tool integration
 
 ### Dependencies
-- **Required**: IDE Architecture Rules compliance
-- **Optional**: MCP server for rule repository integration
 - **Related**: Agent-specific AGENTS.md files
 - **Compatible**: Existing agent workflows and validation systems
 

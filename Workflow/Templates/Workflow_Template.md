@@ -38,7 +38,7 @@ Architect creates two types of workflows with different Phase 10 patterns:
 
 ## Template Reference
 
-- **Location**: Workflow/Workflow_Reference/Workflow_Template.md
+- **Location**: Workflow/Templates/Workflow_Template.md
 - **Owner**: Architect Agent
 - **Usage**: Architect uses this template to create workflows for all agents
 - **Updates**: Only Architect should modify this template
