@@ -10,7 +10,7 @@ purpose: Brief document for Round Table panelists summarizing the plan for revie
 
 **Purpose**: Brief document for Round Table panelists (internal and external) summarizing the plan for review  
 **Location**: Workflow/Planner/Templates/Plan_Brief_Template.md  
-**Usage**: Save as Logs/Roundtable/Devin/brief-rev{N}.md or Logs/Roundtable/External/brief-rev{N}.md  
+**Usage**: Save as Plans/Queued/plan-{N}.{rev}_Brief.md (stored with the plan file)  
 **Version**: 1.0
 
 ---
@@ -22,7 +22,7 @@ purpose: Brief document for Round Table panelists summarizing the plan for revie
 
 **Date**: {YYYY-MM-DD}  
 **Review Type**: {Internal Round Table | External Round Table}  
-**Plan File**: Plans/plan-{N}.{rev}.md  
+**Plan File**: Plans/Queued/plan-{N}.{rev}.md  
 **Previous Iterations**: {List previous iterations if applicable}
 
 ---
@@ -52,21 +52,19 @@ purpose: Brief document for Round Table panelists summarizing the plan for revie
 ## Review Focus Areas
 
 **Quality Dimensions to Evaluate**:
-- Accuracy: Are the steps technically accurate and feasible?
-- Completeness: Are all necessary elements included?
-- Clarity: Is the plan clear and unambiguous?
+- Accuracy: Are the technical claims accurate and feasible?
+- Completeness: Are all necessary elements included for your domain?
+- Clarity: Is the plan clear and unambiguous for your domain?
 - Structure: Is the plan well-organized and executable?
-- Context: Is sufficient background provided?
+- Context: Is sufficient background provided for your domain?
 
-**Scope Compliance**:
-- Planning language only (no implementation details)
-- Infrastructure focus if applicable
-- Manual execution approach
-
-**Risk Assessment**:
-- Identify any potential implementation risks
-- Check for missing dependencies
-- Evaluate feasibility of proposed approach
+**Domain-Specific Focus**:
+- **Security Expert**: Security vulnerabilities, compliance gaps, threat coverage, encryption strategies
+- **Infrastructure Expert**: Scalability, reliability, operational readiness, cost efficiency
+- **Data Architecture Expert**: Data integrity, storage patterns, data flows, governance compliance
+- **Application Architecture Expert**: Component boundaries, dependency health, pattern appropriateness, integration design
+- **Operations/DevOps Expert**: Deployment safety, monitoring coverage, operational readiness, supportability
+- **Business Alignment Expert**: Business value alignment, cost-effectiveness, time-to-market considerations, user impact
 
 ---
 
@@ -84,7 +82,7 @@ purpose: Brief document for Round Table panelists summarizing the plan for revie
 
 ## Panelist Assignment
 
-**Your Persona**: {Structure Expert | Scope Expert | Quality Expert | Risk Expert | Alternative Expert | Infrastructure Expert}
+**Your Persona**: {Security Expert | Infrastructure Expert | Data Architecture Expert | Application Architecture Expert | Operations/DevOps Expert | Business Alignment Expert}
 
 **Your Focus**: {Specific domain expertise based on persona}
 
@@ -92,9 +90,9 @@ purpose: Brief document for Round Table panelists summarizing the plan for revie
 - For Internal Round Table: "I am reviewing as {Persona}"
 - For External Round Table: "I am reviewing as {Model Name} ({Persona})"
 
-This ensures proper logging to the correct file path:
-- Internal: Logs/Planner/Roundtable/Internal/plan{N}/{Agent_Persona}.md
-- External: Logs/Planner/Roundtable/External/plan{N}/{Agent_Name}_{Agent_Persona}.md
+This ensures proper logging to the consolidated file:
+- Internal: Logs/Planner/Round Table/Internal/Plan{N}_Roundtable.md (append per revision, separated by {Agent_Persona})
+- External: Logs/Planner/Round Table/External/Plan{N}_Roundtable.md (append per revision, separated by Agent_Name_{Agent_Persona})
 
 **Web Search Requirement**: MUST use web search to verify findings against current best practices and research
 

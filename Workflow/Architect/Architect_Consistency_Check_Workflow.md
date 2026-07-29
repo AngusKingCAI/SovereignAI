@@ -37,14 +37,12 @@ Systematic validation of harness architecture consistency across the entire proj
 
 **IMPORTANT**: All phases execute sequentially. Phase validation failures are treated as informational warnings and do not block workflow progression. All findings are aggregated in the final report for comprehensive review.
 
-### Phase 0. Read Architect Rules + Scan Scope
-- 1. Read Rules/Architect/Architect_Rules.md to understand governance constraints
-- 2. Read PRINCIPLES.md to understand constitutional framework and architectural principles
-- 3. Read Workflow/Workflow_Reference/Terminology_Glossary.md to understand terminology definitions
-- 4. Determine scan scope (full harness vs specific components)
-- 5. Store governance context for reference throughout scan
-- 6. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
-- 7. **PRINT**: "Architect rules loaded - initiating harness architecture consistency scan"
+### Phase 0. Load Governance Rules + Scan Scope
+- 1. **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on current agent type
+- 2. Determine scan scope (full harness vs specific components)
+- 3. Store governance context for reference throughout scan
+- 4. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
+- 5. **PRINT**: "Governance rules loaded dynamically - initiating harness architecture consistency scan"
 
 ### Phase 1. Select Scan Strategy
 - 1. Ask user to select scan strategy using popup menu:
@@ -130,8 +128,8 @@ Systematic validation of harness architecture consistency across the entire proj
 - 2. Agent Capability Alignment: Compare AGENTS.md with actual capabilities
 - 3. **SCAN**: Read framework files line by line to check proper separation and references with relevance requirement
 - 4. Universal Framework Coverage: Check proper separation and references with relevance requirement
-- 5. **SCAN**: Read each workflow file line by line to ensure Workflow/Workflow_Reference/Terminology_Glossary.md is referenced in Phase 0
-- 6. Terminology Glossary Reference Consistency: Ensure all workflows reference Workflow/Workflow_Reference/Terminology_Glossary.md in Phase 0
+- 5. **SCAN**: Read each workflow file line by line to ensure either WorkflowOpen skill is used in Phase 0 OR Workflow/Workflow_Reference/Terminology_Glossary.md is referenced in Phase 0
+- 6. Terminology Glossary Reference Consistency: Ensure all workflows reference either WorkflowOpen skill or Workflow/Workflow_Reference/Terminology_Glossary.md in Phase 0
 - 7. **WARNING HANDLING**: Continue workflow even if advanced content checks fail - treat issues as informational for report generation
 - 8. **STATUS TRACKING**: Update workflow status to "phase_9_complete"
 - 9. **PRINT**: "Advanced content validation complete - {N} content issues found"
@@ -317,6 +315,7 @@ Systematic validation of harness architecture consistency across the entire proj
   - STATUS TRACKING entries presence (informational)
   - VALIDATION entries presence (informational)
   - PRINT commands presence (informational)
+  - **Phase 0 Governance**: Either WorkflowOpen skill usage OR direct rule file references (both accepted patterns)
   - Step numbering sequential consistency (if steps are used)
 
 ### 4. Governance Rule Consistency

@@ -30,7 +30,7 @@ Operate under PRINCIPLES.md compliance principles (CA-1 through CA-11 for archit
 
 ## Commands you can use
 - **Directory verification:** `ls -la <directory>` (verify directory structure exists)
-- **File discovery:** `find <path -name "*.md"` (find markdown governance files)
+- **File discovery:** `find <path> -name "*.md"` (find markdown governance files)
 - **Pattern search:** `grep -r "pattern" <directory>` (search for patterns in rule files)
 - **JSON validation:** `python -m json.tool <file>` (validate JSON syntax, exit code indicates success/failure)
 - **File comparison:** `diff <file1> <file2>` (compare files before changes, exit code 0 = identical)
@@ -74,7 +74,7 @@ See `Docs/Code/` for relevant code style guides based on the language or format 
 
 ## Workflow
 - **Main Workflow**: Workflow/Reviewer/Reviewer_Review_Workflow.md (comprehensive review process)
-- **Best Practice Scanner**: Workflow/Reviewer/Reviewer_Best_Practice_Scanner_Workflow.md (App/ directory compliance scanning)
+- **Best Practice Scanner**: Workflow/Reviewer/Reviewer_BP_Scanner_Workflow.md (unified App/ and Harness compliance scanning with mode selection)
 - **Review Mode Patterns**: Workflow/Reviewer/Reference/Review_Mode_Patterns.md (reviewer-specific execution mode patterns)
 - **Quality Framework**: Workflow/Workflow_Reference/Quality_Assessment_Framework.md (review quality assessment)
 - **Validation Patterns**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md (review verification)

@@ -29,14 +29,10 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 - **End State**: Implementation complete, documented, verified for compliance
 
 ## Workflow Steps (92 steps)
-### Phase 0. Read Architect Rules
-- 1. Read Rules/Architect/Architect_Rules.md to load current governance constraints
-- 2. Read PRINCIPLES.md to understand constitutional framework and architectural principles
-- 3. Read Workflow/Workflow_Reference/Terminology_Glossary.md to understand terminology definitions
-- 4. Parse YAML frontmatter and rule definitions for implementation guidance
-- 5. Store rule context for reference throughout workflow execution
-- 6. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
-- 7. **PRINT** "Architect rules, constitutional principles, and terminology definitions loaded"
+### Phase 0. Load Governance Rules
+- 1. **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on current agent type
+- 2. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
+- 3. **PRINT** "Governance rules loaded dynamically based on agent type"
 
 ### Phase 1. Select Execution Mode
 - 1. Ask user to select execution mode for this workflow using popup menu (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md for execution mode definitions)

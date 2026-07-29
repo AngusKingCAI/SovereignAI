@@ -140,7 +140,7 @@ After plan creation and validation, plans undergo Round Table review for quality
 
 ### Review Process
 1. **Plan Brief Creation**: Planner creates brief using Workflow/Planner/Templates/Plan_Brief_Template.md
-2. **Panelist Assignment**: Domain-split personas assigned to panelists (Structure Expert, Scope Expert, etc.)
+2. **Panelist Assignment**: Domain-split personas assigned to panelists (Security Expert, Infrastructure Expert, Data Architecture Expert, Application Architecture Expert, Operations/DevOps Expert, Business Alignment Expert)
 3. **Panelist Instructions**: Panelists receive persona instructions from Workflow/Planner/Templates/Plan_Prompt_Template.md
 4. **Quality Evaluation**: Panelists evaluate using Workflow/Workflow_Reference/Quality_Assessment_Framework.md with web search verification
 5. **Findings Application**: Planner applies findings to improve plan quality

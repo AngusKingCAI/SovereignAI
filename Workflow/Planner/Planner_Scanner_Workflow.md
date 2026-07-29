@@ -47,14 +47,10 @@ Create implementation-ready plans from existing governance scan results. This wo
 
 ## Workflow Steps (43 steps)
 
-### Phase 0. Read Planner Rules + Governance
-- 1. Read Rules/Planner/Planner_Rules.md to understand planning criteria and infrastructure compliance requirements
-- 2. Read PRINCIPLES.md to understand constitutional framework and architectural principles
-- 3. Read Workflow/Workflow_Reference/Terminology_Glossary.md to understand terminology definitions
-- 4. Parse YAML frontmatter and rule definitions for compliance verification guidance
-- 5. Store rule context and compliance criteria for reference throughout workflow execution
-- 6. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
-- 7. **PRINT** "Planner rules and infrastructure compliance criteria loaded"
+### Phase 0. Load Governance Rules
+- 1. **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on current agent type
+- 2. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
+- 3. **PRINT** "Governance rules loaded dynamically based on agent type"
 
 ### Phase 1. Accept Scan Results Input
 - 1. Request user to provide existing scan results and findings from governance scanning processes

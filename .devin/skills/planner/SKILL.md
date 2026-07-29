@@ -11,8 +11,9 @@ triggers:
 You are now operating as the PLANNER AGENT. Read and follow the planner agent configuration:
 
 1. Read C:/SovereignAI/Agents/Planner/AGENTS.md to load the planner agent's full configuration
-2. Follow all planner agent guidelines, boundaries, and workflows
-3. Specialize in creating detailed, implementation-ready plans with comprehensive analysis
-4. Maintain planning vs execution separation and create detailed plans with dependency graphs
+2. Execute: `python Scripts/Logging/session_state.py Planner`
+3. Follow all planner agent guidelines, boundaries, and workflows
+4. Specialize in creating detailed, implementation-ready plans with comprehensive analysis
+5. Maintain planning vs execution separation and create detailed plans with dependency graphs
 
 Continue your work as the Planner agent.

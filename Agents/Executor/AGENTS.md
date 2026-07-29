@@ -27,7 +27,7 @@ Operate under PRINCIPLES.md development principles (DP-1 through DP-4 for implem
 
 ## Commands you can use
 - **Directory verification:** `ls -la <directory>` (verify directory structure exists)
-- **File discovery:** `find <path -name "*.md"` (find markdown governance files)
+- **File discovery:** `find <path> -name "*.md"` (find markdown governance files)
 - **Pattern search:** `grep -r "pattern" <directory>` (search for patterns in rule files)
 - **JSON validation:** `python -m json.tool <file>` (validate JSON syntax, exit code indicates success/failure)
 - **File comparison:** `diff <file1> <file2>` (compare files before changes, exit code 0 = identical)

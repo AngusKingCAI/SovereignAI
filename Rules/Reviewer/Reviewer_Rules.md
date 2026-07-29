@@ -36,7 +36,7 @@ Three execution modes govern workflow behavior when encountering failures:
 - Place review logs in Logs/Reviewer/ folder with proper categorization. Never create ad-hoc folders or place outside established structure (maintains organization, prevents file chaos)
 - Always use popups for yes/no questions. Never use text-only confirmations (ensures clear user intent, prevents miscommunication)
 - Always categorize review findings when adding to review documentation. Never place findings uncategorized (maintains organization, enables efficient navigation)
-- Never skip compliance verification. Always verify adherence to Executor rules and standards before concluding review (ensures quality, prevents rule violations)
+- Never skip compliance verification. Always verify adherence to Reviewer modular compliance rules and standards before concluding review (ensures quality, prevents rule violations)
 - Never modify code directly during review (reviewer role only, prevents scope drift into implementation)
 - Never skip best practices evaluation. Always assess code against industry standards and established patterns (ensures quality, prevents suboptimal solutions)
 - Never perform actions outside workflow scope. Always follow defined review processes and never perform tasks outside the current workflow scope unless explicitly requested by the user (prevents token waste, ensures focused execution)
@@ -168,4 +168,4 @@ Three execution modes govern workflow behavior when encountering failures:
 **Rules**: Initial version based on code review best practices and quality assurance standards
 **Categories**: Modular compliance, code quality, best practices evaluation, comprehensive coverage, constructive feedback
 **Enforcement**: Quality verification (primary), compliance standards (secondary), best practices evaluation (tertiary)
-**Modular Compliance**: Function-by-function verification against Executor rules with subagent support for large-scale scanning
+**Modular Compliance**: Function-by-function verification against Reviewer modular compliance rules with subagent support for large-scale scanning

@@ -37,15 +37,13 @@ Systematic resolution of consistency issues identified by the Consistency Check 
 
 ## Workflow Steps (65 steps)
 
-### Phase 0. Read Architect Rules + Consistency Report
-- 1. Read Rules/Architect/Architect_Rules.md to understand governance constraints
-- 2. Read PRINCIPLES.md to understand constitutional framework and architectural principles
-- 3. Read Workflow/Workflow_Reference/Terminology_Glossary.md to understand terminology definitions
-- 4. Read most recent consistency report from Logs/Architect/Consistency Review/
-- 5. Parse consistency report to identify issues by severity (CRITICAL, HIGH, MEDIUM, LOW)
-- 6. Store governance context and issue list for reference throughout workflow execution
-- 7. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
-- 8. **PRINT**: "Architect rules and consistency report loaded - {N} issues identified"
+### Phase 0. Load Governance Rules + Consistency Report
+- 1. **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on current agent type
+- 2. Read most recent consistency report from Logs/Architect/Consistency Review/
+- 3. Parse consistency report to identify issues by severity (CRITICAL, HIGH, MEDIUM, LOW)
+- 4. Store governance context and issue list for reference throughout workflow execution
+- 5. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
+- 6. **PRINT**: "Governance rules loaded dynamically - consistency report loaded - {N} issues identified"
 
 ### Phase 1. Select Execution Mode
 - 1. Ask user to select execution mode using popup menu:

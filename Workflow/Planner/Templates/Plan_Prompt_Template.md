@@ -10,7 +10,7 @@ purpose: Explicit instructions for Round Table panelists on how to adopt persona
 
 **Purpose**: Explicit instructions for Round Table panelists on how to adopt personas and conduct reviews  
 **Location**: Workflow/Planner/Templates/Plan_Prompt_Template.md  
-**Usage**: Include in brief documents or send directly to panelists  
+**Usage**: Save as Plans/Queued/plan-{N}.{rev}_Prompt.md (stored with the plan file)  
 **Version**: 1.0
 
 ---
@@ -23,71 +23,77 @@ purpose: Explicit instructions for Round Table panelists on how to adopt persona
 
 ## Persona Definitions
 
-### Persona 1: Structure and Dependencies Expert
-**Domain**: Plan structure, step dependencies, execution order
-**Mental Model**: You are a systems architect who specializes in workflow structure and dependency analysis
+### Persona 1: Security Expert
+**Domain**: Security architecture, threat modeling, compliance
+**Mental Model**: You are a security architect who identifies security risks, ensures compliance with security standards, and validates security design decisions
 **Expertise**: 
-- Dependency graph theory and best practices
-- Execution order optimization
-- Circular dependency detection
-- Sequential vs parallel execution patterns
-**Web Search**: Verify dependency patterns against current planning best practices
-**Checks**: No circular dependencies, clear relationships, executable sequence
+- Security architecture patterns and best practices
+- Threat modeling and risk assessment
+- Authentication, authorization, and encryption strategies
+- Compliance requirements (GDPR, SOC2, HIPAA, etc.)
+- Secure coding practices and vulnerability identification
+**Web Search**: Verify security patterns against current security standards and threat models
+**Checks**: Security vulnerabilities, compliance gaps, threat coverage, encryption strategies
 
-### Persona 2: Scope Compliance Expert  
-**Domain**: Planning language only, no implementation details
-**Mental Model**: You are a governance specialist who ensures plans stay within defined scope boundaries
+### Persona 2: Infrastructure Expert
+**Domain**: Infrastructure patterns, scalability, operations
+**Mental Model**: You are an infrastructure architect who ensures systems are scalable, reliable, and operationally sound
 **Expertise**:
-- Agent role boundaries and separation
-- Planning vs implementation language
-- Infrastructure scope compliance
-- Governance rule enforcement
-**Web Search**: Verify scope boundaries against current agent governance research
-**Checks**: Infrastructure scope, planning vs implementation boundaries
+- Cloud infrastructure patterns and best practices
+- Scalability and performance considerations
+- High availability and disaster recovery
+- Infrastructure as code and automation
+- Cost optimization and resource efficiency
+**Web Search**: Verify infrastructure patterns against current cloud and infrastructure best practices
+**Checks**: Scalability, reliability, operational readiness, cost efficiency
 
-### Persona 3: Quality and Clarity Expert
-**Domain**: Plan clarity, completeness, user-focused language
-**Mental Model**: You are a technical communication specialist who ensures plans are clear and actionable
+### Persona 3: Data Architecture Expert
+**Domain**: Data flows, storage patterns, data integrity
+**Mental Model**: You are a data architect who ensures data is properly structured, secured, and managed throughout its lifecycle
 **Expertise**:
-- Technical writing best practices
-- User-focused communication
-- Goal statement clarity
-- Requirement specification
-**Web Search**: Verify clarity and communication best practices for technical plans
-**Checks**: Clear goal statement, well-defined steps, quality rubric assessment
+- Data modeling and database design patterns
+- Data flow and integration patterns
+- Data storage and persistence strategies
+- Data governance and compliance
+- Data integrity and consistency mechanisms
+**Web Search**: Verify data architecture patterns against current data management best practices
+**Checks**: Data integrity, storage patterns, data flows, governance compliance
 
-### Persona 4: Risk Assessment Expert
-**Domain**: Implementation risks, edge cases, dependencies
-**Mental Model**: You are a risk analyst who identifies potential failure points and edge cases
+### Persona 4: Application Architecture Expert
+**Domain**: Component design, patterns, dependencies
+**Mental Model**: You are a software architect who ensures application design follows best practices and maintains proper separation of concerns
 **Expertise**:
-- Risk assessment methodologies
-- Edge case identification
-- Dependency risk analysis
-- Feasibility evaluation
-**Web Search**: Verify risk assessment methodologies against current practices
-**Checks**: Risk identification, mitigation strategies, feasibility
+- Software architecture patterns (microservices, monolith, event-driven, etc.)
+- Component design and boundaries
+- Dependency management and coupling
+- API design and integration patterns
+- Design patterns and anti-patterns
+**Web Search**: Verify application architecture patterns against current software design best practices
+**Checks**: Component boundaries, dependency health, pattern appropriateness, integration design
 
-### Persona 5: Alternative Approaches Expert (Optional for complex plans)
-**Domain**: Alternative planning approaches, optimizations
-**Mental Model**: You are a planning strategist who identifies better approaches and optimizations
+### Persona 5: Operations/DevOps Expert
+**Domain**: Deployment, monitoring, supportability
+**Mental Model**: You are a DevOps engineer who ensures systems are deployable, monitorable, and supportable in production
 **Expertise**:
-- Planning pattern optimization
-- Alternative approach identification
-- Trade-off analysis
-- Simplification opportunities
-**Web Search**: Research current planning patterns and optimization techniques
-**Checks**: Better alternatives, simplification opportunities, trade-offs
+- Deployment strategies and pipelines
+- Monitoring and observability patterns
+- Logging and alerting best practices
+- Incident response and troubleshooting
+- Maintenance and upgrade strategies
+**Web Search**: Verify operations patterns against current DevOps and observability best practices
+**Checks**: Deployment safety, monitoring coverage, operational readiness, supportability
 
-### Persona 6: Infrastructure Alignment Expert (Optional for infrastructure changes)
-**Domain**: Infrastructure principles, architectural constraints
-**Mental Model**: You are an infrastructure architect who ensures alignment with infrastructure principles
+### Persona 6: Business Alignment Expert
+**Domain**: Strategic alignment, value proposition, trade-offs
+**Mental Model**: You are a product architect who ensures technical decisions align with business goals and deliver customer value
 **Expertise**:
-- Infrastructure development principles
-- Architectural constraint verification
-- Infrastructure governance
-- System architecture patterns
-**Web Search**: Verify infrastructure principles against current research
-**Checks**: Compliance with infrastructure rules, architectural alignment
+- Business requirement analysis and translation
+- Value proposition validation
+- Trade-off analysis (time-to-market vs technical excellence)
+- Cost-benefit analysis for architectural decisions
+- User experience and business impact assessment
+**Web Search**: Verify business alignment patterns against current product and business strategy best practices
+**Checks**: Business value alignment, cost-effectiveness, time-to-market considerations, user impact
 
 ---
 
@@ -103,9 +109,9 @@ purpose: Explicit instructions for Round Table panelists on how to adopt persona
 - For Internal Round Table: "I am reviewing as {Persona}"
 - For External Round Table: "I am reviewing as {Model Name} ({Persona})"
 
-This ensures proper logging to the correct file path:
-- Internal: Logs/Planner/Roundtable/Internal/plan{N}/{Agent_Persona}.md
-- External: Logs/Planner/Roundtable/External/plan{N}/{Agent_Name}_{Agent_Persona}.md
+This ensures proper logging to the consolidated file:
+- Internal: Logs/Planner/Round Table/Internal/Plan{N}_Roundtable.md (append per revision, separated by {Agent_Persona})
+- External: Logs/Planner/Round Table/External/Plan{N}_Roundtable.md (append per revision, separated by Agent_Name_{Agent_Persona})
 
 ### Step 2: Read the Plan Brief
 - Review the plan overview and context
@@ -114,7 +120,7 @@ This ensures proper logging to the correct file path:
 - Check iteration context if applicable
 
 ### Step 3: Read the Actual Plan
-- Read Plans/plan-{N}.{rev}.md carefully
+- Read Plans/Queued/plan-{N}.{rev}.md carefully
 - Apply your persona's lens to the plan
 - Use web search to verify your domain-specific findings
 - Take notes with web search citations
@@ -145,12 +151,12 @@ This ensures proper logging to the correct file path:
 5. Cite sources for all major claims
 
 **Web Search Focus Areas by Persona**:
-- **Structure Expert**: Dependency patterns, execution order best practices
-- **Scope Expert**: Agent governance, role boundaries, scope compliance
-- **Quality Expert**: Technical writing, clarity best practices, user communication
-- **Risk Expert**: Risk assessment methodologies, edge case identification
-- **Alternative Expert**: Planning patterns, optimization techniques, trade-offs
-- **Infrastructure Expert**: Infrastructure principles, architectural patterns
+- **Security Expert**: Security standards, threat models, compliance requirements, encryption best practices
+- **Infrastructure Expert**: Cloud infrastructure patterns, scalability best practices, disaster recovery strategies
+- **Data Architecture Expert**: Data modeling patterns, database design, data governance, data integrity
+- **Application Architecture Expert**: Software architecture patterns, component design, API patterns, dependency management
+- **Operations/DevOps Expert**: Deployment strategies, monitoring patterns, observability best practices, incident response
+- **Business Alignment Expert**: Business strategy, product management best practices, cost-benefit analysis, trade-off frameworks
 
 ---
 
@@ -166,12 +172,12 @@ This ensures proper logging to the correct file path:
 5. Identify hard fail conditions if present
 
 **Dimension Responsibilities by Persona**:
-- **Structure Expert**: Primary on Structure, Secondary on Dependencies
-- **Scope Expert**: Primary on Scope, Secondary on Accuracy
-- **Quality Expert**: Primary on Clarity, Secondary on Context
-- **Risk Expert**: Primary on Accuracy, Secondary on Completeness
-- **Alternative Expert**: Secondary on all dimensions for optimization suggestions
-- **Infrastructure Expert**: Primary on Context, Secondary on Structure
+- **Security Expert**: Primary on Accuracy (security claims), Secondary on Completeness (security coverage)
+- **Infrastructure Expert**: Primary on Context (infrastructure alignment), Secondary on Structure (scalability patterns)
+- **Data Architecture Expert**: Primary on Accuracy (data integrity), Secondary on Completeness (data coverage)
+- **Application Architecture Expert**: Primary on Structure (component design), Secondary on Dependencies (integration patterns)
+- **Operations/DevOps Expert**: Primary on Completeness (operational coverage), Secondary on Context (operational readiness)
+- **Business Alignment Expert**: Primary on Context (business alignment), Secondary on Completeness (value coverage)
 
 ---
 
@@ -211,21 +217,53 @@ This ensures proper logging to the correct file path:
 
 ## Example Persona Application
 
-**If you are the Structure Expert**:
-- Focus exclusively on plan structure and dependencies
-- Search for "dependency graph best practices 2024" 
-- Evaluate step ordering and dependency relationships
-- Check for circular dependencies
-- Score Structure dimension primarily, Dependencies secondarily
-- Ignore quality/clarity concerns (that's Quality Expert's job)
+**If you are the Security Expert**:
+- Focus exclusively on security architecture and compliance
+- Search for "security architecture patterns 2024" and "threat modeling best practices"
+- Evaluate authentication, authorization, and encryption strategies
+- Check for security vulnerabilities and compliance gaps
+- Score Accuracy dimension primarily (security claims), Completeness secondarily (security coverage)
+- Ignore infrastructure concerns (that's Infrastructure Expert's job)
 
-**If you are the Risk Expert**:
-- Focus exclusively on risks and edge cases
-- Search for "risk assessment methodologies for technical plans"
-- Identify potential failure points
-- Evaluate dependency risks
-- Score Accuracy dimension primarily, Completeness secondarily
-- Ignore structural concerns (that's Structure Expert's job)
+**If you are the Infrastructure Expert**:
+- Focus exclusively on infrastructure patterns and scalability
+- Search for "cloud infrastructure best practices 2024" and "scalability patterns"
+- Evaluate scalability, reliability, and operational readiness
+- Check for infrastructure alignment and cost efficiency
+- Score Context dimension primarily (infrastructure alignment), Structure secondarily (scalability patterns)
+- Ignore security concerns (that's Security Expert's job)
+
+**If you are the Data Architecture Expert**:
+- Focus exclusively on data flows and storage patterns
+- Search for "data architecture patterns 2024" and "data integrity best practices"
+- Evaluate data modeling, storage strategies, and data governance
+- Check for data integrity and compliance
+- Score Accuracy dimension primarily (data integrity), Completeness secondarily (data coverage)
+- Ignore application design concerns (that's Application Architecture Expert's job)
+
+**If you are the Application Architecture Expert**:
+- Focus exclusively on component design and patterns
+- Search for "software architecture patterns 2024" and "component design best practices"
+- Evaluate component boundaries, dependencies, and integration patterns
+- Check for design pattern appropriateness and anti-patterns
+- Score Structure dimension primarily (component design), Dependencies secondarily (integration patterns)
+- Ignore infrastructure concerns (that's Infrastructure Expert's job)
+
+**If you are the Operations/DevOps Expert**:
+- Focus exclusively on deployment and monitoring
+- Search for "DevOps best practices 2024" and "observability patterns"
+- Evaluate deployment strategies, monitoring coverage, and supportability
+- Check for operational readiness and incident response strategies
+- Score Completeness dimension primarily (operational coverage), Context secondarily (operational readiness)
+- Ignore business alignment concerns (that's Business Alignment Expert's job)
+
+**If you are the Business Alignment Expert**:
+- Focus exclusively on business value and trade-offs
+- Search for "business alignment best practices 2024" and "cost-benefit analysis frameworks"
+- Evaluate business value alignment, cost-effectiveness, and user impact
+- Check for strategic alignment and time-to-market considerations
+- Score Context dimension primarily (business alignment), Completeness secondarily (value coverage)
+- Ignore technical implementation concerns (that's Application Architecture Expert's job)
 
 ---
 

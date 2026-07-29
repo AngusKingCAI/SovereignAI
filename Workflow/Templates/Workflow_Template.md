@@ -69,12 +69,10 @@ Architect creates two types of workflows with different Phase 10 patterns:
 - **End State**: {What constitutes workflow completion}
 
 ## Workflow Steps ({total steps} steps)
-### Phase 0. Read {Agent} Rules
-- 1. Read Rules/{Agent}/{Agent}_Rules.md to load current governance constraints
-- 2. Parse YAML frontmatter and rule definitions for implementation guidance
-- 3. Store rule context for reference throughout workflow execution
-- 4. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
-- 5. **PRINT** "{Agent} rules loaded from Rules/{Agent}/{Agent}_Rules.md"
+### Phase 0. Load Governance Rules
+- 1. **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on current agent type
+- 2. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
+- 3. **PRINT** "Governance rules loaded dynamically based on agent type"
 
 ### Phase 1. Select Execution Mode (Workflow-Specific)
 - 6. Ask user to select execution mode for this workflow using popup menu:

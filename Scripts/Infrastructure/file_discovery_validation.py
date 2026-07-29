@@ -62,10 +62,18 @@ class FileDiscoveryValidator:
                 normalized_dir = directory.replace("\\", "/")
                 normalized_pattern = pattern.replace("\\", "/")
                 
-                # Simple pattern matching - check if pattern appears in path
-                if normalized_pattern.replace("*", "") in normalized_dir:
-                    exclude = True
-                    break
+                # Improved pattern matching - support exact matches and wildcard patterns
+                if pattern.endswith("*"):
+                    # Wildcard pattern - check if path starts with pattern (without *)
+                    pattern_prefix = pattern[:-1].replace("\\", "/")
+                    if normalized_dir.startswith(pattern_prefix):
+                        exclude = True
+                        break
+                else:
+                    # Exact pattern match
+                    if normalized_pattern in normalized_dir:
+                        exclude = True
+                        break
             if not exclude:
                 filtered.add(directory)
         return filtered

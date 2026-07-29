@@ -93,6 +93,28 @@ purpose: Single source of truth for all capitalized terminology used across the 
 
 ---
 
+### **MANUAL**
+**Definition**: Agent explains exactly what they want to do, then user has choice Yes, No, Other.
+
+**Usage**: Used when complete user oversight is required throughout the workflow process. The agent must explain their intended actions clearly and get explicit user approval before proceeding.
+
+**Examples**:
+- **MANUAL**: Agent explains proposed action and user chooses Yes/No/Other
+- **MANUAL**: User maintains full control and intervention throughout entire workflow
+
+---
+
+### **AUTOMATIC**
+**Definition**: Process automatically until a failure and ask user how to proceed.
+
+**Usage**: Used when automated processing is desired but human intervention is needed at failure points. The workflow proceeds automatically but stops when failures occur to request user guidance on recovery.
+
+**Examples**:
+- **AUTOMATIC**: Process automatically without user confirmation until failure
+- **AUTOMATIC**: Stop at failures and ask user how to proceed with recovery
+
+---
+
 ### **CONVERGENCE CHECK**
 **Definition**: Verify panelist scores against quality thresholds.
 
