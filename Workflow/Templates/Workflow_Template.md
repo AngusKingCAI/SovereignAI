@@ -47,17 +47,41 @@ Architect creates two types of workflows with different Phase 10 patterns:
 
 ## Workflow Header
 ```markdown
+---
+id: wf-{agent}-{workflow-type}
+status: active
+owner: {agent}-agent
+updated: {date}
+version: 1.0
+purpose: {workflow purpose description}
+expected_agent_type: {agent}-agent
+persona:
+  role: "{specific role for this workflow}"
+  expertise: "{relevant expertise areas}"
+  process: "{workflow execution approach}"
+  output: "{expected output format}"
+  constraints: "{operational constraints}"
+---
+
 # {Agent} {WorkflowType} Workflow
 
-**ID**: WF-{AGENT}-{XXX}  
-**Owner**: {Agent} Agent  
-**Frequency**: {Frequency}  
-**Duration**: {Duration}  
+**ID**: WF-{AGENT}-{XXX}
+**Owner**: {Agent} Agent
+**Frequency**: {Frequency}
+**Duration**: {Duration}
 **Priority**: {Priority}
+**Workflow Type**: {Continuous Operation or Single-Execution}
 **Execution Modes**: {Workflow-specific execution mode options}
+**Phase Structure**: {Total number of phases with brief description}
 
 ## Purpose
 {What this workflow accomplishes and why it exists}
+
+## Reference Documents
+- **Universal Framework References**: Workflow/Workflow_Reference/ (referenced frameworks based on workflow relevance)
+- **Agent Rules**: Rules/{Agent}/{Agent}_Rules.md (agent-specific governance rules)
+- **Best Practice Integration**: Web search points (BP?) for current industry standards
+- **Terminology**: Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for governance terminology)
 
 ## Roles and Owners
 - **{Agent} Agent**: Executes workflow steps, enforces governance rules
@@ -65,8 +89,8 @@ Architect creates two types of workflows with different Phase 10 patterns:
 - **Governance System**: Validation and compliance enforcement
 
 ## Trigger and End State
-- **Trigger**: {What triggers this workflow}
-- **End State**: {What constitutes workflow completion}
+- **Trigger**: {What triggers this workflow - when should it be executed}
+- **End State**: {What constitutes workflow completion - when is the workflow considered finished}
 
 ## Workflow Steps ({total steps} steps)
 ### Phase 0. Load Governance Rules
@@ -188,6 +212,10 @@ Architect creates two types of workflows with different Phase 10 patterns:
 ### Mandated Sections (Required)
 All workflows must include:
 - **Workflow Header**: ID, Owner, Frequency, Duration, Priority, Execution Modes, Purpose, Roles, Trigger and End State
+- **expected_agent_type**: Required field in YAML frontmatter specifying which agent executes this workflow
+- **persona**: Required field in YAML frontmatter with proper persona structure (role, expertise, process, output, constraints)
+- **Reference Documents section**: Must list all referenced documents, universal frameworks, agent rules, and terminology sources
+- **Trigger and End State section**: Must specify workflow entry conditions and completion criteria
 - **Universal Framework References** section at the end
 - References to all universal frameworks relevant to the workflow
 - **Relevance Requirement**: Only include universal framework references that are actually relevant to the agent's specific purpose

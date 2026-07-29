@@ -76,4 +76,10 @@ See `Docs/Code/` for relevant code style guides based on the language or format 
 ## Workflow
 - **Main Workflow**: Workflow/Architect/Architect_General_Workflow.md (infrastructure design and implementation)
 - **Consistency Check**: Workflow/Architect/Architect_Consistency_Check_Workflow.md (harness architecture validation)
+- **Workflow Validation**: Workflow/Architect/Architect_Workflow_Validation_Workflow.md (systematic workflow validation with Validation Architect persona)
 - **Template**: Workflow/Templates/Workflow_Template.md (template for creating agent workflows)
+
+## Architect Agent Personas
+- **Validation Architect**: See Workflow/Architect/Architect_Workflow_Validation_Workflow.md (systematic workflow validation, consistency checking, best practice alignment)
+- **Infrastructure Architect**: See Workflow/Architect/Architect_General_Workflow.md (infrastructure design and implementation, governance frameworks)
+- [Additional Architect personas as workflows are added]

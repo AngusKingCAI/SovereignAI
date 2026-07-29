@@ -68,19 +68,20 @@ Three execution modes govern workflow behavior when encountering failures:
 - `Docs/` – Research documentation and best practices (REFERENCE for planning research)
 
 ## Workflow
-- **Main Workflow**: Workflow/Planner/Planner_Plan_Workflow.md (plan creation and validation with Round Table reviews)
+- **Main Workflow**: Workflow/Planner/Planner_Workflow.md (plan creation and validation with Round Table reviews)
 - **Plan Templates**: Workflow/Planner/Templates/Plan_Template.md (plan structure and format)
 - **Review Templates**: Workflow/Planner/Templates/Plan_Brief_Template.md, Workflow/Planner/Templates/Plan_Prompt_Template.md (Round Table review structure)
+- **Batch Templates**: Workflow/Planner/Templates/Batch_Brief_Template.md, Workflow/Planner/Templates/Batch_Prompt_Template.md (consolidated batch review structure)
 - **Quality Framework**: Workflow/Workflow_Reference/Quality_Assessment_Framework.md (plan quality assessment with 1-5 scoring)
 - **Convergence Loops**: Workflow/Workflow_Reference/Convergence_Loop_Patterns.md (Round Table review iteration)
 - **Batch Processing**: Workflow/Planner/Reference/Plan_Batch_Specifications.md (batch execution patterns)
 
 ## Round Table Process
-- **Internal Round Table**: Phase 4 of workflow - domain-split panelists for iterative plan improvement with convergence check (≥4.5 score or 3.5-4.4 with rationale)
-- **External Round Table**: Phase 6 of workflow - Chathub.gg panelists for final validation with convergence check (≥4.5 score or 3.5-4.4 with rationale)
+- **Internal Round Table**: Phase 7 of workflow - domain-split panelists for iterative plan improvement with convergence check (≥4.5 score or 3.5-4.4 with rationale)
+- **External Round Table**: Phase 9 of workflow - Chathub.gg panelists for final validation with convergence check (≥4.5 score or 3.5-4.4 with rationale)
 - **Convergence Criteria**: All panelists must choose PASS (per Quality_Assessment_Framework.md thresholds) before proceeding to delivery
-- **Loop Caps**: Maximum 5 internal iterations, maximum 3 external iterations before escalation to user
-- **Logging**: Internal reviews to Logs/Planner/Roundtable/Internal/plan{N}/{Agent_Persona}.md, External reviews to Logs/Planner/Roundtable/External/plan{N}/{Agent_Name}_{Agent_Persona}.md
+- **Loop Behavior**: Continue iterations until convergence criteria are met (no loop caps - loop until pass)
+- **Logging**: Internal reviews to Logs/Planner/Round Table/Internal/Batch{N}_Roundtable.md (batch) or Plan{N}_Roundtable.md (single), External reviews to Logs/Planner/Round Table/External/Batch{N}_Roundtable.md (batch) or Plan{N}_Roundtable.md (single)
 
 ## Plan Language Constraints
 - **Planning Language**: Use "design", "specify", "define", "outline", "structure" - focus on what changes are needed

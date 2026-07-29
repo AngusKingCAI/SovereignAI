@@ -2,7 +2,7 @@
 id: wf-plan-ref-batch-specs
 status: active
 owner: planner-agent
-updated: 2026-07-28
+updated: 2026-07-29
 purpose: Planner-specific plan batch execution patterns and scan plan categorization
 ---
 
@@ -13,7 +13,7 @@ purpose: Planner-specific plan batch execution patterns and scan plan categoriza
 ## Plan Batch Structure
 
 ### Batch Execution Pattern
-Plans are organized in batches of 5 plans per batch for systematic processing and issue resolution.
+Plans are organized in batches of 5 plans per batch for systematic processing and issue resolution. For parallel Round Table review processing, batches are limited to 4 plans to optimize subagent efficiency and resource utilization.
 
 ### Plan Numbering Pattern
 - **Standard Plans**: Plans 1-4, 6-9, 11-14, 16-19, 21-24, 26-29, 31-34, 36-39 (regular planning tasks)
@@ -62,6 +62,9 @@ The Planner workflow should:
 4. **Identify scan plans**: Recognize plan numbers 5, 10, 15, 20, 25, 30, 35, 40
 5. **Apply scan plan logic**: Use different approach for scan plans
 6. **Track batch progress**: Monitor batch completion status
+7. **Use consolidated batch approach**: When processing multiple plans, use Batch_Brief.md and Batch_Prompt.md for review materials
+8. **Use single plan approach**: When processing single plan, use plan-specific brief and prompt files
+9. **Reuse batch review materials**: External Round Table reuses batch brief and prompt from Internal Round Table for efficiency
 
 ### Scan Plan Detection Logic
 ```python
@@ -97,9 +100,57 @@ Plans/
 ├── plan-9.md
 ├── plan-10.md (scan plan)
 └── ...
+
+Plans/Queued/
+├── plan-1.rev1.md
+├── plan-2.rev1.md
+├── plan-3.rev1.md
+├── plan-4.rev1.md
+├── Batch_Brief.md (consolidated brief for batch review)
+├── Batch_Prompt.md (consolidated prompt for batch review)
+└── ...
 ```
 
-### Plan Metadata
+---
+
+## Batch Review File Structure
+
+### Consolidated Batch Approach
+
+**Overview**: When processing plans in batches (multiple plans simultaneously), a consolidated file structure is used for Round Table review materials to optimize efficiency and maintain consistency.
+
+**File Structure**:
+- **Batch Brief**: Single `Plans/Queued/Batch_Brief.md` file contains overview, dependencies, and review focus for all plans in batch
+- **Batch Prompt**: Single `Plans/Queued/Batch_Prompt.md` file contains consolidated review instructions for all panelist personas
+- **Individual Plan Files**: Each plan still has its own `Plans/Queued/plan-{N}.{rev}.md` file
+- **Sub Agent Distribution**: Each sub agent receives their specific plan file + shared batch brief + shared batch prompt
+
+**Templates**:
+- **Batch Brief Template**: `Workflow/Planner/Templates/Batch_Brief_Template.md`
+- **Batch Prompt Template**: `Workflow/Planner/Templates/Batch_Prompt_Template.md`
+
+**Single Plan Approach**:
+- **Plan Brief**: `Plans/Queued/plan-{N}.{rev}_Brief.md` (individual plan brief)
+- **Plan Prompt**: `Plans/Queued/plan-{N}.{rev}_Prompt.md` (individual plan prompt)
+- **Templates**: Use existing `Plan_Brief_Template.md` and `Plan_Prompt_Template.md`
+
+**Batch Review Logging**:
+- **Internal Reviews**: `Logs/Planner/Round Table/Internal/Batch{N}_Roundtable.md` (consolidated logging for entire batch)
+- **External Reviews**: `Logs/Planner/Round Table/External/Batch{N}_Roundtable.md` (consolidated logging for entire batch)
+
+**Single Plan Review Logging**:
+- **Internal Reviews**: `Logs/Planner/Round Table/Internal/Plan{N}_Roundtable.md` (individual plan logging)
+- **External Reviews**: `Logs/Planner/Round Table/External/Plan{N}_Roundtable.md` (individual plan logging)
+
+**File Reuse**:
+- Batch brief and prompt created in Phase 6 (Internal Round Table) are reused in Phase 8 (External Round Table) for Plan Mode
+- No need to recreate batch review materials for external review when processing batches
+- This ensures consistency between internal and external review processes
+
+---
+
+## Plan Metadata
+
 Each plan should include:
 - **Plan Number**: Sequential number in batch sequence
 - **Plan Type**: Standard or Scan
