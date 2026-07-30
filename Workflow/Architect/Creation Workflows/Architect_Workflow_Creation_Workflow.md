@@ -2,8 +2,8 @@
 id: wf-arch-workflow-creation
 status: active
 owner: architect-agent
-updated: 2026-07-29
-version: "1.0"
+updated: 2026-07-30
+version: "1.1"
 purpose: Architect workflow for creating new agent workflows by extracting user intent and applying it to the workflow template
 expected_agent_type: architect-agent
 persona:
@@ -29,11 +29,14 @@ persona:
 Create new agent workflows by extracting user intent, applying it to the workflow template, and validating the resulting workflow against schema and template requirements. This workflow ensures all created workflows follow proper structure, comply with governance standards, and are ready for agent use.
 
 ## Reference Documents
+- **Universal Framework References**: Workflow/Workflow_Reference/ (referenced frameworks based on workflow relevance)
+- **Agent Rules**: Rules/Architect/Architect_Rules.md (Architect-specific governance rules)
+- **Terminology**: Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for governance terminology)
+- **Execution Mode Patterns**: Workflow/Workflow_Reference/Execution_Mode_Patterns.md (execution mode definitions and handling)
+- **Validation Enforcement**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md (universal validation patterns)
 - **Workflow Template**: Workflow/Architect/Creation Workflows/Templates/Workflow_Template.md (template structure with [**MANDATED**] and [**SUGGESTED**] markers)
 - **Workflow Schema**: Scripts/Schema/workflow-schema.json (JSON schema for workflow validation)
-- **Terminology**: Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for governance terminology)
-- **Project Rules**: Rules/Architect/Architect_Rules.md (Architect-specific governance rules)
-- **Validation Script**: Scripts/Infrastructure/workflow-validation.py (workflow validation automation)
+- **Validation Script**: Scripts/Schema/validate_schemas.py (workflow validation automation)
 
 ## Roles and Owners
 - **Architect Agent**: Executes workflow creation, applies template, validates result
@@ -134,7 +137,7 @@ Create new agent workflows by extracting user intent, applying it to the workflo
 
 ### Phase 6. Validate Workflow Schema
 - 6.1. **ACTION**: Run workflow validation script against created workflow
-- 6.2. **ACTION**: python Scripts/Schema/workflow-validation.py <workflow-file>
+- 6.2. **ACTION**: python Scripts/Schema/validate_schemas.py <workflow-file>
 - 6.3. **CHECK**: Schema validation passes
 - 6.4. **CHECK**: All required fields present
 - 6.5. **CHECK**: Field formats are correct
@@ -203,6 +206,13 @@ Create new agent workflows by extracting user intent, applying it to the workflo
 - **Universal Framework**: Workflow/Workflow_Reference/Template_Usage_Guidelines.md
 - **Agent Customization**: Workflow creation template customization
 - **Usage**: Reference universal framework for consistency
+
+## Changelog
+
+**2026-07-30**: Reference path corrections
+- Added Reference Documents section with Universal Framework References
+- Fixed script reference (workflow-validation.py → validate_schemas.py)
+- Updated version to 1.1
 
 ### Validation Enforcement
 - **Universal Framework**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md

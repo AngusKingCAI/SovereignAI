@@ -3,7 +3,7 @@ id: wf-arch-agents-validation
 status: active
 owner: architect-agent
 updated: 2026-07-29
-version: "2.0"
+version: "2.1"
 purpose: Architect workflow for comprehensive validation of AGENTS.md files
 expected_agent_type: architect-agent
 persona:
@@ -29,11 +29,14 @@ persona:
 Comprehensive validation of AGENTS.md files to ensure they meet industry best practices, maintain proper structure, contain executable commands, define clear boundaries, and follow KISS principles. This workflow validates AGENTS.md as a repository instruction file for AI coding agents, ensuring it provides high-signal, actionable guidance without unnecessary complexity.
 
 ## Reference Documents
+- **Universal Framework References**: Workflow/Workflow_Reference/ (referenced frameworks based on workflow relevance)
+- **Agent Rules**: Rules/Architect/Architect_Rules.md (Architect-specific governance rules)
+- **Terminology**: Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for governance terminology)
+- **Execution Mode Patterns**: Workflow/Workflow_Reference/Execution_Mode_Patterns.md (execution mode definitions and handling)
+- **Validation Enforcement**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md (universal validation patterns)
 - **Best Practice Integration**: Web search points (BP?) for current AGENTS.md best practices
 - **Fact Check Integration**: Fact checking points (FC?) for factual accuracy verification
 - **AGENTS.md Spec**: agents.md (AAIF-stewarded AGENTS.md convention)
-- **Terminology**: Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for governance terminology)
-- **Project Rules**: Rules/Architect/Architect_Rules.md (Architect-specific governance rules)
 
 ## Roles and Owners
 - **Architect Agent**: Executes Architect AGENTS.md validation workflow, applies Validation Architect persona
@@ -44,6 +47,19 @@ Comprehensive validation of AGENTS.md files to ensure they meet industry best pr
 - **End State**: AGENTS.md validated with all inconsistencies fixed interactively during validation process
 
 ## Workflow Steps
+
+### Load Governance Rules
+- **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on current agent type
+- **STATUS TRACKING**: Update workflow status to "governance_rules_loaded"
+- **PRINT** "Governance rules loaded dynamically based on agent type"
+
+### Select Execution Mode
+- Ask user to select execution mode for this workflow using popup menu:
+  - **Manual**: Stop at each inconsistency for user oversight
+  - **Automatic**: Process automatically until failure, then ask user
+- Store selected execution mode for failure handling throughout workflow
+- **STATUS TRACKING**: Update workflow status to "execution_mode_selected"
+- **PRINT** "Execution mode selected - [Manual/Automatic] will govern failure handling"
 
 ### Phase 0. Persona Validation and Workflow Initialization
 **Best Practice**: Persona validation - ensure persona is properly configured for AGENTS.md validation
@@ -249,6 +265,15 @@ Comprehensive validation of AGENTS.md files to ensure they meet industry best pr
 
 ---
 
+## Universal Framework References
+
+### Validation Enforcement
+- **Universal Framework**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md
+- **Agent Customization**: AGENTS.md validation enforcement patterns
+- **Usage**: Reference universal framework for consistency
+
+---
+
 ## Execution Guidelines
 
 ### Process
@@ -262,6 +287,15 @@ Comprehensive validation of AGENTS.md files to ensure they meet industry best pr
 ### Best Practice Application
 - **Structure validation**: Ensure AGENTS.md follows recommended sections and organization
 - **Reference integrity**: Validate all commands, scripts, and paths exist
+
+## Changelog
+
+**2026-07-30**: Template compliance fixes
+- Added Load Governance Rules section (mandated by template)
+- Added Select Execution Mode section (mandated by template)
+- Added Reference Documents section with Universal Framework References
+- Added Universal Framework References section (mandated by template)
+- Updated version to 2.1
 - **KISS compliance**: Ensure file is concise (100-150 lines, ≤800 tokens)
 - **Boundary validation**: Verify three-tier boundary system (ALWAYS/ASK FIRST/NEVER)
 - **Web search integration**: Use "BP?" web searches at designated points to validate against current industry best practices

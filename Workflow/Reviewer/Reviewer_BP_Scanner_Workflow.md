@@ -3,12 +3,20 @@ id: wf-rev-bp-scanner
 status: active
 owner: reviewer-agent
 updated: 2026-07-28
+version: "1.1"
 purpose: Comprehensive line-by-line scan of files to verify compliance with best practices, governance standards, and architectural consistency
+expected_agent_type: reviewer-agent
+persona:
+  role: "Best Practice Compliance Scanner"
+  expertise: "Line-by-line file scanning, best practice research, governance compliance verification, architectural consistency checking"
+  process: "Systematic file-by-file scanning with mandatory web search for each file, findings documentation to comprehensive report"
+  output: "Comprehensive SCAN-REPORT with findings, severity ratings, and actionable recommendations"
+  constraints: "Mandatory {BP} web search for each file, no file may be skipped, line-by-line examination required"
 ---
 
 # Reviewer BP Scanner Workflow (Unified)
 
-**ID**: WF-REV-BP-001  
+**ID**: wf-rev-bp-scanner  
 **Owner**: Reviewer Agent  
 **Frequency**: On-demand  
 **Duration**: Extended (comprehensive per-file analysis with mandatory **{BP}** web search for each file)  
@@ -17,7 +25,7 @@ purpose: Comprehensive line-by-line scan of files to verify compliance with best
 **Execution Modes**: Manual, Manual Batched, Automatic, Automatic Batched
 
 ## Purpose
-Comprehensive line-by-line scan of files to verify compliance with best practices, governance standards, and architectural consistency. This is an extremely detailed task requiring thorough examination of each file individually against established quality standards. Every file must be checked against current best practices without exception, with mandatory **{BP}** web search for each file to ensure compliance with the latest industry standards. This process is designed to be comprehensive and token-intensive, prioritizing thoroughness over speed.
+Comprehensive line-by-line scan of files to verify compliance with best practices, governance standards, and architectural consistency. This is an extremely detailed task requiring thorough examination of each file individually against established quality standards. Every file must be checked against best practices without exception, with mandatory **{BP}** web search for each file to ensure compliance with industry standards. This process is designed to be comprehensive and token-intensive, prioritizing thoroughness over speed.
 
 ## Scope
 **Two Scanning Modes**:
@@ -42,47 +50,51 @@ Comprehensive line-by-line scan of files to verify compliance with best practice
 - **Trigger**: User requests best practice compliance scan
 - **End State**: Single comprehensive SCAN-REPORT with findings, severity ratings, and actionable recommendations
 
-## Workflow Steps (81 steps)
+## Workflow Steps (97 steps)
 
 ### Phase 0. Load Governance Rules
-- 1. **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on current agent type
-- 2. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
+- 1. **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on agent type
+- 2. **STATUS TRACKING**: Update workflow status to "phase_0_in_progress"
 - 3. **PRINT** "Governance rules loaded dynamically based on agent type"
+- 4. **VALIDATION**: Validate that governance rules loaded successfully before proceeding to Phase 1
+- 5. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
 
-### Phase 1. Select Scanning Mode
+### Phase 1. Select Execution Mode
+- 1. Ask user to select execution mode for this workflow using popup menu:
+  - **Manual**: Stop at each inconsistency for user oversight
+  - **Manual Batched**: Process files in batches with confirmation between batches
+  - **Automatic**: Process automatically until failure, then ask user
+  - **Automatic Batched**: Process batches automatically until failure, then ask user
+- 2. Store selected execution mode for failure handling throughout workflow
+- 3. **STATUS TRACKING**: Update workflow status to "phase_1_in_progress"
+- 4. **PRINT** "Execution mode selected - [Manual/Manual Batched/Automatic/Automatic Batched] will govern failure handling"
+- 5. **VALIDATION**: Validate that execution mode was selected and stored correctly before proceeding to Phase 2
+- 6. **STATUS TRACKING**: Update workflow status to "phase_1_complete"
+
+### Phase 2. Select Scanning Mode
 - 1. Ask user to select scanning mode using popup menu:
   - **App Mode**: Scan App/ directory only (application code scanning)
   - **Harness Mode**: Scan harness governance files (excludes App/, Logs/, Plans/, Docs/)
 - 2. Store selected scanning mode for scope definition throughout workflow
-- 3. **PRINT** "Scanning mode selected - [App Mode/Harness Mode] will govern scan scope and log locations"
-
-### Phase 2. Select Execution Mode
-- 1. Ask user to select execution mode for this workflow using popup menu:
-  - **Manual**: Process files one by one in alphabetical order, requiring user confirmation at each file for maximum oversight (recommended for first comprehensive scan)
-  - **Manual Batched**: Process files in batches of 5-10 files in alphabetical order, requiring user confirmation between batches for balanced efficiency with oversight
-  - **Automatic**: Process files one by one in alphabetical order automatically without user confirmation for maximum efficiency
-  - **Automatic Batched**: Process files in batches of 5-10 files in alphabetical order automatically without user confirmation for maximum efficiency
-- 2. Store selected execution mode for file processing strategy throughout workflow
-- 3. **PRINT** "Execution mode selected - [Manual/Manual Batched/Automatic/Automatic Batched] will govern file processing strategy"
+- 3. **STATUS TRACKING**: Update workflow status to "phase_2_in_progress"
+- 4. **PRINT** "Scanning mode selected - [App Mode/Harness Mode] will govern scan scope and log locations"
+- 5. **VALIDATION**: Validate that scanning mode was selected and stored correctly before proceeding to Phase 3
+- 6. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
 
 ### Phase 3. Scan Scope Definition
 - 1. **IF App Mode**: Define scan scope as App/ directory (every single file - no exceptions)
 - 2. **IF Harness Mode**: Define scan scope as all files in project directory (excluding App/, Logs/, Plans/, Docs/ folders)
-- 3. Ask user to select subagent strategy using popup menu:
-  - **Use Subagents**: Delegate scanning to subagents for large-scale processing
-  - **Direct Scanning**: Reviewer agent scans all files directly (recommended for smaller file counts)
-- 4. Store selected subagent strategy for file processing throughout workflow
-- 5. **CRITICAL REQUIREMENT**: Every single file must be checked against best practices - no file may be skipped
-- 6. **EXECUTION MODE HANDLING**: Apply review mode handling patterns (see Workflow/Reviewer/Reference/Review_Mode_Patterns.md)
-- 7. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
-- 8. **IF App Mode**: **PRINT** "Scan scope defined - App/ directory comprehensive compliance verification - every file will be examined"
-- 9. **IF Harness Mode**: **PRINT** "Scan scope defined - Harness governance comprehensive compliance verification - every governance file will be examined"
+- 3. **STATUS TRACKING**: Update workflow status to "phase_3_in_progress"
+- 4. **PRINT** "Scan scope defined - scanning mode will govern which files are examined"
+- 5. **VALIDATION**: Validate that scan scope was defined correctly before proceeding to Phase 4
+- 6. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
 
 ### Phase 4. File Discovery + Categorization (Alphabetical Order)
-- 1. Discover every single file based on scanning mode:
+- 1. **STATUS TRACKING**: Update workflow status to "phase_4_in_progress"
+- 2. Discover every single file based on scanning mode:
   - **App Mode**: Execute `find App -type f` to discover every single file in App/ directory (209 files expected) - verify no files are missed
   - **Harness Mode**: Execute `find . -type f ! -path "*/App/*" ! -path "*/Logs/*" ! -path "*/Plans/*" ! -path "*/Docs/*" ! -path "*/.git/*"` to discover every single file in project directory excluding specified folders (173 files expected)
-- 2. **CRITICAL REQUIREMENT**: Verify file count matches expected values:
+- 3. **CRITICAL REQUIREMENT**: Verify file count matches expected values:
   - **App Mode**: Should discover exactly 209 files
   - **Harness Mode**: Should discover exactly 173 files
   - **CRITICAL**: If file count doesn't match expected values, halt workflow and investigate discrepancy
@@ -92,10 +104,12 @@ Comprehensive line-by-line scan of files to verify compliance with best practice
   - **Harness Mode**: Workflow files, Rules files, Configuration files, Governance files, Script files, Data files, Documentation files
 - 5. **CRITICAL REQUIREMENT**: Verify that all files are accounted for and no files are excluded from scanning scope
 - 6. **VALIDATION**: Validate that file discovery completed successfully and every single file is categorized without exception
-- 7. **VALIDATION**: Validate that files are sorted alphabetically by full path for consistent scanning order
-- 8. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
-- 9. **IF App Mode**: **PRINT** "File discovery complete - [N] files categorized by module and sorted alphabetically - file count verification passed - every file will be examined against best practices in chronological order"
-- 10. **IF Harness Mode**: **PRINT** "File discovery complete - [N] governance files categorized by type and sorted alphabetically - file count verification passed - every governance file will be examined against best practices in chronological order"
+- 7. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 8. **VALIDATION**: Validate that files are sorted alphabetically by full path for consistent scanning order
+- 9. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 10. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
+- 11. **IF App Mode**: **PRINT** "File discovery complete - [N] files categorized by module and sorted alphabetically - file count verification passed - every file will be examined against best practices in chronological order"
+- 12. **IF Harness Mode**: **PRINT** "File discovery complete - [N] governance files categorized by type and sorted alphabetically - file count verification passed - every governance file will be examined against best practices in chronological order"
 
 ### Phase 5. Compliance Scanning Execution (Execution Mode Dependent)
 - 1. **IF Manual mode**: Process files one by one in alphabetical order, requiring user confirmation at each file before proceeding
@@ -103,7 +117,7 @@ Comprehensive line-by-line scan of files to verify compliance with best practice
 - 3. **IF Automatic mode**: Process files one by one in alphabetical order automatically without user confirmation
 - 4. **IF Automatic Batched mode**: Process files in batches of 5-10 files in alphabetical order automatically without user confirmation
 - 5. **CRITICAL REQUIREMENT**: For each file, **SCAN** line by line for compliance against best practices - no file may be skipped
-- 6. **CRITICAL REQUIREMENT**: For each file, perform **{BP}** web search for current best practices - this is mandatory for every file
+- 6. **CRITICAL REQUIREMENT**: For each file, perform **{BP}** web search for best practices - this is mandatory for every file
 - 7. **CRITICAL REQUIREMENT**: Process files in alphabetical order by full path as discovered in Phase 4
 - 8. **INFRASTRUCTURE SETUP**: Initialize efficient report writer based on scanning mode:
   - **App Mode**: Scripts/Infrastructure/efficient_report_writer.py Logs/Reviewer/BP/App SCAN-REPORT
@@ -121,13 +135,17 @@ Comprehensive line-by-line scan of files to verify compliance with best practice
 - 13. Document specific changes needed for each file based on **SCAN** results and **{BP}** best practice research directly to report file
 - 14. **SUBAGENT PROMPTING**: Provide precise prompts with exact scope, criteria, and output format using Workflow/Reviewer/Reference/Subagent_Prompting_Reference.md as SSOT for prompting patterns
 - 15. **VALIDATION**: Validate that **SCAN**ning completed successfully for every single file without exception
-- 16. **VALIDATION**: Validate that **{BP}** web search was performed for every single file without exception
-- 17. **VALIDATION**: Validate that findings were documented to report file after each file/batch scan
-- 18. **VALIDATION**: Validate that files were processed in alphabetical order
-- 19. **EXECUTION MODE HANDLING**: Apply review mode handling patterns (see Workflow/Reviewer/Reference/Review_Mode_Patterns.md)
-- 20. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
-- 21. **IF App Mode**: **PRINT** "Compliance scanning complete - [N] files **SCAN**ned line by line with **{BP}** best practice research for each file in alphabetical order - findings documented to SCAN-REPORT"
-- 22. **IF Harness Mode**: **PRINT** "Compliance scanning complete - [N] governance files **SCAN**ned line by line with **{BP}** best practice research for each file in alphabetical order - findings documented to SCAN-REPORT"
+- 16. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 17. **VALIDATION**: Validate that **{BP}** web search was performed for every single file without exception
+- 18. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 19. **VALIDATION**: Validate that findings were documented to report file after each file/batch scan
+- 20. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 21. **VALIDATION**: Validate that files were processed in alphabetical order
+- 22. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 23. **EXECUTION MODE HANDLING**: Apply review mode handling patterns (see Workflow/Reviewer/Reference/Review_Mode_Patterns.md)
+- 24. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
+- 25. **IF App Mode**: **PRINT** "Compliance scanning complete - [N] files **SCAN**ned line by line with **{BP}** best practice research for each file in alphabetical order - findings documented to SCAN-REPORT"
+- 26. **IF Harness Mode**: **PRINT** "Compliance scanning complete - [N] governance files **SCAN**ned line by line with **{BP}** best practice research for each file in alphabetical order - findings documented to SCAN-REPORT"
 
 ### Phase 6. Findings Consolidation (Scan Report Processing)
 - 1. Collect all scanning results from SCAN-REPORT file based on scanning mode:
@@ -137,9 +155,10 @@ Comprehensive line-by-line scan of files to verify compliance with best practice
 - 3. **CRITICAL REQUIREMENT**: Verify that findings exist for every single file in SCAN-REPORT - no file may be left unexamined or unreported
 - 4. Cross-validate findings to eliminate duplicates and ensure consistency across all files
 - 5. **VALIDATION**: Validate that findings consolidation completed successfully for every single file
-- 6. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
-- 7. **IF App Mode**: **PRINT** "Findings consolidated from SCAN-REPORT - [N] issues categorized by severity across [N] files - every file examined"
-- 8. **IF Harness Mode**: **PRINT** "Findings consolidated from SCAN-REPORT - [N] issues categorized by severity across [N] governance files - every governance file examined"
+- 6. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 7. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
+- 8. **IF App Mode**: **PRINT** "Findings consolidated from SCAN-REPORT - [N] issues categorized by severity across [N] files - every file examined"
+- 9. **IF Harness Mode**: **PRINT** "Findings consolidated from SCAN-REPORT - [N] issues categorized by severity across [N] governance files - every governance file examined"
 
 ### Phase 7. Compliance Report Generation
 - 1. Consolidate SCAN-REPORT to include comprehensive compliance analysis:
@@ -151,18 +170,20 @@ Comprehensive line-by-line scan of files to verify compliance with best practice
 - 2. **CRITICAL REQUIREMENT**: Ensure SCAN-REPORT includes analysis for every single file - no file may be omitted from the report
 - 3. **CRITICAL REQUIREMENT**: SCAN-REPORT is the single comprehensive report - no separate files needed
 - 4. **VALIDATION**: Validate that SCAN-REPORT consolidation completed successfully and every file is included
-- 5. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
-- 6. **IF App Mode**: **PRINT** "SCAN-REPORT consolidated with comprehensive compliance analysis - saved to Logs/Reviewer/BP/App/ - includes detailed analysis for every single file"
-- 7. **IF Harness Mode**: **PRINT** "SCAN-REPORT consolidated with comprehensive compliance analysis - saved to Logs/Reviewer/BP/Harness/ - includes detailed analysis for every single governance file"
+- 5. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 6. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
+- 7. **IF App Mode**: **PRINT** "SCAN-REPORT consolidated with comprehensive compliance analysis - saved to Logs/Reviewer/BP/App/ - includes detailed analysis for every single file"
+- 8. **IF Harness Mode**: **PRINT** "SCAN-REPORT consolidated with comprehensive compliance analysis - saved to Logs/Reviewer/BP/Harness/ - includes detailed analysis for every single governance file"
 
 ### Phase 8. Final Validation + User Review
 - 1. Verify report completeness and accuracy
 - 2. Ensure all findings are properly documented with specific references
 - 3. Check that recommendations are actionable and clear
 - 4. **VALIDATION**: Validate that final validation completed successfully
-- 5. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns
-- 6. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
-- 7. **PRINT** "Final validation complete - compliance report ready for user review"
+- 5. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 6. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns
+- 7. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
+- 8. **PRINT** "Final validation complete - compliance report ready for user review"
 
 ### Phase 9. Workflow Termination (SINGLE-EXECUTION WORKFLOW)
 - 1. **PRINT** "Best Practice Scanner workflow execution complete - workflow terminated"
@@ -231,7 +252,7 @@ Based on scanning mode:
 - **Manual Batched Mode**: Balanced approach for efficiency with oversight - processes 5-10 files at a time with confirmation between batches
 - **Automatic Batched Mode**: Maximum efficiency for large codebases - processes 5-10 files at a time automatically without confirmation
 
-**Important Note**: This workflow is designed to be comprehensive and token-intensive. Each file undergoes: **SCAN** (line-by-line examination) → **{BP}** (mandatory web search for current best practices) → **IMMEDIATELY DOCUMENT** to SCAN-REPORT (based on scanning mode) → Next file. The final SCAN-REPORT serves as the single comprehensive report containing all findings, analysis, and recommendations. This process prioritizes thoroughness over speed while maintaining robustness through PostCompaction hook context management. The 200k context budget allows for substantial scanning before context compression occurs.
+**Important Note**: This workflow is designed to be comprehensive and token-intensive. Each file undergoes: **SCAN** (line-by-line examination) → **{BP}** (mandatory web search for best practices) → **IMMEDIATELY DOCUMENT** to SCAN-REPORT (based on scanning mode) → Next file. The final SCAN-REPORT serves as the single comprehensive report containing all findings, analysis, and recommendations. This process prioritizes thoroughness over speed while maintaining robustness through PostCompaction hook context management. The 200k context budget allows for substantial scanning before context compression occurs.
 
 ## Context Management Strategy
 
@@ -256,6 +277,17 @@ Based on scanning mode:
 ### Required Scripts
 - **Efficient Report Writer**: Scripts/Infrastructure/efficient_report_writer.py (for performance optimization)
 - **Robust Web Search**: Scripts/Infrastructure/robust_web_search.py (for web search with caching and rate limiting)
+
+## Changelog
+
+**2026-07-30**: YAML frontmatter fixes + early-exit patterns + temporal language fixes + step count correction
+- Added missing YAML frontmatter fields (version, expected_agent_type, persona)
+- Fixed ID consistency (standardized to wf-rev-bp-scanner)
+- Added early-exit patterns in all validation phases
+- Fixed temporal language (removed "current" references)
+- Added Load Governance Rules and Select Execution Mode sections
+- Fixed step count (81 → 97 steps)
+- Updated version to 1.1
 
 ### Contextual Web Search
 - **Script**: Scripts/Infrastructure/contextual_web_search.py (for intelligent best practice search based on document context)

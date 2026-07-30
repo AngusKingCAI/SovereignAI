@@ -2,7 +2,8 @@
 id: wf-ref-terminology
 status: active
 owner: architect-agent
-updated: 2026-07-29
+updated: 2026-07-30
+version: "1.3"
 purpose: Single source of truth for all capitalized terminology used across the SovereignAI harness architecture
 ---
 
@@ -153,6 +154,28 @@ purpose: Single source of truth for all capitalized terminology used across the 
 
 ---
 
+### **LOOP BACK**
+**Definition**: Return to a previous workflow phase for iteration.
+
+**Usage**: Used when iterative refinement is required, typically when findings need to be applied and a process repeated.
+
+**Examples**:
+- **LOOP BACK**: Return to Phase 4 for next iteration
+- **LOOP BACK**: Return to Phase 6 for review material creation with revised plans
+
+---
+
+### **DELETE**
+**Definition**: Remove specified files from the filesystem.
+
+**Usage**: Used to clean up outdated files, remove old revisions, or manage file lifecycle during workflow execution.
+
+**Examples**:
+- **DELETE**: older plan revision files (Plans/Queued/plan-{N}.Rev{N-1}.md)
+- **DELETE**: older batch prompt file immediately after new version creation
+
+---
+
 ### **HANDOFF VALIDATION**
 **Definition**: Verify handoff file integrity and completeness.
 
@@ -161,6 +184,50 @@ purpose: Single source of truth for all capitalized terminology used across the 
 **Examples**:
 - **HANDOFF VALIDATION**: Verify handoff file integrity per template requirements
 - **HANDOFF VALIDATION**: Validate all required fields are present
+
+---
+
+### **OPEN**
+**Definition**: Open or load a skill/file for use in workflow execution.
+
+**Usage**: Used when accessing a skill or file to begin workflow operations.
+
+**Examples**:
+- **OPEN** WorkflowOpen skill to dynamically load agent-specific rules
+- **OPEN** configuration file for workflow initialization
+
+---
+
+### **ACTION**
+**Definition**: Perform a specific action or operation as defined in workflow context.
+
+**Usage**: Used to indicate when an agent should execute a specific operation.
+
+**Examples**:
+- **ACTION**: BP? - "workflow design best practices"
+- **ACTION**: FC? - "accuracy and factual correctness verification"
+
+---
+
+### **CHECK**
+**Definition**: Verify a condition or validate a requirement before proceeding.
+
+**Usage**: Used to ensure validation conditions are met before workflow progression.
+
+**Examples**:
+- **CHECK**: All referenced documents exist
+- **CHECK**: Workflow follows template structure
+
+---
+
+### **CRITICAL REQUIREMENT**
+**Definition**: Marker for mandatory steps that must be completed for workflow success.
+
+**Usage**: Used to highlight steps that are essential for workflow execution and cannot be skipped.
+
+**Examples**:
+- **CRITICAL REQUIREMENT**: Before any file creation, perform BP web search
+- **CRITICAL REQUIREMENT**: Document BP research findings and apply to implementation
 
 ---
 

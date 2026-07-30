@@ -3,21 +3,37 @@ id: wf-arch-cons-fix
 status: active
 owner: architect-agent
 updated: 2026-07-28
+version: "1.0"
 purpose: Workflow for Architect agent to systematically fix consistency issues identified in consistency checks
+expected_agent_type: architect-agent
+persona:
+  role: "Consistency Fix Architect"
+  expertise: "Architecture consistency validation, governance compliance, structural analysis, reference integrity verification"
+  process: "Systematic scanning and validation of harness architecture with comprehensive reporting"
+  output: "Consistency reports with findings classified by severity and actionable recommendations"
+  constraints: "Harness architecture scope only (excludes /app folder), informational failure handling for comprehensive coverage"
 ---
 
 # Architect Consistency Fix Workflow
 
-**ID**: WF-ARCH-CONS-FIX  
-**Owner**: Architect Agent  
+**ID**: wf-arch-cons-fix  
+**owner**: architect agent  
 **Frequency**: On-demand (triggered after consistency check identifies issues)  
 **Duration**: Variable (30-120 minutes depending on issue count and complexity)  
 **Priority**: High
 **Workflow Type**: Single-Execution (Utility/Tool Workflow)
 **Execution Modes**: Manual, Automatic
+**Workflow Steps**: 72 steps
 
 ## Purpose
 Systematic resolution of consistency issues identified by the Consistency Check Workflow. This workflow processes the consistency report and implements fixes for broken references, terminology inconsistencies, workflow structure issues, and schema validation problems. The workflow supports both Manual mode (user confirmation for each fix) and Automatic mode (batch processing of non-critical fixes).
+
+## Reference Documents
+- **Agent Rules**: Rules/Architect/Architect_Rules.md (Architect-specific governance rules)
+- **Terminology**: Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for governance terminology)
+- **Execution Mode Patterns**: Workflow/Architect/.Reference/Execution_Mode_Patterns.md (Architect-specific execution mode definitions)
+- **Universal Framework References**: Workflow/Workflow_Reference/ (referenced frameworks based on workflow relevance)
+- **Validation Enforcement**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md (universal validation patterns)
 
 ## Scope
 **Harness Architecture Only**: Governance files, workflows, rules, documentation (excludes /app folder)
@@ -35,7 +51,7 @@ Systematic resolution of consistency issues identified by the Consistency Check 
 - **Trigger**: Consistency check identifies issues requiring fixes
 - **End State**: All identified consistency issues resolved, schema validation passing
 
-## Workflow Steps (65 steps)
+## Workflow Steps (72 steps)
 
 ### Phase 0. Load Governance Rules + Consistency Report
 - 1. **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on current agent type
@@ -71,8 +87,9 @@ Systematic resolution of consistency issues identified by the Consistency Check 
 - 3. Remove workflow references from rules files (architectural principle compliance)
 - 4. Remove references to non-existent rules files
 - 5. **VALIDATION**: Validate each fix using file existence checks
-- 6. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
-- 7. **PRINT**: "File reference fixes complete - {N} references updated"
+- 6. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 7. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
+- 8. **PRINT**: "File reference fixes complete - {N} references updated"
 
 ### Phase 4. Terminology Fixes (HIGH)
 - 1. **SCAN**: For each terminology inconsistency:
@@ -82,8 +99,9 @@ Systematic resolution of consistency issues identified by the Consistency Check 
 - 3. Standardize agent naming conventions
 - 4. Ensure consistent framework naming
 - 5. **VALIDATION**: Validate terminology fixes using grep to confirm replacements
-- 6. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
-- 7. **PRINT**: "Terminology fixes complete - {N} terms standardized"
+- 6. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 7. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
+- 8. **PRINT**: "Terminology fixes complete - {N} terms standardized"
 
 ### Phase 5. Workflow Structure Fixes (MEDIUM)
 - 1. **SCAN**: For each workflow structure issue:
@@ -94,8 +112,9 @@ Systematic resolution of consistency issues identified by the Consistency Check 
 - 4. Ensure all workflows have mandated sections (header, universal framework references)
 - 5. Validate workflow follows template structure
 - 6. **VALIDATION**: Validate structure fixes using template comparison
-- 7. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
-- 8. **PRINT**: "Workflow structure fixes complete - {N} workflows updated"
+- 7. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 8. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
+- 9. **PRINT**: "Workflow structure fixes complete - {N} workflows updated"
 
 ### Phase 6. Schema Validation Fixes (MEDIUM)
 - 1. **SCAN**: For each schema validation issue:
@@ -105,8 +124,9 @@ Systematic resolution of consistency issues identified by the Consistency Check 
 - 3. Remove index.md exceptions if not required by architecture
 - 4. Update rule files to reference correct documentation paths
 - 5. **VALIDATION**: Run schema validation script to confirm all fixes
-- 6. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
-- 7. **PRINT**: "Schema validation fixes complete - validation passing"
+- 6. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 7. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
+- 8. **PRINT**: "Schema validation fixes complete - validation passing"
 
 ### Phase 7. Final Validation and Report Update
 - 1. Run comprehensive schema validation: `python Scripts/Schema/validate_schemas.py`
@@ -114,8 +134,9 @@ Systematic resolution of consistency issues identified by the Consistency Check 
 - 3. Rename original consistency report with (FIXED) prefix
 - 4. Generate summary of fixes applied with before/after comparison
 - 5. **VALIDATION**: Validate all fixes completed successfully
-- 6. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
-- 7. **PRINT**: "Final validation complete - all consistency issues resolved"
+- 6. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
+- 7. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
+- 8. **PRINT**: "Final validation complete - all consistency issues resolved"
 
 ### Phase 8. Documentation
 - 1. Update AGENTS.md if agent capabilities changed during fixes
@@ -180,3 +201,13 @@ Systematic resolution of consistency issues identified by the Consistency Check 
 - Place workflow file in Workflow/Architect/Architect_Consistency_Fix_Workflow.md
 - Follow naming convention: {Agent}_{WorkflowType}_Workflow.md
 - Check INDEX.md for folder structure compliance
+
+## Changelog
+
+**2026-07-30**: YAML frontmatter fixes + step count correction
+- Added missing YAML frontmatter fields (version, expected_agent_type, persona)
+- Fixed step count inconsistency (63 → 72 steps)
+- Added Reference Documents section with proper references
+- Added early-exit patterns in all validation phases
+- Fixed ID consistency (standardized to wf-arch-cons-fix)
+- Updated version to 1.0

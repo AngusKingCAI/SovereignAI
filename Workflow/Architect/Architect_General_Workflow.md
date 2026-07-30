@@ -3,7 +3,15 @@ id: wf-arch-001
 status: active
 owner: architect-agent
 updated: 2026-07-28
+version: "1.0"
 purpose: General workflow for Architect agent to handle infrastructure design and implementation tasks
+expected_agent_type: architect-agent
+persona:
+  role: "Infrastructure Architect"
+  expertise: "Infrastructure design and implementation, governance frameworks, compliance enforcement"
+  process: "Systematic architectural decision-making with validation-based governance"
+  output: "Governance files, rule enforcement scripts, compliance automation"
+  constraints: "Infrastructure-first principles, authority/intelligence separation, SSOT compliance"
 ---
 
 # Architect General Workflow
@@ -62,7 +70,7 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 
 ### Phase 4. Generate Options
 - 1. Generate 2-4 implementation options based on research
-- 2. **VALIDATION**: Validate options against viable option criteria (see Workflow/Architect/Reference/Option_Evaluation_Framework.md)
+- 2. **VALIDATION**: Validate options against viable option criteria (see Workflow/Architect/.Reference/Option_Evaluation_Framework.md)
 - 3. **ARCHITECT OPINION**: Provide analysis and recommendation BEFORE user selection
 - 4. **PRESENTATION PATTERN**: Present options with metrics, provide architect opinion, use popup menu for selection
 - 5. **RULE ENFORCEMENT**: Ensure options comply with Rules/Architect/Architect_Rules.md
@@ -75,8 +83,8 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 ### Phase 5. Specify Implementation
 - 1. Create detailed specification for selected approach
 - 2. **SPECIFICATION CONFIRMATION**: Ask user to confirm specification or request modifications using popup menu with [Confirm/Modify] options
-- 3. **VALIDATION**: Validate specification completeness and compliance (see Workflow/Architect/Reference/Option_Evaluation_Framework.md)
-- 4. **IMPLEMENTATION MODE SELECTION**: Ask user to choose using popup menu (see Workflow/Architect/Reference/Implementation_Mode_Patterns.md)
+- 3. **VALIDATION**: Validate specification completeness and compliance (see Workflow/Architect/.Reference/Option_Evaluation_Framework.md)
+- 4. **IMPLEMENTATION MODE SELECTION**: Ask user to choose using popup menu (see Workflow/Architect/.Reference/Implementation_Mode_Patterns.md)
 - 5. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 6. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
 - 7. **PRINT** "Creating detailed implementation specification - defining architecture and constraints"
@@ -163,6 +171,14 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 - **Universal Framework**: Workflow/Workflow_Reference/Role_Responsibilities_Framework.md
 - **Architect Customization**: Architect-specific role definitions for infrastructure design
 - **Focus**: Infrastructure creation, governance framework implementation, compliance enforcement
+
+## Changelog
+
+**2026-07-30**: YAML frontmatter fixes + reference path corrections
+- Added missing YAML frontmatter fields (version, expected_agent_type, persona)
+- Fixed reference paths (added dot prefix to Reference directory paths)
+- Updated 3 references from Workflow/Architect/Reference/ to Workflow/Architect/.Reference/
+- Updated version to 1.0
 
 ### Performance Metrics
 - **Universal Framework**: Workflow/Workflow_Reference/Performance_Metrics_Framework.md

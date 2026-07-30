@@ -3,7 +3,15 @@ id: wf-arch-cons-check
 status: active
 owner: architect-agent
 updated: 2026-07-28
+version: "1.1"
 purpose: Workflow for Architect agent to perform comprehensive consistency checks on governance systems
+expected_agent_type: architect-agent
+persona:
+  role: "Consistency Validation Architect"
+  expertise: "Architecture consistency validation, governance compliance, structural analysis, reference integrity verification"
+  process: "Systematic scanning and validation of harness architecture with comprehensive reporting"
+  output: "Consistency reports with findings classified by severity and actionable recommendations"
+  constraints: "Harness architecture scope only (excludes /app folder), informational failure handling for comprehensive coverage"
 ---
 
 # Architect Consistency Check Workflow
@@ -19,6 +27,13 @@ purpose: Workflow for Architect agent to perform comprehensive consistency check
 ## Purpose
 Systematic validation of harness architecture consistency across the entire project to identify structural issues, broken references, terminology inconsistencies, governance gaps, and architectural health using advanced fitness functions and multi-agent validation. The workflow continues through all phases even if individual validation steps fail, treating failures as informational for the final report rather than blocking progress.
 
+## Reference Documents
+- **Universal Framework References**: Workflow/Workflow_Reference/ (referenced frameworks based on workflow relevance)
+- **Agent Rules**: Rules/Architect/Architect_Rules.md (Architect-specific governance rules)
+- **Terminology**: Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for governance terminology)
+- **Execution Mode Patterns**: Workflow/Architect/.Reference/Execution_Mode_Patterns.md (Architect-specific execution mode definitions)
+- **Validation Enforcement**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md (universal validation patterns)
+
 ## Scope
 **Harness Architecture Only**: Governance files, workflows, rules, documentation (excludes /app folder)
 
@@ -33,13 +48,25 @@ Systematic validation of harness architecture consistency across the entire proj
 - **Trigger**: User requests consistency check OR before/after major architectural changes
 - **End State**: Comprehensive consistency report generated in Logs/Architect/Consistency Review/
 
-## Workflow Steps (167 steps)
+## Workflow Steps (180 steps)
 
 **IMPORTANT**: All phases execute sequentially. Phase validation failures are treated as informational warnings and do not block workflow progression. All findings are aggregated in the final report for comprehensive review.
 
-### Phase 0. Load Governance Rules + Scan Scope
-- 1. **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on current agent type
-- 2. Determine scan scope (full harness vs specific components)
+### Load Governance Rules
+- 1. **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on agent type
+- 2. **STATUS TRACKING**: Update workflow status to "governance_rules_loaded"
+- 3. **PRINT** "Governance rules loaded dynamically based on agent type"
+
+### Select Execution Mode
+- 1. Ask user to select execution mode for this workflow using popup menu:
+  - **Manual**: Stop at each inconsistency for user oversight
+  - **Automatic**: Process automatically until failure, then ask user
+- 2. Store selected execution mode for failure handling throughout workflow
+- 3. **STATUS TRACKING**: Update workflow status to "execution_mode_selected"
+- 4. **PRINT** "Execution mode selected - [Manual/Automatic] will govern failure handling"
+
+### Phase 1. Select Scan Strategy
+- 1. Determine scan scope (full harness vs specific components)
 - 3. Store governance context for reference throughout scan
 - 4. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
 - 5. **PRINT**: "Governance rules loaded dynamically - initiating harness architecture consistency scan"
@@ -56,7 +83,7 @@ Systematic validation of harness architecture consistency across the entire proj
 
 ### Phase 2. Harness Architecture File Discovery
 - 1. Use `find` to enumerate all harness architecture files:
-  - `find /c/SovereignAI -name "*.md" -path "*/Workflow/*" -o -path "*/Rules/*" -o -path "*/.devin/*" -o -path "*/INDEX.md"`
+  - `find . -name "*.md" \( -path "*/Workflow/*" -o -path "*/Rules/*" -o -path "*/.devin/*" -o -path "*/INDEX.md" \)`
 - 2. Exclude /app folder from scan results
 - 3. Generate file inventory with paths and types
 - 4. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
@@ -73,8 +100,8 @@ Systematic validation of harness architecture consistency across the entire proj
 
 ### Phase 4. File Reference Consistency Check
 - 1. **SCAN**: Read each harness architecture file line by line to extract all file references
-- 2. Extract all file references using `grep -r "Workflow/[A-Za-z/]*\.md" /c/SovereignAI/Workflow/` as supplemental check
-- 3. Extract all Rules/ references using `grep -r "Rules/[A-Za-z/]*\.md" /c/SovereignAI/Workflow/` as supplemental check
+- 2. Extract all file references using `grep -r "Workflow/[A-Za-z/]*\.md" ./Workflow/` as supplemental check
+- 3. Extract all Rules/ references using `grep -r "Rules/[A-Za-z/]*\.md" ./Workflow/` as supplemental check
 - 4. Validate each referenced file exists at specified path
 - 5. Log broken references with file locations
 - 6. **WARNING HANDLING**: Continue workflow even if file reference extraction fails - treat issues as informational for report generation
@@ -83,7 +110,7 @@ Systematic validation of harness architecture consistency across the entire proj
 
 ### Phase 5. Terminology Consistency Check
 - 1. **SCAN**: Read each harness architecture file line by line to check for outdated terminology
-- 2. Search for outdated terminology: `grep -r "gate" /c/SovereignAI/Workflow/` (should return no results if cleanup complete, except in meta-references like this line) as supplemental check
+- 2. Search for outdated terminology: `grep -r "gate" ./Workflow/` (should return no results if cleanup complete, except in meta-references like this line) as supplemental check
 - 3. Check agent naming convention consistency
 - 4. **WARNING HANDLING**: Continue workflow even if terminology check fails - treat issues as informational for report generation
 - 5. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
@@ -660,6 +687,15 @@ Systematic validation of harness architecture consistency across the entire proj
 **Review Frequency**: Monthly or when consistency needs change
 
 ## Changelog
+
+**2026-07-30**: Version bump to 1.1 + YAML frontmatter fixes
+- Updated version from 1.0 to 1.1 to reflect structural changes
+- Added missing YAML frontmatter fields (expected_agent_type, persona)
+- Fixed step count in header (167 → 180 steps)
+- Added Reference Documents section with proper references
+- Fixed hardcoded paths (replaced /c/SovereignAI with relative paths)
+- Fixed reference path (Workflow/Architect/Reference → Workflow/Architect/.Reference)
+- Added Load Governance Rules and Select Execution Mode sections
 
 **2026-07-28**: Workflow restructured for logical phase ordering
 - Reordered phases to follow logical progression: Setup → Basic Structure → Content Validation → Dependency Analysis → Advanced Analysis
