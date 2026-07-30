@@ -5,6 +5,7 @@ Provides efficient file writing for large reports using append operations
 """
 
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -26,7 +27,8 @@ class EfficientReportWriter:
     
     def _initialize_report(self):
         """Initialize the report with header information"""
-        header = f"""# {self.report_name}
+        try:
+            header = f"""# {self.report_name}
 **Generated**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 **Report Name**: {self.report_name}
 **Timestamp**: {self.timestamp}
@@ -35,7 +37,10 @@ class EfficientReportWriter:
 
 ---
 """
-        self.report_file.write_text(header, encoding='utf-8')
+            self.report_file.write_text(header, encoding='utf-8')
+        except (IOError, OSError) as e:
+            print(f"❌ Failed to initialize report file: {e}", file=sys.stderr)
+            raise
     
     def append_file_analysis(self, file_number: int, file_path: str, analysis: dict):
         """Append file analysis to report using append operation"""
@@ -65,8 +70,12 @@ class EfficientReportWriter:
 
 ---
 """
-        with open(self.report_file, 'a', encoding='utf-8') as f:
-            f.write(entry)
+        try:
+            with open(self.report_file, 'a', encoding='utf-8') as f:
+                f.write(entry)
+        except (IOError, OSError) as e:
+            print(f"❌ Failed to append file analysis: {e}", file=sys.stderr)
+            raise
     
     def append_summary(self, summary: dict):
         """Append summary information to report"""
@@ -83,8 +92,12 @@ class EfficientReportWriter:
 
 ---
 """
-        with open(self.report_file, 'a', encoding='utf-8') as f:
-            f.write(summary_entry)
+        try:
+            with open(self.report_file, 'a', encoding='utf-8') as f:
+                f.write(summary_entry)
+        except (IOError, OSError) as e:
+            print(f"❌ Failed to append summary: {e}", file=sys.stderr)
+            raise
     
     def get_report_path(self) -> str:
         """Return the path to the current report file"""

@@ -10,7 +10,51 @@ from pathlib import Path
 
 # Import session state and agent detection
 sys.path.insert(0, str(Path(__file__).parent))
-from session_state import read_agent_context
+from session_state import read_agent_context, ensure_trace_context, get_trace_id
+
+
+def determine_log_level(tool_name: str, status: str) -> str:
+    """Determine appropriate log level based on tool and status."""
+    if status == "failed":
+        return "ERROR"
+    if tool_name in ["exec", "write", "edit"]:
+        return "INFO"
+    return "DEBUG"
+
+
+def format_structured_entry(entry: dict) -> str:
+    """Format log entry as structured JSON with standard fields."""
+    structured_entry = {
+        "timestamp": entry.get('timestamp'),
+        "level": entry.get('level', 'INFO'),
+        "service": "devin-cli",
+        "event": entry.get('event'),
+        "session_id": entry.get('session_id'),
+        "trace_id": entry.get('trace_id'),
+        "agent": entry.get('agent'),
+        "tool_name": entry.get('tool_name'),
+        "status": entry.get('status'),
+        "prompt_id": entry.get('prompt_id'),
+        "working_directory": entry.get('working_directory'),
+        "tool_use_id": entry.get('tool_use_id'),
+        "success": entry.get('success'),
+        "error": entry.get('error'),
+        "output": entry.get('output')
+    }
+    
+    # Include tool_input if present (truncate large content)
+    if 'tool_input' in entry:
+        tool_input = entry['tool_input'].copy()
+        # Truncate content fields to prevent massive JSON objects
+        if 'content' in tool_input and len(str(tool_input['content'])) > 1000:
+            tool_input['content'] = str(tool_input['content'])[:1000] + "... [truncated]"
+        if 'old_string' in tool_input and len(str(tool_input['old_string'])) > 1000:
+            tool_input['old_string'] = str(tool_input['old_string'])[:1000] + "... [truncated]"
+        if 'new_string' in tool_input and len(str(tool_input['new_string'])) > 1000:
+            tool_input['new_string'] = str(tool_input['new_string'])[:1000] + "... [truncated]"
+        structured_entry["tool_input"] = tool_input
+    
+    return json.dumps(structured_entry, ensure_ascii=False)
 
 
 def format_readable_entry(entry: dict) -> str:
@@ -126,50 +170,62 @@ def get_session_file(session_id: str) -> Path:
     # Read agent from session state, default to Architect if not found
     agent = read_agent_context(session_id) or "Architect"
     
-    log_dir = Path(f"Logs/{agent}/Session")
+    # Use environment-aware path for reliability
+    current_path = Path(__file__).resolve()
+    project_root = current_path.parent.parent.parent.resolve()
+    log_dir = project_root / "Logs" / agent / "Session"
     log_dir.mkdir(parents=True, exist_ok=True)
     
     # Find existing session file with matching session_id (case-insensitive)
     try:
         session_name = session_id.title() if session_id else "Unknown"
-        md_files = list(log_dir.glob(f"{agent}_*_{session_name}.md"))
+        json_files = list(log_dir.glob(f"{agent}_*_{session_name}.json"))
         
-        if md_files:
-            md_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
-            return md_files[0]
-    except:
+        if json_files:
+            json_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+            return json_files[0]
+    except (OSError, IndexError):
         pass
     
     # Create new session file
     date_time = datetime.now().strftime("%d-%m-%y_%H-%M")
     session_name = session_id.title() if session_id else "Unknown"
-    log_file = log_dir / f"{agent}_{date_time}_{session_name}.md"
+    log_file = log_dir / f"{agent}_{date_time}_{session_name}.json"
     
-    # Create session start entry
+    # Ensure trace context exists for session start
+    trace_id = ensure_trace_context()
+    
+    # Create session start entry with trace context
     session_start_entry = {
         "event": "session_start",
         "timestamp": datetime.now().isoformat(),
         "session_id": session_id,
+        "trace_id": trace_id,
         "agent": agent,
-        "working_directory": os.getcwd()
+        "working_directory": os.getcwd(),
+        "level": "INFO"
     }
     
-    with open(log_file, 'a', encoding='utf-8') as f:
-        f.write(format_readable_entry(session_start_entry))
+    with open(log_file, 'a', encoding='utf-8', errors='replace') as f:
+        # Write only structured JSON entry
+        f.write(format_structured_entry(session_start_entry) + "\n")
     
     return log_file
 
 
 def log_tool_action() -> None:
-    """Log tool action with full verbosity."""
+    """Log tool action with structured JSON format and markdown fallback."""
     try:
         data = json.load(sys.stdin)
-    except:
-        print("❌ Failed to parse stdin JSON", file=sys.stderr)
+    except (json.JSONDecodeError, ValueError) as e:
+        print(f"❌ Failed to parse stdin JSON: {e}", file=sys.stderr)
         return
     
     session_id = data.get("session_id", "unknown")
     session_file = get_session_file(session_id)
+    
+    # Ensure trace context exists
+    trace_id = ensure_trace_context()
     
     # Read agent from session state for logging
     agent = read_agent_context(session_id) or "Architect"
@@ -190,11 +246,15 @@ def log_tool_action() -> None:
     else:
         status = "success"
     
-    # Create tool action entry
+    # Determine log level
+    log_level = determine_log_level(tool_name, status)
+    
+    # Create tool action entry with structured fields
     entry = {
         "event": "tool_action",
         "timestamp": datetime.now().isoformat(),
         "session_id": session_id,
+        "trace_id": trace_id,
         "prompt_id": data.get("prompt_id", "unknown"),
         "agent": agent,
         "tool_name": tool_name,
@@ -205,13 +265,16 @@ def log_tool_action() -> None:
         "output": output,
         "error": error,
         "tool_use_id": data.get("tool_use_id", "unknown"),
-        "hook_data": data
+        "hook_data": data,
+        "level": log_level,
+        "working_directory": os.getcwd()
     }
     
-    with open(session_file, 'a', encoding='utf-8') as f:
-        f.write(format_readable_entry(entry))
+    # Write only structured JSON entry
+    with open(session_file, 'a', encoding='utf-8', errors='replace') as f:
+        f.write(format_structured_entry(entry) + "\n")
     
-    print(f"✅ Tool action logged: {tool_name} ({status}) (Agent: {agent})", file=sys.stderr)
+    print(f"✅ Tool action logged: {tool_name} ({status}) (Agent: {agent}, Level: {log_level})", file=sys.stderr)
 
 
 if __name__ == "__main__":

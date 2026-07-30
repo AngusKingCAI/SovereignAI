@@ -2,6 +2,8 @@
 
 import json
 import sys
+import uuid
+from datetime import datetime
 from pathlib import Path
 
 
@@ -14,17 +16,17 @@ def get_session_state_file() -> Path:
 
 
 def read_session_state() -> dict:
-    """Read full session state including agent and workflow state."""
+    """Read full session state including agent, workflow state, and trace context."""
     state_file = get_session_state_file()
     
     if not state_file.exists():
-        return {"agent": None, "workflow_state": None}
+        return {"agent": None, "workflow_state": None, "trace_id": None, "session_start_time": None}
     
     try:
         with open(state_file, 'r', encoding='utf-8') as f:
             return json.load(f)
     except (json.JSONDecodeError, KeyError):
-        return {"agent": None, "workflow_state": None}
+        return {"agent": None, "workflow_state": None, "trace_id": None, "session_start_time": None}
 
 
 def write_agent_context(agent: str) -> None:
@@ -37,6 +39,32 @@ def write_agent_context(agent: str) -> None:
         json.dump(state_data, f, indent=2)
 
 
+def generate_trace_id() -> str:
+    """Generate unique trace ID for session correlation."""
+    return str(uuid.uuid4())
+
+
+def ensure_trace_context() -> str:
+    """Ensure trace ID exists in session state, return trace ID."""
+    state_data = read_session_state()
+    
+    if not state_data.get("trace_id"):
+        state_data["trace_id"] = generate_trace_id()
+        state_data["session_start_time"] = datetime.now().isoformat()
+        
+        state_file = get_session_state_file()
+        with open(state_file, 'w', encoding='utf-8') as f:
+            json.dump(state_data, f, indent=2)
+    
+    return state_data["trace_id"]
+
+
+def get_trace_id() -> str:
+    """Get current trace ID from session state."""
+    state_data = read_session_state()
+    return state_data.get("trace_id", "unknown")
+
+
 def write_workflow_state(workflow_state: str) -> None:
     """Write current workflow state to session state file."""
     state_file = get_session_state_file()
@@ -47,7 +75,7 @@ def write_workflow_state(workflow_state: str) -> None:
         json.dump(state_data, f, indent=2)
 
 
-def read_agent_context() -> str | None:
+def read_agent_context(session_id: str = None) -> str | None:
     """Read current agent context from session state file."""
     state_data = read_session_state()
     return state_data.get("agent")

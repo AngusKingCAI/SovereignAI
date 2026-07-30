@@ -8,8 +8,12 @@ from datetime import datetime
 
 def extract_agent_replies(transcript_path: str) -> list:
     """Extract agent replies from ATIF transcript."""
-    with open(transcript_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
+    try:
+        with open(transcript_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"❌ Failed to read transcript file: {e}", file=sys.stderr)
+        return []
     
     agent_replies = []
     
@@ -56,20 +60,24 @@ def filter_bp_replies(replies: list) -> list:
 
 def save_bp_replies(bp_replies: list, output_path: str):
     """Save best practices replies to a markdown file."""
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write("# Extracted Best Practices from Transcript\n\n")
-        f.write(f"**Generated**: {datetime.now().isoformat()}\n")
-        f.write(f"**Total BP Replies**: {len(bp_replies)}\n\n")
-        f.write("---\n\n")
-        
-        for i, reply in enumerate(bp_replies, 1):
-            f.write(f"## Reply {i}\n\n")
-            f.write(f"**Timestamp**: {reply['timestamp']}\n")
-            f.write(f"**Tokens**: Input={reply['tokens']['input']}, Output={reply['tokens']['output']}\n")
-            f.write(f"**Step ID**: {reply['step_id']}\n\n")
-            f.write("### Content\n\n")
-            f.write(reply['message'])
-            f.write("\n\n---\n\n")
+    try:
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write("# Extracted Best Practices from Transcript\n\n")
+            f.write(f"**Generated**: {datetime.now().isoformat()}\n")
+            f.write(f"**Total BP Replies**: {len(bp_replies)}\n\n")
+            f.write("---\n\n")
+            
+            for i, reply in enumerate(bp_replies, 1):
+                f.write(f"## Reply {i}\n\n")
+                f.write(f"**Timestamp**: {reply['timestamp']}\n")
+                f.write(f"**Tokens**: Input={reply['tokens']['input']}, Output={reply['tokens']['output']}\n")
+                f.write(f"**Step ID**: {reply['step_id']}\n\n")
+                f.write("### Content\n\n")
+                f.write(reply['message'])
+                f.write("\n\n---\n\n")
+    except (IOError, OSError) as e:
+        print(f"❌ Failed to write output file: {e}", file=sys.stderr)
+        raise
 
 
 def main():

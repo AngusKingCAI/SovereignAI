@@ -41,11 +41,16 @@ def main():
         # Fallback: try to detect agent from environment or files
         if not current_agent:
             # Check if there's a current agent indicator file
-            agent_indicator = Path("C:/SovereignAI/.current_agent")
+            if sys.platform == 'win32':
+                agent_indicator = Path(os.environ.get('APPDATA', '')) / 'devin' / 'cli' / '.current_agent'
+            else:
+                agent_indicator = Path.home() / '.devin' / 'cli' / '.current_agent'
+            
             if agent_indicator.exists():
                 current_agent = agent_indicator.read_text().strip()
         
-        project_root = Path("C:/SovereignAI")
+        # Use cross-platform path for project root
+        project_root = Path(__file__).parent.parent
         context_message = ""
         
         # If we can determine the current agent, load its specific files
@@ -78,7 +83,7 @@ def main():
                 try:
                     agents_content = agents_file.read_text()
                     context_message += f"=== AGENTS.md (fallback - could not detect current agent) ===\n{agents_content}\n\n"
-                except Exception as e:
+                except (IOError, OSError) as e:
                     context_message += f"Error reading AGENTS.md: {e}\n\n"
             else:
                 context_message += "AGENTS.md not found and could not detect current agent\n\n"

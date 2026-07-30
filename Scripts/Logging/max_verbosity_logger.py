@@ -116,7 +116,7 @@ def get_stdin_raw() -> str:
     """Capture raw stdin."""
     try:
         return sys.stdin.read()
-    except:
+    except (IOError, OSError):
         return ""
 
 
@@ -157,7 +157,7 @@ def log_max_verbosity() -> None:
         # Read stdin
         try:
             data = json.load(sys.stdin)
-        except:
+        except (json.JSONDecodeError, ValueError):
             data = {}
         
         # Determine event type

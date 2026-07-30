@@ -8,8 +8,12 @@ from datetime import datetime
 
 def extract_web_searches(log_path: str) -> list:
     """Extract web search results from session log."""
-    with open(log_path, 'r', encoding='utf-8') as f:
-        content = f.read()
+    try:
+        with open(log_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except (FileNotFoundError, IOError, OSError) as e:
+        print(f"❌ Failed to read log file: {e}", file=sys.stderr)
+        return []
     
     # Pattern to match web search sections
     web_search_pattern = r'# Web Search Results for "(.*?)"\n\n(##.*?)(?=\n# Web Search Results for "|\n---\n\n|$)'
@@ -31,18 +35,22 @@ def extract_web_searches(log_path: str) -> list:
 
 def save_web_searches(web_searches: list, output_path: str):
     """Save web search summaries to a markdown file."""
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write("# Extracted Web Search Summaries\n\n")
-        f.write(f"**Generated**: {datetime.now().isoformat()}\n")
-        f.write(f"**Total Web Searches**: {len(web_searches)}\n\n")
-        f.write("---\n\n")
-        
-        for i, search in enumerate(web_searches, 1):
-            f.write(f"## Web Search {i}\n\n")
-            f.write(f"**Query**: {search['query']}\n\n")
-            f.write("### Results\n\n")
-            f.write(search['results'])
-            f.write("\n\n---\n\n")
+    try:
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write("# Extracted Web Search Summaries\n\n")
+            f.write(f"**Generated**: {datetime.now().isoformat()}\n")
+            f.write(f"**Total Web Searches**: {len(web_searches)}\n\n")
+            f.write("---\n\n")
+            
+            for i, search in enumerate(web_searches, 1):
+                f.write(f"## Web Search {i}\n\n")
+                f.write(f"**Query**: {search['query']}\n\n")
+                f.write("### Results\n\n")
+                f.write(search['results'])
+                f.write("\n\n---\n\n")
+    except (IOError, OSError) as e:
+        print(f"❌ Failed to write output file: {e}", file=sys.stderr)
+        raise
 
 
 def main():

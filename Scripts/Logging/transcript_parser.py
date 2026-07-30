@@ -21,7 +21,7 @@ def parse_transcript_file(transcript_path: Path) -> list:
     try:
         with open(transcript_path, 'r', encoding='utf-8') as f:
             transcript_data = json.load(f)
-    except Exception as e:
+    except (FileNotFoundError, json.JSONDecodeError, IOError, OSError) as e:
         print(f"❌ Failed to parse transcript: {e}", file=sys.stderr)
         return []
     
@@ -235,14 +235,18 @@ def merge_transcript_with_realtime_log() -> None:
     try:
         # Read hook data
         data = json.load(sys.stdin)
-    except:
-        print("❌ Failed to parse stdin JSON", file=sys.stderr)
+    except (json.JSONDecodeError, ValueError) as e:
+        print(f"❌ Failed to parse stdin JSON: {e}", file=sys.stderr)
         return
     
     session_id = data.get("session_id", "unknown")
     
-    # Find the transcript file
-    transcript_dir = Path(os.path.expandvars("$APPDATA/devin/cli/transcripts"))
+    # Find the transcript file using cross-platform path
+    if sys.platform == 'win32':
+        transcript_dir = Path(os.environ.get('APPDATA', '')) / 'devin' / 'cli' / 'transcripts'
+    else:
+        transcript_dir = Path.home() / '.devin' / 'cli' / 'transcripts'
+    
     transcript_file = transcript_dir / f"{session_id}.json"
     
     if not transcript_file.exists():
