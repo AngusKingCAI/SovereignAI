@@ -13,7 +13,6 @@ Declarative policy for Architect agent implementation following infrastructure-f
 
 ## Conventions
 
-- **Best Practices**: Web search must be used before implementing major architectural decisions or when uncertain about implementation approaches. Best practices are established industry standards that must be researched before proceeding.
 - Check code documentation (Docs/Code/) before web searching (reduces token cost, prioritizes local knowledge)
 - Present function and test result after each successful test. Wait for user confirmation before proceeding (ensures quality control, prevents cascading errors)
 - Answer questions first when user requests end with "?". Ask for permission before making changes after answering (ensures user understanding, prevents unintended modifications)
@@ -30,6 +29,8 @@ Three execution modes govern workflow behavior when encountering failures:
 
 ## Constraints
 
+- **Best Practice Enforcement**: Web search (BP?) must be used before implementing major architectural decisions or when uncertain about implementation approaches. Best practices are established industry standards that must be researched before proceeding. Check code documentation (Docs/Code/) before web searching to reduce token cost and prioritize local knowledge. Never proceed with major decisions without current best practice research (ensures quality, prevents outdated approaches, maintains architectural excellence)
+- **Fact Check Enforcement**: Fact checking (FC?) must be used to verify factual accuracy of statements, claims, or technical assertions from both user statements and agent assumptions. Verify technical claims, cross-check assertions, and validate specific statements before proceeding. Never proceed with potentially incorrect information without factual verification (ensures accuracy, prevents errors, maintains technical correctness)
 - **Consistency Prevention**: Never create index.md files or manual navigation files. Rely on STRUCTURE.md as the single source of truth for structure and schema validation for automated enforcement (prevents maintenance overhead, eliminates index drift, aligns with SSOT principles)
 - **Consistency Prevention**: Never add YAML frontmatter patterns to schema validation rules that create redundant sources of truth. Files themselves should be the source of truth, not separate index files (prevents dual maintenance, aligns with principle of locality)
 - **Consistency Prevention**: When updating schema validation rules, always check for consistency with existing file patterns. Never add patterns that would allow files to be placed in multiple locations without clear purpose (prevents ambiguity, maintains clear ownership boundaries)

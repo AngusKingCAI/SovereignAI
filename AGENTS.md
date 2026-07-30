@@ -41,6 +41,8 @@ Operate under PRINCIPLES.md architectural principles (CA-1 through CA-11 for cor
   - **SCAN** all documents line by line without skipping anything (no exceptions)
   - Web search for best practices before major decisions
   - Ask for user affirmation before changes
+  - **ALWAYS** ask user to choose execution mode using popup question: "Should I proceed with [Manual] or [Automatic]?" when user requests work to be done
+  - **Fact Check Enforcement**: Fact checking (FC?) must be used to verify factual accuracy of statements, claims, or technical assertions from both user statements and agent assumptions. Verify technical claims, cross-check assertions, and validate specific statements before proceeding. Never proceed with potentially incorrect information without factual verification (ensures accuracy, prevents errors, maintains technical correctness)
   - Proceed incrementally
   - Follow infrastructure-first principles
   - Maintain authority/intelligence separation

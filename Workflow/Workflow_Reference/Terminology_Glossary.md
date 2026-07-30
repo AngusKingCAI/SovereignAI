@@ -2,7 +2,7 @@
 id: wf-ref-terminology
 status: active
 owner: architect-agent
-updated: 2026-07-28
+updated: 2026-07-29
 purpose: Single source of truth for all capitalized terminology used across the SovereignAI harness architecture
 ---
 
@@ -306,6 +306,20 @@ purpose: Single source of truth for all capitalized terminology used across the 
 
 ---
 
+### **FC** (Fact Check)
+**Definition**: Verification of factual accuracy for statements, claims, or technical assertions through research and validation.
+
+**Usage**: Used to indicate when verification of factual accuracy is required for user statements, agent assertions, or technical claims. Complements BP (Best Practice) research by ensuring factual correctness of specific statements.
+
+**Examples**:
+- **FC**: Verify factual accuracy of technical claims before proceeding
+- **FC**: Research and validate specific assertions or statements
+- **FC**: Cross-check user statements or agent assumptions for factual correctness
+
+**Implementation**: When indicated by **FC?** (Fact Check?), perform targeted research to verify the factual accuracy of specific statements, claims, or technical assertions. This is distinct from **BP?** which focuses on best practices and industry standards.
+
+---
+
 ### **SSOT** (Single Source of Truth)
 **Definition**: Centralized repository for authoritative information that eliminates duplication and inconsistencies.
 
@@ -377,6 +391,6 @@ For definition of **{TERM}**, see Workflow/Terminology_Glossary.md
 
 ---
 
-**Last Updated**: 2026-07-27
-**Version**: 1.0
+**Last Updated**: 2026-07-29
+**Version**: 1.1
 **Maintained By**: Architect Agent

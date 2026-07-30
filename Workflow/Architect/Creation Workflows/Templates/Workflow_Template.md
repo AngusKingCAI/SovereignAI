@@ -2,7 +2,8 @@
 id: workflow-template
 status: active
 owner: architect-agent
-updated: 2026-07-28
+updated: 2026-07-29
+version: "2.0"
 purpose: Architect-specific template for creating agent workflows with consistent structure
 ---
 
@@ -16,18 +17,18 @@ This template is used by the Architect agent to create workflows for other agent
 
 ## Workflow Types
 
-Architect creates two types of workflows with different Phase 10 patterns:
+Architect creates two types of workflows with different termination patterns:
 
 ### 1. Continuous Operation Workflows (Standard Agent Workflows)
 - **Purpose**: Agents that should always be ready for new tasks
-- **Phase 10 Pattern**: Include "Return to step 1" for continuous operation
+- **Termination Pattern**: Include "Return to Load Governance Rules section" for continuous operation
 - **Examples**: Architect_General_Workflow, Planner_Plan_Workflow, Executor_Implementation_Cycle
 - **Behavior**: Workflow cycles indefinitely, agent always ready for next task
 - **Use Case**: Primary agent workflows that handle ongoing agent operations
 
 ### 2. Single-Execution Workflows (Utility/Tool Workflows)
 - **Purpose**: Utility workflows that execute once and terminate
-- **Phase 10 Pattern**: Exclude or modify to termination (no "Return to step 1")
+- **Termination Pattern**: Exclude or modify to termination (no "Return to Load Governance Rules section")
 - **Examples**: Architect_Consistency_Check_Workflow, Architect_Consistency_Fix_Workflow
 - **Behavior**: Workflow executes once and terminates, no automatic looping
 - **Use Case**: Specialized workflows that run on-demand and complete
@@ -72,7 +73,7 @@ persona:
 **Priority**: {Priority}
 **Workflow Type**: {Continuous Operation or Single-Execution}
 **Execution Modes**: {Workflow-specific execution mode options}
-**Phase Structure**: {Total number of phases with brief description}
+**Phase Structure**: {Brief description of workflow phases}
 
 ## Purpose
 {What this workflow accomplishes and why it exists}
@@ -92,86 +93,89 @@ persona:
 - **Trigger**: {What triggers this workflow - when should it be executed}
 - **End State**: {What constitutes workflow completion - when is the workflow considered finished}
 
-## Workflow Steps ({total steps} steps)
-### Phase 0. Load Governance Rules
-- 1. **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on current agent type
-- 2. **STATUS TRACKING**: Update workflow status to "phase_0_complete"
-- 3. **PRINT** "Governance rules loaded dynamically based on agent type"
+## Workflow Steps
 
-### Phase 1. Select Execution Mode (Workflow-Specific)
-- 6. Ask user to select execution mode for this workflow using popup menu:
+### Load Governance Rules [**MANDATED**]
+- **OPEN** WorkflowOpen skill to dynamically load agent-specific rules based on current agent type
+- **STATUS TRACKING**: Update workflow status to "governance_rules_loaded"
+- **PRINT** "Governance rules loaded dynamically based on agent type"
+
+### Select Execution Mode [**MANDATED**]
+- Ask user to select execution mode for this workflow using popup menu:
   - **Workflow-Specific Options**: Each workflow defines its own execution mode options based on its operational needs
   - **Common Patterns**: 
     - Manual/Auto/Complete (traditional phase-based workflows)
     - Manual/Manual Batched/Automatic Batched (file/item processing workflows)
     - Custom modes defined by workflow requirements
-- 7. Store selected execution mode for failure handling throughout workflow
-- 8. **PRINT** "Execution mode selected - [workflow-specific modes] will govern failure handling"
+- Store selected execution mode for failure handling throughout workflow
+- **STATUS TRACKING**: Update workflow status to "execution_mode_selected"
+- **PRINT** "Execution mode selected - [workflow-specific modes] will govern failure handling"
 
-### Phase 2. {Agent} Interaction
-- 9. Ask user: "Hi, {Agent} here - how can I help you today?"
-- 10. Wait for user to specify their task or question
-- 11. Clarify the task if needed
-- 12. Review user request and check local research using index files before web search
-- 13. Apply loaded {agent} rules to task requirements
-- 14. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
-- 15. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
-- 16. **PRINT** "Initiating {agent} interaction - awaiting user task specification"
+### {Agent} Interaction [**SUGGESTED**]
+- Ask user: "Hi, {Agent} here - how can I help you today?"
+- Wait for user to specify their task or question
+- Clarify the task if needed
+- Review user request and check local research using index files before web search
+- Apply loaded {agent} rules to task requirements
+- **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
+- **STATUS TRACKING**: Update workflow status to "agent_interaction_complete"
+- **PRINT** "Initiating {agent} interaction - awaiting user task specification"
 
-### Phase 3. Research Best Practices
-- 17. Check code documentation (Docs/Code/) for examples relevant to the specific type of work
-- 18. **BEST PRACTICES WEB SEARCH**: Web search must be performed before major decisions (per {Agent}_Rules.md). Research industry standards and established patterns for the approach being considered.
-- 19. Gather multiple approaches and patterns from web search and local research
-- 20. Ensure proposed solutions comply with governance rules
-- 21. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
-- 22. **STATUS TRACKING**: Update workflow status to "phase_3_complete"
-- 23. **PRINT** "Researching best practices - checking code documentation for relevant examples"
-- 24. **PRINT**: "Best practices web search initiated - required before major decisions"
-- 25. **PRINT**: "Research complete - gathered multiple implementation approaches from industry standards"
+### Research Best Practices [**SUGGESTED**]
+- Check code documentation (Docs/Code/) for examples relevant to the specific type of work
+- **BEST PRACTICES WEB SEARCH**: Web search must be performed before major decisions (per {Agent}_Rules.md). Research industry standards and established patterns for the approach being considered.
+- Gather multiple approaches and patterns from web search and local research
+- Ensure proposed solutions comply with governance rules
+- **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
+- **STATUS TRACKING**: Update workflow status to "research_complete"
+- **PRINT** "Researching best practices - checking code documentation for relevant examples"
+- **PRINT** "Best practices web search initiated - required before major decisions"
+- **PRINT** "Research complete - gathered multiple implementation approaches from industry standards"
 
-### Phase 4. {Agent} Work Phase
-- 26. {Agent-specific work steps}
-- 27. **VALIDATION**: Validate work completion and quality (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md for universal pattern)
-- 28. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
-- 29. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
-- 30. **PRINT**: "{Agent} work phase complete - ready for next phase"
+### {Agent} Work Phase [**SUGGESTED**]
+- {Agent-specific work steps}
+- **VALIDATION**: Validate work completion and quality (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md for universal pattern)
+- **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
+- **STATUS TRACKING**: Update workflow status to "agent_work_complete"
+- **PRINT** "{Agent} work phase complete - ready for next phase"
 
-### Phase 5. {Agent} Validation Phase
-- 31. {Agent-specific validation steps}
-- 32. **VALIDATION**: Validate that work completed successfully (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md for universal pattern)
-- 33. **STATUS TRACKING**: Update workflow status to "phase_5_complete"
-- 34. **PRINT**: "{Agent} validation complete - work verified for compliance"
+### {Agent} Validation Phase [**SUGGESTED**]
+- {Agent-specific validation steps}
+- **VALIDATION**: Validate that work completed successfully (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md for universal pattern)
+- **STATUS TRACKING**: Update workflow status to "agent_validation_complete"
+- **PRINT** "{Agent} validation complete - work verified for compliance"
 
-### Phase 6. {Agent} Documentation Phase
-- 35. Update relevant governance files and documentation
-- 36. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
-- 37. **STATUS TRACKING**: Update workflow status to "phase_6_complete"
-- 38. **PRINT**: "Documentation complete - governance files updated"
+### {Agent} Documentation Phase [**SUGGESTED**]
+- Update relevant governance files and documentation
+- **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
+- **STATUS TRACKING**: Update workflow status to "documentation_complete"
+- **PRINT** "Documentation complete - governance files updated"
 
-### Phase 7. Final Validation
-- 39. Verify implementation matches intended scope
-- 40. Ensure compliance with all rules and constraints
-- 41. **VALIDATION**: Validate that final validation completed successfully (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md for universal pattern)
-- 42. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
-- 43. **STATUS TRACKING**: Update workflow status to "phase_7_complete"
-- 44. **PRINT**: "Final validation complete - work verified for compliance"
+### Final Validation [**SUGGESTED**]
+- Verify implementation matches intended scope
+- Ensure compliance with all rules and constraints
+- **VALIDATION**: Validate that final validation completed successfully (see Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md for universal pattern)
+- **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
+- **STATUS TRACKING**: Update workflow status to "final_validation_complete"
+- **PRINT** "Final validation complete - work verified for compliance"
 
-### Phase 8. Session Logging + Validate
-- 45. Consolidate all work iterations into session log to Logs/{Agent}/
-- 46. Generate session attestation hash for verification from all session logs
-- 47. **VALIDATION**: Validate that session logging completed successfully and audit trail is complete
-- 48. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
-- 49. **PRINT**: "Session logging complete - audit trail validated, {Agent} workflow complete"
+### Session Logging + Validate [**SUGGESTED**]
+- Consolidate all work iterations into session log to Logs/{Agent}/
+- Generate session attestation hash for verification from all session logs
+- **VALIDATION**: Validate that session logging completed successfully and audit trail is complete
+- **STATUS TRACKING**: Update workflow status to "session_logging_complete"
+- **PRINT** "Session logging complete - audit trail validated, {Agent} workflow complete"
 
-### Phase 10. Return to Phase 0 (CONTINUOUS OPERATION WORKFLOWS ONLY)
-- 50. **PRINT** "Workflow cycle complete - returning to Phase 0 for next {agent} task"
-- 51. **PRINT** "{Agent} agent ready - awaiting next user request"
-- 52. Return to step 1
+### Workflow Type-Specific Termination [**SUGGESTED**]
+**For Continuous Operation Workflows:**
+- **PRINT** "Workflow cycle complete - returning to Load Governance Rules section for next {agent} task"
+- **PRINT** "{Agent} agent ready - awaiting next user request"
+- Return to Load Governance Rules section
 
-### Phase 10. Workflow Termination (SINGLE-EXECUTION WORKFLOWS ONLY)
-- 50. **PRINT** "Workflow execution complete - workflow terminated"
-- 51. **PRINT** "{Agent} agent ready - awaiting next user request"
-- 52. **TERMINATE**: End workflow execution (do not return to step 1)
+**For Single-Execution Workflows:**
+- **PRINT** "Workflow execution complete - workflow terminated"
+- **PRINT** "{Agent} agent ready - awaiting next user request"
+- **TERMINATE**: End workflow execution (do not return to Load Governance Rules section)
 
 ---
 
@@ -210,34 +214,44 @@ persona:
 ## Template Requirements
 
 ### Mandated Sections (Required)
-All workflows must include:
+All workflows must include the following sections marked with [**MANDATED**]:
 - **Workflow Header**: ID, Owner, Frequency, Duration, Priority, Execution Modes, Purpose, Roles, Trigger and End State
 - **expected_agent_type**: Required field in YAML frontmatter specifying which agent executes this workflow
 - **persona**: Required field in YAML frontmatter with proper persona structure (role, expertise, process, output, constraints)
 - **Reference Documents section**: Must list all referenced documents, universal frameworks, agent rules, and terminology sources
 - **Trigger and End State section**: Must specify workflow entry conditions and completion criteria
+- **Load Governance Rules [**MANDATED**]**: Required section for loading agent-specific governance rules
+- **Select Execution Mode [**MANDATED**]**: Required section for workflow-specific execution mode selection
 - **Universal Framework References** section at the end
 - References to all universal frameworks relevant to the workflow
 - **Relevance Requirement**: Only include universal framework references that are actually relevant to the agent's specific purpose
-- **Execution Modes Definition**: Each workflow must define its specific execution mode options in the header and Phase 1
+- **Execution Modes Definition**: Each workflow must define its specific execution mode options in the header and Select Execution Mode section
 
-### Suggested Phases (Recommended but Flexible)
-The following phases are suggested patterns that work well for most workflows, but agents should adapt them based on their specific needs:
-- **Phase 0**: Read {Agent} Rules (loads governance constraints)
-- **Phase 1**: Select Execution Mode (Manual/Auto/Complete)
-- **Phase 2**: {Agent} Interaction (user task specification)
-- **Phase 3**: Research Best Practices (web search required before major decisions)
+### Suggested Sections (Recommended but Flexible)
+The following sections are recommended for most workflows but are marked with [**SUGGESTED**]:
+- **{Agent} Interaction [**SUGGESTED**]**: User task specification and interaction
+- **Research Best Practices [**SUGGESTED**]**: Industry standards and pattern research
+- **{Agent} Work Phase [**SUGGESTED**]**: Agent-specific work implementation
+- **{Agent} Validation Phase [**SUGGESTED**]**: Agent-specific validation steps
+- **{Agent} Documentation Phase [**SUGGESTED**]**: Governance file updates
+- **Final Validation [**SUGGESTED**]**: Final verification and compliance check
+- **Session Logging + Validate [**SUGGESTED**]**: Audit trail and session verification
+- **Workflow Type-Specific Termination [**SUGGESTED**]**: Optional termination based on workflow type
+
+### Template Usage Instructions
+**IMPORTANT**: When creating actual workflows from this template:
+1. **Remove [**MANDATED**] and [**SUGGESTED**] markers** from section names in the final workflow
+2. **Convert template sections to numbered phases** (Phase 0, Phase 1, etc.) with numbered steps (0.1, 0.2, etc.)
+3. **Include all [**MANDATED**] sections** in the final workflow
+4. **Select appropriate [**SUGGESTED**] sections** based on workflow needs
+5. **Customize section content** based on specific agent requirements and user intent
+6. **Actual workflows should have proper phase structure** with numbered steps, unlike this template
 
 ### Suggested Elements (Recommended but Flexible)
 The following elements are suggested patterns for good workflow design:
 - **VALIDATION** entries in phases where quality checks are needed
 - **STATUS TRACKING** entries for workflow state management
 - **PRINT** commands for status updates and user communication
-
-### Phase 10 (Workflow Type Dependent - Optional)
-- **Continuous Operation Workflows**: May include Phase 10 with "Return to step 1" for continuous operation
-- **Single-Execution Workflows**: May include Phase 10 with "TERMINATE" (no "Return to step 1")
-- **Note**: Phase 10 is optional and should only be included if the workflow requires it
 
 ### Naming Convention
 Workflow files should follow: `{Agent}_{WorkflowType}_Workflow.md`

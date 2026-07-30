@@ -91,7 +91,7 @@ CATEGORIZATION_RULES = {
         }
     },
     "Workflow/": {
-        "allowed_subdirs": ["Workflow_Reference", "Architect", "Planner", "Executor", "Researcher", "Reviewer", "Templates"],
+        "allowed_subdirs": ["Workflow_Reference", "Architect", "Planner", "Executor", "Researcher", "Reviewer", "Templates", "Creation Workflows", "Validation Workflows"],
         "file_rules": {
             "Workflow_Reference/": {
                 "allowed_patterns": ["*_Patterns.md", "*_Framework.md", "*_Guidelines.md"],
@@ -100,6 +100,14 @@ CATEGORIZATION_RULES = {
             "Templates/": {
                 "allowed_patterns": ["*_Template.md"],
                 "description": "Workflow templates"
+            },
+            "Creation Workflows/": {
+                "allowed_patterns": ["*_Workflow.md"],
+                "description": "Creation workflows"
+            },
+            "Validation Workflows/": {
+                "allowed_patterns": ["*_Workflow.md"],
+                "description": "Validation workflows"
             },
             "Architect/": {
                 "allowed_subdirs": ["Reference", "Templates"],
@@ -616,7 +624,7 @@ def validate_categorization(file_path: Path, repo_root: Path) -> List[str]:
         "01-Getting-Started/", "02-Essential-Commands/", "03-Models/", "04-Extensibility/", "06-Advanced-Features/", "08-Troubleshooting/",
         "External AI Reviews/", "Sovereign AI Design Docs/",
         "0-9/", "10-19/", "40-49/", "50-59/", "60-69/", "70-79/", "80-89/", "90-99/",
-        "Templates/"  # Add Templates/ to known patterns
+        "Templates/", "Creation Workflows/", "Validation Workflows/"  # Add Templates/, Creation Workflows/, Validation Workflows/ to known patterns
     ]
     
     if any(pattern in path_str.replace("\\", "/") for pattern in known_patterns):

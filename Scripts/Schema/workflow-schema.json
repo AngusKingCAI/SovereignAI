@@ -21,10 +21,44 @@
       "type": ["string", "date"],
       "description": "Last update date (YYYY-MM-DD format)"
     },
+    "version": {
+      "type": "string",
+      "description": "Workflow version (optional)"
+    },
     "purpose": {
       "type": "string",
       "minLength": 10,
       "description": "Workflow purpose description"
+    },
+    "expected_agent_type": {
+      "type": "string",
+      "description": "Expected agent type for this workflow (optional)"
+    },
+    "persona": {
+      "type": "object",
+      "description": "Workflow persona configuration (optional)",
+      "properties": {
+        "role": {
+          "type": "string",
+          "description": "Persona role"
+        },
+        "expertise": {
+          "type": "string",
+          "description": "Persona expertise areas"
+        },
+        "process": {
+          "type": "string",
+          "description": "Persona process approach"
+        },
+        "output": {
+          "type": "string",
+          "description": "Expected persona output"
+        },
+        "constraints": {
+          "type": "string",
+          "description": "Persona constraints"
+        }
+      }
     },
     "frequency": {
       "type": "string",
