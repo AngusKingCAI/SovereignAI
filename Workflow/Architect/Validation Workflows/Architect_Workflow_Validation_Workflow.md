@@ -3,7 +3,7 @@ id: wf-arch-workflow-validation
 status: active
 owner: architect-agent
 updated: 2026-07-30
-version: "2.2"
+version: "2.3"
 purpose: Architect workflow for comprehensive consistency validation of workflow documents with KISS principles and systematic template validation
 expected_agent_type: architect-agent
 persona:
