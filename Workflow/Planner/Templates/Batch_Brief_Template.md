@@ -2,16 +2,16 @@
 id: wf-plan-tmpl-batch-brief
 status: active
 owner: planner-agent
-updated: 2026-07-29
-purpose: Consolidated brief document for Round Table panelists summarizing multiple plans for batch review
+updated: 2026-07-30
+purpose: Consolidated brief document for Internal Round Table panelists summarizing multiple plans for batch review
 ---
 
-# Batch Brief Template
+# Internal Batch Brief Template
 
-**Purpose**: Consolidated brief document for Round Table panelists (internal and external) summarizing multiple plans for batch review  
+**Purpose**: Consolidated brief document for Internal Round Table panelists summarizing multiple plans for batch review  
 **Location**: Workflow/Planner/Templates/Batch_Brief_Template.md  
-**Usage**: Save as Plans/Queued/Batch_Brief.md (single file for entire batch)  
-**Version**: 1.0
+**Usage**: Save as Plans/Queued/Batch_Brief.md (single file for entire batch) for Internal Round Table only  
+**Version**: 1.1
 
 ---
 
@@ -112,15 +112,56 @@ purpose: Consolidated brief document for Round Table panelists summarizing multi
 
 ## Panelist Assignment
 
-**Your Persona**: {Security Expert | Infrastructure Expert | Data Architecture Expert | Application Architecture Expert | Operations/DevOps Expert | Business Alignment Expert}
+**YOUR EXACT ASSIGNMENT - DO NOT DEVIATE**:
 
-**Your Focus**: {Specific domain expertise based on persona}
+**IF YOU ARE Security Expert**:
+- **Persona**: Security Expert
+- **MUST REVIEW**: {Security Expert assigned plans}
+- **MUST NOT REVIEW**: {Plans not assigned to Security Expert}
+- **REQUIRED STATEMENT**: "I am reviewing as Security Expert"
 
-**Plan Assignment**: {Each panelist is assigned to review specific plans in the batch}
+**IF YOU ARE Infrastructure Expert**:
+- **Persona**: Infrastructure Expert  
+- **MUST REVIEW**: {Infrastructure Expert assigned plans}
+- **MUST NOT REVIEW**: {Plans not assigned to Infrastructure Expert}
+- **REQUIRED STATEMENT**: "I am reviewing as Infrastructure Expert"
 
-**CRITICAL**: At the start of your review response, you MUST explicitly state:
-- For Internal Round Table: "I am reviewing as {Persona}"
-- For External Round Table: "I am reviewing as {Model Name} ({Persona})"
+**IF YOU ARE Data Architecture Expert**:
+- **Persona**: Data Architecture Expert
+- **MUST REVIEW**: {Data Architecture Expert assigned plans}
+- **MUST NOT REVIEW**: {Plans not assigned to Data Architecture Expert}
+- **REQUIRED STATEMENT**: "I am reviewing as Data Architecture Expert"
+
+**IF YOU ARE Application Architecture Expert**:
+- **Persona**: Application Architecture Expert
+- **MUST REVIEW**: {Application Architecture Expert assigned plans}
+- **MUST NOT REVIEW**: {Plans not assigned to Application Architecture Expert}
+- **REQUIRED STATEMENT**: "I am reviewing as Application Architecture Expert"
+
+**IF YOU ARE Operations/DevOps Expert**:
+- **Persona**: Operations/DevOps Expert
+- **MUST REVIEW**: {Operations/DevOps Expert assigned plans}
+- **MUST NOT REVIEW**: {Plans not assigned to Operations/DevOps Expert}
+- **REQUIRED STATEMENT**: "I am reviewing as Operations/DevOps Expert"
+
+**IF YOU ARE Business Alignment Expert**:
+- **Persona**: Business Alignment Expert
+- **MUST REVIEW**: {Business Alignment Expert assigned plans}
+- **MUST NOT REVIEW**: {Plans not assigned to Business Alignment Expert}
+- **REQUIRED STATEMENT**: "I am reviewing as Business Alignment Expert"
+
+**CRITICAL - REVIEW REJECTION CRITERIA**:
+Your review will be REJECTED if:
+- You use a different persona than assigned above
+- You review plans not assigned to your persona
+- You provide generic feedback without domain-specific analysis
+- You lack web search citations for claims
+- Your output is not valid JSON format
+- You fail to state your persona at the start
+
+**REQUIRED STATEMENT FORMAT**:
+- For Internal Round Table: Start response with "I am reviewing as {Persona}"
+- For External Round Table: Start response with "I am reviewing as {Model Name} ({Persona})"
 
 This ensures proper logging to the consolidated file:
 - Internal: Logs/Planner/Round Table/Internal/Batch{N}_Roundtable.md (append per revision, separated by {Agent_Persona})

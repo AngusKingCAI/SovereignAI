@@ -128,13 +128,13 @@ Unified workflow for creating detailed, implementation-ready plans for AI-driven
 - 5.8. **PRINT**: "Plan creation complete - ready for review material creation"
 - 5.9. Proceed to phase 6B (Review Material Creation - scan mode)
 
-### Phase 6A. Review Material Creation - plan mode
+### Phase 6A. Review Material Creation - plan mode (Internal Round Table)
 - 6.1. **STATUS TRACKING**: python Scripts/Logging/session_state.py Planner --workflow phase_6a_in_progress
-- 6.2. Create review materials following Batch_Brief_Template.md and Batch_Prompt_Template.md (save as Plans/Queued/Plan-Batch-{N}-{N}-Brief.md and Plans/Queued/Plan-Batch-{N}-{N}-Prompt.md)
+- 6.2. Create internal review materials following Batch_Brief_Template.md and Batch_Prompt_Template.md (save as Plans/Queued/Plan-Batch-{N}-{N}-Brief.md and Plans/Queued/Plan-Batch-{N}-{N}-Prompt.md)
 - 6.3. **if revision > 1**: **DELETE** older batch prompt file (Plans/Queued/Plan-Batch-{N}-{N}-Prompt.md) immediately after new version creation; if revision == 1: skip deletion (no older files exist)
-- 6.4. **VALIDATION**: Validate that review materials were created successfully and follow template structure
+- 6.4. **VALIDATION**: Validate that internal review materials were created successfully and follow internal template structure
 - 6.5. **STATUS TRACKING**: python Scripts/Logging/session_state.py Planner --workflow phase_6a_complete
-- 6.6. **PRINT**: "Review materials complete - ready for Internal round table"
+- 6.6. **PRINT**: "Internal review materials complete - ready for Internal round table"
 - 6.7. Proceed to phase 7A (Internal round table - plan mode)
 
 ### Phase 6B. Review Material Creation - scan mode
@@ -149,7 +149,7 @@ Unified workflow for creating detailed, implementation-ready plans for AI-driven
 ### Phase 7A. Internal round table Execution - plan mode
 - 7.1. **STATUS TRACKING**: python Scripts/Logging/session_state.py Planner --workflow phase_7a_in_progress
 - 7.2. Identify batch of plans from Plans/Queued/ directory for parallel processing per Workflow/Planner/Reference/Plan_Batch_Specifications.md
-- 7.3. **launch sub agents in parallel**: Launch internal panelist sub agents per Plan_Prompt_Template.md persona definitions using run_subagent tool with profile "subagent_general" (all panelists launched once per batch, not per plan)
+- 7.3. **launch sub agents in parallel**: Launch internal panelist sub agents per Batch_Prompt_Template.md persona definitions using run_subagent tool with profile "subagent_general" (all panelists launched once per batch, not per plan)
 - 7.4. Send each plan file along with consolidated batch brief and batch prompt to corresponding sub agents
 - 7.5. Each sub agent reviews their assigned plan using their assigned persona and websearch to verify assumptions, research best practices, and validate architectural decisions, returning structured JSON review
 - 7.6. Wait for all sub agents to complete their reviews and return results
@@ -179,12 +179,12 @@ Unified workflow for creating detailed, implementation-ready plans for AI-driven
 
 ### Phase 8A. Apply Findings + Loop Back - plan mode
 - 8.1. **STATUS TRACKING**: python Scripts/Logging/session_state.py Planner --workflow phase_8a_in_progress
-- 8.2. Review aggregated findings from internal or external round table
+- 8.2. Review aggregated findings from internal or external round table (handles both internal and external failures)
 - 8.3. **if findings exist**: Apply findings to plans and create new revisions (rev 2, rev 3, etc.)
 - 8.4. **if findings exist**: Save new plan revisions to Plans/Queued/directory (older revisions deleted per phase 5A step 5.5)
 - 8.5. **if findings exist**: Validate revised plan structures and quality
 - 8.6. **if findings exist**: Create new review materials following Batch_Brief_Template.md and Batch_Prompt_Template.md for the revised batch (save as Plans/Queued/Plan-Batch-{N}-{N}-Brief.md and Plans/Queued/Plan-Batch-{N}-{N}-Prompt.md)
-- 8.7. **if findings exist**: **LOOP BACK**: Return to phase 6A (Review Material Creation - plan mode) for next iteration with same panelist sub agents
+- 8.7. **if findings exist**: **LOOP BACK**: Return to phase 6A (Review Material Creation - plan mode) for next iteration - Note: This loops back through internal round table (Phase 7A) to reach external round table (Phase 9) again, creating continuous loop until both internal and external round tables pass
 - 8.8. **VALIDATION**: Validate that findings were applied correctly and plan revisions are valid (if revisions were created)
 - 8.9. **PRINT**: "Findings applied - revisions saved, returning to phase 6A for next round table iteration"
 - 8.10. **STATUS TRACKING**: python Scripts/Logging/session_state.py Planner --workflow phase_8a_complete
@@ -203,17 +203,21 @@ Unified workflow for creating detailed, implementation-ready plans for AI-driven
 
 ### Phase 9. External round table Execution - plan mode Only
 - 9.1. **STATUS TRACKING**: python Scripts/Logging/session_state.py Planner --workflow phase_9_in_progress
-- 9.2. **PRINT**: "External round table prompt ready for manual Chathub.gg review - awaiting user to post prompt and provide external panelist replies"
-- 9.3. **WAIT** for user to manually post the external review prompt to Chathub.gg panelists and provide the replies
-- 9.4. **USER POSTS REVIEWS**: User posts external panelist reviews back in chat as structured JSON reviews from each external agent with their assigned persona
-- 9.5. Log external panelist reviews to consolidated file Logs/Planner/round table/External/Batch{N}-{N}_Roundtable.md (append per revision, separated by Agent_Name_{Agent_Persona}) and verify logging completed successfully
-- 9.6. Aggregate external panelist findings and generate consolidated feedback
-- 9.7. **CONVERGENCE CHECK**: Check if all panelists chose PASS per Workflow/Workflow_Reference/Quality_Assessment_Framework.md
-  - **if all pass**: Proceed to phase 10 (Final Validation)
-  - **if any fail**: Proceed to phase 8A (Apply Findings - plan mode)
-- 9.8. **VALIDATION**: Validate that external round table completed successfully and convergence check passed
-- 9.9. **PRINT**: "External round table complete - convergence status: [PASS/CONTINUE]"
-- 9.10. **STATUS TRACKING**: python Scripts/Logging/session_state.py Planner --workflow phase_9_complete
+- 9.2. **PRINT**: "External round table ready - create External_Batch-{N}-{N}-Brief.md and External_Batch-{N}-{N}-Prompt.md using External_Batch_*_Template.md for multi-perspective evaluation"
+- 9.3. Create external review materials following External_Batch_Brief_Template.md and External_Batch_Prompt_Template.md (save as Plans/Queued/External_Batch-{N}-{N}-Brief.md and Plans/Queued/External_Batch-{N}-{N}-Prompt.md)
+- 9.4. **VALIDATION**: Validate that external review materials were created successfully and follow external template structure
+- 9.5. **STATUS TRACKING**: python Scripts/Logging/session_state.py Planner --workflow phase_9_materials_complete
+- 9.6. **PRINT**: "External round table materials complete - awaiting user to post prompt to external agents for multi-perspective evaluation"
+- 9.7. **WAIT** for user to post the external review prompt to external agents and provide their comprehensive multi-perspective reviews
+- 9.8. **USER POSTS REVIEWS**: User posts external agent comprehensive reviews back in chat as structured JSON reviews with all 6 domain perspectives (Security, Infrastructure, Data Architecture, Application Architecture, Operations/DevOps, Business Alignment)
+- 9.9. Log external agent comprehensive reviews to consolidated file Logs/Planner/round table/External/Batch{N}-{N}_Roundtable.md (append per revision, separated by Agent_Name) and verify logging completed successfully
+- 9.10. Aggregate external agent findings and generate consolidated feedback across all perspectives
+- 9.11. **CONVERGENCE CHECK**: Check if external agent overall verdict is PASS per Workflow/Workflow_Reference/Quality_Assessment_Framework.md
+  - **if pass**: Proceed to phase 10 (Final Validation)
+  - **if fail**: Proceed to phase 8A (Apply Findings - plan mode) - Note: Phase 8A handles both internal and external failures, looping back through internal round table to reach external again
+- 9.12. **VALIDATION**: Validate that external round table completed successfully and convergence check passed
+- 9.13. **PRINT**: "External round table complete - convergence status: [PASS/CONTINUE]"
+- 9.14. **STATUS TRACKING**: python Scripts/Logging/session_state.py Planner --workflow phase_9_complete
 
 ### Phase 10. Final Validation + Delivery Authorization
 - 10.1. **STATUS TRACKING**: python Scripts/Logging/session_state.py Planner --workflow phase_10_in_progress

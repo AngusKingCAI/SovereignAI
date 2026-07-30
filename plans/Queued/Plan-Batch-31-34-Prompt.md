@@ -1,42 +1,20 @@
----
-id: wf-plan-tmpl-batch-prompt
-status: active
-owner: planner-agent
-updated: 2026-07-30
-purpose: Consolidated review instructions for Internal Round Table panelists across multiple plans in a batch
----
+# Batch Review Prompt Template
 
-# Internal Batch Review Prompt Template
-
-**Purpose**: Consolidated review instructions for Internal Round Table panelists across multiple plans in a batch  
+**Purpose**: Consolidated review instructions for Round Table panelists across multiple plans in a batch  
 **Location**: Workflow/Planner/Templates/Batch_Prompt_Template.md  
-**Usage**: Save as Plans/Queued/Batch_Prompt.md (single file for entire batch) for Internal Round Table only  
-**Version**: 1.2
+**Usage**: Save as Plans/Queued/Batch_Prompt.md (single file for entire batch)  
+**Version**: 1.0
 
 ---
 
 ## Batch Review Process Instructions
 
-**CRITICAL INSTRUCTIONS - READ CAREFULLY**:
-
-**MANDATORY REQUIREMENTS**:
-1. **USE ASSIGNED PERSONA ONLY**: You are assigned a specific persona below. You MUST use only that persona. Do not self-assign or choose a different persona.
-2. **REVIEW ASSIGNED PLANS ONLY**: You are assigned specific plans below. Review ONLY those plans. Do not review other plans.
-3. **FOLLOW JSON FORMAT EXACTLY**: Your output must be valid JSON following the exact format specified.
-4. **USE WEB SEARCH**: You MUST use web search to verify findings. Include actual URLs in your output.
-5. **BE SPECIFIC**: Provide concrete, actionable feedback with severity ratings (CRITICAL/HIGH/MEDIUM/LOW).
-
-**REJECTION CRITERIA**: Your review will be rejected if:
-- You use a different persona than assigned
-- You review plans not assigned to you
-- You provide generic feedback without domain-specific analysis
-- You lack web search citations for claims
-- Your output is not valid JSON format
+**CRITICAL**: You must adopt the specific domain-split persona assigned to you for this review. Do not conduct a general review - focus exclusively on your assigned domain expertise.
 
 **Batch Review Workflow**:
-1. Review the Batch Brief (Plans/Queued/Batch_Brief.md) for overall batch context
-2. Review your assigned plan file(s) specifically (Plans/Queued/plan-{N}.{rev}.md)
-3. Apply your assigned persona expertise to your assigned plan(s) only
+1. Review the Batch Brief (Plans/Queued/Plan-Batch-31-34-Brief.md) for overall batch context
+2. Review your assigned plan file(s) specifically (Plans/Queued/plan-{N}.Rev2.md)
+3. Apply your persona expertise to your assigned plan(s) only
 4. Provide structured JSON review for your assigned plan(s) only
 5. Consider cross-plan dependencies as relevant to your domain
 
@@ -120,39 +98,15 @@ purpose: Consolidated review instructions for Internal Round Table panelists acr
 
 ## Plan-Specific Assignment Instructions
 
-**FOR THIS BATCH - YOUR EXACT ASSIGNMENT**:
+**For This Batch**: Each panelist is assigned to review specific plans from the batch. Review only the plans assigned to your persona.
 
-**IF YOU ARE ASSIGNED AS Security Expert**:
-- **MUST REVIEW**: Plan 31 (Web API auth/CORS), Plan 32 (cookie auth for SSE)
-- **MUST NOT REVIEW**: Plans 33, 34
-- **MUST STATE**: "I am reviewing as Security Expert"
-
-**IF YOU ARE ASSIGNED AS Infrastructure Expert**:
-- **MUST REVIEW**: Plan 33 (lifecycle management, health aggregation, graceful shutdown)
-- **MUST NOT REVIEW**: Plans 31, 32, 34
-- **MUST STATE**: "I am reviewing as Infrastructure Expert"
-
-**IF YOU ARE ASSIGNED AS Data Architecture Expert**:
-- **MUST REVIEW**: Plan 34 (persistent graph, event-driven memory, SQLite databases)
-- **MUST NOT REVIEW**: Plans 31, 32, 33
-- **MUST STATE**: "I am reviewing as Data Architecture Expert"
-
-**IF YOU ARE ASSIGNED AS Application Architecture Expert**:
-- **MUST REVIEW**: Plan 31 (API design, DTOs), Plan 32 (TUI integration), Plan 33 (DI composition)
-- **MUST NOT REVIEW**: Plan 34
-- **MUST STATE**: "I am reviewing as Application Architecture Expert"
-
-**IF YOU ARE ASSIGNED AS Operations/DevOps Expert**:
-- **MUST REVIEW**: Plan 33 (health checks, circuit breakers), Plan 34 (observability, event logging)
-- **MUST NOT REVIEW**: Plans 31, 32
-- **MUST STATE**: "I am reviewing as Operations/DevOps Expert"
-
-**IF YOU ARE ASSIGNED AS Business Alignment Expert**:
-- **MUST REVIEW**: Plan 31 (API value), Plan 32 (TUI user experience), Plan 33 (system reliability)
-- **MUST NOT REVIEW**: Plan 34
-- **MUST STATE**: "I am reviewing as Business Alignment Expert"
-
-**FAILURE TO FOLLOW THESE EXACT ASSIGNMENTS WILL RESULT IN REVIEW REJECTION**
+**Assignment Structure**:
+- **Security Expert**: Review Plan 31 (Web API auth/CORS), Plan 32 (cookie auth for SSE)
+- **Infrastructure Expert**: Review Plan 33 (lifecycle management, health aggregation, graceful shutdown)
+- **Data Architecture Expert**: Review Plan 34 (persistent graph, event-driven memory, SQLite databases)
+- **Application Architecture Expert**: Review Plan 31 (API design, DTOs), Plan 32 (TUI integration), Plan 33 (DI composition)
+- **Operations/DevOps Expert**: Review Plan 33 (health checks, circuit breakers), Plan 34 (observability, event logging)
+- **Business Alignment Expert**: Review Plan 31 (API value), Plan 32 (TUI user experience), Plan 33 (system reliability)
 
 **Cross-Plan Considerations**: While reviewing your assigned plans, consider:
 - How your assigned plans interact with other plans in the batch
@@ -172,11 +126,9 @@ purpose: Consolidated review instructions for Internal Round Table panelists acr
 
 **CRITICAL**: At the start of your review response, you MUST explicitly state:
 - For Internal Round Table: "I am reviewing as {Persona}"
-- For External Round Table: "I am reviewing as {Model Name} ({Persona})"
 
 This ensures proper logging to the consolidated file:
-- Internal: Logs/Planner/Round Table/Internal/Batch{N}_Roundtable.md (append per revision, separated by {Agent_Persona})
-- External: Logs/Planner/Round Table/External/Batch{N}_Roundtable.md (append per revision, separated by Agent_Name_{Agent_Persona})
+- Internal: Logs/Planner/Round Table/Internal/Batch7_31-34_Roundtable.md (append per revision, separated by {Agent_Persona})
 
 ### Step 2: Read the Batch Brief
 - Review the batch overview and context
@@ -186,7 +138,7 @@ This ensures proper logging to the consolidated file:
 - Identify which plans are assigned to your persona
 
 ### Step 3: Read Your Assigned Plan(s)
-- Read Plans/Queued/plan-{N}.{rev}.md carefully for your assigned plans only
+- Read Plans/Queued/plan-{N}.Rev2.md carefully for your assigned plans only
 - Apply your persona's lens to each assigned plan
 - Use web search to verify your domain-specific findings
 - Take notes with web search citations
@@ -288,64 +240,6 @@ This ensures proper logging to the consolidated file:
 
 ---
 
-## Example Persona Application
-
-**If you are the Security Expert**:
-- Focus exclusively on security architecture and compliance for your assigned plans
-- Search for "security architecture patterns 2024" and "threat modeling best practices"
-- Evaluate authentication, authorization, and encryption strategies in your assigned plans
-- Check for security vulnerabilities and compliance gaps
-- Score Accuracy dimension primarily (security claims), Completeness secondarily (security coverage)
-- Consider cross-plan security dependencies and shared security infrastructure
-- Ignore infrastructure concerns (that's Infrastructure Expert's job)
-
-**If you are the Infrastructure Expert**:
-- Focus exclusively on infrastructure patterns and scalability for your assigned plans
-- Search for "cloud infrastructure best practices 2024" and "scalability patterns"
-- Evaluate scalability, reliability, and operational readiness in your assigned plans
-- Check for infrastructure alignment and cost efficiency
-- Score Context dimension primarily (infrastructure alignment), Structure secondarily (scalability patterns)
-- Consider cross-plan infrastructure dependencies and shared resources
-- Ignore security concerns (that's Security Expert's job)
-
-**If you are the Data Architecture Expert**:
-- Focus exclusively on data flows and storage patterns for your assigned plans
-- Search for "data architecture patterns 2024" and "data integrity best practices"
-- Evaluate data modeling, storage strategies, and data governance in your assigned plans
-- Check for data integrity and compliance
-- Score Accuracy dimension primarily (data integrity), Completeness secondarily (data coverage)
-- Consider cross-plan data flows and integration points
-- Ignore application design concerns (that's Application Architecture Expert's job)
-
-**If you are the Application Architecture Expert**:
-- Focus exclusively on component design and patterns for your assigned plans
-- Search for "software architecture patterns 2024" and "component design best practices"
-- Evaluate component boundaries, dependencies, and integration patterns in your assigned plans
-- Check for design pattern appropriateness and anti-patterns
-- Score Structure dimension primarily (component design), Dependencies secondarily (integration patterns)
-- Consider cross-plan component dependencies and interfaces
-- Ignore infrastructure concerns (that's Infrastructure Expert's job)
-
-**If you are the Operations/DevOps Expert**:
-- Focus exclusively on deployment and monitoring for your assigned plans
-- Search for "DevOps best practices 2024" and "observability patterns"
-- Evaluate deployment strategies, monitoring coverage, and supportability in your assigned plans
-- Check for operational readiness and incident response strategies
-- Score Completeness dimension primarily (operational coverage), Context secondarily (operational readiness)
-- Consider cross-plan deployment dependencies and shared operational concerns
-- Ignore business alignment concerns (that's Business Alignment Expert's job)
-
-**If you are the Business Alignment Expert**:
-- Focus exclusively on business value and trade-offs for your assigned plans
-- Search for "business alignment best practices 2024" and "cost-benefit analysis frameworks"
-- Evaluate business value alignment, cost-effectiveness, and user impact in your assigned plans
-- Check for strategic alignment and time-to-market considerations
-- Score Context dimension primarily (business alignment), Completeness secondarily (value coverage)
-- Consider cross-plan business dependencies and value interactions
-- Ignore technical implementation concerns (that's Application Architecture Expert's job)
-
----
-
 ## Final Output Format
 
 ```json
@@ -372,5 +266,5 @@ This ensures proper logging to the consolidated file:
 **Remember**: You are NOT a general reviewer. You are a specific domain expert with a specific mental model and expertise. Stay in your lane, review only your assigned plans, use web search, and provide high-quality, persona-specific feedback.
 
 **Last Updated**: 2026-07-30  
-**Version**: 1.1  
+**Version**: 1.0  
 **Maintained By**: Planner Agent
