@@ -84,19 +84,21 @@ Comprehensive workflow validation for Architect agents to ensure all workflow do
 - 2.9. **ACTION**: When workflow says to CREATE file: simulate file creation (do not actually create), verify target path is valid
 - 2.10. **ACTION**: When workflow says to DELETE file: simulate file deletion (do not actually delete), verify file exists
 - 2.11. **ACTION**: When workflow says to invoke skill/tool: simulate invocation, verify skill/tool exists and is accessible
-- 2.12. **CHECK**: All READ operations reference existing files
-- 2.13. **CHECK**: All reference resolutions succeed (referenced files/documents exist)
-- 2.14. **CHECK**: All command operations have valid syntax and accessible paths
-- 2.15. **CHECK**: All file creation operations have valid target paths
-- 2.16. **CHECK**: All file deletion operations reference existing files
-- 2.17. **CHECK**: All skill/tool invocations reference accessible skills/tools
-- 2.18. **CHECK**: Workflow execution path is logically consistent
-- 2.19. **CHECK**: No circular dependencies or dead-end paths in execution
-- 2.20. **IF INCONSISTENCY FOUND**: STOP - Report inconsistency with specific step, expected file/operation, and suggested fix
-- 2.21. **AWAIT USER APPROVAL**: Wait for user to approve fix before proceeding
-- 2.22. **VALIDATION**: Validate that workflow execution simulation completed successfully
-- 2.23. **PRINT**: "Workflow execution simulation complete - workflow is executable"
-- 2.24. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
+- 2.12. **ACTION**: When workflow says to update session state: execute session state update command, verify session_state.py script works correctly and state file is updated
+- 2.13. **CHECK**: All READ operations reference existing files
+- 2.14. **CHECK**: All reference resolutions succeed (referenced files/documents exist)
+- 2.15. **CHECK**: All command operations have valid syntax and accessible paths
+- 2.16. **CHECK**: All file creation operations have valid target paths
+- 2.17. **CHECK**: All file deletion operations reference existing files
+- 2.18. **CHECK**: All skill/tool invocations reference accessible skills/tools
+- 2.19. **CHECK**: All session state updates execute successfully and update both agent and workflow_state fields correctly
+- 2.20. **CHECK**: Workflow execution path is logically consistent
+- 2.21. **CHECK**: No circular dependencies or dead-end paths in execution
+- 2.22. **IF INCONSISTENCY FOUND**: STOP - Report inconsistency with specific step, expected file/operation, and suggested fix
+- 2.23. **AWAIT USER APPROVAL**: Wait for user to approve fix before proceeding
+- 2.24. **VALIDATION**: Validate that workflow execution simulation completed successfully
+- 2.25. **PRINT**: "Workflow execution simulation complete - workflow is executable"
+- 2.26. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
 
 ### Phase 3. Document Header Analysis
 **Best Practice**: Document control standards - verify metadata accuracy and version control

@@ -69,18 +69,22 @@ def clear_session_state() -> None:
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        if sys.argv[1] == "--workflow":
-            if len(sys.argv) > 2:
-                workflow_state = sys.argv[2]
+        # Check for workflow flag first
+        if "--workflow" in sys.argv:
+            workflow_index = sys.argv.index("--workflow")
+            if len(sys.argv) > workflow_index + 1:
+                workflow_state = sys.argv[workflow_index + 1]
                 write_workflow_state(workflow_state)
                 print(f"Workflow state updated: {workflow_state}")
             else:
                 print("Usage: python session_state.py --workflow <workflow_state>")
                 sys.exit(1)
-        else:
+        
+        # Check for agent argument (non-flag first argument)
+        if len(sys.argv) > 1 and not sys.argv[1].startswith("--"):
             agent = sys.argv[1]
             write_agent_context(agent)
-            print(f"Session state updated: {agent} agent active")
+            print(f"Agent context updated: {agent} agent active")
     else:
-        print("Usage: python session_state.py <agent_name> OR python session_state.py --workflow <workflow_state>")
+        print("Usage: python session_state.py <agent_name> [--workflow <workflow_state>] OR python session_state.py --workflow <workflow_state>")
         sys.exit(1)
