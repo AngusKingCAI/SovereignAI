@@ -13,10 +13,35 @@ def get_session_state_file() -> Path:
     return state_dir / "session_state.json"
 
 
+def read_session_state() -> dict:
+    """Read full session state including agent and workflow state."""
+    state_file = get_session_state_file()
+    
+    if not state_file.exists():
+        return {"agent": None, "workflow_state": None}
+    
+    try:
+        with open(state_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (json.JSONDecodeError, KeyError):
+        return {"agent": None, "workflow_state": None}
+
+
 def write_agent_context(agent: str) -> None:
     """Write current agent context to session state file."""
     state_file = get_session_state_file()
-    state_data = {"agent": agent}
+    state_data = read_session_state()
+    state_data["agent"] = agent
+    
+    with open(state_file, 'w', encoding='utf-8') as f:
+        json.dump(state_data, f, indent=2)
+
+
+def write_workflow_state(workflow_state: str) -> None:
+    """Write current workflow state to session state file."""
+    state_file = get_session_state_file()
+    state_data = read_session_state()
+    state_data["workflow_state"] = workflow_state
     
     with open(state_file, 'w', encoding='utf-8') as f:
         json.dump(state_data, f, indent=2)
@@ -24,17 +49,14 @@ def write_agent_context(agent: str) -> None:
 
 def read_agent_context() -> str | None:
     """Read current agent context from session state file."""
-    state_file = get_session_state_file()
-    
-    if not state_file.exists():
-        return None
-    
-    try:
-        with open(state_file, 'r', encoding='utf-8') as f:
-            state_data = json.load(f)
-            return state_data.get("agent")
-    except (json.JSONDecodeError, KeyError):
-        return None
+    state_data = read_session_state()
+    return state_data.get("agent")
+
+
+def read_workflow_state() -> str | None:
+    """Read current workflow state from session state file."""
+    state_data = read_session_state()
+    return state_data.get("workflow_state")
 
 
 def clear_session_state() -> None:
@@ -47,9 +69,18 @@ def clear_session_state() -> None:
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        agent = sys.argv[1]
-        write_agent_context(agent)
-        print(f"Session state updated: {agent} agent active")
+        if sys.argv[1] == "--workflow":
+            if len(sys.argv) > 2:
+                workflow_state = sys.argv[2]
+                write_workflow_state(workflow_state)
+                print(f"Workflow state updated: {workflow_state}")
+            else:
+                print("Usage: python session_state.py --workflow <workflow_state>")
+                sys.exit(1)
+        else:
+            agent = sys.argv[1]
+            write_agent_context(agent)
+            print(f"Session state updated: {agent} agent active")
     else:
-        print("Usage: python session_state.py <agent_name>")
+        print("Usage: python session_state.py <agent_name> OR python session_state.py --workflow <workflow_state>")
         sys.exit(1)
