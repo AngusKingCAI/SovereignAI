@@ -4,6 +4,7 @@ status: active
 owner: reviewer-agent
 updated: 2026-07-27
 purpose: Declarative policy for Reviewer agent governance and quality assurance
+trigger: always_on
 ---
 
 # Reviewer Agent Rules

@@ -4,6 +4,7 @@ status: active
 owner: planner-agent
 updated: 2026-07-27
 purpose: Declarative policy for Planner agent governance and plan creation
+trigger: always_on
 ---
 
 # Planner Agent Rules

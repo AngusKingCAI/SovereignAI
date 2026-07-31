@@ -4,6 +4,7 @@ status: active
 owner: executor-agent
 updated: 2026-07-27
 purpose: Declarative policy for Executor agent governance and implementation
+trigger: always_on
 ---
 
 # Executor Rules

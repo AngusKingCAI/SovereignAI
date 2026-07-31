@@ -2,292 +2,183 @@
 id: rules-template
 status: active
 owner: architect-agent
-updated: 2026-07-28
-purpose: Generic rule template following AI agent best practices with warm-rules optimization for persistent agents
+updated: 2026-07-31
+purpose: Template for creating agent rules using Always/Never structure
 ---
 
 # Rules Template
 
-**Purpose**: Generic rule template following AI agent best practices with warm-rules optimization for persistent agents  
+**Purpose**: Template for creating agent rules using Always/Never structure  
 **Status**: Template  
 **Created**: 2026-07-24  
-**Template Type**: Hybrid Warm-Rules  
+**Template Type**: Always/Never Format  
 
 ---
 
-## Warm Rules (Critical - First 50 Lines)
+## Template Structure
 
-These 5-10 critical rules are enforced on every task and cached separately for optimal compliance.
+```markdown
+---
+id: {rule-id}
+status: active
+owner: {agent-name}
+updated: {date}
+purpose: {brief description}
+trigger: always_on
+---
 
-### 1. Constitutional Compliance
-- ALWAYS verify constitutional compliance before making decisions
-- NEVER skip constitutional compliance checks for convenience
-- BEFORE any architectural change, verify constitutional framework alignment
-- AFTER decisions, document constitutional compliance rationale
+# {Agent Name} Rules
 
-### 2. Scope Boundaries  
-- NEVER implement features outside defined agent scope
-- ALWAYS reference scope boundaries when uncertain
-- BEFORE starting work, verify task is within agent scope
-- IF scope unclear, STOP and request clarification
+## Always
 
-### 3. Authority and Intelligence Separation
-- NEVER mix authority and intelligence in the same component
-- ALWAYS maintain separation between governance and execution
-- BEFORE component design, verify authority/intelligence separation
-- DURING implementation, check for separation violations
+- ALWAYS {specific action}
+- ALWAYS {specific action}
 
-### 4. Verification and Testing
-- NEVER proceed without verification when verification is required
-- ALWAYS test implementations before marking complete
-- BEFORE completion, run all required verification steps
-- IF verification fails, STOP and address issues
+## Never
 
-### 5. Documentation and Evidence
-- NEVER make undocumented changes to governed files
-- ALWAYS generate evidence (hashes, logs) for compliance verification
-- BEFORE completion, ensure documentation is current
-- AFTER changes, update relevant documentation
-
-### 6. Best Practice Research
-- NEVER make architectural decisions without industry best practices research
-- ALWAYS search for best practices before proposing solutions
-- BEFORE architectural decisions, complete research step
-- IF uncertain about best practices, conduct additional research
-
-### 7. Validation Enforcement
-- NEVER skip validation verification for convenience
-- ALWAYS treat validation failures as STOP conditions
-- BEFORE proceeding to next step, verify current validation passes
-- IF validation fails, address issues before proceeding
-
-### 8. File and Directory Compliance
-- NEVER place files outside designated directories per IDE architecture rules
-- ALWAYS use standard naming conventions for files and directories
-- BEFORE creating files, verify location complies with IDE architecture
-- DURING file operations, follow directory structure standards
+- NEVER {specific action}
+- NEVER {specific action}
+```
 
 ---
 
-## Template Metadata
+## Format Guidelines
 
-### Template Information
-- **Template Name**: Hybrid Warm-Rules Template
-- **Version**: 1.0
-- **Created**: 2026-07-24
-- **Last Modified**: 2026-07-24
-- **Template Type**: Generic Rule Template
-- **Compatibility**: All agent types (Architect, Planner, Executor, Researcher, Reviewer)
+### Frontmatter
+- **id**: Unique identifier for the rule file
+- **status**: Current status (active, draft, deprecated)
+- **owner**: Agent or team responsible for the rule
+- **updated**: Last modification date
+- **purpose**: Brief description of rule scope
+- **trigger**: Activation type (always_on, manual, glob)
 
-### Caching Directives
-- **Warm Rules Cache**: HIGH PRIORITY - Cache first 50 lines separately
-  - Cache file: `Logs/{AgentName}/Cache/warm_rules_cache.json`
-  - Re-read triggers: File modification, session start, context compaction
-  - Cache validation: Hash-based verification
-  - Refresh strategy: Automatic on template changes
+### Always Section
+- Use imperative language with "ALWAYS" prefix
+- Focus on required actions and behaviors
+- Keep rules specific and actionable
+- Each rule should be a single, clear directive
 
-- **Appendices Cache**: OPTIONAL - Cache detailed sections on-demand
-  - Cache file: `Logs/{AgentName}/Cache/appendices_cache.json`  
-  - Re-read triggers: Template modification, manual refresh
-  - Cache validation: Hash-based verification
-  - Refresh strategy: On-demand when complex decisions needed
-
-### Integration Points
-
-- **Agent AGENTS.md Files**: Reference this template for rule creation
-- **Validation System**: Includes validation enforcement hook points at each rule
-- **Audit Logging**: Violations logged to `Logs/{AgentName}/Validation/`
-- **MCP Integration**: Designed for future rule repository tool integration
-
-### Dependencies
-- **Related**: Agent-specific AGENTS.md files
-- **Compatible**: Existing agent workflows and validation systems
-
-### Template Usage
-- **For New Agents**: Copy template and customize Warm Rules for agent-specific needs
-- **For Existing Agents**: Use template to refactor current rules into warm-rules format
-- **For Rule Updates**: Follow evolution procedures in appendices
-- **For Compliance**: Verify template compliance before agent deployment
+### Never Section
+- Use imperative language with "NEVER" prefix
+- Focus on prohibited actions and behaviors
+- Keep rules specific and actionable
+- Each rule should be a single, clear directive
 
 ---
 
-## Structured Appendices
+## Best Practices
 
-Detailed rule coverage organized by category for comprehensive agent governance.
+### Rule Creation
+- **Keep rules concise**: Each rule should be one line
+- **Be specific**: Use concrete actions instead of vague guidelines
+- **Use evidence**: Base rules on actual session patterns or issues
+- **Test incrementally**: Add rules one at a time and validate
+- **Document rationale**: Include session evidence when adding rules
 
-### 1. Constitutional Constraints (Detailed)
+### Rule Quality
+- **Actionable**: Rules should clearly state what to do/not do
+- **Enforceable**: Rules should be verifiable and testable
+- **Non-redundant**: Avoid duplicate or overlapping rules
+- **Scoped**: Rules should have clear boundaries and applicability
+- **Current**: Remove outdated rules that no longer apply
 
-**DO**:
-- Follow constitutional framework in all decisions
-- Verify constitutional compliance before architectural changes
-- Document constitutional compliance rationale for all decisions
-- Reference constitutional principles when uncertain
-- Escalate constitutional questions for clarification
-
-**DON'T**:
-- Skip constitutional compliance checks for convenience
-- Make decisions without constitutional verification
-- Override constitutional constraints without explicit approval
-- Ignore constitutional framework in emergency situations
-- Proceed when constitutional compliance is unclear
-
-### 2. Architectural Constraints
-
-**DO**:
-- Follow infrastructure-first principles in all designs
-- Maintain separation between authority and intelligence components
-- Design deterministic systems with predictable behavior
-- Create observable systems with clear audit trails
-- Implement minimal coupling between components
-- Design systems with explicit interfaces
-
-**DON'T**:
-- Mix authority and intelligence in the same component
-- Trust AI models for decision-making without verification
-- Rely on voluntary compliance for critical constraints
-- Proceed when uncertain without architectural verification
-- Make architectural decisions without best practices research
-- Create tightly coupled components without clear boundaries
-
-### 3. Process Constraints
-
-**DO**:
-- Follow defined workflows for all agent operations
-- Complete all required steps before proceeding
-- Verify validation compliance before phase transitions
-- Generate evidence (hashes, logs) for compliance verification
-- Document process deviations with approval
-- Follow quality > token cost > efficiency hierarchy
-
-**DON'T**:
-- Skip workflow steps for convenience
-- Proceed without required verification
-- Override validation decisions without explicit approval
-- Make undocumented process changes
-- Ignore quality standards for speed
-- Proceed when process compliance is uncertain
-
-### 4. Integration Constraints
-
-**DO**:
-- Follow IDE architecture rules for file placement
-- Use standard naming conventions for files and directories
-- Verify directory structure compliance before development
-- Reference agent-specific rules for cross-agent coordination
-- Follow integration procedures for system changes
-- Maintain clear interfaces between components
-
-**DON'T**:
-- Place files outside designated directories
-- Use non-standard naming conventions
-- Skip directory structure verification
-- Modify infrastructure without Architect approval
-- Create agent folders without proper documentation
-- Violate integration boundaries without approval
-
-### 5. Quality Standards
-
-**DO**:
-- Follow project coding standards and conventions
-- Write clean, readable, maintainable code
-- Include appropriate error handling
-- Add meaningful comments where necessary
-- Follow security best practices
-- Test implementations thoroughly
-- Maintain clear documentation
-
-**DON'T**:
-- Write code that is difficult to understand
-- Skip error handling and validation
-- Leave TODOs or FIXMEs without resolution
-- Implement insecure coding practices
-- Duplicate code instead of creating reusable functions
-- Skip testing or verification steps
-- Leave documentation outdated
-
-### 6. Enforcement Mechanisms
-
-**DO**:
-- Implement automated hooks for critical rules
-- Use validation system for workflow enforcement
-- Generate audit trails for all decisions
-- Log rule violations for analysis
-- Use verification scripts for compliance checking
-- Implement escalation procedures for violations
-
-**DON'T**:
-- Rely on agent attention for critical rule enforcement
-- Skip validation verification for convenience
-- Proceed without generating required evidence
-- Ignore rule violation patterns
-- Override enforcement mechanisms without approval
-- Proceed when enforcement is uncertain
-
-### 7. Evolution Procedures
-
-**DO**:
-- Add rules based on pattern recognition from violations
-- Document rule changes with rationale
-- Update related documentation when rules change
-- Test rule changes before deployment
-- Follow amendment process for constitutional changes
-- Review rules periodically for relevance
-
-**DON'T**:
-- Add rules without clear violation patterns
-- Make undocumented rule changes
-- Skip testing for rule changes
-- Override constitutional amendment process
-- Ignore rule obsolescence
-- Make rule changes without impact analysis
+### Session Analysis
+- **Review logs**: Analyze session logs for patterns and issues
+- **Identify gaps**: Look for repeated mistakes or confusion
+- **Extract patterns**: Convert session learnings into rule format
+- **Validate evidence**: Ensure rules are based on real issues
 
 ---
 
-## Best Practice Integration
+## Rule Examples
 
-Based on AI agent rule enforcement research and production deployment patterns:
+### Example from Session Analysis
 
-### Warm Rules Optimization
-- Critical rules in first 50 lines achieve 99% compliance vs 50% for buried rules
-- Separate caching enables efficient re-reading between edits
-- Trigger-action-verification pattern ensures rule enforceability
-- Persistent agents benefit from warm-start mechanisms
+**Session Pattern**: Multiple restarts required for hook changes to take effect
 
-### Enforcement Hierarchy
-- Automated hooks for critical rules (99% reliable)
-- Warm-rules injection for persistent agents (85% reliable)
-- Inline rules at decision points (70% reliable)
-- Reference documentation for complex scenarios (50% reliable)
+**Rule Addition**:
+```markdown
+## Always
+- ALWAYS inform users when infrastructure changes require Devin CLI restart
+```
 
-### Caching Strategy
-- Rule propagation cost drops to O(1) with proper caching
-- Single source of truth eliminates update synchronization issues
-- Hash-based validation ensures cache integrity
-- Automatic refresh triggers maintain consistency
-
-### Integration Architecture
-- Complies with IDE architecture rules for file placement
-- Compatible with existing agent workflows and validation systems
-- Designed for future MCP server integration
-- Supports both automated and manual enforcement modes
+**Evidence**: User had to restart Devin CLI multiple times for hook changes to take effect, causing confusion about whether implementation was correct.
 
 ---
 
-## Template Compliance Checklist
+### Example from Best Practices Research
 
-- [ ] Warm Rules Section contains 5-10 critical rules
-- [ ] Warm Rules are within first 50 lines of template
-- [ ] Each warm rule follows trigger-action-verification pattern
-- [ ] Metadata section includes caching directives
-- [ ] Integration points align with IDE architecture rules
-- [ ] Structured appendices provide comprehensive coverage
-- [ ] Evolution procedures support rule updates
-- [ ] Template follows naming conventions
+**Research Finding**: JSON response format allows agent continuation vs exit codes
+
+**Rule Addition**:
+```markdown
+## Always
+- ALWAYS use JSON response format instead of exit codes for blocking actions
+```
+
+**Evidence**: Web search revealed that exit code 2 stops agent workflow while JSON permissionDecision allows continuation.
+
+---
+
+## Rule Addition Process
+
+### 1. Analyze Session Logs
+- Review session logs for patterns and issues
+- Identify repeated problems or confusion
+- Extract specific behaviors that should be enforced
+
+### 2. Research Best Practices
+- Search for industry standards and guidelines
+- Verify technical approaches through documentation
+- Validate findings against multiple sources
+
+### 3. Draft Rule
+- Convert pattern to Always/Never format
+- Ensure rule is specific and actionable
+- Include evidence from session or research
+
+### 4. Validate Rule
+- Test rule in isolation before adding
+- Verify rule doesn't conflict with existing rules
+- Ensure rule is scoped appropriately
+
+### 5. Add to Rules File
+- Add rule one at a time using popup confirmation
+- Update file with proper formatting
+- Document addition session/date
+
+---
+
+## Template Usage
+
+### For New Agents
+1. Copy this template structure
+2. Customize frontmatter for specific agent
+3. Add Always/Never sections based on agent scope
+4. Populate with agent-specific rules
+
+### For Rule Updates
+1. Review existing rules for relevance
+2. Analyze recent sessions for new patterns
+3. Add new rules one at a time with validation
+4. Remove outdated rules that no longer apply
+
+### For Template Maintenance
+1. Update format guidelines based on best practices research
+2. Add new examples from successful rule additions
+3. Refine process based on usage patterns
+4. Keep template aligned with Devin CLI documentation
+
+---
+
+## Compliance Checklist
+
+- [ ] Frontmatter follows template structure
+- [ ] Always section uses "ALWAYS" prefix
+- [ ] Never section uses "NEVER" prefix
+- [ ] Rules are specific and actionable
+- [ ] Rules are based on session evidence or research
+- [ ] Rules are tested before deployment
+- [ ] Format follows Devin CLI documentation guidelines
 - [ ] File location complies with directory structure
 - [ ] Template is compatible with existing infrastructure
-
----
-
-**Current Constitutional Status**: COMPLIANT
-
-This template follows infrastructure-first principles and implements best practices for AI agent rule enforcement based on research into production systems and rule repository architectures.

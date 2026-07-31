@@ -4,6 +4,7 @@ status: active
 owner: researcher-agent
 updated: 2026-07-27
 purpose: Declarative policy for Researcher agent governance and implementation
+trigger: always_on
 ---
 
 # Researcher Rules

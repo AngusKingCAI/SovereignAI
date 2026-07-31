@@ -2,106 +2,189 @@
 id: architect-rules
 status: active
 owner: architect-agent
-updated: 2026-07-28
-purpose: Declarative policy for Architect agent governance and implementation
+updated: 2026-07-31
+purpose: Rules derived from all Architect sessions
+trigger: always_on
 ---
 
 # Architect Agent Rules
 
-## Overview
-Declarative policy for Architect agent implementation following infrastructure-first principles. Rules are organized by priority: Critical Rules (never violate), Conventions (best practices), Governance Framework (compliance mechanisms), and Operational Configuration (tools and procedures).
+## Always
 
-**SSOT Note**: This file contains behavioral governance rules. For file placement rules and directory structure, see STRUCTURE.md (single source of truth for structural decisions).
+- ALWAYS inform users about Devin CLI restart requirements for `.devin/hooks.v1.json` changes and clarify which file type was modified
 
-## Critical Rules
-**These rules must never be violated. They form the architectural and security boundaries of the system.**
+- ALWAYS use forward slash (/) path separators, full relative paths from project root, and normalize paths before file operations
 
-- **Execution Mode Selection**: CRITICAL: At session start, MUST ask execution mode selection popup "Should I proceed with [Manual] or [Automatic]?" Store selection in session state. Agent references session state to confirm current mode. Session cannot proceed without initial execution mode selection (prevents governance bypass, ensures human oversight, maintains user control without annoyance)
-- **Best Practice Enforcement**: Web search (BP?) must be used before implementing major architectural decisions or when uncertain about implementation approaches. Best practices are established industry standards that must be researched before proceeding. Check code documentation (Docs/Code/) before web searching to reduce token cost and prioritize local knowledge. Never proceed with major decisions without current best practice research (ensures quality, prevents outdated approaches, maintains architectural excellence)
-- **Fact Check Enforcement**: Fact checking (FC?) must be used to verify factual accuracy of statements, claims, or technical assertions from both user statements and agent assumptions. Verify technical claims, cross-check assertions, and validate specific statements before proceeding. Never proceed with potentially incorrect information without factual verification (ensures accuracy, prevents errors, maintains technical correctness)
-- **SSOT Compliance**: Never create index.md files or manual navigation files. Rely on STRUCTURE.md as the single source of truth for structure and schema validation for automated enforcement (prevents maintenance overhead, eliminates index drift, aligns with SSOT principles)
-- **Structural Reference**: For structural decisions and file placement rules, consult STRUCTURE.md first. Never make structural assumptions without verifying against STRUCTURE.md (maintains SSOT compliance, prevents structural drift)
-- **Governance Integrity**: Never add YAML frontmatter patterns to schema validation rules that create redundant sources of truth. Files themselves should be the source of truth, not separate index files (prevents dual maintenance, aligns with principle of locality)
-- **Schema Validation**: Always run schema validation script after making structural changes. Never assume changes are correct without verification (ensures architectural integrity, prevents introducing validation failures)
-- **Architectural Boundaries**: Never reference or modify App/ directory (reference only for application context, prevents scope creep into implementation)
-- **Workflow Scope**: Never perform actions outside workflow scope. Always follow defined workflow processes and never perform tasks outside the current workflow scope unless explicitly requested by the user (prevents token waste, ensures focused execution)
-- **User Control**: Never run subagents unless explicitly requested by the user. Always perform research and analysis using direct tools (web_search, grep, read, etc.) unless user specifically requests subagent delegation (prevents unexpected subagent usage, maintains user control over execution)
+- ALWAYS read Workflow_Template.md and recent completed plans before drafting workflows, cross-check against template, and execute phases sequentially unless authorized to skip
 
-## Conventions
-**Best practices and behavioral guidance for optimal agent performance.**
+- ALWAYS use `ask_user_question` popups for decision points, before destructive git commands, and when halting workflows before end-state
 
-### Development Workflow
-- Build exactly one function at a time. Test immediately. Never write a second function before first is tested (ensures modular validation, prevents hidden bugs)
-- Treat user-confirmed functions as locked. Never modify without explicit user permission (maintains stability, prevents unintended changes)
-- Check local research using index files when function fails. Web search only if local info unavailable. Never retry blindly without research (reduces token cost, ensures correct implementation)
-- Present function and test result after each successful test. Wait for user confirmation before proceeding (ensures quality control, prevents cascading errors)
+- ALWAYS reference shared material by relative path links, maintain SSOT, and verify no duplicate instructions exist when updating documents
 
-### User Interaction
-- Answer questions first when user requests end with "?". Ask for permission before making changes after answering (ensures user understanding, prevents unintended modifications)
-- Always use popups for yes/no questions. Never use text-only confirmations (ensures clear user intent, prevents miscommunication)
+- ALWAYS read the current agent's `AGENTS.md` and `Rules/Architect/Architect_Rules.md` at session start and after every `PostCompaction` hook
 
-### Documentation and Research
-- Check code documentation (Docs/Code/) before web searching (reduces token cost, prioritizes local knowledge)
-- Never create documentation files unless specifically requested. Never create README.md, CHANGELOG.md, or other documentation files unless specifically requested by the user (prevents token waste, maintains workflow scope discipline)
+- ALWAYS distinguish between project documentation (Docs/) and harness infrastructure (Rules, Workflows, Scripts)
 
-### Code Style and Formatting
-- Use capital letters at the start of items unless lowercase is needed (maintains consistency, improves readability)
-- All **{CAPITALIZED}** commands and terms are defined in Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for terminology)
+- ALWAYS perform comprehensive line-by-line scans of the entire specified directory scope using subagents for large file sets
 
-### File Organization
-- Always categorize files when adding to documentation directories. Never place files uncategorized (maintains organization, enables efficient navigation)
-- Always create appropriate category subdirectories when adding files to Scripts/, Workflow/, .devin/rules/, Docs/, or .devin/ (see STRUCTURE.md for valid categories, follows universal categorization principle, prevents file chaos)
-- Place scripts in Scripts/<Category>/ folder matching primary function. Never create ad-hoc folders or place outside established categories (see STRUCTURE.md for valid categories, maintains organization, prevents file chaos)
-- Place IDE harness tests in Scripts/Harness Tests/ folder only. Never place IDE harness tests in App/ directory (maintains clear separation between application code and harness infrastructure)
+- ALWAYS research implementation approaches, best practices via web_search, and check existing logs before making architectural decisions
 
-### Compliance and Quality
-- Never skip compliance checks. Always verify architectural compliance before proceeding (ensures quality, prevents rule violations)
-- Never test governance systems in isolated environments. Always test in actual project context with real tool executions (ensures real-world functionality, prevents false confidence)
+- ALWAYS prefer non-blocking validation methods over blocking hooks for token efficiency
 
-## Governance Framework
-**Compliance mechanisms and enforcement protocols.**
+- ALWAYS batch related file operations and reads using glob/multi-file patterns
 
-### Execution Modes
-Three execution modes govern workflow behavior when encountering failures:
+- ALWAYS modify files section-by-section for targeted, verifiable changes rather than making comprehensive edits in single operations
 
-- **Manual**: Stop at failures for human oversight - workflow halts at any failure point and awaits user intervention to decide on retry, modification, or abort
-- **Auto**: Don't continue on failures - workflow automatically stops on any failure without requiring human intervention, ensuring errors are not silently ignored
-- **Complete**: Continue past failures - workflow automatically continues through all failures, ignoring errors to reach completion regardless of success/failure status
+- ALWAYS verify subagent outputs are properly captured and integrated into the parent context
 
-### Schema and Validation Governance
-- When creating new directories or subdirectories in Scripts/, Workflow/, .devin/rules/, or .devin/, immediately update Scripts/Schema/validate_schemas.py to include the new directory structure in CATEGORIZATION_RULES (maintains schema validation accuracy, prevents false positive validation failures)
-- When creating new governance files (Workflow/, .devin/rules/, .devin/), add appropriate YAML frontmatter with required fields (id, status, owner, updated, purpose) to enable automated schema validation (enables governance automation, prevents validation noise)
-- When updating schema validation rules, always check for consistency with existing file patterns. Never add patterns that would allow files to be placed in multiple locations without clear purpose (prevents ambiguity, maintains clear ownership boundaries)
+- ALWAYS ensure todo list state accurately reflects actual workflow progress - update to "in_progress" before starting phases and "completed" only after verification
 
-### Log Placement Governance
-- Always place logs in their relevant Agent folder (Logs/{Agent}/) first, then create category subdirectories within agent folders (see STRUCTURE.md for log placement rules, maintains log organization, prevents log chaos)
-- Never create log folders at Logs/ root level without agent context (strict log placement rule, maintains architectural boundaries)
-- When archiving logs, use Logs/.Archived/{Category}/ with appropriate subdirectories (see STRUCTURE.md for archiving rules, maintains archive organization, enables proper log lifecycle management)
+- ALWAYS verify session logging and transcript generation are functioning, implement fallback logging mechanisms, and test session end hooks in isolation
 
-## Architectural Principles
-**High-level design philosophy that guides the system's structure and operation.**
+- ALWAYS treat workflow and rule documents as governed files requiring approval - present changes as diffs and maintain version history
 
-- Infrastructure-first architecture: Authority lives in deterministic software, intelligence lives in agents (maintains architectural purity, enables predictable governance)
-- Governance file locations: Agents/ for other agents' governance files, .devin/rules/ for rule definitions, Workflow/ for workflow definitions, Scripts/ for implementation scripts, Docs/ for documentation (maintains SSOT, enables clear ownership boundaries)
-- Universal categorization principle: Every file must be placed in an appropriate category subdirectory matching its purpose (prevents file chaos, enables efficient navigation)
-- **SSOT Reference**: For detailed file placement rules and directory structure, see STRUCTURE.md (single source of truth for file placement)
+- ALWAYS propose rule changes for user approval before modifying rules files, document rationale and evidence, and maintain a changelog
 
-## Operational Configuration
-**Tools, commands, and procedures for implementing the architectural principles.**
+- ALWAYS enforce YAML frontmatter requirements (id, status, owner, updated, purpose, expected_agent_type, persona) in all governance files under Workflow/ and .devin/rules/
 
-### Directory and File Operations
-- Directory verification: `ls -la <directory>` (verify directory structure exists)
-- File discovery: `find <path> -name "*.md"` (find markdown governance files)
-- Pattern search: `grep -r "pattern" <directory>` (search for patterns in rule files)
-- File comparison: `diff <file1> <file2>` (compare files before changes, exit code 0 = identical)
+- ALWAYS verify that workflows reference the Terminology_Glossary.md as SSOT for all capitalized terminology definitions
 
-### Validation and Verification
-- JSON validation: `python -m json.tool <file>` (validate JSON syntax, exit code indicates success/failure)
-- Schema validation: `python Scripts/Schema/validate_schemas.py` (validate governance file schemas and categorization, exit code indicates success/failure)
+- ALWAYS enforce proper file categorization - Docs/ → Docs/Category/, Scripts/ → Scripts/Category/, Logs/ → Logs/{Agent}/{Category}/
 
-## Cross-References
-**Links to other single source of truth documents for complete context.**
+- ALWAYS verify that universal framework references in workflows are actually relevant to the agent's specific purpose (Relevance Requirement)
 
-- **File Placement and Structure**: See STRUCTURE.md (single source of truth for file placement rules and directory structure)
-- **Terminology**: See Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for all capitalized terms and commands)
-- **Constitutional Framework**: See PRINCIPLES.md (architectural principles CA-1 through CA-11)
+- ALWAYS enforce proper hook backup procedures before modifying .devin/hooks.v1.json and validate hook functionality via isolated testing
+
+- ALWAYS ensure skills are organized by agent in .devin/skills/{agent}/ with proper SKILL.md structure and tool permissions
+
+- ALWAYS enforce that every workflow step includes mandatory validation with clear PASS/FAIL criteria before proceeding to next step
+
+- ALWAYS ensure that workflow Load Governance Rules and Select Execution Mode sections are marked as [**MANDATED**] and included in all workflows
+
+- ALWAYS verify that workflows distinguish between Continuous Operation and Single-Execution types with appropriate termination patterns
+
+- ALWAYS enforce that validation enforcement follows the universal pattern: perform → document → verify → proceed
+
+- ALWAYS reference STRUCTURE.md as SSOT for file placement and directory structure information before creating or organizing files
+
+- ALWAYS ensure execution mode handling patterns include proper checkpoint handling, failure handling, and retry logic with exponential backoff
+
+- ALWAYS verify that architectural decisions comply with PRINCIPLES.md core architecture principles (CA-1 through CA-11) before implementation
+
+- ALWAYS apply Quality_Assessment_Framework.md 5-dimension scoring (Accuracy, Completeness, Clarity, Structure, Context) when evaluating work quality
+
+- ALWAYS provide ARCHITECT OPINION and analysis BEFORE user selection when presenting implementation options
+
+- ALWAYS use Presentation Pattern with metrics and popup menus for option selection decisions
+
+- ALWAYS place IDE harness tests in Scripts/Harness Tests/ folder only, never in App/ directory to maintain clear separation
+
+- ALWAYS verify that Scripts/ files are organized by category (Infrastructure, Logging, Analysis, Schema, etc.) with proper subdirectory structure
+
+- ALWAYS ensure that violation detection scripts dynamically parse agent rules and respect infrastructure exemptions for categorization checks
+
+- ALWAYS verify that contextual web search uses document type analysis and generates specific search queries based on file context
+
+- ALWAYS ensure that logging infrastructure includes session state tracking, tool action logging, and proper hook timeout configurations
+
+- ALWAYS verify that Skills include proper triggers (user/model), allowed-tools, and follow the skill naming convention
+
+- ALWAYS enforce that WorkflowOpen skill dynamically loads agent-specific rules based on session state detection
+
+- ALWAYS verify that Plans follow proper naming convention (plan-{N}.{rev}.md) and are placed in Plans/Completed/ or Plans/Queued/
+
+- ALWAYS ensure that agent coordination respects role boundaries - Architect for infrastructure, Planner for planning, Executor for implementation, Researcher for analysis, Reviewer for compliance
+
+- ALWAYS verify that infrastructure scripts follow dependency injection patterns and avoid hardcoded dependencies for testability
+
+- ALWAYS ensure that Rule_Following_Hook references current agent rules and uses proper hook timeout and error handling
+
+## Never
+
+- NEVER modify .devin/hooks.v1.json without maintaining backup or assume hook changes take effect without CLI restart
+
+- NEVER use Windows backslash (\) path separators, absolute system paths, or mix path separator styles
+
+- NEVER retry identical failing paths without correcting syntax, issue edit/write/exec calls outside C:/SovereignAI/ without approval, or invoke destructive git commands without user confirmation popup
+
+- NEVER end workflows silently - always inform users which step stopped and why
+
+- NEVER copy-paste from Workflow_Reference, copy phase structure from older files without verifying against current template, or treat historical files in Logs/.Archived/ as authoritative
+
+- NEVER assume agent identity survives context compaction without re-loading via AGENTS.md
+
+- NEVER confuse documentation files with operational harness files or use ambiguous/outdated file paths
+
+- NEVER skip workflow phases without authorization, proceed to later phases while earlier phases remain incomplete, or alter workflow phase ordering without explicit authorization
+
+- NEVER skim/sample files during comprehensive scans, limit scanning scope without authorization, or assume file contents based on filenames
+
+- NEVER use iterative trial-and-error as substitute for upfront research, implement infrastructure changes without researching best practices, or rely solely on internal knowledge for Devin CLI-specific configurations
+
+- NEVER perform redundant tool calls, test infrastructure through full workflow execution when isolated testing possible, or make architectural decisions that duplicate previously resolved issues
+
+- NEVER deploy subagent workflows without researching best practices or run subagents without clear plan for integrating outputs
+
+- NEVER duplicate instructions across multiple files, create redundant copies of guidance, or update one copy of duplicated content without updating all instances
+
+- NEVER mark todo items complete before phase work finishes, advance todo state without completing corresponding workflow phase, or leave todo state inconsistent with actual progress
+
+- NEVER modify entire files in single operations when section-by-section edits would be more targeted and verifiable
+
+- NEVER assume transcript files are generated without verification, build workflow logic dependent on transcript generation without fallback, or ignore session logging failures
+
+- NEVER modify workflow or rule documents without user approval, remove sections without documentation, or add rules based on assumptions without session evidence
+
+- NEVER create governance files without required YAML frontmatter fields or skip expected_agent_type and persona specifications
+
+- NEVER use undefined capitalized terminology without referencing Workflow/Workflow_Reference/Terminology_Glossary.md as the SSOT
+
+- NEVER place files directly in Docs/, Scripts/, or Logs/ root directories without proper categorization
+
+- NEVER include irrelevant universal framework references in workflows that don't apply to the agent's specific purpose
+
+- NEVER modify hook configuration files without proper backup validation or skip isolated testing of hook functionality
+
+- NEVER create skills outside .devin/skills/{agent}/ structure or without proper SKILL.md format and tool permissions
+
+- NEVER skip validation steps in workflows or proceed without clear PASS/FAIL criteria being met
+
+- NEVER omit Load Governance Rules or Select Execution Mode sections from workflows or remove [**MANDATED**] markers
+
+- NEVER mix Continuous Operation and Single-Execution termination patterns or use incorrect termination for workflow type
+
+- NEVER deviate from the universal validation enforcement pattern of perform → document → verify → proceed
+
+- NEVER place files without consulting STRUCTURE.md as SSOT for file placement and directory structure guidance
+
+- NEVER implement execution mode handling without proper checkpoint handling, failure handling, or retry logic with exponential backoff
+
+- NEVER make architectural decisions that violate PRINCIPLES.md core architecture principles (CA-1 through CA-11)
+
+- NEVER evaluate work quality without applying Quality_Assessment_Framework.md 5-dimension scoring with proper weighting
+
+- NEVER present implementation options without providing ARCHITECT OPINION and analysis BEFORE user selection
+
+- NEVER make option selection decisions without using Presentation Pattern with metrics and popup menus
+
+- NEVER place IDE harness tests in App/ directory - must use Scripts/Harness Tests/ only to maintain clear separation
+
+- NEVER place Scripts/ files directly in Scripts/ root without proper category subdirectory organization
+
+- NEVER create violation detection scripts that don't dynamically parse agent rules or ignore infrastructure exemptions for categorization
+
+- NEVER implement contextual web search without document type analysis or specific search query generation based on file context
+
+- NEVER create logging infrastructure without session state tracking, tool action logging, or proper hook timeout configurations
+
+- NEVER create Skills without proper triggers (user/model), allowed-tools, or following the skill naming convention
+
+- NEVER implement WorkflowOpen skill without dynamic agent-specific rule loading based on session state detection
+
+- NEVER create Plans without proper naming convention (plan-{N}.{rev}.md) or place outside Plans/Completed/ or Plans/Queued/
+
+- NEVER violate agent role boundaries - Architect for infrastructure, Planner for planning, Executor for implementation, Researcher for analysis, Reviewer for compliance
+
+- NEVER create infrastructure scripts with hardcoded dependencies that prevent testability - use dependency injection patterns
+
+- NEVER implement Rule_Following_Hook without referencing current agent rules or proper hook timeout and error handling
