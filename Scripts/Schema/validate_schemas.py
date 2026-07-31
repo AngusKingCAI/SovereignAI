@@ -27,7 +27,7 @@ SCHEMA_MAPPING = {
 # Categorization rules
 CATEGORIZATION_RULES = {
     "Scripts/": {
-        "allowed_subdirs": ["Schema", "Infrastructure", "Testing", "Build", "Deployment", "Maintenance", "Utilities", "Logging", "Analysis", "Misc", "Tests"],
+        "allowed_subdirs": ["Schema", "Infrastructure", "Harness Tests", "App Tests", "Build", "Deployment", "Maintenance", "Utilities", "Logging", "Analysis", "Misc"],
         "file_rules": {
             "Schema/": {
                 "allowed_patterns": ["validate_*.py", "*-schema.json", "*_config.json"],
@@ -38,9 +38,13 @@ CATEGORIZATION_RULES = {
                 "allowed_patterns": ["setup_*.py", "*_setup.py", "install_*.py"],
                 "description": "Infrastructure automation scripts"
             },
-            "Testing/": {
+            "Harness Tests/": {
                 "allowed_patterns": ["test_*.py", "validate_*.py"],
-                "description": "Testing and validation scripts"
+                "description": "Harness testing and validation scripts"
+            },
+            "App Tests/": {
+                "allowed_patterns": ["test_*.py", "*_test.py"],
+                "description": "Application code testing scripts"
             },
             "Build/": {
                 "allowed_patterns": ["build_*.py", "compile_*.py"],
@@ -84,9 +88,9 @@ CATEGORIZATION_RULES = {
                 },
                 "description": "Miscellaneous scripts"
             },
-            "Tests/": {
-                "allowed_patterns": [".gitkeep", "test_*.py"],
-                "description": "Test files"
+            "App Tests/": {
+                "allowed_patterns": [".gitkeep", "test_*.py", "*_test.py"],
+                "description": "Application test files"
             }
         }
     },
@@ -168,37 +172,8 @@ CATEGORIZATION_RULES = {
             }
         }
     },
-    "Rules/": {
-        "allowed_subdirs": ["Architect", "Planner", "Executor", "Researcher", "Reviewer", "Templates"],
-        "file_rules": {
-            "Architect/": {
-                "allowed_patterns": ["Architect_Rules.md", "Rules_Template*", "*_Usage_Examples.md", "*.md"],
-                "description": "Architect rules"
-            },
-            "Planner/": {
-                "allowed_patterns": ["Planner_Rules.md", "Rules_Template*", "*_Usage_Examples.md", "*.md"],
-                "description": "Planner rules"
-            },
-            "Executor/": {
-                "allowed_patterns": ["Executor_Rules.md", "Rules_Template*", "*_Usage_Examples.md", "*.md"],
-                "description": "Executor rules"
-            },
-            "Researcher/": {
-                "allowed_patterns": ["Researcher_Rules.md", "Rules_Template*", "*_Usage_Examples.md", "*.md"],
-                "description": "Researcher rules"
-            },
-            "Reviewer/": {
-                "allowed_patterns": ["Reviewer_Rules.md", "Rules_Template*", "*_Usage_Examples.md", "*.md"],
-                "description": "Reviewer rules"
-            },
-            "Templates/": {
-                "allowed_patterns": ["Rules_Template*", "*_Usage_Examples.md", "*.md"],
-                "description": "Template files"
-            }
-        }
-    },
     "Docs/": {
-        "allowed_subdirs": ["Architect", "Planner", "Executor", "Researcher", "Reviewer", "Code", "Research", "Architecture", "Governance", "Repository", "Devin Local IDE Documents", "External AI Reviews", "Sovereign AI Design Docs"],
+        "allowed_subdirs": ["Architect", "Planner", "Executor", "Researcher", "Reviewer", "Code", "Research", "Architecture", "Governance", "Devin Local IDE Documents", "External AI Reviews", "Sovereign AI Design Docs"],
         "file_rules": {
             "Architect/": {
                 "allowed_subdirs": ["Code", "Research", "Architecture", "Governance", "Repository"],
@@ -258,27 +233,9 @@ CATEGORIZATION_RULES = {
                 "description": "Architecture documentation by domain"
             },
             "Governance/": {
-                "allowed_subdirs": ["Rules", "Workflows", "Processes"],
+                "allowed_subdirs": ["Workflows", "Processes"],
                 "allowed_patterns": ["*.md"],
                 "description": "Governance documentation by domain"
-            },
-            "Repository/": {
-                "allowed_subdirs": ["Structure", "Categorization", "Guidelines"],
-                "file_rules": {
-                    "Structure/": {
-                        "allowed_patterns": ["*.md"],
-                        "description": "Repository structure documentation"
-                    },
-                    "Categorization/": {
-                        "allowed_patterns": ["*.md"],
-                        "description": "Repository categorization documentation"
-                    },
-                    "Guidelines/": {
-                        "allowed_patterns": ["*.md"],
-                        "description": "Repository guidelines documentation"
-                    }
-                },
-                "description": "Repository documentation by domain"
             },
             "Devin Local IDE Documents/": {
                 "allowed_subdirs": ["05-Reference"],
@@ -418,29 +375,29 @@ CATEGORIZATION_RULES = {
         "allowed_patterns": ["AGENTS.md"],
         "file_rules": {
             "Architect/": {
-                "allowed_patterns": ["AGENTS.md", "Architect_Rules.md"],
+                "allowed_patterns": ["AGENTS.md"],
                 "description": "Architect agent governance"
             },
             "Executor/": {
-                "allowed_patterns": ["AGENTS.md", "Executor_Rules.md"],
+                "allowed_patterns": ["AGENTS.md"],
                 "description": "Executor agent governance"
             },
             "Planner/": {
-                "allowed_patterns": ["AGENTS.md", "Planner_Rules.md"],
+                "allowed_patterns": ["AGENTS.md"],
                 "description": "Planner agent governance"
             },
             "Researcher/": {
-                "allowed_patterns": ["AGENTS.md", "Researcher_Rules.md"],
+                "allowed_patterns": ["AGENTS.md"],
                 "description": "Researcher agent governance"
             },
             "Reviewer/": {
-                "allowed_patterns": ["AGENTS.md", "Reviewer_Rules.md"],
+                "allowed_patterns": ["AGENTS.md"],
                 "description": "Reviewer agent governance"
             }
         }
     },
     ".devin/": {
-        "allowed_subdirs": ["skills"],
+        "allowed_subdirs": ["skills", "rules"],
         "file_rules": {
             "skills/": {
                 "allowed_subdirs": ["architect", "executor", "planner", "researcher", "reviewer"],
@@ -466,6 +423,10 @@ CATEGORIZATION_RULES = {
                         "description": "Reviewer skill definition"
                     }
                 }
+            },
+            "rules/": {
+                "allowed_patterns": ["*.md"],
+                "description": "Agent rule definitions"
             }
         }
     }
@@ -596,7 +557,7 @@ def validate_categorization(file_path: Path, repo_root: Path) -> List[str]:
     # Check root directory violations
     if len(path_parts) == 1:
         # File is at root level
-        allowed_root_files = {"AGENTS.md", "PRINCIPLES.md", "INDEX.md", "STRUCTURE.md", ".gitignore"}
+        allowed_root_files = {"AGENTS.md", "PRINCIPLES.md", "STRUCTURE.md", ".gitignore"}
         if file_path.name not in allowed_root_files:
             errors.append(f"File at root level not approved: {file_path.name}. Approved root files: {allowed_root_files}")
         return errors
@@ -883,7 +844,6 @@ def main():
     all_dirs = [
         repo_root / "Scripts",
         repo_root / "Workflow",
-        repo_root / "Rules", 
         repo_root / "Agents",
         repo_root / "Docs",
         repo_root / "Logs",
@@ -904,7 +864,6 @@ def main():
     root_files = [
         repo_root / "AGENTS.md",
         repo_root / "PRINCIPLES.md",
-        repo_root / "INDEX.md",
         repo_root / "STRUCTURE.md"
     ]
     for root_file in root_files:

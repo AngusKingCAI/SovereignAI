@@ -28,7 +28,7 @@ persona:
 Systematic plan execution ensuring implementation follows best practices and maintains compliance with governance rules, with structured handoff to Reviewer agent for verification.
 
 ## Reference Documents
-- **Agent Rules**: Rules/Executor/Executor_Rules.md (executor-specific governance rules)
+- **Agent Rules**: .devin/rules/executor.md (executor-specific governance rules)
 - **Terminology**: Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for governance terminology)
 - **Execution Mode Patterns**: Workflow/Workflow_Reference/Execution_Mode_Patterns.md (execution mode definitions and handling)
 - **Universal Framework References**: Workflow/Workflow_Reference/ (referenced frameworks based on workflow relevance)
@@ -81,7 +81,7 @@ Systematic plan execution ensuring implementation follows best practices and mai
 - 3. **CRITICAL REQUIREMENT**: Document BP research findings and apply relevant best practices to the implementation
 - 4. Build one function at a time, test immediately
 - 5. **CRITICAL REQUIREMENT**: Before test file creation, perform **{BP}** web search for current testing best practices relevant to the specific function being tested
-- 6. Create test file in Scripts/Tests/{Relevant SovereignAI app section}/{Test File Name}
+- 6. Create test file in Scripts/Harness Tests/{Relevant SovereignAI app section}/{Test File Name}
 - 7. Run quality checks in optimal order:
   - 1. ruff format (formatting)
   - 2. ruff check (linting + security via S rules)
@@ -211,7 +211,7 @@ Systematic plan execution ensuring implementation follows best practices and mai
 - Create Templates/ subdirectory for Executor-specific templates (including Handoff_Template.md)
 - Create Reference/ subdirectory for Executor-specific reference files
 - Follow naming convention: {Agent}_{WorkflowType}_Workflow.md
-- Check INDEX.md for folder structure compliance
+- Check STRUCTURE.md for folder structure compliance
 
 ## Changelog
 

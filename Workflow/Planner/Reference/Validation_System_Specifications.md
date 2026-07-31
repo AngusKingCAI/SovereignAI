@@ -52,5 +52,5 @@ See Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md for universal
 
 - **Universal Pattern**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md (universal validation framework)
 - **Quality Assessment**: Workflow/Workflow_Reference/Quality_Assessment_Framework.md (universal framework)
-- **Compliance**: Rules/Planner/Planner_Rules.md (planning rules and constraints)
+- **Compliance**: .devin/rules/planner.md (planning rules and constraints)
 - **Delivery Authorization**: Workflow/Planner/Reference/Delivery_Authorization_Specifications.md (delivery process)

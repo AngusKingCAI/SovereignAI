@@ -25,7 +25,7 @@ Declarative policy for Executor agent implementation following execution-first p
 - Build exactly one function at a time. Test immediately. Never write a second function before first is tested (ensures modular validation, prevents hidden bugs)
 - Treat user-confirmed functions as locked. Never modify without explicit user permission (maintains stability, prevents unintended changes)
 - Check local research using index files when function implementation fails. Web search only if local info unavailable. Never retry blindly without research (reduces token cost, ensures correct implementation)
-- Place IDE harness tests in Scripts/Tests/ folder only. Never place IDE harness tests in App/ directory (maintains clear separation between application code and harness infrastructure)
+- Place IDE harness tests in Scripts/Harness Tests/ folder only. Never place IDE harness tests in App/ directory (maintains clear separation between application code and harness infrastructure)
 - Always use popups for yes/no questions. Never use text-only confirmations (ensures clear user intent, prevents miscommunication)
 - Always categorize files when adding to documentation directories. Never place files uncategorized (maintains organization, enables efficient navigation)
 - Never skip compliance checks. Always verify implementation compliance before proceeding (ensures quality, prevents rule violations)
@@ -50,7 +50,7 @@ Three execution modes govern workflow behavior when encountering failures:
 - Execution-first architecture: Implementation follows approved plans exactly (maintains architectural purity, enables predictable delivery)
 - Modular function design: Each function implements one responsibility with clear inputs/outputs (maintains testability, enables independent validation)
 - Dependency injection: Dependencies passed as parameters rather than hardcoded imports (maintains modularity, enables proper testing)
-- Test location: IDE harness tests in Scripts/Tests/ only, App/ directory for production code only (maintains clear separation, prevents scope confusion)
+- Test location: IDE harness tests in Scripts/Harness Tests/ only, App/ directory for production code only (maintains clear separation, prevents scope confusion)
 
 ## Tool Configuration
 
@@ -63,7 +63,7 @@ Three execution modes govern workflow behavior when encountering failures:
 ## Project Structure
 
 - `App/` – Application code to implement (WRITE implementation code here per approved plans)
-- `Scripts/Tests/` – IDE harness tests for validation (WRITE tests here, never in App/)
+- `Scripts/Harness Tests/` – IDE harness tests for validation (WRITE tests here, never in App/)
 - `Workflow/Executor/` – Executor-specific workflows and processes (REFERENCE for execution procedures)
 - `Workflow/Workflow_Reference/` – Universal frameworks (quality assessment, validation patterns)
 - `Plans/` – Approved implementation plans (REFERENCE for exact implementation specifications)
@@ -151,7 +151,7 @@ Three execution modes govern workflow behavior when encountering failures:
 - Document testing results
 - Ensure implementation completeness
 - **Test each function immediately after implementation - function-by-function testing approach**
-- **Write tests in Scripts/Tests/ directory - never place IDE harness tests in App/ directory**
+- **Write tests in Scripts/Harness Tests/ directory - never place IDE harness tests in App/ directory**
 - **Use dependency injection and mocking for isolated unit testing**
 - **Test both success paths and error conditions for each function**
 - **Ensure test coverage meets plan requirements (typically ≥90%)**
@@ -168,7 +168,7 @@ Three execution modes govern workflow behavior when encountering failures:
 - Proceed with incomplete implementation
 - Skip documentation of testing results
 - **Write multiple functions before testing any of them**
-- **Place IDE harness tests in App/ directory - must use Scripts/Tests/ only**
+- **Place IDE harness tests in App/ directory - must use Scripts/Harness Tests/ only**
 - **Skip unit testing in favor of only integration testing**
 - **Write tests that depend on external systems without mocking**
 - **Proceed to next function until current function's tests pass**

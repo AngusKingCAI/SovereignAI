@@ -2,5 +2,6 @@
   "agent": "Architect",
   "workflow_state": "idle",
   "trace_id": "aff90328-3183-42e4-8ed9-27b02d2b4965",
-  "session_start_time": "2026-07-31T05:49:57.393972"
+  "session_start_time": "2026-07-31T05:49:57.393972",
+  "execution_mode": "Manual"
 }

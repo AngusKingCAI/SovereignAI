@@ -30,7 +30,7 @@ Comprehensive validation of AGENTS.md files to ensure they meet industry best pr
 
 ## Reference Documents
 - **Universal Framework References**: Workflow/Workflow_Reference/ (referenced frameworks based on workflow relevance)
-- **Agent Rules**: Rules/Architect/Architect_Rules.md (Architect-specific governance rules)
+- **Agent Rules**: .devin/rules/architect.md (Architect-specific governance rules)
 - **Terminology**: Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for governance terminology)
 - **Execution Mode Patterns**: Workflow/Workflow_Reference/Execution_Mode_Patterns.md (execution mode definitions and handling)
 - **Validation Enforcement**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md (universal validation patterns)

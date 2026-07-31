@@ -260,7 +260,7 @@ Based on scanning mode:
 - **Hook File**: .devin/hooks.v1.json
 - **Purpose**: Reload governance files when context is compressed
 - **Configuration**: Ensure PostCompaction hook is configured to reload:
-  - Rules/Reviewer/Reviewer_Rules.md
+  - .devin/rules/reviewer.md
   - PRINCIPLES.md
   - Workflow/Workflow_Reference/Terminology_Glossary.md
   - Workflow/Reviewer/Reference/Compliance_Criteria_Reference.md

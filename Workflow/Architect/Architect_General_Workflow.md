@@ -59,7 +59,7 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 
 ### Phase 3. Research Best Practices
 - 1. Check code documentation (Docs/Code/) for examples relevant to the specific type of code being implemented (Python, JSON, YAML, Bash, etc.)
-- 2. **BEST PRACTICES WEB SEARCH**: Web search must be performed before major architectural decisions (per Rules/Architect/Architect_Rules.md). Research industry standards and established patterns for the architectural approach being considered.
+- 2. **BEST PRACTICES WEB SEARCH**: Web search must be performed before major architectural decisions (per .devin/rules/architect.md). Research industry standards and established patterns for the architectural approach being considered.
 - 3. Gather multiple approaches and patterns from web search and local research
 - 4. Ensure proposed solutions comply with governance rules
 - 5. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
@@ -73,7 +73,7 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 - 2. **VALIDATION**: Validate options against viable option criteria (see Workflow/Architect/.Reference/Option_Evaluation_Framework.md)
 - 3. **ARCHITECT OPINION**: Provide analysis and recommendation BEFORE user selection
 - 4. **PRESENTATION PATTERN**: Present options with metrics, provide architect opinion, use popup menu for selection
-- 5. **RULE ENFORCEMENT**: Ensure options comply with Rules/Architect/Architect_Rules.md
+- 5. **RULE ENFORCEMENT**: Ensure options comply with .devin/rules/architect.md
 - 6. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 7. **STATUS TRACKING**: Update workflow status to "phase_4_complete"
 - 8. **PRINT**: "Generating implementation options - applying viable option criteria"
@@ -97,8 +97,8 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 - 3. Wait for explicit user confirmation before proceeding
 - 4. Treat user-confirmed functions as locked
 - **AUTOMATED PROGRESSION NOTE**: The validation system allows state-mutating tools (edit, write, exec) automatically during this step. User confirmation requests use ask_user_question (unvalidated) to pause for approval without triggering failure intervention.
-- 5. When placing files, check INDEX.md for folder structure (token-efficient vs loading full directory)
-- 6. Load Rules/Architect/Architect_Rules.md only when specific constraints are needed
+- 5. When placing files, check STRUCTURE.md for folder structure (token-efficient vs loading full directory)
+- 6. Load .devin/rules/architect.md only when specific constraints are needed
 - 7. When function fails, apply selected execution mode (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 8. **STATUS TRACKING**: Update workflow status to "phase_6_in_progress" during implementation, "phase_6_complete" when finished
 - 9. **PRINT**: "Implementing function - building one function at a time per architect rules"
@@ -109,7 +109,7 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 ### Phase 7. Verify Compliance
 - 1. Verify implementation matches specification
 - 2. Run verification tests
-- 3. Ensure constitutional compliance per Rules/Architect/Architect_Rules.md
+- 3. Ensure constitutional compliance per .devin/rules/architect.md
 - 4. Never skip compliance checks
 - 5. Always verify architectural compliance before proceeding
 - 6. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
@@ -121,10 +121,10 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 
 ### Phase 8. Document
 - 1. Update relevant governance files for the agent being worked on:
-  - INDEX.md (if new folders are created)
-  - Rules/{Agent}/{Agent}_Rules.md (if new rules are added)
+  - STRUCTURE.md (if new folders are created)
+  - .devin/rules/{agent}.md (if new rules are added)
   - AGENTS.md (if agent capabilities change)
-- 2. Always categorize files when adding to documentation directories per Rules/Architect/Architect_Rules.md
+- 2. Always categorize files when adding to documentation directories per .devin/rules/architect.md
 - 3. Never place files uncategorized
 - 4. **EXECUTION MODE HANDLING**: Apply execution mode handling patterns (see Workflow/Workflow_Reference/Execution_Mode_Patterns.md)
 - 5. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
@@ -138,7 +138,7 @@ Systematic architectural decision-making ensuring infrastructure design follows 
   - Workflow: Follow structure and is executable
   - Scripts: Function as intended
   - Documentation: Properly categorized
-- 2. Confirm governance file placement compliance per INDEX.md
+- 2. Confirm governance file placement compliance per STRUCTURE.md
 - 3. Validate no unintended changes outside the target area
   - Run git status to check for changes
   - If unintended changes detected, present popup menu with [Accept Changes/Restore Files] options
@@ -150,7 +150,7 @@ Systematic architectural decision-making ensuring infrastructure design follows 
 - 8. **PRINT**: "Workflow verification complete - structure and executability confirmed"
 - 9. **PRINT**: "Scripts verification complete - functionality validated"
 - 10. **PRINT**: "Documentation verification complete - categorization confirmed"
-- 11. **PRINT**: "Governance file placement verified - compliance with INDEX.md confirmed"
+- 11. **PRINT**: "Governance file placement verified - compliance with STRUCTURE.md confirmed"
 - 12. **PRINT**: "Unintended changes check complete - no changes outside target area detected"
 
 ### Phase 10. Return to Phase 0

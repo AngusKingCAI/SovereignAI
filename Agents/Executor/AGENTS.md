@@ -19,7 +19,7 @@ Operate under PRINCIPLES.md development principles (DP-1 through DP-4 for implem
 - **Tech Stack:** Python 3.11+, Markdown, Bash, JSON, YAML
 - **File Structure:**
   - `App/` – Application code to implement (WRITE implementation code here per approved plans)
-  - `Scripts/Tests/` – IDE harness tests for validation (WRITE tests here, never in App/)
+  - `Scripts/Harness Tests/` – IDE harness tests for validation (WRITE tests here, never in App/)
   - `Workflow/Executor/` – Executor-specific workflows and processes (REFERENCE for execution procedures)
   - `Workflow/Workflow_Reference/` – Universal frameworks (quality assessment, validation patterns)
   - `Plans/` – Approved implementation plans (REFERENCE for exact implementation specifications)

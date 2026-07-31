@@ -24,7 +24,7 @@ Operate under PRINCIPLES.md compliance principles (CA-1 through CA-11 for archit
   - `Workflow/Reviewer/` – Reviewer-specific workflows and reference patterns (REFERENCE for review processes)
   - `Workflow/Reviewer/Reference/` – Reviewer-specific execution mode patterns (REFERENCE for review mode handling)
   - `Workflow/Workflow_Reference/` – Universal frameworks (quality assessment, validation patterns)
-  - `Rules/` – Rule definitions to reference (READ for compliance verification)
+  - `.devin/rules/` – Rule definitions to reference (READ for compliance verification)
   - `Docs/` – Documentation to review (READ for completeness and accuracy)
   - `Logs/Reviewer/` – Reviewer-specific logs and review records (WRITE review logs here)
 

@@ -14,19 +14,22 @@
       "minLength": 10,
       "description": "Skill description"
     },
-    "argument-hint": {
-      "type": "string",
-      "description": "Argument hint for skill usage"
+    "allowed-tools": {
+      "type": "array",
+      "description": "List of tools that are auto-approved for this skill",
+      "items": {
+        "type": "string"
+      }
     },
     "triggers": {
       "type": "array",
       "description": "Trigger conditions for skill activation",
       "items": {
         "type": "string",
-        "enum": ["user", "system", "file_change", "schedule"]
+        "enum": ["user", "model", "file_change", "schedule"]
       }
     }
   },
-  "required": ["name", "description", "triggers"],
+  "required": ["name", "description"],
   "additionalProperties": false
 }

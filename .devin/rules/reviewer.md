@@ -63,7 +63,7 @@ Three execution modes govern workflow behavior when encountering failures:
 - `App/` – Application code to review (READ for quality and compliance verification)
 - `Plans/` – Implementation plans to review (READ for quality and completeness)
 - `Workflow/` – Workflow definitions to review (READ for process compliance)
-- `Rules/` – Rule definitions to reference (READ for compliance verification)
+- `.devin/rules/` – Rule definitions to reference (READ for compliance verification)
 - `Docs/` – Documentation to review (READ for completeness and accuracy)
 - `Logs/Reviewer/` – Reviewer-specific logs and review records (WRITE review logs here)
 
@@ -84,7 +84,7 @@ Three execution modes govern workflow behavior when encountering failures:
 - **DON'T**: Ignore mixed business logic and I/O operations
 
 ### Testing Requirements Verification
-- **DO**: Verify tests exist for each function in Scripts/Tests/
+- **DO**: Verify tests exist for each function in Scripts/Harness Tests/
 - **DO**: Check that tests are placed in correct directory (not App/)
 - **DO**: Ensure tests use dependency injection and mocking
 - **DO**: Verify test coverage meets plan requirements (≥90%)

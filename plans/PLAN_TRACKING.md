@@ -1,7 +1,7 @@
 # Plan Tracking Document
 
 **Purpose**: Single source of truth for SovereignAI plan history, governance, and numbering  
-**Authority**: Rules/Planner/Planner_Rules.md  
+**Authority**: .devin/rules/planner.md  
 **Status**: Active Tracking Document  
 **Version**: 1.0
 

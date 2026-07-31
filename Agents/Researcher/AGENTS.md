@@ -40,7 +40,7 @@ Stop immediately if asked to implement code or make architectural decisions. Red
 ## Workflow and Skills
 - **Detailed research cycle**: `.devin/skills/researcher/SKILL.md` (gated, repeatable Researcher implementation cycle)
 - **Close workflow**: `.devin/skills/close/SKILL.md` (global skill to close any workflow)
-- **Detailed rules**: `Rules/Researcher/Researcher_Rules.md`
+- **Detailed rules**: `.devin/rules/researcher.md`
 - **Research standards**: Follow IDE architecture rules for research documentation
 
 ## Research Enforcement

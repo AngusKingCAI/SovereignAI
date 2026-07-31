@@ -19,7 +19,7 @@ Load the appropriate governance rules based on which agent is currently executin
    - Get the `agent` field (contains: "architect", "planner", "executor", "researcher", or "reviewer")
 
 2. **Load Agent-Specific Rules**: Based on the detected agent, load the corresponding rules file:
-   - Read `Rules/{Agent}/{Agent}_Rules.md` (capitalize first letter of agent name)
+   - Read `.devin/rules/{agent}.md` (lowercase agent name)
 
 3. **Load Universal Governance Files**: Always load these files:
    - `PRINCIPLES.md` (constitutional framework)
@@ -30,4 +30,4 @@ Load the appropriate governance rules based on which agent is currently executin
 5. **Report Status**: Print which agent rules were loaded and confirm governance context is ready
 
 ## Expected Output
-Complete with a status message like: "Architect rules, constitutional principles, and terminology definitions loaded"
+Complete with a status message like: "Architect rules (.devin/rules/architect.md), constitutional principles, and terminology definitions loaded"

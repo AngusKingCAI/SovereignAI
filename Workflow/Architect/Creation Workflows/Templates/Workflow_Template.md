@@ -39,7 +39,7 @@ Architect creates two types of workflows with different termination patterns:
 
 ## Template Reference
 
-- **Location**: Workflow/Templates/Workflow_Template.md
+- **Location**: Workflow/Architect/Creation Workflows/Templates/Workflow_Template.md
 - **Owner**: Architect Agent
 - **Usage**: Architect uses this template to create workflows for all agents
 - **Updates**: Only Architect should modify this template
@@ -80,7 +80,7 @@ persona:
 
 ## Reference Documents
 - **Universal Framework References**: Workflow/Workflow_Reference/ (referenced frameworks based on workflow relevance)
-- **Agent Rules**: Rules/{Agent}/{Agent}_Rules.md (agent-specific governance rules)
+- **Agent Rules**: .devin/rules/{agent}.md (agent-specific governance rules)
 - **Best Practice Integration**: Web search points (BP?) for current industry standards
 - **Terminology**: Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for governance terminology)
 

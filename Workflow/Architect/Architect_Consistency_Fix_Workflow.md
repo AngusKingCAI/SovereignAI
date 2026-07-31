@@ -29,7 +29,7 @@ persona:
 Systematic resolution of consistency issues identified by the Consistency Check Workflow. This workflow processes the consistency report and implements fixes for broken references, terminology inconsistencies, workflow structure issues, and schema validation problems. The workflow supports both Manual mode (user confirmation for each fix) and Automatic mode (batch processing of non-critical fixes).
 
 ## Reference Documents
-- **Agent Rules**: Rules/Architect/Architect_Rules.md (Architect-specific governance rules)
+- **Agent Rules**: .devin/rules/architect.md (Architect-specific governance rules)
 - **Terminology**: Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for governance terminology)
 - **Execution Mode Patterns**: Workflow/Architect/.Reference/Execution_Mode_Patterns.md (Architect-specific execution mode definitions)
 - **Universal Framework References**: Workflow/Workflow_Reference/ (referenced frameworks based on workflow relevance)
@@ -121,7 +121,7 @@ Systematic resolution of consistency issues identified by the Consistency Check 
   - **Manual Mode**: Present categorization rule violation and proposed fix via popup menu
   - **Automatic Mode**: Apply categorization rule updates automatically
 - 2. Update categorization rules in Scripts/Schema/validate_schemas.py
-- 3. Remove index.md exceptions if not required by architecture
+- 3. Remove index.md references (deleted per SSOT compliance)
 - 4. Update rule files to reference correct documentation paths
 - 5. **VALIDATION**: Run schema validation script to confirm all fixes
 - 6. **IF VALIDATION FAILS**: STOP - Report validation failure with specific details and await user intervention based on execution mode
@@ -140,13 +140,13 @@ Systematic resolution of consistency issues identified by the Consistency Check 
 
 ### Phase 8. Documentation
 - 1. Update AGENTS.md if agent capabilities changed during fixes
-- 2. Update INDEX.md if governance structure changed
+- 2. Update STRUCTURE.md if governance structure changed
 - 3. Document architectural decisions made during fix process
 - 4. **STATUS TRACKING**: Update workflow status to "phase_8_complete"
 - 5. **PRINT**: "Documentation complete - governance files updated"
 
 ### Phase 9. Final Validation
-- 1. Verify all fixes comply with Rules/Architect/Architect_Rules.md
+- 1. Verify all fixes comply with .devin/rules/architect.md
 - 2. Verify schema validation passes (645/645 files)
 - 3. Verify no unintended changes outside target files
 - 4. **VALIDATION**: Validate that final validation completed successfully
@@ -200,7 +200,7 @@ Systematic resolution of consistency issues identified by the Consistency Check 
 - Create Workflow/Architect/ directory if it doesn't exist
 - Place workflow file in Workflow/Architect/Architect_Consistency_Fix_Workflow.md
 - Follow naming convention: {Agent}_{WorkflowType}_Workflow.md
-- Check INDEX.md for folder structure compliance
+- Check STRUCTURE.md for folder structure compliance
 
 ## Changelog
 

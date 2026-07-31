@@ -58,9 +58,6 @@ You are a panelist in a Round Table review of a consolidated design document for
 23. SovereignAI_Models_Panel_Drill_Down_Design_v1.0.md (DD-21.13.1)
 24. SovereignAI_Options_Panel_Persistence_Design_v1.0.md (DD-21.15.1)
 
-**Index (Document 25):**
-25. SovereignAI_Design_Document_Index.md — navigation, plan queue, open questions
-
 ### 2.2 Supporting material
 - **`SovereignAI_Design_Review_Brief_v1.0.md`** — index, dependencies, open questions, risks, plan queue
 

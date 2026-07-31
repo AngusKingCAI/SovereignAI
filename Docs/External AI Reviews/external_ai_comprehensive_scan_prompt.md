@@ -85,7 +85,7 @@ You are tasked with performing a **comprehensive, exhaustive, line-by-line scan*
 - All files in `.devin/`
 - All files in `.devin/skills/`
 - `AGENTS.md` (project root)
-- `INDEX.md` (if exists in project root)
+- `STRUCTURE.md` (project root)
 
 **Governance Reference Files:**
 - `PRINCIPLES.md` (if exists)

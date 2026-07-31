@@ -34,11 +34,11 @@ def format_structured_entry(entry: dict) -> str:
         "status": entry.get('status'),
         "prompt_id": entry.get('prompt_id'),
         "working_directory": entry.get('working_directory'),
-        "tool_input": entry.get('tool_input')
+        "tool_input": {}
     }
     
     # Include tool_input if present (truncate large content)
-    if 'tool_input' in entry:
+    if 'tool_input' in entry and entry['tool_input']:
         tool_input = entry['tool_input'].copy()
         # Truncate content fields to prevent massive JSON objects
         if 'content' in tool_input and len(str(tool_input['content'])) > 1000:
@@ -145,18 +145,18 @@ def get_session_file(session_id: str) -> Path:
     # Find existing session file with matching session_id (case-insensitive)
     try:
         session_name = session_id.title() if session_id else "Unknown"
-        json_files = list(log_dir.glob(f"{agent}_*_{session_name}.json"))
+        jsonl_files = list(log_dir.glob(f"{agent}_*_{session_name}.jsonl"))
         
-        if json_files:
-            json_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
-            return json_files[0]
+        if jsonl_files:
+            jsonl_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+            return jsonl_files[0]
     except (OSError, IndexError):
         pass
     
     # Create new session file
     date_time = datetime.now().strftime("%d-%m-%y_%H-%M")
     session_name = session_id.title() if session_id else "Unknown"
-    log_file = log_dir / f"{agent}_{date_time}_{session_name}.json"
+    log_file = log_dir / f"{agent}_{date_time}_{session_name}.jsonl"
     
     # Ensure trace context exists for session start
     trace_id = ensure_trace_context()

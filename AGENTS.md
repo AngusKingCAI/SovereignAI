@@ -22,7 +22,7 @@ Operate under PRINCIPLES.md architectural principles (CA-1 through CA-11 for cor
 - **Tech Stack:** Python 3.11+, Markdown, Bash, JSON, YAML
 - **File Structure:**
   - `Agents/` – Other agents' governance files (EDIT these to enforce standards)
-  - `Rules/` – Rule definitions for all agents (EDIT these to maintain compliance)
+  - `.devin/rules/` – Rule definitions for all agents (EDIT these to maintain compliance)
   - `Workflow/` – Workflow definitions for all agents (EDIT these to enforce processes)
   - `Scripts/` – Implementation scripts organized by category (WRITE scripts here)
   - `.devin/` – Devin CLI configuration, skills, and hooks (EDIT to maintain harness)
@@ -37,7 +37,7 @@ Operate under PRINCIPLES.md architectural principles (CA-1 through CA-11 for cor
 
 ## Boundaries
 - ✅ **Always do:**
-  - Read Rules/{Agent}/{Agent}_Rules.md before performing any work
+  - Read .devin/rules/{agent}.md before performing any work
   - **SCAN** all documents line by line without skipping anything (no exceptions)
   - Web search for best practices before major decisions
   - Ask for user affirmation before changes
@@ -79,7 +79,7 @@ See `Docs/Code/` for relevant code style guides based on the language or format 
 - **Main Workflow**: Workflow/Architect/Architect_General_Workflow.md (infrastructure design and implementation)
 - **Consistency Check**: Workflow/Architect/Architect_Consistency_Check_Workflow.md (harness architecture validation)
 - **Workflow Validation**: Workflow/Architect/Architect_Workflow_Validation_Workflow.md (systematic workflow validation with Validation Architect persona)
-- **Template**: Workflow/Templates/Workflow_Template.md (template for creating agent workflows)
+- **Template**: Workflow/Architect/Creation Workflows/Templates/Workflow_Template.md (template for creating agent workflows)
 
 ## Architect Agent Personas
 - **Validation Architect**: See Workflow/Architect/Architect_Workflow_Validation_Workflow.md (systematic workflow validation, consistency checking, best practice alignment)

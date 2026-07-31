@@ -103,24 +103,24 @@ def track_prompt() -> None:
     log_dir = project_root / "Logs" / agent / "Session"
     log_dir.mkdir(parents=True, exist_ok=True)
     
-    # Use Agent_Date_Time_Session naming format
+    # Use Agent_Date_Time_Session naming format with .jsonl extension
     date_time = datetime.now().strftime("%d-%m-%y_%H-%M")
     # Capitalize session name (first letter of each word)
     session_name = session_id.title() if session_id else "Unknown"
     
     # Find existing session file with matching session_id (case-insensitive)
     try:
-        # Look for .json files for the detected agent
-        json_files = list(log_dir.glob(f"{agent}_*_{session_name}.json"))
+        # Look for .jsonl files for the detected agent
+        jsonl_files = list(log_dir.glob(f"{agent}_*_{session_name}.jsonl"))
         
-        if json_files:
+        if jsonl_files:
             # Sort by date to get the most recent
-            json_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
-            log_file = json_files[0]
+            jsonl_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+            log_file = jsonl_files[0]
         else:
-            log_file = log_dir / f"{agent}_{date_time}_{session_name}.json"
+            log_file = log_dir / f"{agent}_{date_time}_{session_name}.jsonl"
     except (OSError, IndexError):
-        log_file = log_dir / f"{agent}_{date_time}_{session_name}.json"
+        log_file = log_dir / f"{agent}_{date_time}_{session_name}.jsonl"
     
     # Create session start entry if this is the first prompt
     if not log_file.exists():

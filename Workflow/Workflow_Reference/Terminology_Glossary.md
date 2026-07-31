@@ -394,7 +394,7 @@ purpose: Single source of truth for all capitalized terminology used across the 
 
 **Examples**:
 - **SSOT**: Workflow/Terminology_Glossary.md is the SSOT for terminology definitions
-- **SSOT**: INDEX.md is the SSOT for directory structure information
+- **SSOT**: STRUCTURE.md is the SSOT for directory structure information
 
 **Best Practice**: Establish SSOT for critical information to prevent inconsistencies and ensure all stakeholders work from the same data.
 

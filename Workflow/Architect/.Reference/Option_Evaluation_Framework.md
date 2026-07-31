@@ -88,7 +88,7 @@ See Workflow/Workflow_Reference/Quality_Assessment_Framework.md for universal qu
 - Ensure transparency in evaluation process
 
 ### Rule Enforcement
-- Ensure options comply with Rules/Architect/Architect_Rules.md
+- Ensure options comply with .devin/rules/architect.md
 - Validate options against governance constraints
 - Consider security and compliance requirements
 - Ensure options align with architectural boundaries

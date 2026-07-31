@@ -9,7 +9,7 @@ purpose: Standard format for infrastructure development plans
 # Plan Template
 
 **Purpose**: Standard format for infrastructure development plans  
-**Authority**: Rules/Planner/Planner_Rules.md  
+**Authority**: .devin/rules/planner.md  
 **Status**: Active Template  
 **Version**: 1.0
 

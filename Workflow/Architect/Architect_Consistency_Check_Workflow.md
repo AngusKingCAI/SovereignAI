@@ -29,7 +29,7 @@ Systematic validation of harness architecture consistency across the entire proj
 
 ## Reference Documents
 - **Universal Framework References**: Workflow/Workflow_Reference/ (referenced frameworks based on workflow relevance)
-- **Agent Rules**: Rules/Architect/Architect_Rules.md (Architect-specific governance rules)
+- **Agent Rules**: .devin/rules/architect.md (Architect-specific governance rules)
 - **Terminology**: Workflow/Workflow_Reference/Terminology_Glossary.md (SSOT for governance terminology)
 - **Execution Mode Patterns**: Workflow/Architect/.Reference/Execution_Mode_Patterns.md (Architect-specific execution mode definitions)
 - **Validation Enforcement**: Workflow/Workflow_Reference/Validation_Enforcement_Patterns.md (universal validation patterns)
@@ -83,7 +83,7 @@ Systematic validation of harness architecture consistency across the entire proj
 
 ### Phase 2. Harness Architecture File Discovery
 - 1. Use `find` to enumerate all harness architecture files:
-  - `find . -name "*.md" \( -path "*/Workflow/*" -o -path "*/Rules/*" -o -path "*/.devin/*" -o -path "*/INDEX.md" \)`
+  - `find . -name "*.md" \( -path "*/Workflow/*" -o -path "*/.devin/rules/*" -o -path "*/.devin/*" -o -path "*/STRUCTURE.md" \)`
 - 2. Exclude /app folder from scan results
 - 3. Generate file inventory with paths and types
 - 4. **STATUS TRACKING**: Update workflow status to "phase_2_complete"
@@ -101,7 +101,7 @@ Systematic validation of harness architecture consistency across the entire proj
 ### Phase 4. File Reference Consistency Check
 - 1. **SCAN**: Read each harness architecture file line by line to extract all file references
 - 2. Extract all file references using `grep -r "Workflow/[A-Za-z/]*\.md" ./Workflow/` as supplemental check
-- 3. Extract all Rules/ references using `grep -r "Rules/[A-Za-z/]*\.md" ./Workflow/` as supplemental check
+- 3. Extract all .devin/rules/ references using `grep -r "\.devin/rules/[a-z]*\.md" ./Workflow/` as supplemental check
 - 4. Validate each referenced file exists at specified path
 - 5. Log broken references with file locations
 - 6. **WARNING HANDLING**: Continue workflow even if file reference extraction fails - treat issues as informational for report generation
@@ -140,10 +140,10 @@ Systematic validation of harness architecture consistency across the entire proj
 - 9. **PRINT**: "Markdown structure validation complete - {N} structure issues found"
 
 ### Phase 8. Basic Governance Validation (if full scan)
-- 1. **SCAN**: Read each Rules/ file line by line to check structure and patterns
-- 2. Governance Rule Consistency: Check Rules/ files structure and patterns
-- 3. **SCAN**: Read INDEX.md and documentation files line by line to validate conventions
-- 4. Documentation Structure: Validate INDEX.md and documentation conventions
+- 1. **SCAN**: Read each .devin/rules/ file line by line to check structure and patterns
+- 2. Governance Rule Consistency: Check .devin/rules/ files structure and patterns
+- 3. **SCAN**: Read STRUCTURE.md and documentation files line by line to validate conventions
+- 4. Documentation Structure: Validate STRUCTURE.md and documentation conventions
 - 5. **SCAN**: Validate Logs/ directory structure follows agent-specific organization (Logs/{Agent}/BP/{App/Harness}/)
 - 6. Directory Structure Consistency: Validate Logs/ directory structure matches workflow output locations
 - 7. **WARNING HANDLING**: Continue workflow even if basic governance checks fail - treat issues as informational for report generation
@@ -315,11 +315,11 @@ Systematic validation of harness architecture consistency across the entire proj
 - **Scope**: Workflow files, rule files, reference documents
 - **Variables**: 
   - `Workflow/` path references in workflow files
-  - `Rules/` path references in workflow files  
+  - `.devin/rules/` path references in workflow files  
   - `Workflow_Reference/` path references
   - Agent-specific Reference/ path references
   - Template path references
-  - External file references (INDEX.md, AGENTS.md)
+  - External file references (STRUCTURE.md, AGENTS.md)
 
 ### 2. Terminology Consistency
 - **Check**: Consistent terminology across all governance files
@@ -347,7 +347,7 @@ Systematic validation of harness architecture consistency across the entire proj
 
 ### 4. Governance Rule Consistency
 - **Check**: Rules files are properly structured and consistent
-- **Scope**: All Rules/{Agent}/{Agent}_Rules.md files
+- **Scope**: All .devin/rules/{agent}.md files
 - **Variables**:
   - YAML frontmatter structure
   - Rule naming conventions
@@ -357,9 +357,9 @@ Systematic validation of harness architecture consistency across the entire proj
 
 ### 5. Documentation Structure Consistency
 - **Check**: Documentation follows architectural conventions
-- **Scope**: INDEX.md, Docs/ directory structure
+- **Scope**: STRUCTURE.md, Docs/ directory structure
 - **Variables**:
-  - INDEX.md references accuracy
+  - STRUCTURE.md references accuracy
   - File categorization compliance
   - Directory structure adherence
   - Documentation placement conventions
@@ -455,7 +455,7 @@ Systematic validation of harness architecture consistency across the entire proj
 - **Variables**:
   - YAML frontmatter structure compliance with JSON schemas
   - File placement compliance with categorization rules
-  - Directory structure adherence to Scripts/, Workflow/, Rules/, Docs/, Logs/, Agents/, .devin/ categories
+  - Directory structure adherence to Scripts/, Workflow/, .devin/rules/, Docs/, Logs/, Agents/, .devin/ categories
   - Subdirectory structure compliance with categorization system
   - Naming convention adherence (workflow, rules, agents, skill, reference, template files)
   - Root directory file placement compliance (only approved files at root)
@@ -574,7 +574,7 @@ Systematic validation of harness architecture consistency across the entire proj
 1. **File Reference Validation**: Check each referenced file exists
 2. **Workflow Structure Validation**: Compare workflows against template for mandated sections only
 3. **Governance Rule Validation**: Check rule file structure consistency
-4. **Documentation Validation**: Verify INDEX.md and documentation structure
+4. **Documentation Validation**: Verify STRUCTURE.md and documentation structure
 5. **Framework Coverage Validation**: Check universal framework usage
 
 ### Process Step 3: Issue Aggregation

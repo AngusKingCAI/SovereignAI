@@ -12,6 +12,16 @@
   ],
   "PostToolUse": [
     {
+      "matcher": "^(write|edit)$",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python \"C:/SovereignAI/Scripts/Harness Tests/rule_violation_detector.py\"",
+          "timeout": 10
+        }
+      ]
+    },
+    {
       "matcher": "*",
       "hooks": [
         {
