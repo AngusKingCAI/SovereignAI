@@ -45,7 +45,7 @@ This design is built around six principles derived from the research:
 
 3. **The Policy Decision Point Pattern** — Every tool call passes through a Policy Decision Point (PDP) before execution. The PDP evaluates the call against the active Policy Cards and returns allow/deny/deny-with-reason. The model never gets to vote on binding rules.
 
-4. **Progressive Disclosure for Token Efficiency** — The constitution (≈500 tokens) is always in context. The active agent's rule *index* (≈300 tokens) is always in context. Full rule definitions are loaded on-demand by skills. Session-start token budget: under 1,000 tokens for governance — compared to 14,000+ in a typical prose-rules harness.
+4. **Progressive Disclosure for Token Efficiency** — The constitution (~500 tokens) is always in context. The active agent's rule *index* (~300 tokens) is always in context. Full rule definitions are loaded on-demand by skills. Session-start token budget: approximately 800 tokens for governance — compared to 14,000+ in a typical prose-rules harness.
 
 5. **Declare-Do-Audit Lifecycle** — Rules are declared in version-controlled Policy Cards, enforced at runtime by hooks, and audited continuously by a violation-collection pipeline that feeds back into rule updates. This closed loop is what prevents the "rules drift from reality" failure mode that every prose-based harness eventually hits.
 
@@ -74,10 +74,12 @@ The "Policy-as-Code for Agents" article (tianpan.co, April 2026) argues that tre
 The most rigorous source is the arxiv paper "Policy Cards: Machine-Readable Runtime Governance for Autonomous AI Agents" (Mavračić, October 2025). It introduces Policy Cards as "a machine-readable, deployment-layer standard for expressing operational, regulatory, and ethical constraints for AI agents." Key contributions adopted in our design:
 
 - **Policy Cards sit with the agent** at runtime and tell it what it must and must not do — they become "an integral part of the deployed agent."
-- **They encode allow/deny rules, obligations, evidentiary requirements, and crosswalk mappings** to governance frameworks (NIST AI RMF, ISO/IEC 42001, EU AI Act).
+- **They encode allow/deny rules** (we implement this subset of the paper's definition).
 - **Each card is validated automatically, version-controlled, and linked to runtime enforcement.**
 - **The Declare-Do-Audit lifecycle**: Declare (bind policy to agent at deploy time) → Do (execute with evidence capture) → Audit (continuous assurance against declared policy).
 - **Schema-based validation in CI** — every Policy Card must pass JSON Schema validation before merge.
+
+**Note:** The full Policy Cards paper defines four constitutive elements: allow/deny rules, obligations, evidentiary requirements, and crosswalk mappings to governance frameworks (NIST AI RMF, ISO/IEC 42001, EU AI Act). This design implements only the allow/deny rules component, which is sufficient for code-governance contexts. The other elements (obligations, evidentiary requirements, assurance-framework crosswalks) are omitted as they are more relevant to regulatory compliance scenarios.
 
 ### 2.4 Progressive Disclosure for Token Efficiency
 
@@ -89,7 +91,7 @@ Anthropic's Constitution (January 2026) establishes a 4-tier priority hierarchy:
 
 ### 2.6 Token Budget Research
 
-The "Minimum Viable Context" research (Medium, Data Science Collective) frames the problem clearly: "The context window has a hard token budget, and loading additional material consumes capacity that may unnecessarily [displace task-relevant content]." The "Budget-Aware Context Management" arxiv paper (April 2026) formalizes this as a framework for "performing long-horizon reasoning under explicit token budgets." The practical implication: a harness that loads 14,000 tokens of rules at session start has already consumed 10-12% of a 128K context window before the user's task enters context. Our design targets under 1,000 tokens for governance at session start — a 93% reduction.
+The "Minimum Viable Context" research (Medium, Data Science Collective) frames the problem clearly: "The context window has a hard token budget, and loading additional material consumes capacity that may unnecessarily [displace task-relevant content]." The "Budget-Aware Context Management" arxiv paper (April 2026) formalizes this as a framework for "performing long-horizon reasoning under explicit token budgets." The practical implication: a harness that loads 14,000 tokens of rules at session start has already consumed 10-12% of a 128K context window before the user's task enters context. Our design targets approximately 800 tokens for governance at session start — a 94% reduction.
 
 ---
 
@@ -132,7 +134,7 @@ Each layer has a distinct responsibility and a distinct enforcement mechanism. T
 | 4. Validation | Catches rule defects before deploy | CI pipeline + pre-commit | 0 tokens (CI only) |
 | 5. Audit | Closed-loop feedback | Violation log + weekly report | 0 tokens (async) |
 | 6. Testing & Improvement | Verifies every layer works + drives evolution | Test suites + mutation + property + canary | 0 tokens (test-time only) |
-| **Total** | | | **~800 tokens** |
+| **Total** | | | **approximately 800 tokens** |
 
 ---
 
@@ -152,6 +154,8 @@ Adopted from Anthropic's Constitution (January 2026), the hierarchy is:
 | T3 | **Helpfulness** | Task completion, efficiency, quality | "Prefer non-blocking validation over blocking hooks for token efficiency" |
 
 When two rules conflict, the higher-tier rule wins. A T0 safety rule always overrides a T3 helpfulness rule. This is encoded explicitly so the model (and the hooks) can resolve conflicts deterministically.
+
+**Note:** Anthropic's actual Constitution describes the 4-tier hierarchy as intended for holistic weighing rather than strict lexicographic override. This design adopts a stricter override model for code-governance contexts where deterministic enforcement is preferable to nuanced judgment. For general-purpose assistant behavior, the holistic approach from Anthropic's source may be more appropriate.
 
 ### 4.2 Constitution File Format
 
@@ -216,7 +220,7 @@ principles:
     enforceable_via: prompt  # Advisory only
 ```
 
-The constitution is approximately 450 tokens — small enough to always be in context, large enough to establish the precedence hierarchy and the highest-tier binding rules. Every Policy Card in Layer 2 references one of these principles via its `constitutional_basis` field.
+The constitution is approximately 450 tokens — small enough to always be in context, large enough to establish the precedence hierarchy and the highest-tier binding rules. **Note:** This token count is an estimate based on typical YAML structure. Actual token count depends on the specific tokenizer used by the model and should be measured during implementation. Every Policy Card in Layer 2 references one of these principles via its `constitutional_basis` field.
 
 ### 4.3 Why the Constitution Is Separate from Policy Cards
 
@@ -427,7 +431,7 @@ The full Policy Cards are loaded on-demand, but the agent always sees a compact 
 
 ```yaml
 # governance/rule-index.yaml (auto-generated from Policy Cards)
-# This file is loaded into context at session start (~300 tokens)
+# This file is loaded into context at session start (~300 tokens estimated)
 agent: architect
 rules:
   - id: ARCH-001
@@ -492,70 +496,49 @@ Devin CLI (like Claude Code) supports lifecycle hooks. The design uses four even
 | `PostToolUse` | After tool completes | Advisory validation — inject warnings for soft violations | No (advisory) |
 | `PostCompaction` | After context compaction | Reload constitution + rule index (compaction may have evicted them) | No (context reload) |
 
-### 6.2 The Policy Decision Point Hook
+### 6.2 The Evaluator Module
 
-The PreToolUse hook is the heart of the enforcement layer. It is a Python script that:
-
-1. Reads the tool call from stdin (Devin CLI passes JSON via stdin)
-2. Loads the active agent's binding Policy Cards (cached after first load)
-3. Evaluates each card's `check` against the tool call
-4. Returns `allow`, `deny` (with reason), or `allow-with-warning`
-5. Logs the decision to the audit trail (Layer 5)
+Before implementing the PDP hook, we extract the rule evaluation logic into a separate module. This ensures the hook, test runner, and drift detection all import from the same source of truth.
 
 ```python
-# scripts/enforcement/pre_tool_pdp.py
+# scripts/enforcement/evaluator.py
 #!/usr/bin/env python3
 """
-Policy Decision Point for Devin CLI PreToolUse hook.
-Evaluates every tool call against binding Policy Cards.
+Rule evaluator module — provides the core evaluation logic used by
+the PDP hook, test runner, and drift detection.
 """
-import sys
-import json
-import yaml
 import re
-import os
-from pathlib import Path
-from datetime import datetime
+import yaml
+import jsonschema
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-POLICY_CARDS_DIR = PROJECT_ROOT / "governance" / "policy-cards"
-AUDIT_LOG = PROJECT_ROOT / ".audit" / "violations.jsonl"
-
-def load_active_agent():
-    """Determine the active agent from session state."""
-    # In a real implementation, this reads from session state
-    # For now, default to 'architect'
-    return os.environ.get("ACTIVE_AGENT", "architect")
-
-def load_binding_rules(agent: str):
-    """Load all binding-severity Policy Cards for the active agent."""
-    rules = []
-    # Load shared rules (apply to all agents)
-    shared_dir = POLICY_CARDS_DIR / "shared"
-    for card_file in shared_dir.glob("*.yaml"):
-        card = yaml.safe_load(card_file.read_text())
-        if card.get("severity") == "blocking" and card.get("agent") in ("all", agent):
-            rules.append(card)
-    # Load agent-specific rules
-    agent_dir = POLICY_CARDS_DIR / agent
-    if agent_dir.exists():
-        for card_file in agent_dir.glob("*.yaml"):
-            card = yaml.safe_load(card_file.read_text())
-            if card.get("severity") == "blocking":
-                rules.append(card)
-    return rules
+# Registry of check type evaluators
+EVALUATORS = {
+    "deny_command": None,  # Implemented inline below
+    "path_pattern": None,
+    "require_field": None,
+    "regex": None,
+    "yaml_field": None,
+    "json_schema": None,
+    "custom_function": None,
+}
 
 def evaluate_rule(rule: dict, tool_call: dict) -> dict:
     """Evaluate a single Policy Card against a tool call.
     Returns: {decision: allow|deny, reason: str, rule_id: str}
+    
+    This function is imported by:
+    - scripts/enforcement/pre_tool_pdp.py (runtime enforcement)
+    - scripts/validation/run_rule_tests.py (test runner)
+    - scripts/audit/drift_detection.py (drift detection)
     """
     check = rule.get("check", {})
     check_type = check.get("type")
     params = check.get("params", {})
     
     # Extract the relevant input from the tool call
-    tool_name = tool_call.get("tool", "")
-    tool_input = tool_call.get("input", {})
+    # Devin CLI's PreToolUse payload uses "tool_name" and "tool_input" keys
+    tool_name = tool_call.get("tool_name", tool_call.get("tool", ""))
+    tool_input = tool_call.get("tool_input", tool_call.get("input", {}))
     
     if check_type == "deny_command":
         # Check if the command matches any deny pattern
@@ -595,8 +578,171 @@ def evaluate_rule(rule: dict, tool_call: dict) -> dict:
                     }
         return {"decision": "allow", "rule_id": rule["id"]}
     
-    # Unknown check type — allow but log
-    return {"decision": "allow", "rule_id": rule["id"], "note": "unknown check type"}
+    elif check_type == "regex":
+        # Generic regex match against tool input
+        input_string = tool_input.get("command", "") or tool_input.get("content", "") or str(tool_input)
+        pattern = params.get("pattern", "")
+        if re.search(pattern, input_string):
+            return {
+                "decision": "deny",
+                "reason": f"Input matches prohibited pattern (rule {rule['id']})",
+                "rule_id": rule["id"]
+            }
+        return {"decision": "allow", "rule_id": rule["id"]}
+    
+    elif check_type == "yaml_field":
+        # Check YAML frontmatter for required fields or field values
+        if tool_name in ("write", "edit"):
+            content = tool_input.get("content", "")
+            # Extract YAML frontmatter (between --- markers)
+            if content.startswith("---"):
+                parts = content.split("---", 2)
+                if len(parts) >= 2:
+                    try:
+                        frontmatter = yaml.safe_load(parts[1])
+                        if frontmatter is None:
+                            frontmatter = {}
+                        
+                        # Check for required fields
+                        required_fields = params.get("required_fields", [])
+                        for field in required_fields:
+                            if field not in frontmatter:
+                                return {
+                                    "decision": "deny",
+                                    "reason": f"Missing required YAML field '{field}' (rule {rule['id']})",
+                                    "rule_id": rule["id"]
+                                }
+                        
+                        # Check field values if specified
+                        field_values = params.get("field_values", {})
+                        for field, expected_value in field_values.items():
+                            if frontmatter.get(field) != expected_value:
+                                return {
+                                    "decision": "deny",
+                                    "reason": f"YAML field '{field}' has incorrect value (rule {rule['id']})",
+                                    "rule_id": rule["id"]
+                                }
+                    except Exception:
+                        # If YAML parsing fails, deny for safety
+                        return {
+                            "decision": "deny",
+                            "reason": f"Invalid YAML frontmatter (rule {rule['id']})",
+                            "rule_id": rule["id"]
+                        }
+        return {"decision": "allow", "rule_id": rule["id"]}
+    
+    elif check_type == "json_schema":
+        # Validate tool input against a JSON Schema
+        schema = params.get("schema", {})
+        try:
+            jsonschema.validate(tool_input, schema)
+            return {"decision": "allow", "rule_id": rule["id"]}
+        except jsonschema.ValidationError as e:
+            return {
+                "decision": "deny",
+                "reason": f"JSON Schema validation failed: {e.message} (rule {rule['id']})",
+                "rule_id": rule["id"]
+            }
+    
+    elif check_type == "custom_function":
+        # Call a custom Python function for complex checks
+        function_name = params.get("function", "")
+        try:
+            # Import the function module
+            module_path, func_name = function_name.rsplit(".", 1) if "." in function_name else ("checks", function_name)
+            module = __import__(module_path, fromlist=[func_name])
+            custom_func = getattr(module, func_name)
+            
+            # Call the function with tool_call and params
+            result = custom_func(tool_call, params)
+            if result.get("deny"):
+                return {
+                    "decision": "deny",
+                    "reason": result.get("reason", f"Custom function check failed (rule {rule['id']})"),
+                    "rule_id": rule["id"]
+                }
+            return {"decision": "allow", "rule_id": rule["id"]}
+        except Exception as e:
+            # If custom function fails, log but allow (fail-open for custom functions)
+            return {"decision": "allow", "rule_id": rule["id"], "note": f"custom function error: {e}"}
+    
+    # Unknown check type — deny for safety
+    return {"decision": "deny", "rule_id": rule["id"], "reason": f"Unknown check type '{check_type}'"}
+```
+
+### 6.3 The Policy Decision Point Hook
+
+The PreToolUse hook is the heart of the enforcement layer. It is a Python script that:
+
+1. Reads the tool call from stdin (Devin CLI passes JSON via stdin)
+2. Loads the active agent's binding Policy Cards (from disk on each call)
+3. Evaluates each card's `check` against the tool call (using the evaluator module)
+4. Returns `allow`, `deny` (with reason), or `allow-with-warning`
+5. Logs the decision to the audit trail (Layer 5)
+
+```python
+# scripts/enforcement/pre_tool_pdp.py
+#!/usr/bin/env python3
+"""
+Policy Decision Point for Devin CLI PreToolUse hook.
+Evaluates every tool call against binding Policy Cards.
+"""
+import sys
+import json
+import yaml
+import os
+from pathlib import Path
+from datetime import datetime
+
+# Import the evaluator module for the core evaluation logic
+from enforcement.evaluator import evaluate_rule
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+POLICY_CARDS_DIR = PROJECT_ROOT / "governance" / "policy-cards"
+AUDIT_LOG = PROJECT_ROOT / ".audit" / "violations.jsonl"
+
+def load_active_agent(tool_call: dict = None):
+    """Determine the active agent from session state or tool call context.
+    
+    In a single-agent deployment, this returns a fixed agent (configurable via ACTIVE_AGENT env var).
+    In a multi-agent deployment, this would resolve agent identity from:
+    - The session_id in the tool call payload (Devin CLI provides this)
+    - A session state store (e.g., Redis, file-based state)
+    - Or agent-specific environment variables per subprocess
+    
+    Current implementation: Single-agent mode with environment variable fallback.
+    """
+    # If tool_call contains session_id, in a real implementation we would:
+    # 1. Look up session state in a state store
+    # 2. Return the agent associated with that session
+    # For now, we use environment variable configuration
+    return os.environ.get("ACTIVE_AGENT", "architect")
+
+def load_binding_rules(agent: str):
+    """Load all binding-severity Policy Cards for the active agent.
+    
+    Note: This function re-reads and re-parses YAML files on every call.
+    In a production deployment with many rules, consider adding:
+    - An in-memory cache with mtime-based invalidation
+    - Or a long-lived daemon process that reloads on SIGHUP
+    
+    Current implementation: No caching (simple, correct, slower with many rules).
+    """
+    rules = []
+    # Load shared rules (apply to all agents)
+    shared_dir = POLICY_CARDS_DIR / "shared"
+    for card_file in sorted(shared_dir.glob("*.yaml")):  # Sort for deterministic order
+        card = yaml.safe_load(card_file.read_text())
+        if card.get("severity") == "blocking" and card.get("agent") in ("all", agent):
+            rules.append(card)
+    # Load agent-specific rules
+    agent_dir = POLICY_CARDS_DIR / agent
+    if agent_dir.exists():
+        for card_file in sorted(agent_dir.glob("*.yaml")):  # Sort for deterministic order
+            card = yaml.safe_load(card_file.read_text())
+            if card.get("severity") == "blocking":
+                rules.append(card)
+    return rules
 
 def log_decision(tool_call: dict, result: dict):
     """Log every PDP decision to the audit trail."""
@@ -618,28 +764,63 @@ def main():
         stdin_data = sys.stdin.read()
         tool_call = json.loads(stdin_data)
     except (json.JSONDecodeError, ValueError) as e:
-        # If we can't parse stdin, allow the call but log the error
-        print(json.dumps({"decision": "allow", "error": f"stdin parse failed: {e}"}))
-        sys.exit(0)
+        # Check if any safety-tier rules are active
+        agent = load_active_agent()
+        rules = load_binding_rules(agent)
+        has_safety_rules = any(rule.get("tier") == "safety" for rule in rules)
+        
+        if has_safety_rules:
+            # Fail-closed for safety rules: deny on malformed input
+            error_output = {
+                "hookSpecificOutput": {
+                    "additionalContext": f"⛔ BLOCKED: PDP failed to parse stdin (safety-tier rules active). "
+                                         f"Error: {e}. The tool call was denied to prevent potential safety violations."
+                }
+            }
+            print(json.dumps(error_output))
+            sys.exit(2)  # exit code 2 = deny
+        else:
+            # Fail-open for non-safety rules: allow but log
+            print(json.dumps({"decision": "allow", "error": f"stdin parse failed: {e}"}))
+            sys.exit(0)
     
     agent = load_active_agent()
     rules = load_binding_rules(agent)
     
     # Evaluate every binding rule — any deny means deny
-    for rule in rules:
-        result = evaluate_rule(rule, tool_call)
-        log_decision(tool_call, result)
-        if result["decision"] == "deny":
-            # Output the deny decision as additionalContext
-            output = {
+    # Wrap in try/except to catch evaluation errors
+    try:
+        for rule in rules:
+            result = evaluate_rule(rule, tool_call)
+            log_decision(tool_call, result)
+            if result["decision"] == "deny":
+                # Output the deny decision as additionalContext
+                output = {
+                    "hookSpecificOutput": {
+                        "additionalContext": f"⛔ BLOCKED by rule {result['rule_id']}: {result['reason']}\n"
+                                             f"The tool call was denied by the Policy Decision Point. "
+                                             f"Modify your approach and try again."
+                    }
+                }
+                print(json.dumps(output))
+                sys.exit(2)  # exit code 2 = deny the tool call
+    except Exception as e:
+        # Evaluation error: check if safety rules are active
+        has_safety_rules = any(rule.get("tier") == "safety" for rule in rules)
+        if has_safety_rules:
+            # Fail-closed for safety rules
+            error_output = {
                 "hookSpecificOutput": {
-                    "additionalContext": f"⛔ BLOCKED by rule {result['rule_id']}: {result['reason']}\n"
-                                         f"The tool call was denied by the Policy Decision Point. "
-                                         f"Modify your approach and try again."
+                    "additionalContext": f"⛔ BLOCKED: PDP evaluation error (safety-tier rules active). "
+                                         f"Error: {e}. The tool call was denied to prevent potential safety violations."
                 }
             }
-            print(json.dumps(output))
-            sys.exit(2)  # exit code 2 = deny the tool call
+            print(json.dumps(error_output))
+            sys.exit(2)
+        else:
+            # Fail-open for non-safety rules
+            print(json.dumps({"decision": "allow", "error": f"evaluation error: {e}"}))
+            sys.exit(0)
     
     # All rules passed — allow
     print(json.dumps({"decision": "allow"}))
@@ -706,11 +887,52 @@ The hooks are registered in `.claude/settings.json` (Devin CLI's configuration f
 }
 ```
 
-### 6.4 Critical Design Decisions for Hooks
+### 6.4 Scalability & Deployment Considerations
+
+The design as described supports single-agent deployments. For multi-agent or parallel execution scenarios, additional considerations apply:
+
+**1. Concurrent/Parallel Agent Execution**
+The current `load_active_agent()` function uses an environment variable (`ACTIVE_AGENT`) which is process-scoped. In a deployment where multiple agents execute tool calls concurrently (e.g., Manager→Worker fan-out), this approach would not correctly scope agent identity per-session. Multi-agent deployments would require:
+- Session state management (Redis, file-based state, or similar)
+- Using the `session_id` from Devin CLI's PreToolUse payload to look up agent identity
+- Or separate hook configurations per agent with distinct state stores
+
+**2. Concurrent Writes to the Audit Log**
+The current `log_decision()` function opens `.audit/violations.jsonl` in append mode without file locking. Under concurrent PDP subprocesses (from parallel tool calls or parallel agents), this could lead to interleaved or corrupted log entries. For concurrent deployments, consider:
+- File locking (e.g., `fcntl.flock` on Unix, `msvcrt.locking` on Windows)
+- Or a dedicated logging daemon that accepts writes over a socket/queue
+- Or per-session log files that are merged asynchronously
+
+**3. Offline / Local-First Operation**
+The design emphasizes "local-first" operation, but Layer 4 (CI pipeline) and Layer 6 (nightly canary/mutation/drift) are specified as GitHub Actions workflows. For air-gapped or unreliable-connectivity environments, provide local equivalents:
+- Local cron jobs or systemd timers for nightly tests
+- Local mutation/canary runners using the same scripts
+- Pre-commit hooks for validation (already provided) work offline
+
+**4. Environment and Dependency Management**
+The hook configuration specifies bare `"command": "python scripts/enforcement/pre_tool_pdp.py"` without:
+- Python version resolution (`python3` vs `python`)
+- Virtual environment activation
+- Pinned dependency versions
+- Handling for `ImportError` if dependencies aren't installed
+
+For production deployments, consider:
+- Using absolute paths to a known Python interpreter
+- Activating a virtualenv in the hook command
+- Adding a dependency check in the PDP script that fails gracefully
+- Or packaging the enforcement scripts as an installable package with pinned dependencies
+
+**5. Policy Card Version Field**
+The schema declares a `version` field (semver pattern) but the current implementation does not consume it. Future enhancements could use this for:
+- Migration paths when schema changes
+- Compatibility checks between rule versions
+- Rollback capabilities if a new rule version causes issues
+
+### 6.5 Critical Design Decisions for Hooks
 
 1. **Relative paths only.** The SovereignAI analysis found that absolute Windows paths (`C:/SovereignAI/...`) break portability. All hook commands use relative paths (`python scripts/enforcement/...`) because Devin CLI invokes hooks from the project root.
 
-2. **PDP timeout is 5 seconds.** Long enough to load cached Policy Cards and evaluate regexes; short enough to not block the agent. If the PDP times out, the tool call is allowed (fail-open) but logged — this is a deliberate trade-off favoring availability over blocking on hook failures.
+2. **PDP timeout is 5 seconds.** Long enough to load Policy Cards and evaluate regexes; short enough to not block the agent. If the PDP times out, the tool call is allowed (fail-open) but logged for non-safety rules, or denied (fail-closed) for safety-tier rules — this is a deliberate trade-off. **Note:** The 5-second timeout is appropriate for the ~33-rule single-agent example. As rule count grows, latency may increase; performance should be measured at scale and the timeout adjusted or caching added if needed.
 
 3. **PreToolUse is blocking for safety-tier rules only.** Compliance and helpfulness rules are enforced by PostToolUse advisory hooks (non-blocking). This follows the "use hooks sparingly" principle from the guardrails research — only safety and ethics rules need to physically block; compliance rules can warn.
 
@@ -857,6 +1079,7 @@ Every Policy Card includes `test_cases`. The test runner executes them against t
 """Run every Policy Card's test_cases against its check function."""
 import sys
 import yaml
+import json
 from pathlib import Path
 
 POLICY_CARDS_DIR = Path("governance/policy-cards")
@@ -901,7 +1124,47 @@ def run_check(card, test_input):
     """Run the card's check against test_input. Returns pass/fail/deny/allow."""
     # Implementation depends on check type — delegates to enforcement module
     from enforcement.evaluator import evaluate_rule
-    result = evaluate_rule(card, {"tool": "test", "input": {"command": test_input}})
+    
+    check_type = card.get("check", {}).get("type")
+    
+    # Build appropriate tool call shape based on check type
+    if check_type == "deny_command":
+        tool_call = {"tool_name": "exec", "tool_input": {"command": test_input}}
+    elif check_type == "path_pattern":
+        tool_call = {"tool_name": "write", "tool_input": {"file_path": test_input}}
+    elif check_type == "require_field":
+        # For require_field, test_input should be a file path - read the file content
+        test_file = Path(test_input)
+        if test_file.exists():
+            content = test_file.read_text()
+        else:
+            content = test_input  # Use as-is if file doesn't exist
+        tool_call = {"tool_name": "write", "tool_input": {"content": content}}
+    elif check_type == "yaml_field":
+        # For yaml_field, test_input should be a file path - read the file content
+        test_file = Path(test_input)
+        if test_file.exists():
+            content = test_file.read_text()
+        else:
+            content = test_input  # Use as-is if file doesn't exist
+        tool_call = {"tool_name": "write", "tool_input": {"content": content}}
+    elif check_type == "regex":
+        tool_call = {"tool_name": "exec", "tool_input": {"command": test_input}}
+    elif check_type == "json_schema":
+        # For json_schema, test_input should be JSON
+        try:
+            json_input = json.loads(test_input) if isinstance(test_input, str) else test_input
+            tool_call = {"tool_name": "test", "tool_input": json_input}
+        except:
+            tool_call = {"tool_name": "test", "tool_input": {}}
+    elif check_type == "custom_function":
+        # For custom_function, pass as-is
+        tool_call = {"tool_name": "test", "tool_input": {"data": test_input}}
+    else:
+        # Default fallback
+        tool_call = {"tool_name": "test", "tool_input": {"command": test_input}}
+    
+    result = evaluate_rule(card, tool_call)
     return "deny" if result["decision"] == "deny" else "allow"
 
 if __name__ == "__main__":
@@ -1125,6 +1388,7 @@ import pytest
 import yaml
 import jsonschema
 import hashlib
+import json
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -1158,7 +1422,37 @@ def test_card_test_cases_pass(card_file, card):
     """Every card's test_cases must actually pass against its check."""
     from enforcement.evaluator import evaluate_rule
     for tc in card["test_cases"]:
-        result = evaluate_rule(card, {"tool": "test", "input": {"command": tc["input"]}})
+        # Build appropriate tool call shape based on check type
+        check_type = card.get("check", {}).get("type")
+        test_input = tc["input"]
+        
+        if check_type == "deny_command":
+            tool_call = {"tool_name": "exec", "tool_input": {"command": test_input}}
+        elif check_type == "path_pattern":
+            tool_call = {"tool_name": "write", "tool_input": {"file_path": test_input}}
+        elif check_type in ("require_field", "yaml_field"):
+            # For field checks, test_input should be a file path - read the file content
+            test_file = Path(test_input)
+            if test_file.exists():
+                content = test_file.read_text()
+            else:
+                content = test_input  # Use as-is if file doesn't exist
+            tool_call = {"tool_name": "write", "tool_input": {"content": content}}
+        elif check_type == "regex":
+            tool_call = {"tool_name": "exec", "tool_input": {"command": test_input}}
+        elif check_type == "json_schema":
+            try:
+                json_input = json.loads(test_input) if isinstance(test_input, str) else test_input
+                tool_call = {"tool_name": "test", "tool_input": json_input}
+            except:
+                tool_call = {"tool_name": "test", "tool_input": {}}
+        elif check_type == "custom_function":
+            tool_call = {"tool_name": "test", "tool_input": {"data": test_input}}
+        else:
+            # Default fallback
+            tool_call = {"tool_name": "test", "tool_input": {"command": test_input}}
+        
+        result = evaluate_rule(card, tool_call)
         actual = "deny" if result["decision"] == "deny" else "allow"
         assert actual == tc["expected"], \
             f"{card_file} / {tc['name']}: expected {tc['expected']}, got {actual}"
@@ -1202,7 +1496,7 @@ The PDP is the enforcement engine. If it crashes, fails open, or fails closed at
 | Integration | PDP denies write to governance file without frontmatter | `test_missing_frontmatter_blocked()` |
 | Integration | PDP allows write to README.md (exempt) | `test_exempt_files_allowed()` |
 | Mutation | Deliberately break a card's regex → confirm PDP behavior changes | `test_mutation_breaks_enforcement()` |
-| Property | For any valid tool call, PDP returns within 5 seconds (timeout guarantee) | Hypothesis + timeout |
+| Property | For any valid tool call, PDP returns within 5 seconds (timeout guarantee) | `test_pdp_completes_within_5_seconds_property()` (Hypothesis) |
 | Chaos | Inject random stdin garbage → PDP must not crash or hang | `test_chaos_stdin_resilience()` |
 
 ```python
@@ -1233,20 +1527,20 @@ def run_pdp(tool_call: dict) -> dict:
 
 def test_destructive_command_blocked():
     """rm -rf must be denied by SHARED-S01."""
-    result = run_pdp({"tool": "bash", "input": {"command": "rm -rf tests/"}})
+    result = run_pdp({"tool_name": "exec", "tool_input": {"command": "rm -rf tests/"}})
     assert result["exit_code"] == 2, f"Expected exit 2 (deny), got {result['exit_code']}"
     assert "BLOCKED" in result["stdout"] or "deny" in result["stdout"]
 
 def test_non_destructive_rm_allowed():
     """rm without -rf must be allowed."""
-    result = run_pdp({"tool": "bash", "input": {"command": "rm single_file.txt"}})
+    result = run_pdp({"tool_name": "exec", "tool_input": {"command": "rm single_file.txt"}})
     assert result["exit_code"] == 0, f"Expected exit 0 (allow), got {result['exit_code']}"
 
 def test_missing_frontmatter_blocked():
     """Writing a governance .md without frontmatter must be denied."""
     result = run_pdp({
-        "tool": "write",
-        "input": {
+        "tool_name": "write",
+        "tool_input": {
             "file_path": "governance/policy-cards/test.md",
             "content": "# No frontmatter here\nJust body text"
         }
@@ -1256,8 +1550,8 @@ def test_missing_frontmatter_blocked():
 def test_exempt_files_allowed():
     """README.md is exempt from frontmatter rules."""
     result = run_pdp({
-        "tool": "write",
-        "input": {
+        "tool_name": "write",
+        "tool_input": {
             "file_path": "README.md",
             "content": "# No frontmatter here\nBut README is exempt"
         }
@@ -1278,10 +1572,15 @@ def test_malformed_stdin_does_not_crash():
     assert "allow" in result.stdout, "Malformed stdin should result in allow + error log"
 
 def test_pdp_completes_within_timeout():
-    """PDP must return within 5 seconds (the hook timeout)."""
+    """PDP must return within 5 seconds (the hook timeout).
+    
+    Note: This is a single measurement test. For comprehensive timing
+    verification, use the property-based test in test_pdp_properties.py
+    which tests across random inputs and rule configurations.
+    """
     import time
     start = time.monotonic()
-    run_pdp({"tool": "bash", "input": {"command": "ls"}})
+    run_pdp({"tool_name": "exec", "tool_input": {"command": "ls"}})
     elapsed = time.monotonic() - start
     assert elapsed < 5.0, f"PDP took {elapsed:.2f}s, must be <5s"
 ```
@@ -1409,7 +1708,6 @@ End-to-end canary session: runs a scripted sequence of tool calls
 through the actual hook system and verifies outcomes.
 Runs nightly via GitHub Actions scheduled workflow.
 """
-import json
 import subprocess
 import pytest
 from pathlib import Path
@@ -1418,13 +1716,13 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # Each canary case is: (name, tool_call, expected_exit_code, expected_stdout_contains)
 CANARY_CASES = [
-    ("destructive_rm_rf", {"tool": "bash", "input": {"command": "rm -rf tests/"}}, 2, "BLOCKED"),
-    ("safe_rm", {"tool": "bash", "input": {"command": "rm file.txt"}}, 0, None),
-    ("git_force_push", {"tool": "bash", "input": {"command": "git push origin main --force"}}, 2, "BLOCKED"),
-    ("safe_ls", {"tool": "bash", "input": {"command": "ls -la"}}, 0, None),
-    ("write_without_frontmatter", {"tool": "write", "input": {"file_path": "governance/test.md", "content": "# no frontmatter"}}, 2, "BLOCKED"),
-    ("write_with_frontmatter", {"tool": "write", "input": {"file_path": "governance/test.md", "content": "---\nid: TEST-001\n---\n# body"}}, 0, None),
-    ("write_to_readme_exempt", {"tool": "write", "input": {"file_path": "README.md", "content": "# no frontmatter but exempt"}}, 0, None),
+    ("destructive_rm_rf", {"tool_name": "exec", "tool_input": {"command": "rm -rf tests/"}}, 2, "BLOCKED"),
+    ("safe_rm", {"tool_name": "exec", "tool_input": {"command": "rm file.txt"}}, 0, None),
+    ("git_force_push", {"tool_name": "exec", "tool_input": {"command": "git push origin main --force"}}, 2, "BLOCKED"),
+    ("safe_ls", {"tool_name": "exec", "tool_input": {"command": "ls -la"}}, 0, None),
+    ("write_without_frontmatter", {"tool_name": "write", "tool_input": {"file_path": "governance/test.md", "content": "# no frontmatter"}}, 2, "BLOCKED"),
+    ("write_with_frontmatter", {"tool_name": "write", "tool_input": {"file_path": "governance/test.md", "content": "---\nid: TEST-001\n---\n# body"}}, 0, None),
+    ("write_to_readme_exempt", {"tool_name": "write", "tool_input": {"file_path": "README.md", "content": "# no frontmatter but exempt"}}, 0, None),
 ]
 
 @pytest.mark.parametrize("name,tool_call,expected_exit,expected_stdout", CANARY_CASES)
@@ -1537,6 +1835,26 @@ def test_pdp_handles_binary_stdin(garbage):
     )
     assert result.returncode in (0, 2), \
         f"PDP crashed on binary stdin: exit {result.returncode}"
+
+@settings(max_examples=100, deadline=5000,
+          suppress_health_check=[HealthCheck.too_slow])
+@given(tool_call=tool_calls)
+def test_pdp_completes_within_5_seconds_property(tool_call):
+    """Property-based test: PDP must complete within 5 seconds for any valid tool call."""
+    import time
+    start = time.monotonic()
+    result = subprocess.run(
+        ["python", str(PDP_SCRIPT)],
+        input=json.dumps(tool_call),
+        capture_output=True,
+        timeout=10,  # Give test a 10s timeout, but assert <5s
+        cwd=str(PROJECT_ROOT),
+    )
+    elapsed = time.monotonic() - start
+    assert result.returncode in (0, 2), \
+        f"PDP crashed on input {tool_call}: exit {result.returncode}"
+    assert elapsed < 5.0, \
+        f"PDP took {elapsed:.2f}s on input {tool_call}, must be <5s"
 ```
 
 ### 9.8 Coverage Gates
@@ -1832,7 +2150,7 @@ The SovereignAI analysis found that loading all rule files at session start cons
 | Tier 1: Constitution | `governance/constitution.yaml` (4-tier hierarchy + ~6 principles) | Always (SessionStart hook) | ~500 tokens |
 | Tier 2: Rule Index | `governance/rule-index.yaml` (auto-generated: ID + 1-line summary + severity) | Always (SessionStart hook) | ~300 tokens |
 | Tier 3: Full Policy Cards | Individual `governance/policy-cards/**/*.yaml` files | On-demand (rule-lookup skill) | 0 tokens until needed |
-| **Total at session start** | | | **~800 tokens** |
+| **Total at session start** | | | **approximately 800 tokens** |
 
 ### 10.2 Comparison with Prose-Based Harness
 
@@ -2079,7 +2397,7 @@ project-root/
 
 5. **No `Rules/` directory.** The SovereignAI analysis found dead references to a `Rules/` directory that didn't exist. In this design, rules are always in `governance/policy-cards/` — there is no alternative location to reference.
 
-6. **Lowercase everywhere.** Unlike SovereignAI's mixed `Scripts/` (Title Case) and `app/` (lowercase), this design uses lowercase consistently for all directories. This eliminates the case-sensitivity bugs found in the SovereignAI violation detector.
+6. **Lowercase everywhere.** Unlike SovereignAI's mixed `Scripts/` (Title Case) and `app/` (lowercase), this design uses lowercase consistently for all directories. This eliminates one class of path-mismatch bugs. **Note:** Consistent case helps with cross-platform compatibility but does not eliminate all case-sensitivity issues (e.g., regex patterns, rule ID cross-references, or filesystem differences between case-sensitive Linux CI and case-insensitive macOS/Windows dev environments).
 
 ---
 
@@ -2158,7 +2476,7 @@ A five-phase build, designed so each phase produces a working (if incomplete) ha
 | Step | Deliverable | Verification |
 |------|-------------|--------------|
 | 5.1 | Write `tests/e2e/test_canary_session.py` with 7+ canary cases (§9.7) | Nightly canary run passes 100% |
-| 5.2 | Install `mutmut` and write `tests/mutation/test_mutation_score.py` (§9.7) | Mutation score ≥80% on first run |
+| 5.2 | Install `mutmut` and write `tests/mutation/test_mutation_score.py` (§9.7) | Mutation score ≥80% (after iteration cycle) |
 | 5.3 | Install `hypothesis` and write `tests/property/test_pdp_properties.py` (§9.7) | 500 random inputs — PDP never crashes |
 | 5.4 | Create `tests/fixtures/regression/` and write first 5 regression fixtures from SovereignAI bugs (§9.9) | All 5 regression tests pass |
 | 5.5 | Write `scripts/audit/drift_detection.py` (§9.11) | Nightly drift detection runs, opens issues on drift |
@@ -2203,7 +2521,7 @@ These are the failure modes found in the SovereignAI analysis (Chapter 5 of the 
 
 **Anti-pattern:** Setting `trigger: always_on` on all rule files (SovereignAI's 14K token session-start load).
 **Why it fails:** Consumes 10-12% of context window before the user's task enters context.
-**This design:** Three-tier progressive disclosure — constitution (always) + rule index (always) + full cards (on-demand). Session-start budget: ~800 tokens.
+**This design:** Three-tier progressive disclosure — constitution (always) + rule index (always) + full cards (on-demand). Session-start budget: approximately 800 tokens.
 
 ### 13.6 No Audit Loop
 

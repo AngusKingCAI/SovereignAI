@@ -1,0 +1,32 @@
+# .github/workflows/coverage-gate.yml
+name: Coverage Gate
+on: [pull_request]
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pytest pytest-cov
+      
+      - name: Run tests with coverage
+        run: |
+          pytest tests/ --cov=scripts/enforcement --cov=scripts/validation \
+                 --cov=scripts/audit --cov-report=xml --cov-report=term
+      
+      - name: Check coverage thresholds
+        run: |
+          python -c "
+          import xml.etree.ElementTree as ET
+          tree = ET.parse('coverage.xml')
+          root = tree.attrib
+          line_rate = float(root['line-rate'])
+          branch_rate = float(root['branch-rate'])
+          print(f'Line coverage: {line_rate:.1%}')
+          print(f'Branch coverage: {branch_rate:.1%}')
+          assert line_rate >= 0.90, f'Line coverage {line_rate:.1%} below 90% gate'
+          assert branch_rate >= 0.80, f'Branch coverage {branch_rate:.1%} below 80% gate'
+          print('✓ Coverage gates passed')
+          "

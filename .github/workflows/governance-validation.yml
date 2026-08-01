@@ -1,0 +1,37 @@
+# .github/workflows/governance-validation.yml
+name: Governance Validation
+on: [pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pyyaml jsonschema pytest
+      
+      # 1. Schema validation — every Policy Card must conform to its schema
+      - name: Validate Policy Card schemas
+        run: python scripts/validation/validate_policy_cards.py
+      
+      # 2. SSOT dedup linter — no rule text may appear in >1 card
+      - name: SSOT deduplication linter
+        run: python scripts/validation/lint_ssot_duplicates.py
+      
+      # 3. Dead reference linter — all .md links must resolve
+      - name: Dead reference linter
+        run: python scripts/validation/lint_dead_references.py
+      
+      # 4. Rule test runner — every Policy Card's test_cases must pass
+      - name: Run rule tests
+        run: python scripts/validation/run_rule_tests.py
+      
+      # 5. Coverage checker — every .md file must be covered by ≥1 rule
+      - name: Rule coverage checker
+        run: python scripts/validation/check_rule_coverage.py
+      
+      # 6. Constitution consistency — every Policy Card's constitutional_basis
+      #    must reference a valid principle in constitution.yaml
+      - name: Constitution consistency check
+        run: python scripts/validation/check_constitution_consistency.py

@@ -1,0 +1,24 @@
+# .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: validate-policy-cards
+        name: Validate Policy Cards against schema
+        entry: python scripts/validation/validate_policy_cards.py
+        language: system
+        files: ^governance/policy-cards/.*\.yaml$
+        pass_filenames: true
+        
+      - id: lint-dead-references
+        name: Lint dead references in .md files
+        entry: python scripts/validation/lint_dead_references.py
+        language: system
+        files: \.md$
+        pass_filenames: true
+        
+      - id: validate-frontmatter
+        name: Validate YAML frontmatter on governance files
+        entry: python scripts/validation/validate_frontmatter.py
+        language: system
+        files: ^(\.devin/agents|governance|workflows)/.*\.md$
+        pass_filenames: true
