@@ -1,1 +1,0 @@
-"""Ollama adapter for SovereignAI."""

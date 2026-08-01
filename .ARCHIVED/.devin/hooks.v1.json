@@ -1,0 +1,59 @@
+{
+  "UserPromptSubmit": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Logging/prompt_tracker.py",
+          "timeout": 10
+        }
+      ]
+    }
+  ],
+  "PostToolUse": [
+    {
+      "matcher": "^(write|edit)$",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python \"C:/SovereignAI/Scripts/Harness Tests/rule_agnostic_violation_detector.py\"",
+          "timeout": 10
+        }
+      ]
+    },
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Logging/tool_action_logger.py",
+          "timeout": 10
+        }
+      ]
+    }
+  ],
+  "PreToolUse": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Logging/tool_pre_logger.py",
+          "timeout": 10
+        }
+      ]
+    }
+  ],
+  "PostCompaction": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python C:/SovereignAI/Scripts/Misc/simple_post_compact.py",
+          "timeout": 30
+        }
+      ]
+    }
+  ]
+}

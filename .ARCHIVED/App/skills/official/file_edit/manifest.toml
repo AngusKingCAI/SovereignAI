@@ -1,0 +1,17 @@
+[component]
+component_id = "file_edit"
+name = "File Edit"
+version = "1.0.0"
+author = "official"
+content_hash = "sha256:file-edit-v1.0.0"
+
+intent_keywords = ["edit", "replace", "modify", "change", "file"]
+
+[[provides]]
+category = "skill"
+name = "file_edit"
+version = "1.0.0"
+priority = 100
+
+[metadata]
+dependencies = []

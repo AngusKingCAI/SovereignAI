@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SovereignAI Workflow File Schema",
+  "description": "Schema for validating SovereignAI workflow markdown files",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Workflow identifier (flexible format accepted)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "archived", "completed", "draft"],
+      "description": "Workflow status"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Agent owner (flexible format accepted)"
+    },
+    "updated": {
+      "type": ["string", "date"],
+      "description": "Last update date (YYYY-MM-DD format)"
+    },
+    "version": {
+      "type": "string",
+      "description": "Workflow version (optional)"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Workflow purpose description"
+    },
+    "expected_agent_type": {
+      "type": "string",
+      "description": "Expected agent type for this workflow (optional)"
+    },
+    "persona": {
+      "type": "object",
+      "description": "Workflow persona configuration (optional)",
+      "properties": {
+        "role": {
+          "type": "string",
+          "description": "Persona role"
+        },
+        "expertise": {
+          "type": "string",
+          "description": "Persona expertise areas"
+        },
+        "process": {
+          "type": "string",
+          "description": "Persona process approach"
+        },
+        "output": {
+          "type": "string",
+          "description": "Expected persona output"
+        },
+        "constraints": {
+          "type": "string",
+          "description": "Persona constraints"
+        }
+      }
+    },
+    "frequency": {
+      "type": "string",
+      "description": "Execution frequency (optional)"
+    },
+    "duration": {
+      "type": "string",
+      "description": "Expected duration (optional)"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["High", "Medium", "Low"],
+      "description": "Workflow priority level (optional)"
+    },
+    "workflow_type": {
+      "type": "string",
+      "enum": ["Continuous Operation", "Single-Execution"],
+      "description": "Workflow execution type (optional)"
+    },
+    "execution_modes": {
+      "type": "array",
+      "description": "Available execution modes (optional)",
+      "items": {
+        "type": "string"
+      }
+    },
+    "roles": {
+      "type": "object",
+      "description": "Roles and owners (optional)",
+      "properties": {
+        "agent": {
+          "type": "string",
+          "description": "Agent responsibilities"
+        },
+        "user": {
+          "type": "string", 
+          "description": "User responsibilities"
+        },
+        "governance_system": {
+          "type": "string",
+          "description": "Governance system responsibilities"
+        }
+      }
+    },
+    "trigger_and_end_state": {
+      "type": "object",
+      "description": "Trigger and end state (optional)",
+      "properties": {
+        "trigger": {
+          "type": "string",
+          "description": "Workflow trigger condition"
+        },
+        "end_state": {
+          "type": "string",
+          "description": "Expected end state"
+        }
+      }
+    }
+  },
+  "required": ["id", "purpose"],
+  "additionalProperties": false
+}
