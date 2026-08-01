@@ -4,7 +4,7 @@ status: active
 owner: architect-agent
 updated: 2026-07-31
 purpose: Rules derived from all Architect sessions
-trigger: always_on
+trigger: manual
 ---
 
 # Architect Agent Rules
