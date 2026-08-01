@@ -27,7 +27,15 @@ def main():
                     "# Constitution (4-tier precedence hierarchy)\n"
                     f"{constitution}\n\n"
                     "# Rule Index (compact rule lookup)\n"
-                    f"{rule_index}\n"
+                    f"{rule_index}\n\n"
+                    "# Problem-Solving Guidance\n"
+                    "When facing complex problems, system integration challenges, or unexpected behavior:\n"
+                    "- MUST perform web search before implementing custom solutions\n"
+                    "- Consult official documentation for the relevant tool/system\n"
+                    "- Look for working examples and patterns from other projects\n"
+                    "- Search for known issues or limitations\n"
+                    "- Verify assumptions about system behavior\n"
+                    "This prevents circular problem-solving and ensures awareness of current best practices."
                 )
             }
         }

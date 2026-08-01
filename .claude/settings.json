@@ -1,0 +1,36 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/enforcement/session_init.py"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/enforcement/pre_tool_pdp.py"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "^(write|edit)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/enforcement/post_tool_validator.py"
+          }
+        ]
+      }
+    ]
+  }
+}
