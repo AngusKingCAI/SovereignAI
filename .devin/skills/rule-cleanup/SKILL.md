@@ -22,18 +22,18 @@ allowed-tools:
 ## How to use
 1. Run SSOT deduplication check:
    ```bash
-   python scripts/validation/lint_ssot_duplicates.py
+   python "Governance/GovernanceScripts/Validation/lint_ssot_duplicates.py"
    ```
 2. Identify rules to consolidate
 3. Use `refines:` field to reference shared rules instead of duplicating
 4. Update Policy Cards to use references
 5. Validate changes:
    ```bash
-   python scripts/validation/validate_policy_cards.py
+   python "Governance/GovernanceScripts/Validation/validate_policy_cards.py"
    ```
 
 ## Best practices
 - Never duplicate rule statements - use `refines:` instead
-- Place shared rules in `governance/policy-cards/shared/`
+- Place shared rules in `Governance/Policy-cards/Shared/`
 - Agent-specific rules can refine shared rules with agent context
 - Always run validators after cleanup

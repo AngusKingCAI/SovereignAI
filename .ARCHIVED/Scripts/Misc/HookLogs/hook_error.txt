@@ -1,1 +1,0 @@
-Hook error at 2026-07-29 00:03:55.812752: 'charmap' codec can't encode character '\udc8f' in position 2251: character maps to <undefined>

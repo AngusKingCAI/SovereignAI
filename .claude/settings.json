@@ -5,29 +5,29 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python scripts/enforcement/session_init.py"
+            "command": "python \"Governance/GovernanceScripts/Enforcement/session_init.py\""
           }
         ]
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "",
+        "matcher": "exec|write|edit",
         "hooks": [
           {
             "type": "command",
-            "command": "python scripts/enforcement/pre_tool_pdp.py"
+            "command": "python \"Governance/GovernanceScripts/Enforcement/pre_tool_pdp.py\""
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "^(write|edit)$",
+        "matcher": "write|edit",
         "hooks": [
           {
             "type": "command",
-            "command": "python scripts/enforcement/post_tool_validator.py"
+            "command": "python \"Governance/GovernanceScripts/Enforcement/post_tool_validator.py\""
           }
         ]
       }

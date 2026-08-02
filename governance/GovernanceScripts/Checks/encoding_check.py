@@ -38,4 +38,16 @@ def encoding_check(tool_call: dict, params: dict) -> dict:
             "reason": "⛔ BLOCKED by rule SHR-02: encoding violation - content contains Windows line endings (CRLF), use Unix line endings (LF) only"
         }
     
+    # Check for non-ASCII characters that might have encoding issues
+    try:
+        for char in content:
+            if ord(char) > 127:
+                # Non-ASCII character - verify it can be properly encoded
+                char.encode('utf-8')
+    except UnicodeEncodeError:
+        return {
+            "deny": True,
+            "reason": "⛔ BLOCKED by rule SHR-02: encoding violation - content contains problematic non-ASCII characters"
+        }
+    
     return {"deny": False}

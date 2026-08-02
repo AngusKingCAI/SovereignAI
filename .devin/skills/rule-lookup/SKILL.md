@@ -18,11 +18,11 @@ allowed-tools:
 ## How to use
 1. Identify the rule ID (e.g., ARCH-014) from the rule index or a denial message
 2. Read the corresponding Policy Card file:
-   - Shared rules: `governance/policy-cards/shared/<domain>.yaml`
-   - Agent rules: `governance/policy-cards/<agent>/<domain>.yaml`
+   - Shared rules: `Governance/Policy-cards/Shared/<domain>.yaml`
+   - Agent rules: `Governance/Policy-cards/<agent>/<domain>.yaml`
 3. The Policy Card contains: rule statement, check definition, test cases, exemptions
 
 ## Example
 If the rule index shows `ARCH-014: "Architect uses Manual execution mode by default"`:
-- Read `governance/policy-cards/architect/execution-modes.yaml`
+- Read `Governance/Policy-cards/Architect/execution-modes.yaml`
 - The card's `check` field tells you exactly what the hook evaluates

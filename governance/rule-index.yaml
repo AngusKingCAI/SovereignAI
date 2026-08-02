@@ -1,20 +1,16 @@
 agent: all
 rules:
-- id: ARCH-002
-  severity: advisory
-  summary: Architect must inform users about Devin CLI restart requirements for .devin/hooks.v1.json
-    changes
-- id: SHARED-003
-  severity: advisory
-  summary: Use forward slash path separators, never backslash or absolute paths
-- id: SHARED-004
+- id: SHR-01
   severity: blocking
   summary: Block destructive shell commands unless user has explicitly confirmed
-- id: SHARED-005
+- id: SHR-02
+  severity: advisory
+  summary: Use forward slash path separators, never backslash or absolute paths
+- id: SHR-03
   severity: blocking
   summary: Every governance .md file must have YAML frontmatter with required fields
-- id: SHARED-006
+- id: SHR-04
   severity: blocking
-  summary: All governance files must be placed in governance/ directory, never in
-    .devin/ or scripts/
-total_rules: 5
+  summary: All governance files must be placed in Governance/ directory, never in
+    .devin/ or GovernanceScripts/
+total_rules: 4

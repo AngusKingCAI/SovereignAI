@@ -1,0 +1,1 @@
+Test emoji display: ⛔ BLOCKED by rule SHR-01

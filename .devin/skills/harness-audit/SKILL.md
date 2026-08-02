@@ -19,15 +19,15 @@ allowed-tools:
 ## How to use
 1. Run the weekly review report:
    ```bash
-   python scripts/audit/weekly_review_report.py
+   python "Governance/Audit/weekly_review_report.py"
    ```
 2. Run drift detection:
    ```bash
-   python scripts/audit/drift_detection.py
+   python "Governance/Audit/drift_detection.py"
    ```
 3. Check the audit log:
    ```bash
-   cat .audit/violations.jsonl
+   cat "Governance/Audit/violations.jsonl"
    ```
 
 ## What it checks
