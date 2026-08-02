@@ -1,0 +1,40 @@
+# Governance/Policy-cards/Shared/SHR-03-frontmatter.yaml
+id: SHR-03
+version: "1.0.0"
+tier: compliance
+severity: blocking
+agent: all
+domain: frontmatter
+constitutional_basis: COMP-001
+
+rule:
+  statement: "Every governance .md file must have YAML frontmatter with required fields"
+  rationale: "Frontmatter is the machine-readable metadata that validators and hooks depend on"
+
+enforceable_via: both
+
+check:
+  type: yaml_field
+  params:
+    file_glob: "**/*.md"
+    scope_dirs: [".devin/agents", "Governance", "workflows"]
+    required_fields: [id, version, owner, updated, purpose, agent, persona]
+
+test_cases:
+  - name: "valid frontmatter"
+    input: "Governance/Tests/fixtures/valid_frontmatter.md"
+    expected: pass
+  - name: "missing persona field"
+    input: "Governance/Tests/fixtures/missing_persona.md"
+    expected: fail
+  - name: "no frontmatter at all"
+    input: "Governance/Tests/fixtures/no_frontmatter.md"
+    expected: fail
+  - name: "exempt non-governance file"
+    input: "README.md"
+    expected: pass
+
+exemptions:
+  - "README.md"
+  - "CHANGELOG.md"
+  - "Docs/**/*.md"

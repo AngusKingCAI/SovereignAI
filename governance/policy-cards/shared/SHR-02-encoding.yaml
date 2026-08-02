@@ -1,0 +1,31 @@
+# Governance/Policy-cards/Shared/SHR-02-encoding.yaml
+id: SHR-02
+version: "1.0.0"
+tier: compliance
+severity: blocking
+agent: all
+domain: encoding
+constitutional_basis: COMP-001
+
+rule:
+  statement: "All governance files must use UTF-8 encoding with proper character handling"
+  rationale: "UTF-8 encoding ensures emoji and special characters display correctly across platforms"
+
+enforceable_via: hook
+
+check:
+  type: custom_function
+  params:
+    function: Checks.encoding_check
+
+test_cases:
+  - name: "allows UTF-8 encoded file"
+    input: "Governance/Tests/fixtures/utf8_encoded.md"
+    expected: pass
+  - name: "allows normal text"
+    input: "test content with normal characters"
+    expected: pass
+
+exemptions:
+  - "README.md"
+  - "CHANGELOG.md"
