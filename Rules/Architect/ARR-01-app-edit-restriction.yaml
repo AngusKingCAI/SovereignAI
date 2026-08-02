@@ -14,8 +14,9 @@ rule:
 enforceable_via: hook
 
 check:
-  type: path_pattern
   params:
+    target_tools: ["write", "edit"]
+    message: "architect agent must never edit files in the /App directory"
     forbidden:
       - "App/.*"
 

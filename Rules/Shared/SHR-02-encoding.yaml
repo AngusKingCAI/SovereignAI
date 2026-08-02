@@ -1,4 +1,4 @@
-# Governance/Policy-cards/Shared/SHR-02-encoding.yaml
+# Rules/Shared/SHR-02-encoding.yaml
 id: SHR-02
 version: "1.0.0"
 tier: compliance
@@ -14,9 +14,10 @@ rule:
 enforceable_via: hook
 
 check:
-  type: custom_function
   params:
-    function: encoding_check
+    target_tools: ["write", "edit"]
+    message: "encoding violation - file contains Windows line endings (CRLF), use Unix line endings (LF) only"
+    check_encoding: true
 
 test_cases:
   - name: "allows UTF-8 encoded file"

@@ -1,1 +1,0 @@
-This file has no frontmatter to test SHR-03

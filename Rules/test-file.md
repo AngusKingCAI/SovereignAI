@@ -1,1 +1,0 @@
-This is a test file without frontmatter to trigger SHR-03

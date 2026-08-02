@@ -1,4 +1,4 @@
-# Governance/Policy-cards/Shared/SHR-04-file-placement.yaml
+# Rules/Shared/SHR-04-file-placement.yaml
 id: SHR-04
 version: "1.0.0"
 tier: compliance
@@ -14,13 +14,12 @@ rule:
 enforceable_via: validator
 
 check:
-  type: path_pattern
   params:
+    target_tools: ["write", "edit"]
+    message: "file placement violation requires explicit user confirmation"
     forbidden:
       - "\\.devin/.*\\.yaml$"
       - "\\.devin/.*\\.md$"
-    required_locations:
-      - "Rules/"
 
 test_cases:
   - name: "governance file in correct location"
@@ -32,3 +31,5 @@ test_cases:
   - name: "non-governance file in scripts (allowed)"
     input: "Scripts/Rules/Enforcement/test.py"
     expected: pass
+
+exemptions: []

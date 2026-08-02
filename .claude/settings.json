@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"Scripts/Rules/Enforcement/pre_tool_pdp.py\""
+            "command": "python \"Scripts/Rules/Enforcement/evaluator.py\""
           }
         ]
       }
@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"Scripts/Rules/Enforcement/post_tool_validator.py\""
+            "command": "python \"Scripts/Rules/Enforcement/evaluator.py\""
           }
         ]
       }
