@@ -1,0 +1,31 @@
+# Rules/Architect/ARR-01-app-edit-restriction.yaml
+id: ARR-01
+version: "1.0.0"
+tier: compliance
+severity: blocking
+agent: architect
+domain: file-restriction
+constitutional_basis: COMP-001
+
+rule:
+  statement: "Architect agent must never edit files in the /App directory"
+  rationale: "Architect is responsible for governance and infrastructure, not application implementation. App/ is for Executor agent implementation."
+
+enforceable_via: hook
+
+check:
+  type: path_pattern
+  params:
+    forbidden:
+      - "App/.*"
+
+test_cases:
+  - name: "blocks architect editing App file"
+    input: "App/test.py"
+    expected: deny
+  - name: "allows architect editing governance file"
+    input: "Rules/Shared/test.yaml"
+    expected: pass
+  - name: "allows architect editing script file"
+    input: "Scripts/Rules/test.py"
+    expected: pass

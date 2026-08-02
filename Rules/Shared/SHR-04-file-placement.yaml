@@ -1,0 +1,34 @@
+# Governance/Policy-cards/Shared/SHR-04-file-placement.yaml
+id: SHR-04
+version: "1.0.0"
+tier: compliance
+severity: blocking
+agent: all
+domain: file-placement
+constitutional_basis: COMP-002
+
+rule:
+  statement: "All governance files must be placed in Rules/ directory, never in .devin/"
+  rationale: "Rules/ is the SSOT for all governance content"
+
+enforceable_via: validator
+
+check:
+  type: path_pattern
+  params:
+    forbidden:
+      - "\\.devin/.*\\.yaml$"
+      - "\\.devin/.*\\.md$"
+    required_locations:
+      - "Rules/"
+
+test_cases:
+  - name: "governance file in correct location"
+    input: "Rules/Shared/test.yaml"
+    expected: pass
+  - name: "governance file in .devin (violation)"
+    input: ".devin/agents/test.md"
+    expected: fail
+  - name: "non-governance file in scripts (allowed)"
+    input: "Scripts/Rules/Enforcement/test.py"
+    expected: pass
