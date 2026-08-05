@@ -31,6 +31,7 @@ Crash-Safety:
 """
 
 import os
+import sys
 import json
 import hashlib
 import threading
@@ -38,15 +39,12 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime
 from contextlib import contextmanager
 
-# TODO: Integrate actual locking when Governor is installed as package
-# For now, using simple context manager without actual file locking
-@contextmanager
-def exclusive_lock(lock_file, timeout=5.0):
-    """Context manager for file locking (placeholder for actual locking)."""
-    # NOTE: This is a placeholder. Actual locking integration will be added
-    # when Governor is properly installed as a Python package.
-    # The actual locking.py module is already implemented and tested.
-    yield
+# Import locking module (package-relative for module execution)
+try:
+    from .locking import exclusive_lock
+except ImportError:
+    # Fallback for direct execution during development
+    from locking import exclusive_lock
 
 # State file paths
 STATE_DIR = "Governor/state"
@@ -148,12 +146,16 @@ class StateMachine:
         Save state to disk with atomic write, fsync, and checksum.
         
         Implements crash-safety per v1.5 spec §3.3:
-        1. Write to temp file
-        2. fsync to ensure data reaches disk
-        3. Atomic replace
-        4. Update checksum
+        1. Update metadata first
+        2. Write to temp file
+        3. fsync to ensure data reaches disk
+        4. Atomic replace
+        5. Update checksum from file contents
         """
         with exclusive_lock(self.lock_path, timeout=5.0):
+            # Update metadata first
+            self.state["metadata"]["last_updated"] = datetime.utcnow().isoformat()
+            
             temp_path = f"{self.state_path}.tmp"
             
             # Write to temp file
@@ -165,11 +167,8 @@ class StateMachine:
             # Atomic replace
             os.replace(temp_path, self.state_path)
             
-            # Update checksum
-            self._update_checksum()
-            
-            # Update metadata
-            self.state["metadata"]["last_updated"] = datetime.utcnow().isoformat()
+            # Update checksum from file contents (not in-memory state)
+            self._update_checksum_from_file()
     
     def _compute_checksum(self) -> str:
         """Compute SHA-256 checksum of current state."""
@@ -177,23 +176,43 @@ class StateMachine:
         return hashlib.sha256(state_str.encode()).hexdigest()
     
     def _update_checksum(self) -> None:
-        """Update checksum sidecar file."""
+        """Update checksum sidecar file (deprecated - use _update_checksum_from_file)."""
         checksum = self._compute_checksum()
         with open(self.checksum_path, 'w') as f:
             f.write(checksum)
             f.flush()
             os.fsync(f.fileno())
     
+    def _update_checksum_from_file(self) -> None:
+        """Update checksum sidecar file by hashing the file contents on disk."""
+        if not os.path.exists(self.state_path):
+            return
+        
+        with open(self.state_path, 'r') as f:
+            file_contents = f.read()
+        
+        checksum = hashlib.sha256(file_contents.encode()).hexdigest()
+        with open(self.checksum_path, 'w') as f:
+            f.write(checksum)
+            f.flush()
+            os.fsync(f.fileno())
+    
     def _verify_checksum(self) -> bool:
-        """Verify that state file matches checksum."""
+        """Verify that state file matches checksum by comparing file contents."""
         if not os.path.exists(self.checksum_path):
+            return False
+        if not os.path.exists(self.state_path):
             return False
         
         with open(self.checksum_path, 'r') as f:
             stored_checksum = f.read().strip()
         
-        current_checksum = self._compute_checksum()
-        return stored_checksum == current_checksum
+        # Compute checksum from file contents, not in-memory state
+        with open(self.state_path, 'r') as f:
+            file_contents = f.read()
+        actual_checksum = hashlib.sha256(file_contents.encode()).hexdigest()
+        
+        return stored_checksum == actual_checksum
     
     def get_phase(self) -> str:
         """Get current phase."""
@@ -260,25 +279,46 @@ class StateMachine:
         with self._lock:
             return self.state["flags"].get(flag_name, False)
     
-    def add_bypass(self, bypass_key: str, scope: str = "runtime") -> None:
+    def add_bypass(self, bypass_key: str, scope: str = "runtime", 
+                   expires: Optional[str] = None, reason: str = "", 
+                   source: str = "runtime") -> None:
         """
-        Add a bypass key to the registry.
+        Add a bypass entry to the registry (spec §3.3 compliant).
         
         Args:
-            bypass_key: Bypass key to add
-            scope: Either "runtime" or "team"
+            bypass_key: Unique bypass key (format: rule_id:tool)
+            scope: Either "runtime", "team", "once", or "session"
+            expires: Optional expiration timestamp (ISO format)
+            reason: Human-readable reason for bypass
+            source: Source of bypass (e.g., "user", "team", "runtime")
         """
         with self._lock:
-            if scope not in ["runtime", "team"]:
+            if scope not in ["runtime", "team", "once", "session"]:
                 raise ValueError(f"Invalid bypass scope: {scope}")
             
-            if bypass_key not in self.state["bypasses"][scope]:
-                self.state["bypasses"][scope].append(bypass_key)
-                self._save_state()
+            # Check if bypass already exists
+            for entry in self.state["bypasses"][scope]:
+                if entry.get("key") == bypass_key:
+                    return  # Already exists
+            
+            # Create spec-compliant bypass entry
+            bypass_entry = {
+                "key": bypass_key,
+                "rule_id": bypass_key.split(":")[0] if ":" in bypass_key else "",
+                "tool": bypass_key.split(":")[1] if ":" in bypass_key else "",
+                "scope": scope,
+                "expires": expires,
+                "reason": reason,
+                "source": source,
+                "created_at": datetime.utcnow().isoformat()
+            }
+            
+            self.state["bypasses"][scope].append(bypass_entry)
+            self._save_state()
     
     def is_bypassed(self, rule_id: str, tool_name: str) -> bool:
         """
-        Check if a rule+tool combination is bypassed.
+        Check if a rule+tool combination is bypassed (spec §3.3 compliant).
         
         Args:
             rule_id: Rule identifier
@@ -290,8 +330,17 @@ class StateMachine:
         bypass_key = f"{rule_id}:{tool_name}"
         
         with self._lock:
-            return (bypass_key in self.state["bypasses"]["runtime"] or
-                    bypass_key in self.state["bypasses"]["team"])
+            # Check all scopes for matching bypass
+            for scope in ["runtime", "team", "once", "session"]:
+                for entry in self.state["bypasses"][scope]:
+                    if entry.get("key") == bypass_key:
+                        # Check expiration
+                        if entry.get("expires"):
+                            # TODO: Check if bypass has expired
+                            pass
+                        return True
+            
+            return False
     
     def add_violation(self, violation: Dict[str, Any]) -> None:
         """Add a violation to the log."""

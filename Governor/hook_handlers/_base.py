@@ -17,13 +17,11 @@ This implements the hook handler system specified in v1.5 spec §4.3.
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional
 
-# Import protocol module for response building
+# Import protocol module for response building (package-relative)
 try:
-    from protocol import build_hook_response
+    from ..protocol import build_hook_response
 except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(__file__))
+    # Fallback for direct execution during development
     from protocol import build_hook_response
 
 

@@ -21,13 +21,11 @@ from typing import Dict, Any, List, Optional, Callable
 from dataclasses import dataclass
 from pathlib import Path
 
-# Import action base classes
+# Import action base classes (package-relative for module execution)
 try:
-    from actions._base import RuleAction, ActionResult, ActionContext
+    from .actions._base import RuleAction, ActionResult, ActionContext
 except ImportError:
-    # Fallback for direct execution
-    import sys
-    sys.path.insert(0, os.path.dirname(__file__))
+    # Fallback for direct execution during development
     from actions._base import RuleAction, ActionResult, ActionContext
 
 # YAML import with stdlib fallback
@@ -40,7 +38,7 @@ except ImportError:
 # Rule directory
 RULES_DIR = "Governor/rules"
 
-# Priority levels
+# Priority levels (spec uses "tier" but we keep priority for compatibility)
 PRIORITY_LEVELS = {
     "blocking": 0,
     "warning": 1,
@@ -55,30 +53,50 @@ _cache_timestamps: Dict[str, float] = {}
 @dataclass
 class Rule:
     """
-    Parsed rule definition.
+    Parsed rule definition (aligned with v1.5 spec §3.2).
     
     Attributes:
         id: Unique rule identifier
+        version: Rule version (semver)
+        tier: Priority level (blocking/warning/observational)
+        agent: Agent identifier for filtering
+        domain: Domain identifier
         name: Human-readable rule name
         description: Rule description
-        priority: Priority level (blocking/warning/observational)
-        triggers: List of trigger conditions
-        actions: List of action configurations
+        triggers: List of trigger conditions (hook names)
+        check: Rule check configuration with params
         enabled: Whether rule is enabled
+        aliases: Alternative rule names
         metadata: Additional rule metadata
     """
     id: str
-    name: str
-    description: str
-    priority: str
-    triggers: List[Dict[str, Any]]
-    actions: List[Dict[str, Any]]
+    version: str = "1.0.0"
+    tier: str = "observational"  # Spec uses "tier" instead of "priority"
+    agent: Optional[str] = None
+    domain: Optional[str] = None
+    name: str = ""
+    description: str = ""
+    triggers: List[str] = None  # Spec says list of strings (hook names)
+    check: Optional[Dict[str, Any]] = None  # Spec nests actions under check.params
     enabled: bool = True
+    aliases: List[str] = None
     metadata: Dict[str, Any] = None
+    
+    # Backward compatibility: map priority to tier
+    @property
+    def priority(self) -> str:
+        """Backward compatibility property for priority."""
+        return self.tier
     
     def __post_init__(self):
         if self.metadata is None:
             self.metadata = {}
+        if self.triggers is None:
+            self.triggers = []
+        if self.aliases is None:
+            self.aliases = []
+        if self.check is None:
+            self.check = {}
 
 
 def load_rules(force_reload: bool = False) -> List[Rule]:
@@ -120,15 +138,19 @@ def load_rules(force_reload: bool = False) -> List[Rule]:
                 with open(rule_file, 'r') as f:
                     rule_data = _parse_simple_yaml(f)
             
-            # Create Rule object
+            # Create Rule object (aligned with spec §3.2)
             rule = Rule(
                 id=rule_data.get("id", rule_file.stem),
+                version=rule_data.get("version", "1.0.0"),
+                tier=rule_data.get("tier", rule_data.get("priority", "observational")),  # Backward compat
+                agent=rule_data.get("agent"),
+                domain=rule_data.get("domain"),
                 name=rule_data.get("name", rule_file.stem),
                 description=rule_data.get("description", ""),
-                priority=rule_data.get("priority", "observational"),
                 triggers=rule_data.get("triggers", []),
-                actions=rule_data.get("actions", []),
+                check=rule_data.get("check", {}),
                 enabled=rule_data.get("enabled", True),
+                aliases=rule_data.get("aliases", []),
                 metadata=rule_data.get("metadata", {})
             )
             
@@ -196,41 +218,22 @@ def _parse_simple_yaml(file_handle) -> Dict[str, Any]:
     return result
 
 
-def match_trigger(trigger: Dict[str, Any], hook_name: str, payload: Dict[str, Any]) -> bool:
+def match_trigger(trigger: str, hook_name: str, payload: Dict[str, Any]) -> bool:
     """
     Check if a trigger matches the current hook event.
     
+    Spec §3.2: triggers are list of hook names (strings), not dicts.
+    
     Args:
-        trigger: Trigger condition from rule
+        trigger: Hook name string from rule triggers list
         hook_name: Current hook name
         payload: Hook event payload
         
     Returns:
         True if trigger matches, False otherwise
     """
-    # Check hook name match
-    if "hook" in trigger:
-        if trigger["hook"] != hook_name:
-            return False
-    
-    # Check tool name match (for PreToolUse/PostToolUse)
-    if "tool" in trigger:
-        if "tool" not in payload:
-            return False
-        if trigger["tool"] != payload["tool"]:
-            return False
-    
-    # Check phase match
-    if "phase" in trigger:
-        # TODO: Integrate with state machine for phase check
-        pass
-    
-    # Check custom conditions
-    if "condition" in trigger:
-        # TODO: Implement custom condition evaluation
-        pass
-    
-    return True
+    # Spec §3.2: triggers are simple hook name strings
+    return trigger == hook_name
 
 
 def evaluate_rules(hook_name: str, payload: Dict[str, Any], context: ActionContext) -> List[ActionResult]:
@@ -271,15 +274,18 @@ def evaluate_rules(hook_name: str, payload: Dict[str, Any], context: ActionConte
     # Sort by priority (already sorted by load_rules, but ensure)
     matched_rules.sort(key=lambda r: PRIORITY_LEVELS.get(r.priority, 999))
     
-    # Execute actions
+    # Execute actions (actions are nested under check.params per spec §3.2)
     for rule in matched_rules:
-        for action_config in rule.actions:
+        # Get actions from check.params.actions
+        actions_config = rule.check.get("params", {}).get("actions", []) if rule.check else []
+        
+        for action_config in actions_config:
             try:
                 result = _execute_action(action_config, payload, context)
                 results.append(result)
                 
                 # Short-circuit on blocking deny
-                if rule.priority == "blocking" and result.decision == "deny":
+                if rule.tier == "blocking" and result.decision == "deny":
                     break
                     
             except Exception as e:
@@ -307,14 +313,16 @@ def _execute_action(action_config: Dict[str, Any], payload: Dict[str, Any],
     Returns:
         ActionResult from action execution
     """
-    action_name = action_config.get("action")
+    action_name = action_config.get("name")  # Spec §3.2 uses "name" key
     params = action_config.get("params", {})
     
     # Import action class
     try:
         # Actions are in Governor/actions/ directory
         action_module = importlib.import_module(f"actions.{action_name}")
-        action_class = getattr(action_module, action_name.capitalize())
+        # Convert snake_case to PascalCase and append "Action" suffix per spec §6.3
+        action_class_name = "".join(word.capitalize() for word in action_name.split("_")) + "Action"
+        action_class = getattr(action_module, action_class_name)
     except (ImportError, AttributeError) as e:
         raise ValueError(f"Could not load action {action_name}: {e}")
     
