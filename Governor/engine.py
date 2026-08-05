@@ -19,6 +19,7 @@ This implements the rule engine specified in v1.5 spec §4.1.
 import os
 import importlib
 import time
+import json
 from typing import Dict, Any, List, Optional, Callable
 from dataclasses import dataclass
 from pathlib import Path
@@ -52,6 +53,10 @@ PRIORITY_LEVELS = {
 # Rule cache
 _rule_cache: Dict[str, Dict[str, Any]] = {}
 _cache_timestamps: Dict[str, float] = {}
+
+# Scope configuration cache
+_scope_config_cache: Optional[Dict[str, Any]] = None
+_scope_config_mtime: Optional[float] = None
 
 
 class Engine:
@@ -294,6 +299,40 @@ def match_trigger(trigger: str, hook_name: str, payload: Dict[str, Any]) -> bool
     return trigger == hook_name
 
 
+def _load_scope_config() -> Dict[str, Any]:
+    """
+    Load scope configuration from scope_config.json with caching.
+    
+    Returns:
+        Scope configuration dictionary
+    """
+    global _scope_config_cache, _scope_config_mtime
+    
+    scope_config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scope_config.json")
+    
+    # Check cache
+    if os.path.exists(scope_config_path):
+        mtime = os.path.getmtime(scope_config_path)
+        if _scope_config_cache is not None and _scope_config_mtime is not None:
+            if mtime <= _scope_config_mtime:
+                return _scope_config_cache
+        
+        # Load config
+        try:
+            with open(scope_config_path, 'r') as f:
+                _scope_config_cache = json.load(f)
+                _scope_config_mtime = mtime
+                return _scope_config_cache
+        except (json.JSONDecodeError, IOError):
+            pass
+    
+    # Default config if file doesn't exist or fails to load
+    return {
+        "app_paths": ["App", "Agents"],
+        "harness_paths": ["Governor", "Harness", "Workflow"]
+    }
+
+
 def _detect_agent(payload: Dict[str, Any], context: ActionContext) -> str:
     """
     Detect the current agent from payload or context.
@@ -312,7 +351,7 @@ def _detect_agent(payload: Dict[str, Any], context: ActionContext) -> str:
     # Try to get agent from context state machine
     if context and context.state_machine:
         try:
-            state = context.state_machine.get_state()
+            state = context.state_machine.get_state_snapshot()
             if "agent" in state:
                 return state["agent"]
         except Exception:
@@ -340,7 +379,7 @@ def _detect_scope(payload: Dict[str, Any], context: ActionContext) -> str:
     # Try to get scope from context state machine
     if context and context.state_machine:
         try:
-            state = context.state_machine.get_state()
+            state = context.state_machine.get_state_snapshot()
             if "scope" in state:
                 return state["scope"]
         except Exception:
@@ -348,11 +387,18 @@ def _detect_scope(payload: Dict[str, Any], context: ActionContext) -> str:
     
     # Try to infer scope from file paths in payload
     if "file_path" in payload:
+        config = _load_scope_config()
         file_path = payload["file_path"]
-        if "App" in file_path or "app" in file_path.lower():
-            return "app"
-        elif "Harness" in file_path or "harness" in file_path.lower():
-            return "harness"
+        
+        # Check against configured app paths
+        for app_path in config.get("app_paths", []):
+            if app_path in file_path:
+                return "app"
+        
+        # Check against configured harness paths
+        for harness_path in config.get("harness_paths", []):
+            if harness_path in file_path:
+                return "harness"
     
     # Default to "all" if scope cannot be determined
     return "all"
