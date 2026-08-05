@@ -30,8 +30,11 @@ try:
 except ImportError:
     from protocol import build_hook_response, to_devin_decision
 
-# Hook handler registry (will be populated by auto-discovery in Phase 2)
-_HOOK_HANDLERS = {}
+# Import hook handlers package (package-relative with fallback)
+try:
+    from .hook_handlers import _HOOK_HANDLERS
+except ImportError:
+    from hook_handlers import _HOOK_HANDLERS
 
 
 def register_hook_handler(hook_name: str, handler_class):
@@ -127,18 +130,27 @@ def _dispatch_hook(hook_name: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     if hook_name not in valid_hooks:
         raise ValueError(f"Unknown hook: {hook_name}. Valid hooks: {valid_hooks}")
     
-    # TODO: Route to actual hook handler (will be implemented in Phase 2)
-    # For now, return a basic response
-    # handler = _HOOK_HANDLERS.get(hook_name)
-    # if handler:
-    #     return handler.execute(payload, state_machine, engine)
+    # Get handler from registry
+    handler = _HOOK_HANDLERS.get(hook_name)
+    if not handler:
+        raise ValueError(f"No handler registered for hook: {hook_name}")
     
-    # Placeholder response until hook handlers are implemented
-    return build_hook_response(
-        internal_decision="allow",
-        reason=f"Hook handler for {hook_name} not yet implemented (Phase 2)",
-        hook_event_name=hook_name
-    )
+    # Instantiate state machine and engine
+    try:
+        from .state_machine import StateMachine
+    except ImportError:
+        from state_machine import StateMachine
+    
+    try:
+        from .engine import Engine
+    except ImportError:
+        from engine import Engine
+    
+    state_machine = StateMachine()
+    engine = Engine()
+    
+    # Execute handler
+    return handler.execute(payload, state_machine, engine)
 
 
 def main():

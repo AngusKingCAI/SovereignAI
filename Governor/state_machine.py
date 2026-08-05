@@ -359,13 +359,14 @@ class StateMachine:
         Returns:
             True if bypassed, False otherwise
         """
-        bypass_key = f"{rule_id}:{tool_name}"
+        bypass_prefix = f"{rule_id}:{tool_name}"
         
         with self._lock:
             # Check all scopes for matching bypass
             for scope in ["runtime", "team", "once", "session"]:
                 for entry in self.state["bypasses"][scope]:
-                    if entry.get("key") == bypass_key:
+                    # Check if bypass key starts with prefix (supports UUID4 suffixes)
+                    if entry.get("key", "").startswith(bypass_prefix):
                         # Check expiration
                         if entry.get("expires"):
                             # TODO: Check if bypass has expired

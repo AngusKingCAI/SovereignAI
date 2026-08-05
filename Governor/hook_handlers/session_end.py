@@ -116,8 +116,7 @@ class SessionEndHandler(HookHandler):
         Returns:
             Compliance report string
         """
-        # Count actual violations (not execution logs)
-        actual_violations = [v for v in violations if v.get("type") != "execution"]
+        # All entries in violations are actual violations now (execution logs go to audit trail)
         
         # Count bypasses
         total_bypasses = 0
@@ -130,15 +129,12 @@ Session Summary:
 - Final Phase: {current_phase}
 - Executions: {exec_count}
 - Validations: {validate_count}
-- Violations: {len(actual_violations)}
+- Violations: {len(violations)}
 - Bypasses: {total_bypasses}
 
-Compliance Status: {'COMPLIANT' if len(actual_violations) == 0 else 'NON-COMPLIANT'}
+Compliance Status: {'COMPLIANT' if len(violations) == 0 else 'NON-COMPLIANT'}
 
 {'Phase Requirements:' + self._get_phase_requirements(current_phase)}
-
-Execution Log:
-- Total tool executions logged: {len([v for v in violations if v.get('type') == 'execution'])}
 
 Flags:
 - Research Required: {state_machine.get_flag('research_required')}

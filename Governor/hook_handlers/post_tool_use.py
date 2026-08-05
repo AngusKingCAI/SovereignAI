@@ -30,6 +30,12 @@ try:
 except ImportError:
     from tool_normalizer import normalize_tool_name
 
+# Import audit logger (package-relative)
+try:
+    from ..audit.audit_log import log_event
+except ImportError:
+    from audit.audit_log import log_event
+
 
 class PostToolUseHandler(HookHandler):
     """
@@ -129,19 +135,13 @@ class PostToolUseHandler(HookHandler):
             tool_status: Execution status (success/error)
             state_machine: State machine instance
         """
-        # Create execution log entry
-        execution_log = {
-            "tool": canonical_tool,
-            "input": tool_input,
-            "output": tool_output,
-            "status": tool_status,
-            "phase": state_machine.get_phase(),
-            "type": "execution"  # Mark as execution log, not violation
-        }
-        
-        # Add to violations log (using as execution log for now)
-        # Note: In Phase 2.5, this will be integrated with proper audit logging
-        state_machine.add_violation(execution_log)
+        # Log execution to audit trail
+        log_event(
+            hook_name="PostToolUse",
+            payload={"tool": canonical_tool, "input": tool_input},
+            response={"tool": canonical_tool, "status": tool_status, "output": tool_output},
+            level="info"
+        )
     
     def _validate_output(self, canonical_tool: str, tool_output: Dict[str, Any], 
                        tool_status: str) -> Dict[str, Any]:

@@ -12,13 +12,37 @@ Auto-discovered registry for all 8 hooks:
 - PostCompaction
 """
 
-from .session_start import SessionStartHandler
-from .user_prompt_submit import UserPromptSubmitHandler
-from .pre_tool_use import PreToolUseHandler
-from .post_tool_use import PostToolUseHandler
-from .permission_request import PermissionRequestHandler
-from .stop import StopHandler
-from .session_end import SessionEndHandler
-from .post_compaction import PostCompactionHandler
+import importlib
+import pkgutil
+from ._base import HookHandler
 
-__all__ = ["SessionStartHandler", "UserPromptSubmitHandler", "PreToolUseHandler", "PostToolUseHandler", "PermissionRequestHandler", "StopHandler", "SessionEndHandler", "PostCompactionHandler"]
+# Auto-discover and register all hook handlers
+_HOOK_HANDLERS = {}
+
+# Get the current package path
+__path__ = __path__ if hasattr(__name__, '__path__') else []
+
+for _, module_name, _ in pkgutil.iter_modules(__path__):
+    # Skip private modules
+    if module_name.startswith("_"):
+        continue
+    
+    try:
+        # Import the module
+        module = importlib.import_module(f".{module_name}", package=__name__)
+        
+        # Find all HookHandler subclasses
+        for attr_name in dir(module):
+            attr = getattr(module, attr_name)
+            if (isinstance(attr, type) and 
+                issubclass(attr, HookHandler) and 
+                attr is not HookHandler):
+                # Instantiate the handler
+                instance = attr()
+                _HOOK_HANDLERS[instance.hook_name] = instance
+    except Exception as e:
+        # Skip modules that fail to import
+        pass
+
+# Export all discovered handlers
+__all__ = list(_HOOK_HANDLERS.values())

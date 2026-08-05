@@ -147,13 +147,11 @@ class StopHandler(HookHandler):
         """
         violations = state_machine.get_violations()
         
-        # Filter for actual violations (not execution logs)
-        actual_violations = [v for v in violations if v.get("type") != "execution"]
+        # All entries in violations are actual violations now (execution logs go to audit trail)
+        passed = len(violations) == 0
+        message = f"Violations: {len(violations)} un-bypassed violations found"
         
-        passed = len(actual_violations) == 0
-        message = f"Violations: {len(actual_violations)} un-bypassed violations found"
-        
-        return {"passed": passed, "message": message, "count": len(actual_violations)}
+        return {"passed": passed, "message": message, "count": len(violations)}
     
     def _check_minimum_usage(self, state_machine: Any) -> Dict[str, Any]:
         """

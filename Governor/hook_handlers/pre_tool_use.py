@@ -17,7 +17,7 @@ Key Responsibilities:
 This implements the PreToolUse handler specified in v1.5 spec §4.3.
 """
 
-import secrets
+import uuid
 from typing import Dict, Any, Optional
 
 # Import base class (package-relative)
@@ -140,8 +140,16 @@ class PreToolUseHandler(HookHandler):
         Returns:
             Protocol-compliant block response with bypass menu
         """
-        # Generate bypass key
-        bypass_key = f"phase_enforcement:{canonical_tool}"
+        # Generate bypass key with UUID4 per spec §3.6
+        bypass_key = f"phase_enforcement:{canonical_tool}:{uuid.uuid4()}"
+        
+        # Also register this bypass key in the registry for the "once" scope
+        state_machine.add_bypass(
+            bypass_key=bypass_key,
+            scope="once",
+            reason=f"User-requested bypass for phase violation",
+            source="user_menu"
+        )
         
         # Build bypass menu
         bypass_menu = {
@@ -232,6 +240,9 @@ To proceed, you must either:
         Returns:
             Comma-separated list of allowed tools
         """
-        from state_machine import PHASE_ALLOWLIST
+        try:
+            from ..state_machine import PHASE_ALLOWLIST
+        except ImportError:
+            from state_machine import PHASE_ALLOWLIST
         allowed = PHASE_ALLOWLIST.get(phase, [])
         return ", ".join(allowed) if allowed else "None"
