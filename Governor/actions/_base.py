@@ -30,6 +30,7 @@ class ActionResult:
     - modified_payload: Modified tool input (only for modify decisions)
     - additional_context: Context to inject into agent's prompt
     - bypass_key: Key for bypass registry (if action can be bypassed)
+    - bypass_menu: Bypass menu options (if action presents menu)
     
     Attributes:
         decision: Internal decision string ("allow", "deny", "modify", "warn")
@@ -37,12 +38,14 @@ class ActionResult:
         modified_payload: Modified tool input (only when decision == "modify")
         additional_context: Additional context to inject into agent's prompt
         bypass_key: Unique key for bypass registry (e.g., "rule_id:tool_name")
+        bypass_menu: Bypass menu options (if action presents menu)
     """
     decision: str  # "allow" | "deny" | "modify" | "warn"
     reason: str
     modified_payload: Optional[Dict[str, Any]] = None
     additional_context: str = ""
     bypass_key: str = ""
+    bypass_menu: Optional[Dict[str, Any]] = None
     
     def __post_init__(self):
         """Validate decision value."""
