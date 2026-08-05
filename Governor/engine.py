@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 Rule Engine for Governor.py v1.5
 
