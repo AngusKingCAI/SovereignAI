@@ -35,6 +35,15 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 from contextlib import contextmanager
 
+# Import trace ID management
+try:
+    from ..trace_id import get_trace_id
+except ImportError:
+    from trace_id import get_trace_id
+
+# Trace ID is now managed by trace_id.py module
+# Use get_trace_id() from that module
+
 # Audit log file path
 AUDIT_DIR = "Governor/logs"
 AUDIT_FILE = os.path.join(AUDIT_DIR, "audit.jsonl")
@@ -54,17 +63,8 @@ def set_trace_id(trace_id: str) -> None:
     _current_trace_id = trace_id
 
 
-def get_trace_id() -> str:
-    """
-    Get the current trace ID, generating one if not set.
-    
-    Returns:
-        Trace ID string
-    """
-    global _current_trace_id
-    if _current_trace_id is None:
-        _current_trace_id = str(uuid.uuid4())
-    return _current_trace_id
+# Trace ID is now managed by trace_id.py module
+# Use get_trace_id() from that module
 
 
 def _compute_hash(data: Dict[str, Any]) -> str:

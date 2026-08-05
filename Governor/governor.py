@@ -30,6 +30,12 @@ try:
 except ImportError:
     from debug_logging import debug_log, is_debug_enabled
 
+# Import trace ID management
+try:
+    from .trace_id import generate_trace_id, set_trace_id, get_trace_id
+except ImportError:
+    from trace_id import generate_trace_id, set_trace_id, get_trace_id
+
 # Governor imports (package-relative with fallback for direct execution)
 try:
     from .protocol import build_hook_response, to_devin_decision
@@ -154,6 +160,13 @@ def _dispatch_hook(hook_name: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     
     state_machine = StateMachine()
     engine = Engine()
+    
+    # Generate or get trace ID and add to payload
+    current_trace_id = get_trace_id()
+    if "trace_id" not in payload:
+        payload["trace_id"] = current_trace_id
+    
+    debug_log("governor", f"Dispatching hook: {hook_name}", trace_id=current_trace_id)
     
     # Execute handler
     return handler.execute(payload, state_machine, engine)

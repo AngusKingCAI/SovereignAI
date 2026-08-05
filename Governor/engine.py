@@ -66,6 +66,12 @@ try:
 except ImportError:
     from debug_logging import debug_log, is_debug_enabled
 
+# Import circuit breaker
+try:
+    from .circuit_breaker import CircuitBreakerManager
+except ImportError:
+    from circuit_breaker import CircuitBreakerManager
+
 # YAML import with safe loader configuration
 try:
     import yaml
@@ -110,6 +116,22 @@ _cache_timestamps: Dict[str, float] = {}
 # Scope configuration cache
 _scope_config_cache: Optional[Dict[str, Any]] = None
 _scope_config_mtime: Optional[float] = None
+
+# Circuit breaker manager (module-level singleton)
+_circuit_breaker_manager: Optional[CircuitBreakerManager] = None
+
+
+def get_circuit_breaker_manager() -> CircuitBreakerManager:
+    """
+    Get the circuit breaker manager instance (singleton).
+    
+    Returns:
+        CircuitBreakerManager instance
+    """
+    global _circuit_breaker_manager
+    if _circuit_breaker_manager is None:
+        _circuit_breaker_manager = CircuitBreakerManager()
+    return _circuit_breaker_manager
 
 
 class Engine:
@@ -547,7 +569,7 @@ def evaluate_rules(hook_name: str, payload: Dict[str, Any], context: ActionConte
 def _execute_action(action_config: Dict[str, Any], payload: Dict[str, Any], 
                    context: ActionContext) -> ActionResult:
     """
-    Execute a single action.
+    Execute a single action with circuit breaker protection.
     
     Args:
         action_config: Action configuration from rule YAML
@@ -560,6 +582,20 @@ def _execute_action(action_config: Dict[str, Any], payload: Dict[str, Any],
     action_name = action_config.get("name")  # Spec §3.2 uses "name" key
     # Spec §3.2: action params are at top level of action config, not nested under params
     params = {k: v for k, v in action_config.items() if k != "name"}
+    
+    # Get rule ID from context if available
+    rule_id = context.payload.get("rule_id", "unknown") if context and context.payload else "unknown"
+    
+    # Check circuit breaker before executing
+    cb_manager = get_circuit_breaker_manager()
+    allowed, cb_reason = cb_manager.allow(action_name, rule_id)
+    
+    if not allowed:
+        debug_log("engine", "Circuit breaker blocked action", action=action_name, rule_id=rule_id, reason=cb_reason)
+        return ActionResult(
+            decision="allow",  # Fail-open
+            reason=f"Circuit breaker: {cb_reason}"
+        )
     
     # Import action class
     try:
@@ -582,7 +618,16 @@ def _execute_action(action_config: Dict[str, Any], payload: Dict[str, Any],
     action.validate_params(params)
     
     # Execute action
-    return action.evaluate(payload, params, context)
+    try:
+        result = action.evaluate(payload, params, context)
+        # Record success
+        cb_manager.record_success(action_name, rule_id)
+        return result
+    except Exception:
+        # Record failure
+        cb_manager.record_failure(action_name, rule_id)
+        # Re-raise to be caught by outer try-catch
+        raise
 
 
 def clear_rule_cache() -> None:
