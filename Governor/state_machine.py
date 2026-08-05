@@ -283,6 +283,18 @@ class StateMachine:
             self.state["counters"][counter_name] += 1
             self._save_state()
     
+    def set_counter(self, counter_name: str, value: int) -> None:
+        """
+        Set a counter to a specific value (for SessionStart reset).
+        
+        Args:
+            counter_name: Name of counter to set
+            value: Value to set
+        """
+        with self._lock:
+            self.state["counters"][counter_name] = value
+            self._save_state()
+    
     def get_counter(self, counter_name: str) -> int:
         """Get counter value."""
         with self._lock:

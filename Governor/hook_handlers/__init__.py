@@ -11,3 +11,7 @@ Auto-discovered registry for all 8 hooks:
 - SessionEnd
 - PostCompaction
 """
+
+from .session_start import SessionStartHandler
+
+__all__ = ["SessionStartHandler"]
