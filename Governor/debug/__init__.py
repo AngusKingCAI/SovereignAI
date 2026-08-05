@@ -30,6 +30,13 @@ except ImportError:
     print("Error: Cannot import Governor components")
     sys.exit(1)
 
+# Try to import structured logging (optional)
+try:
+    from structured_logging import is_structlog_enabled
+except (ImportError, NameError):
+    def is_structlog_enabled():
+        return False
+
 
 def cmd_inspect_state(args):
     """
@@ -241,6 +248,41 @@ def cmd_reset_memoization(args):
         sys.exit(1)
 
 
+def cmd_logging_status(args):
+    """
+    Show logging configuration status.
+    
+    Usage:
+        python -m Governor.debug logging-status
+    """
+    print("=== Logging Configuration Status ===\n")
+    
+    try:
+        structlog_enabled = is_structlog_enabled()
+        print(f"Structlog Enabled: {structlog_enabled}")
+        
+        if structlog_enabled:
+            print("Logging Format: JSON (structlog)")
+        else:
+            print("Logging Format: Text (stdlib fallback)")
+        
+        print("\nEnvironment Variables:")
+        for env_var, layer in {
+            "GOVERNOR_DEBUG_ENGINE": "engine",
+            "GOVERNOR_DEBUG_STATE_MACHINE": "state_machine",
+            "GOVERNOR_DEBUG_HOOK_HANDLERS": "hook_handlers",
+            "GOVERNOR_DEBUG_ACTIONS": "actions",
+            "GOVERNOR_DEBUG_AUDIT": "audit"
+        }.items():
+            enabled = os.getenv(env_var, "").lower() in ("1", "true", "yes", "on")
+            status = "enabled" if enabled else "disabled"
+            print(f"  {env_var}: {status}")
+        
+    except Exception as e:
+        print(f"Error getting logging status: {e}")
+        sys.exit(1)
+
+
 def main():
     """
     Main entry point for debug CLI.
@@ -258,6 +300,7 @@ def main():
         print("  list-rules             - List all loaded rules")
         print("  memoization-stats      - Show memoization statistics")
         print("  reset-memoization      - Reset memoization statistics")
+        print("  logging-status         - Show logging configuration status")
         sys.exit(1)
     
     command = sys.argv[1]
@@ -271,6 +314,7 @@ def main():
         'list-rules': cmd_list_rules,
         'memoization-stats': cmd_memoization_stats,
         'reset-memoization': cmd_reset_memoization,
+        'logging-status': cmd_logging_status,
     }
     
     if command not in commands:

@@ -9,6 +9,7 @@ Key Functions:
 - set_debug_level(): Set debug level for a specific layer
 - is_debug_enabled(): Check if debug is enabled for a layer
 - debug_log(): Log debug message if enabled
+- debug_log_structured(): Log structured message (JSON format)
 
 This implements the debug logging specified in v1.5 spec §4.6.
 """
@@ -27,6 +28,18 @@ DEBUG_LEVELS = {
 
 # Set of enabled debug layers
 _enabled_debug_layers: Set[str] = set()
+
+# Try to import structured logging
+USE_STRUCTURED_LOGGING = False
+try:
+    from .structured_logging import log_structured, is_structlog_enabled
+    USE_STRUCTURED_LOGGING = is_structlog_enabled()
+except ImportError:
+    try:
+        from structured_logging import log_structured, is_structlog_enabled
+        USE_STRUCTURED_LOGGING = is_structlog_enabled()
+    except (ImportError, NameError):
+        USE_STRUCTURED_LOGGING = False
 
 def _load_debug_settings() -> None:
     """Load debug settings from environment variables."""
@@ -72,6 +85,27 @@ def debug_log(layer: str, message: str, **kwargs) -> None:
             debug_line += f" | {context_str}"
         
         print(debug_line, file=sys.stderr)
+
+
+def debug_log_structured(layer: str, level: str, message: str, **kwargs) -> None:
+    """
+    Log a structured debug message if the layer's debug is enabled.
+    
+    This uses structured logging (JSON format) if available, otherwise
+    falls back to simple debug_log.
+    
+    Args:
+        layer: Layer name (engine, state_machine, hook_handlers, actions, audit)
+        level: Log level (debug, info, warning, error, critical)
+        message: Debug message
+        **kwargs: Additional context data (rule_id, hook_name, duration_ms, etc.)
+    """
+    if is_debug_enabled(layer):
+        if USE_STRUCTURED_LOGGING:
+            log_structured(layer, level, message, **kwargs)
+        else:
+            # Fallback to simple debug_log
+            debug_log(layer, message, **kwargs)
 
 def set_debug_level(layer: str, enabled: bool) -> None:
     """
