@@ -148,7 +148,7 @@ class JSONFormatter(logging.Formatter):
             if key not in ['name', 'msg', 'args', 'levelname', 'levelno', 'pathname', 
                           'filename', 'module', 'lineno', 'funcName', 'created', 'msecs',
                           'relativeCreated', 'thread', 'threadName', 'processName', 'process',
-                          'message', 'exc_info', 'exc_text', 'stack_info']:
+                          'message', 'exc_info', 'exc_text', 'stack_info', 'taskName']:
                 if not key.startswith('_'):
                     log_entry[key] = value
         
@@ -234,6 +234,7 @@ class TimingContext:
         self.operation = operation
         self.kwargs = kwargs
         self.start_time = None
+        self.duration_ms = None
     
     def __enter__(self):
         self.start_time = time.time()
@@ -241,8 +242,8 @@ class TimingContext:
     
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.start_time:
-            duration_ms = (time.time() - self.start_time) * 1000
-            log_timing(self.layer, self.operation, duration_ms, **self.kwargs)
+            self.duration_ms = (time.time() - self.start_time) * 1000
+            log_timing(self.layer, self.operation, self.duration_ms, **self.kwargs)
         return False  # Don't suppress exceptions
 
 

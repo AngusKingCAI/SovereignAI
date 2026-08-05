@@ -37,34 +37,13 @@ from contextlib import contextmanager
 
 # Import trace ID management
 try:
-    from ..trace_id import get_trace_id
+    from ..trace_id import get_trace_id, set_trace_id
 except ImportError:
-    from trace_id import get_trace_id
-
-# Trace ID is now managed by trace_id.py module
-# Use get_trace_id() from that module
+    from trace_id import get_trace_id, set_trace_id
 
 # Audit log file path
 AUDIT_DIR = "Governor/logs"
 AUDIT_FILE = os.path.join(AUDIT_DIR, "audit.jsonl")
-
-# Current trace ID for this session
-_current_trace_id: Optional[str] = None
-
-
-def set_trace_id(trace_id: str) -> None:
-    """
-    Set the trace ID for the current session.
-    
-    Args:
-        trace_id: UUID4 trace ID string
-    """
-    global _current_trace_id
-    _current_trace_id = trace_id
-
-
-# Trace ID is now managed by trace_id.py module
-# Use get_trace_id() from that module
 
 
 def _compute_hash(data: Dict[str, Any]) -> str:
