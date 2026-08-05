@@ -16,5 +16,6 @@ from .session_start import SessionStartHandler
 from .user_prompt_submit import UserPromptSubmitHandler
 from .pre_tool_use import PreToolUseHandler
 from .post_tool_use import PostToolUseHandler
+from .permission_request import PermissionRequestHandler
 
-__all__ = ["SessionStartHandler", "UserPromptSubmitHandler", "PreToolUseHandler", "PostToolUseHandler"]
+__all__ = ["SessionStartHandler", "UserPromptSubmitHandler", "PreToolUseHandler", "PostToolUseHandler", "PermissionRequestHandler"]
