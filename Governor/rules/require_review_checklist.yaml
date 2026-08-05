@@ -1,0 +1,19 @@
+# Sample Rule: Require Review Checklist
+# This rule requires a review checklist to be completed before
+# certain phases can proceed (e.g., COMMIT phase)
+
+id: require_review_checklist
+version: "1.0.0"
+tier: blocking
+agent: all
+domain: planning
+name: Require Review Checklist
+description: Requires review checklist completion before session end
+triggers:
+  - Stop
+  - SessionEnd
+check:
+  params:
+    actions:
+      - name: block_command
+        reason: Review checklist not completed
