@@ -136,8 +136,9 @@ class PermissionRequestHandler(HookHandler):
         if permission_type == "execute" and current_phase in ["EXECUTE", "VALIDATE"]:
             return "approve"
         
-        # Default to deny for unknown combinations
-        return "deny"
+        # Default to approve for unknown combinations (fail-open)
+        # Let Devin CLI's config.local.json handle permissions Governor doesn't explicitly manage
+        return "approve"
     
     def _build_permission_context(self, permission_type: str, resource: str,
                                 operation: str, permission_decision: str) -> str:

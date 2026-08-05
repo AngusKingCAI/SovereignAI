@@ -95,15 +95,13 @@ class StopHandler(HookHandler):
         # Evaluate rules for Stop
         try:
             from ..actions._base import ActionContext
-            from ..tool_normalizer import ToolNormalizer
         except ImportError:
             from actions._base import ActionContext
-            from tool_normalizer import ToolNormalizer
         
         if engine:
             context = ActionContext(
                 state_machine=state_machine,
-                tool_normalizer=ToolNormalizer(),
+                tool_normalizer=None,  # Fixed: ToolNormalizer class doesn't exist
                 hook_name="Stop",
                 payload=payload,
                 trace_id=payload.get("trace_id", "unknown")
@@ -114,9 +112,9 @@ class StopHandler(HookHandler):
             for result in rule_results:
                 if result.decision == "deny":
                     # Rules can block session stop
-                    return self._build_block_response(
+                    return self._build_deny_response(
                         reason=f"Rule enforcement in Stop: {result.reason}",
-                        additional_context=f"Rule: {result.action_name}"
+                        additional_context=f"Rule denied: {result.reason}"
                     )
                 elif result.decision == "warn":
                     # Add warning to checks

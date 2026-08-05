@@ -82,16 +82,14 @@ class SessionEndHandler(HookHandler):
         # Evaluate rules for SessionEnd
         try:
             from ..actions._base import ActionContext
-            from ..tool_normalizer import ToolNormalizer
         except ImportError:
             from actions._base import ActionContext
-            from tool_normalizer import ToolNormalizer
         
         rule_warnings = []
         if engine:
             context = ActionContext(
                 state_machine=state_machine,
-                tool_normalizer=ToolNormalizer(),
+                tool_normalizer=None,  # Fixed: ToolNormalizer class doesn't exist
                 hook_name="SessionEnd",
                 payload=payload,
                 trace_id=payload.get("trace_id", "unknown")
