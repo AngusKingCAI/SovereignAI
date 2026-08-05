@@ -4,6 +4,12 @@
 .audit/weekly-reviews/
 .audit/drift-reports/
 
+# Governor runtime state and logs (gitignored per spec)
+Governor/state/
+Governor/logs/
+# Exception: team_bypasses.json is committed (shared team bypasses)
+!Governor/team_bypasses.json
+
 # Python
 __pycache__/
 *.py[cod]
