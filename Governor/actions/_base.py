@@ -107,6 +107,9 @@ class RuleAction(ABC):
             def get_required_params(self) -> List[str]:
                 return ["file_pattern"]
             
+            # Optional: Add memoization for performance
+            # from ..memoization import memoize_result
+            # @memoize_result(ttl_seconds=120)
             def evaluate(self, payload: Dict[str, Any], params: Dict[str, Any], 
                        context: ActionContext) -> ActionResult:
                 # Implementation here

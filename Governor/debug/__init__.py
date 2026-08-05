@@ -25,6 +25,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 try:
     from state_machine import StateMachine
     from engine import load_rules, get_rule_stats
+    from memoization import get_memoization_stats, reset_memoization_stats
 except ImportError:
     print("Error: Cannot import Governor components")
     sys.exit(1)
@@ -195,6 +196,51 @@ def cmd_list_rules(args):
         sys.exit(1)
 
 
+def cmd_memoization_stats(args):
+    """
+    Show memoization statistics.
+    
+    Usage:
+        python -m Governor.debug memoization-stats
+    """
+    print("=== Memoization Statistics ===\n")
+    
+    try:
+        stats = get_memoization_stats()
+        print(f"Hits: {stats['hits']}")
+        print(f"Misses: {stats['misses']}")
+        print(f"Evictions: {stats['evictions']}")
+        
+        total = stats['hits'] + stats['misses']
+        if total > 0:
+            hit_rate = (stats['hits'] / total) * 100
+            print(f"Hit Rate: {hit_rate:.2f}%")
+        else:
+            print("Hit Rate: N/A (no cache activity)")
+        
+    except Exception as e:
+        print(f"Error getting memoization stats: {e}")
+        sys.exit(1)
+
+
+def cmd_reset_memoization(args):
+    """
+    Reset memoization statistics.
+    
+    Usage:
+        python -m Governor.debug reset-memoization
+    """
+    print("=== Resetting Memoization Statistics ===\n")
+    
+    try:
+        reset_memoization_stats()
+        print("Memoization statistics reset successfully.")
+        
+    except Exception as e:
+        print(f"Error resetting memoization stats: {e}")
+        sys.exit(1)
+
+
 def main():
     """
     Main entry point for debug CLI.
@@ -205,11 +251,13 @@ def main():
     if len(sys.argv) < 2:
         print("Governor Debug CLI")
         print("\nCommands:")
-        print("  inspect-state     - View current state machine state")
-        print("  trace-rule <id>   - Trace rule execution for a specific rule")
-        print("  trace-bypass <id> - Trace bypass history for a specific rule")
+        print("  inspect-state          - View current state machine state")
+        print("  trace-rule <id>        - Trace rule execution for a specific rule")
+        print("  trace-bypass <id>      - Trace bypass history for a specific rule")
         print("  replay-hook <name> <file> - Replay a hook event")
-        print("  list-rules        - List all loaded rules")
+        print("  list-rules             - List all loaded rules")
+        print("  memoization-stats      - Show memoization statistics")
+        print("  reset-memoization      - Reset memoization statistics")
         sys.exit(1)
     
     command = sys.argv[1]
@@ -221,6 +269,8 @@ def main():
         'trace-bypass': cmd_trace_bypass,
         'replay-hook': cmd_replay_hook,
         'list-rules': cmd_list_rules,
+        'memoization-stats': cmd_memoization_stats,
+        'reset-memoization': cmd_reset_memoization,
     }
     
     if command not in commands:
