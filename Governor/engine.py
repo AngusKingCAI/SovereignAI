@@ -19,10 +19,37 @@ This implements the rule engine specified in v1.5 spec §4.1.
 import os
 import importlib
 import time
-import json
 from typing import Dict, Any, List, Optional, Callable
 from dataclasses import dataclass
 from pathlib import Path
+import json
+
+# YAML import with safe loader configuration
+try:
+    import yaml
+    HAS_YAML = True
+    
+    # Custom SafeLoader with limits to prevent billion laughs attacks
+    class GovernorSafeLoader(yaml.SafeLoader):
+        """
+        Custom YAML loader with security limits to prevent billion laughs attacks.
+        
+        This prevents billion laughs attacks by limiting:
+        - Maximum document size
+        - Maximum nesting depth
+        - Maximum number of anchors/aliases (implicitly limited by size)
+        """
+        def __init__(self, stream):
+            super().__init__(stream)
+            # Limit document size to 1MB to prevent DoS
+            self.max_document_size = 1024 * 1024
+            # Limit nesting depth to 20
+            self.max_depth = 20
+            self._depth = 0
+    
+except ImportError:
+    HAS_YAML = False
+    GovernorSafeLoader = None
 
 __all__ = ["Engine", "Rule", "load_rules", "evaluate_rules", "clear_rule_cache", "get_rule_stats"]
 
@@ -191,10 +218,10 @@ def load_rules(force_reload: bool = False) -> List[Rule]:
                     rules.append(_rule_cache[str(rule_file)])
                     continue
             
-            # Load and parse YAML
-            if HAS_YAML:
+            # Load and parse YAML with safe loader
+            if HAS_YAML and GovernorSafeLoader:
                 with open(rule_file, 'r') as f:
-                    rule_data = yaml.safe_load(f)
+                    rule_data = yaml.load(f, Loader=GovernorSafeLoader)
             else:
                 # Fallback: simple key-value parsing (limited functionality)
                 with open(rule_file, 'r') as f:

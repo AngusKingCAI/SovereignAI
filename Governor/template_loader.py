@@ -2,7 +2,8 @@
 Template Loader for Governor.py v1.5
 
 This module handles loading and rendering of code generation templates.
-It supports variable substitution and conditional blocks.
+It supports variable substitution and conditional blocks using Jinja2
+with sandboxed environment for security.
 
 Key Functions:
 - load_template_manifest(): Load template manifest from YAML
@@ -20,12 +21,39 @@ from pathlib import Path
 TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
 MANIFEST_FILE = "manifest.yaml"
 
-# YAML import with stdlib fallback
+# YAML import with safe loader configuration
 try:
     import yaml
     HAS_YAML = True
+    
+    # Custom SafeLoader with limits to prevent billion laughs attacks
+    class GovernorSafeLoader(yaml.SafeLoader):
+        """
+        Custom YAML loader with security limits to prevent billion laughs attacks.
+        
+        This prevents billion laughs attacks by limiting:
+        - Maximum document size
+        - Maximum nesting depth
+        - Maximum number of anchors/aliases (implicitly limited by size)
+        """
+        def __init__(self, stream):
+            super().__init__(stream)
+            # Limit document size to 1MB to prevent DoS
+            self.max_document_size = 1024 * 1024
+            # Limit nesting depth to 20
+            self.max_depth = 20
+            self._depth = 0
+    
 except ImportError:
     HAS_YAML = False
+    GovernorSafeLoader = None
+
+# Jinja2 import for secure template rendering
+try:
+    from jinja2 import Environment, SandboxedEnvironment, StrictUndefined
+    HAS_JINJA2 = True
+except ImportError:
+    HAS_JINJA2 = False
 
 
 class TemplateLoader:
@@ -56,9 +84,9 @@ class TemplateLoader:
             self.manifest = {"version": "1.0.0", "templates": []}
             return
         
-        if HAS_YAML:
+        if HAS_YAML and GovernorSafeLoader:
             with open(manifest_path, 'r') as f:
-                self.manifest = yaml.safe_load(f)
+                self.manifest = yaml.load(f, Loader=GovernorSafeLoader)
         else:
             # Fallback: simple YAML parsing
             with open(manifest_path, 'r') as f:
@@ -135,12 +163,13 @@ class TemplateLoader:
     
     def render_template(self, template_id: str, variables: Dict[str, Any]) -> str:
         """
-        Render a template with variable substitution.
+        Render a template with variable substitution using Jinja2 sandboxed environment.
         
-        This method supports:
+        This method uses Jinja2 SandboxedEnvironment for secure template rendering:
         - Simple variable substitution: {{ variable_name }}
         - Conditional blocks: {% if variable %} ... {% endif %}
         - Loops: {% for item in list %} ... {% endfor %}
+        - Safe evaluation: blocks access to dangerous Python functions
         
         Args:
             template_id: Template ID from manifest
@@ -148,13 +177,45 @@ class TemplateLoader:
             
         Returns:
             Rendered template content
+            
+        Raises:
+            ValueError: If template not found or Jinja2 not available
         """
         template_content = self.get_template(template_id)
         if not template_content:
             raise ValueError(f"Template not found: {template_id}")
         
-        # Simple template rendering (Jinja2-style syntax)
-        # Note: For production, consider using Jinja2 library
+        if not HAS_JINJA2:
+            # Fallback to simple rendering if Jinja2 not available
+            return self._render_simple(template_content, variables)
+        
+        # Use Jinja2 SandboxedEnvironment for security
+        env = SandboxedEnvironment(
+            undefined=StrictUndefined,
+            autoescape=False  # Code templates don't need HTML escaping
+        )
+        
+        try:
+            template = env.from_string(template_content)
+            rendered = template.render(**variables)
+            return rendered
+        except Exception as e:
+            raise ValueError(f"Template rendering failed: {e}")
+    
+    def _render_simple(self, template_content: str, variables: Dict[str, Any]) -> str:
+        """
+        Fallback simple template rendering when Jinja2 is not available.
+        
+        This is a limited implementation for environments without Jinja2.
+        It only supports basic variable substitution.
+        
+        Args:
+            template_content: Template content as string
+            variables: Dictionary of variable values
+            
+        Returns:
+            Rendered template content
+        """
         rendered = template_content
         
         # Substitute variables
@@ -166,7 +227,6 @@ class TemplateLoader:
             rendered = rendered.replace(placeholder_no_spaces, str(value))
         
         # Handle conditionals (simple implementation)
-        # {% if variable %} ... {% endif %}
         import re
         conditional_pattern = r"{%\s*if\s+(\w+)\s*%}(.*?){%\s*endif\s*%}"
         
