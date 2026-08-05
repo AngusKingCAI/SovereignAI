@@ -87,6 +87,17 @@ class PreToolUseHandler(HookHandler):
         # Get current phase
         current_phase = state_machine.get_phase()
         
+        # Check bypass registry FIRST (before phase allowlist)
+        # Try multiple possible rule IDs for bypass
+        possible_rule_ids = ["phase_enforcement", "block_destructive", canonical_tool]
+        for rule_id in possible_rule_ids:
+            if state_machine.is_bypassed(rule_id, canonical_tool):
+                # Tool is bypassed, allow with warning
+                return self._build_allow_response(
+                    reason=f"Tool {canonical_tool} bypassed for phase {current_phase}",
+                    additional_context="⚠️ Tool usage bypassed - ensure compliance with phase requirements"
+                )
+        
         # Check phase allowlist
         if not state_machine.is_tool_allowed(canonical_tool):
             # Tool not allowed in current phase
@@ -94,22 +105,6 @@ class PreToolUseHandler(HookHandler):
                 canonical_tool=canonical_tool,
                 current_phase=current_phase,
                 state_machine=state_machine
-            )
-        
-        # Check bypass registry
-        # Try multiple possible rule IDs for bypass
-        possible_rule_ids = ["phase_enforcement", "block_destructive", canonical_tool]
-        bypassed = False
-        for rule_id in possible_rule_ids:
-            if state_machine.is_bypassed(rule_id, canonical_tool):
-                bypassed = True
-                break
-        
-        if bypassed:
-            # Tool is bypassed, allow with warning
-            return self._build_allow_response(
-                reason=f"Tool {canonical_tool} bypassed for phase {current_phase}",
-                additional_context="⚠️ Tool usage bypassed - ensure compliance with phase requirements"
             )
         
         # Apply validation rules via rule engine
@@ -143,15 +138,10 @@ class PreToolUseHandler(HookHandler):
         # Generate bypass key with UUID4 per spec §3.6
         bypass_key = f"phase_enforcement:{canonical_tool}:{uuid.uuid4()}"
         
-        # Also register this bypass key in the registry for the "once" scope
-        state_machine.add_bypass(
-            bypass_key=bypass_key,
-            scope="once",
-            reason=f"User-requested bypass for phase violation",
-            source="user_menu"
-        )
-        
         # Build bypass menu
+        # Note: The bypass key is presented to the user in the menu.
+        # When the user selects "Bypass and Execute", UserPromptSubmit will
+        # parse the menu response and register the bypass in the registry.
         bypass_menu = {
             "title": f"Tool Not Allowed in {current_phase} Phase",
             "message": f"The tool '{canonical_tool}' is not allowed in the {current_phase} phase.",

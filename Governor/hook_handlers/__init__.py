@@ -19,9 +19,6 @@ from ._base import HookHandler
 # Auto-discover and register all hook handlers
 _HOOK_HANDLERS = {}
 
-# Get the current package path
-__path__ = __path__ if hasattr(__name__, '__path__') else []
-
 for _, module_name, _ in pkgutil.iter_modules(__path__):
     # Skip private modules
     if module_name.startswith("_"):
@@ -44,5 +41,15 @@ for _, module_name, _ in pkgutil.iter_modules(__path__):
         # Skip modules that fail to import
         pass
 
-# Export all discovered handlers
-__all__ = list(_HOOK_HANDLERS.values())
+# Export class names for backward compatibility
+__all__ = [type(h).__name__ for h in _HOOK_HANDLERS.values()]
+
+# Re-export classes for direct import
+from .session_start import SessionStartHandler
+from .user_prompt_submit import UserPromptSubmitHandler
+from .pre_tool_use import PreToolUseHandler
+from .post_tool_use import PostToolUseHandler
+from .permission_request import PermissionRequestHandler
+from .stop import StopHandler
+from .session_end import SessionEndHandler
+from .post_compaction import PostCompactionHandler
