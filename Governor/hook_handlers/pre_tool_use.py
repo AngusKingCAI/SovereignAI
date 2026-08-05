@@ -18,6 +18,7 @@ This implements the PreToolUse handler specified in v1.5 spec §4.3.
 """
 
 import uuid
+import os
 from typing import Dict, Any, Optional
 
 # Import base class (package-relative)
@@ -31,6 +32,12 @@ try:
     from ..tool_normalizer import normalize_tool_name
 except ImportError:
     from tool_normalizer import normalize_tool_name
+
+# Import ActionContext (package-relative)
+try:
+    from ..actions._base import ActionContext
+except ImportError:
+    from actions._base import ActionContext
 
 
 class PreToolUseHandler(HookHandler):
@@ -108,8 +115,22 @@ class PreToolUseHandler(HookHandler):
             )
         
         # Apply validation rules via rule engine
-        # Note: Rule engine integration will be added in Phase 2.5
-        # For now, we implement basic phase-based gating
+        if engine:
+            context = ActionContext(
+                state_machine=state_machine,
+                tool_normalizer=None,
+                hook_name="PreToolUse",
+                payload=payload,
+                trace_id=os.environ.get("GOVERNOR_TRACE_ID", "")
+            )
+            results = engine.evaluate_rules("PreToolUse", payload, context)
+            for result in results:
+                if result.decision == "deny":
+                    return self._build_response(
+                        internal_decision="deny",
+                        reason=result.reason,
+                        additional_context=result.additional_context
+                    )
         
         # Infer phase from tool usage patterns
         self._infer_phase_from_tool(canonical_tool, tool_input, state_machine)

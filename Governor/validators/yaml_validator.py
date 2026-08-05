@@ -75,7 +75,8 @@ OPTIONAL_FIELDS: Set[str] = {
     "description",
     "metadata",
     "enabled",
-    "aliases"
+    "aliases",
+    "name"
 }
 
 VALID_TIERS: Set[str] = {"blocking", "warning", "observational"}

@@ -16,8 +16,8 @@ import os
 from typing import Dict, Any, List, Optional
 from pathlib import Path
 
-# Template directory
-TEMPLATES_DIR = "templates"
+# Template directory (package-relative)
+TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
 MANIFEST_FILE = "manifest.yaml"
 
 # YAML import with stdlib fallback
@@ -202,7 +202,7 @@ def get_template_loader() -> TemplateLoader:
         TemplateLoader instance
     """
     global _template_loader
-    if _template_loader is None:
+    if _template_loader is None or not _template_loader.manifest.get("templates"):
         _template_loader = TemplateLoader()
     return _template_loader
 

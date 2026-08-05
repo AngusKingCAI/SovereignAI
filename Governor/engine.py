@@ -39,8 +39,8 @@ try:
 except ImportError:
     HAS_YAML = False
 
-# Rule directory
-RULES_DIR = "Governor/rules"
+# Rule directory (package-relative)
+RULES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rules")
 
 # Priority levels (spec uses "tier" but we keep priority for compatibility)
 PRIORITY_LEVELS = {
