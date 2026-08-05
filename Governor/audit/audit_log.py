@@ -27,6 +27,7 @@ Audit Event Structure:
 """
 
 import os
+import sys
 import json
 import hashlib
 import uuid
@@ -123,8 +124,12 @@ def log_event(hook_name: str, payload: Dict[str, Any], response: Dict[str, Any],
     - Uses current_hash field naming (not event_hash)
     - Includes trace_id for correlation
     """
-    # Ensure audit directory exists
-    os.makedirs(AUDIT_DIR, exist_ok=True)
+    # Ensure audit directory exists with secure permissions
+    old_umask = os.umask(0o077)  # Restrict to owner-only
+    try:
+        os.makedirs(AUDIT_DIR, exist_ok=True)
+    finally:
+        os.umask(old_umask)  # Restore original umask
     
     # Get previous hash for chaining
     prev_hash = _get_last_hash()

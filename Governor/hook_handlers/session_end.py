@@ -79,9 +79,33 @@ class SessionEndHandler(HookHandler):
         # Get violations
         violations = state_machine.get_violations()
         
+        # Evaluate rules for SessionEnd
+        try:
+            from ..actions._base import ActionContext
+            from ..tool_normalizer import ToolNormalizer
+        except ImportError:
+            from actions._base import ActionContext
+            from tool_normalizer import ToolNormalizer
+        
+        rule_warnings = []
+        if engine:
+            context = ActionContext(
+                state_machine=state_machine,
+                tool_normalizer=ToolNormalizer(),
+                hook_name="SessionEnd",
+                payload=payload,
+                trace_id=payload.get("trace_id", "unknown")
+            )
+            rule_results = engine.evaluate_rules("SessionEnd", payload, context)
+            
+            # Collect warnings (SessionEnd shouldn't block)
+            for result in rule_results:
+                if result.decision == "warn":
+                    rule_warnings.append(f"Rule warning: {result.reason}")
+        
         # Generate compliance report
         compliance_report = self._generate_compliance_report(
-            current_phase, exec_count, validate_count, violations, state_machine
+            current_phase, exec_count, validate_count, violations, state_machine, rule_warnings
         )
         
         # Archive state for post-mortem
@@ -102,7 +126,7 @@ class SessionEndHandler(HookHandler):
     
     def _generate_compliance_report(self, current_phase: str, exec_count: int,
                                   validate_count: int, violations: list,
-                                  state_machine: Any) -> str:
+                                  state_machine: Any, rule_warnings: list = None) -> str:
         """
         Generate compliance report for the session.
         
@@ -112,10 +136,13 @@ class SessionEndHandler(HookHandler):
             validate_count: Number of validations
             violations: List of violations
             state_machine: State machine instance
+            rule_warnings: List of rule warnings from SessionEnd
             
         Returns:
             Compliance report string
         """
+        if rule_warnings is None:
+            rule_warnings = []
         # All entries in violations are actual violations now (execution logs go to audit trail)
         
         # Count bypasses
@@ -139,6 +166,12 @@ Compliance Status: {'COMPLIANT' if len(violations) == 0 else 'NON-COMPLIANT'}
 Flags:
 - Research Required: {state_machine.get_flag('research_required')}
 """
+
+        # Add rule warnings if any
+        if rule_warnings:
+            report += "\nRule Warnings:\n"
+            for warning in rule_warnings:
+                report += f"- {warning}\n"
         
         return report
     

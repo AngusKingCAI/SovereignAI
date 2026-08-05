@@ -24,6 +24,12 @@ import json
 import traceback
 from typing import Dict, Any, Optional
 
+# Import debug logging
+try:
+    from .debug_logging import debug_log, is_debug_enabled
+except ImportError:
+    from debug_logging import debug_log, is_debug_enabled
+
 # Governor imports (package-relative with fallback for direct execution)
 try:
     from .protocol import build_hook_response, to_devin_decision

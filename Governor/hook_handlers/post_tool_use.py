@@ -97,6 +97,35 @@ class PostToolUseHandler(HookHandler):
         # Log execution to audit trail
         self._log_execution(canonical_tool, tool_input, tool_output, tool_status, state_machine)
         
+        # Evaluate rules for PostToolUse
+        try:
+            from ..actions._base import ActionContext
+            from ..tool_normalizer import ToolNormalizer
+        except ImportError:
+            from actions._base import ActionContext
+            from tool_normalizer import ToolNormalizer
+        
+        if engine:
+            context = ActionContext(
+                state_machine=state_machine,
+                tool_normalizer=ToolNormalizer(),
+                hook_name="PostToolUse",
+                payload=payload,
+                trace_id=payload.get("trace_id", "unknown")
+            )
+            rule_results = engine.evaluate_rules("PostToolUse", payload, context)
+            
+            # Check if any rules returned deny or warn
+            for result in rule_results:
+                if result.decision == "deny":
+                    # Rules can deny in PostToolUse for cleanup/violation handling
+                    return self._build_block_response(
+                        reason=f"Rule enforcement in PostToolUse: {result.reason}",
+                        additional_context=f"Rule: {result.action_name}"
+                    )
+                elif result.decision == "warn":
+                    additional_context += f"\n⚠️ Rule warning: {result.reason}"
+        
         # Validate tool output
         validation_result = self._validate_output(canonical_tool, tool_output, tool_status)
         

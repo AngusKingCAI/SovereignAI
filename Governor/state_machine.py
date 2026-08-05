@@ -46,6 +46,12 @@ except ImportError:
     # Fallback for direct execution during development
     from locking import exclusive_lock
 
+# Import debug logging
+try:
+    from .debug_logging import debug_log, is_debug_enabled
+except ImportError:
+    from debug_logging import debug_log, is_debug_enabled
+
 # State file paths
 STATE_DIR = "Governor/state"
 STATE_FILE = os.path.join(STATE_DIR, "state.json")
@@ -90,8 +96,12 @@ class StateMachine:
         self.state: Dict[str, Any] = {}
         self._lock = threading.Lock()
         
-        # Initialize state directory
-        os.makedirs(state_dir, exist_ok=True)
+        # Initialize state directory with secure permissions
+        old_umask = os.umask(0o077)  # Restrict to owner-only
+        try:
+            os.makedirs(state_dir, exist_ok=True)
+        finally:
+            os.umask(old_umask)  # Restore original umask
         
         # Load or initialize state
         self._load_state()
@@ -188,6 +198,19 @@ class StateMachine:
         # Atomic replace
         os.replace(temp_path, self.state_path)
         
+        # Fsync directory to ensure directory entry is durable (Unix only)
+        # Windows doesn't support directory fsync, so we skip it there
+        if sys.platform != "win32":
+            try:
+                dir_fd = os.open(os.path.dirname(self.state_path), os.O_RDONLY)
+                try:
+                    os.fsync(dir_fd)
+                finally:
+                    os.close(dir_fd)
+            except (OSError, AttributeError):
+                # Filesystem doesn't support directory fsync
+                pass
+        
         # Update checksum from file contents (not in-memory state)
         self._update_checksum_from_file()
     
@@ -253,6 +276,8 @@ class StateMachine:
         if phase not in VALID_PHASES:
             raise ValueError(f"Invalid phase: {phase}. Valid phases: {VALID_PHASES}")
         
+        debug_log("state_machine", "Setting phase", old_phase=self.get_phase(), new_phase=phase)
+        
         with self._lock:
             self.state["phase"] = phase
             self._save_state()
@@ -269,6 +294,8 @@ class StateMachine:
         """
         if mode not in ["app", "harness"]:
             raise ValueError(f"Invalid mode: {mode}. Valid modes: app, harness")
+        
+        debug_log("state_machine", "Setting mode", old_mode=self.get_mode(), new_mode=mode)
         
         with self._lock:
             self.state["mode"] = mode
@@ -305,6 +332,8 @@ class StateMachine:
         Args:
             counter_name: Name of counter to increment
         """
+        debug_log("state_machine", "Incrementing counter", counter=counter_name)
+        
         with self._lock:
             if counter_name not in self.state["counters"]:
                 self.state["counters"][counter_name] = 0

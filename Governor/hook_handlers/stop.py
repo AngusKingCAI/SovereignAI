@@ -84,13 +84,46 @@ class StopHandler(HookHandler):
         # Validate bypass entries
         bypass_check = self._validate_bypasses(state_machine)
         
-        # Aggregate all checks
+        # Aggregate all checks first
         all_checks = {
             "completion": completion_check,
             "violations": violation_check,
             "usage": usage_check,
             "bypasses": bypass_check
         }
+        
+        # Evaluate rules for Stop
+        try:
+            from ..actions._base import ActionContext
+            from ..tool_normalizer import ToolNormalizer
+        except ImportError:
+            from actions._base import ActionContext
+            from tool_normalizer import ToolNormalizer
+        
+        if engine:
+            context = ActionContext(
+                state_machine=state_machine,
+                tool_normalizer=ToolNormalizer(),
+                hook_name="Stop",
+                payload=payload,
+                trace_id=payload.get("trace_id", "unknown")
+            )
+            rule_results = engine.evaluate_rules("Stop", payload, context)
+            
+            # Check if any rules returned deny
+            for result in rule_results:
+                if result.decision == "deny":
+                    # Rules can block session stop
+                    return self._build_block_response(
+                        reason=f"Rule enforcement in Stop: {result.reason}",
+                        additional_context=f"Rule: {result.action_name}"
+                    )
+                elif result.decision == "warn":
+                    # Add warning to checks
+                    all_checks["rule_warning"] = {
+                        "passed": True,
+                        "message": f"Rule warning: {result.reason}"
+                    }
         
         # Determine if session can stop
         can_stop = all(check["passed"] for check in all_checks.values())

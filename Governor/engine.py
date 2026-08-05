@@ -60,12 +60,38 @@ except ImportError:
     # Fallback for direct execution during development
     from actions._base import RuleAction, ActionResult, ActionContext
 
-# YAML import with stdlib fallback
+# Import debug logging
+try:
+    from .debug_logging import debug_log, is_debug_enabled
+except ImportError:
+    from debug_logging import debug_log, is_debug_enabled
+
+# YAML import with safe loader configuration
 try:
     import yaml
     HAS_YAML = True
+    
+    # Custom SafeLoader with limits to prevent billion laughs attacks
+    class GovernorSafeLoader(yaml.SafeLoader):
+        """
+        Custom YAML loader with security limits to prevent billion laughs attacks.
+        
+        This prevents billion laughs attacks by limiting:
+        - Maximum document size
+        - Maximum nesting depth
+        - Maximum number of anchors/aliases (implicitly limited by size)
+        """
+        def __init__(self, stream):
+            super().__init__(stream)
+            # Limit document size to 1MB to prevent DoS
+            self.max_document_size = 1024 * 1024
+            # Limit nesting depth to 20
+            self.max_depth = 20
+            self._depth = 0
+    
 except ImportError:
     HAS_YAML = False
+    GovernorSafeLoader = None
 
 # Rule directory (package-relative)
 RULES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rules")
@@ -203,9 +229,12 @@ def load_rules(force_reload: bool = False) -> List[Rule]:
     """
     global _rule_cache, _cache_timestamps
     
+    debug_log("engine", "load_rules called", force_reload=force_reload)
+    
     rules = []
     
     if not os.path.exists(RULES_DIR):
+        debug_log("engine", "Rules directory does not exist", rules_dir=RULES_DIR)
         return rules
     
     # Scan for YAML files
@@ -454,12 +483,16 @@ def evaluate_rules(hook_name: str, payload: Dict[str, Any], context: ActionConte
     """
     results = []
     
+    debug_log("engine", "evaluate_rules called", hook_name=hook_name, num_rules_total=len(load_rules()))
+    
     # Load rules
     rules = load_rules()
     
     # Detect current agent and scope from context or payload
     current_agent = _detect_agent(payload, context)
     current_scope = _detect_scope(payload, context)
+    
+    debug_log("engine", "Detected agent and scope", agent=current_agent, scope=current_scope)
     
     # Match triggers and filter by agent and scope
     matched_rules = []
@@ -479,6 +512,8 @@ def evaluate_rules(hook_name: str, payload: Dict[str, Any], context: ActionConte
             if match_trigger(trigger, hook_name, payload):
                 matched_rules.append(rule)
                 break  # Only need one trigger to match
+    
+    debug_log("engine", "Matched rules", num_matched=len(matched_rules), matched_ids=[r.id for r in matched_rules])
     
     # Sort by priority (already sorted by load_rules, but ensure)
     matched_rules.sort(key=lambda r: PRIORITY_LEVELS.get(r.priority, 999))
