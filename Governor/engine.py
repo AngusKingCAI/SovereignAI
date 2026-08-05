@@ -21,6 +21,8 @@ from typing import Dict, Any, List, Optional, Callable
 from dataclasses import dataclass
 from pathlib import Path
 
+__all__ = ["Engine", "Rule", "load_rules", "evaluate_rules", "clear_rule_cache", "get_rule_stats"]
+
 # Import action base classes (package-relative for module execution)
 try:
     from .actions._base import RuleAction, ActionResult, ActionContext
@@ -48,6 +50,58 @@ PRIORITY_LEVELS = {
 # Rule cache
 _rule_cache: Dict[str, Dict[str, Any]] = {}
 _cache_timestamps: Dict[str, float] = {}
+
+
+class Engine:
+    """
+    Rule engine for loading and evaluating Governor rules.
+    
+    This class provides a unified interface for the rule engine,
+    encapsulating the module-level functions for better spec compliance.
+    
+    Spec §3.5a defines the Engine interface with methods for rule loading
+    and evaluation.
+    """
+    
+    def load_rules(self, force_reload: bool = False) -> List[Rule]:
+        """
+        Load all rules from the rules directory.
+        
+        Args:
+            force_reload: Force reload even if cache is valid
+            
+        Returns:
+            List of Rule objects
+        """
+        return load_rules(force_reload)
+    
+    def evaluate_rules(self, hook_name: str, payload: Dict[str, Any], 
+                       context: ActionContext) -> List[ActionResult]:
+        """
+        Evaluate all rules against the current hook event.
+        
+        Args:
+            hook_name: Current hook name
+            payload: Hook event payload
+            context: ActionContext for action execution
+            
+        Returns:
+            List of ActionResult objects from executed actions
+        """
+        return evaluate_rules(hook_name, payload, context)
+    
+    def clear_cache(self) -> None:
+        """Clear the rule cache (useful for testing)."""
+        clear_rule_cache()
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """
+        Get statistics about loaded rules.
+        
+        Returns:
+            Dictionary with rule statistics
+        """
+        return get_rule_stats()
 
 
 @dataclass
