@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "app_paths": [
+    "C:/SovereignAI/App",
+    "C:/SovereignAI/Agents"
+  ],
+  "harness_paths": [
+    "C:/SovereignAI/Harness",
+    "C:/SovereignAI/Workflow"
+  ],
+  "cross_scope_protection": {
+    "enabled": true,
+    "warning_only": false
+  }
+}

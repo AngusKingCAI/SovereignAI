@@ -100,6 +100,7 @@ class StateMachine:
         """Get default initial state."""
         return {
             "phase": "INIT",
+            "mode": "app",
             "counters": {
                 "exec": 0,
                 "validate": 0
@@ -255,6 +256,33 @@ class StateMachine:
         with self._lock:
             self.state["phase"] = phase
             self._save_state()
+    
+    def set_mode(self, mode: str) -> None:
+        """
+        Set current execution mode (app vs harness).
+        
+        Args:
+            mode: Mode name ("app" or "harness")
+            
+        Raises:
+            ValueError: If mode is not valid
+        """
+        if mode not in ["app", "harness"]:
+            raise ValueError(f"Invalid mode: {mode}. Valid modes: app, harness")
+        
+        with self._lock:
+            self.state["mode"] = mode
+            self._save_state()
+    
+    def get_mode(self) -> str:
+        """
+        Get current execution mode.
+        
+        Returns:
+            Current mode name ("app" or "harness")
+        """
+        with self._lock:
+            return self.state.get("mode", "app")
     
     def is_tool_allowed(self, tool_name: str) -> bool:
         """

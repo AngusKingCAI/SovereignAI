@@ -159,8 +159,11 @@ class TemplateLoader:
         
         # Substitute variables
         for key, value in variables.items():
-            placeholder = f"{{{{ {key} }}}}"
-            rendered = rendered.replace(placeholder, str(value))
+            # Try both formats: {{ variable }} and {{variable}}
+            placeholder_with_spaces = f"{{{{ {key} }}}}"
+            placeholder_no_spaces = f"{{{{{key}}}}}"
+            rendered = rendered.replace(placeholder_with_spaces, str(value))
+            rendered = rendered.replace(placeholder_no_spaces, str(value))
         
         # Handle conditionals (simple implementation)
         # {% if variable %} ... {% endif %}

@@ -94,13 +94,16 @@ class UserPromptSubmitHandler(HookHandler):
         # Detect mode (App vs Harness review)
         mode = self._detect_mode(user_prompt, payload)
         
+        # Set mode in state machine for persistence
+        state_machine.set_mode(mode)
+        
         # Set research_required flag if intent is question
         if intent == "question":
             state_machine.set_flag("research_required", True)
             additional_context += "\n⚠️ Research phase recommended for this query."
         
         # Enrich with research worksheet if needed
-        if intent == "question" or mode == "harness_review":
+        if intent == "question" or mode == "harness":
             research_context = self._build_research_worksheet(user_prompt, mode)
             additional_context += research_context
         
@@ -160,28 +163,36 @@ class UserPromptSubmitHandler(HookHandler):
         """
         Detect execution mode (App vs Harness review).
         
-        Mode detection logic:
-        - Harness review: Command prefix or explicit "review governor" in prompt
-        - App: Normal operations
+        Mode detection logic (ENHANCED per spec §4.3):
+        - Primary: Command prefix (mode:harness or mode:app)
+        - Fallback: Explicit review keywords (with deprecation warning)
         
         Args:
             user_prompt: User's prompt text
             payload: Hook event payload
             
         Returns:
-            Mode string ("app" or "harness_review")
+            Mode string ("app" or "harness")
         """
-        # Check for command prefix in payload
-        command_prefix = payload.get("command_prefix", "")
-        if command_prefix:
-            return "harness_review"
+        prompt_lower = user_prompt.strip().lower()
         
-        # Check for explicit review keywords
-        review_keywords = ["review governor", "governor review", "audit governor", "check governor"]
-        prompt_lower = user_prompt.lower()
+        # Primary: explicit command prefix
+        if prompt_lower.startswith("mode:harness"):
+            return "harness"
+        if prompt_lower.startswith("mode:app"):
+            return "app"
+        
+        # Fallback: keyword detection (with deprecation warning)
+        review_keywords = [
+            "review harness", "audit governor", "check harness rules",
+            "inspect harness", "harness review", "governor audit"
+        ]
         for keyword in review_keywords:
             if keyword in prompt_lower:
-                return "harness_review"
+                # Log deprecation warning (would use logger in production)
+                # logger.warning("mode_detected_via_keyword", keyword=keyword,
+                #     message="Consider using mode:harness or mode:app for explicit mode control")
+                return "harness"
         
         # Default to app mode
         return "app"
@@ -213,7 +224,7 @@ Research Tasks:
 
 Mode: {mode.upper()}
 - If APP: Focus on task-specific research
-- If HARNESS_REVIEW: Focus on governance compliance and security analysis
+- If HARNESS: Focus on governance compliance and security analysis
 
 Research Guidelines:
 - Use web_search for external information

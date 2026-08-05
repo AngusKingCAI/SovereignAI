@@ -38,3 +38,71 @@ templates:
         type: boolean
         description: Include test file
         default: true
+
+  - id: architect_rule
+    name: Architect Rule Template
+    description: Generates an architect-specific rule YAML
+    file: architect_rule.yaml.tpl
+    language: yaml
+    framework: governor
+    variables:
+      - name: rule_name
+        type: string
+        description: Name of the rule
+        required: true
+      - name: domain
+        type: string
+        description: Domain for the rule
+        default: planning
+      - name: description
+        type: string
+        description: Rule description
+        required: true
+      - name: reason
+        type: string
+        description: Block reason
+        required: true
+
+  - id: planner_rule
+    name: Planner Rule Template
+    description: Generates a planner-specific rule YAML
+    file: planner_rule.yaml.tpl
+    language: yaml
+    framework: governor
+    variables:
+      - name: rule_name
+        type: string
+        description: Name of the rule
+        required: true
+      - name: tier
+        type: string
+        description: Rule tier (blocking, warning, observational)
+        default: warning
+      - name: description
+        type: string
+        description: Rule description
+        required: true
+      - name: reason
+        type: string
+        description: Block reason
+        required: true
+
+  - id: executor_rule
+    name: Executor Rule Template
+    description: Generates an executor-specific rule YAML
+    file: executor_rule.yaml.tpl
+    language: yaml
+    framework: governor
+    variables:
+      - name: rule_name
+        type: string
+        description: Name of the rule
+        required: true
+      - name: description
+        type: string
+        description: Rule description
+        required: true
+      - name: reason
+        type: string
+        description: Block reason
+        required: true

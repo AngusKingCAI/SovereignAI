@@ -76,12 +76,14 @@ OPTIONAL_FIELDS: Set[str] = {
     "metadata",
     "enabled",
     "aliases",
-    "name"
+    "name",
+    "scope"
 }
 
 VALID_TIERS: Set[str] = {"blocking", "warning", "observational"}
 VALID_AGENTS: Set[str] = {"architect", "planner", "executor", "reviewer", "all"}
 VALID_DOMAINS: Set[str] = {"execution", "planning", "communication", "file_access", "all"}
+VALID_SCOPES: Set[str] = {"app", "harness", "all"}
 VALID_TRIGGERS: Set[str] = {
     "SessionStart",
     "UserPromptSubmit",
@@ -191,6 +193,20 @@ def validate_rule_yaml(file_path: str, yaml_content: str) -> List[RuleValidation
                 file_path=file_path,
                 field="domain",
                 message=f"Invalid domain '{rule_data['domain']}'. Valid domains: {VALID_DOMAINS}"
+            ))
+    
+    if "scope" in rule_data:
+        if not isinstance(rule_data["scope"], str):
+            errors.append(RuleValidationError(
+                file_path=file_path,
+                field="scope",
+                message="Field 'scope' must be a string"
+            ))
+        elif rule_data["scope"] not in VALID_SCOPES:
+            errors.append(RuleValidationError(
+                file_path=file_path,
+                field="scope",
+                message=f"Invalid scope '{rule_data['scope']}'. Valid scopes: {VALID_SCOPES}"
             ))
     
     if "triggers" in rule_data:

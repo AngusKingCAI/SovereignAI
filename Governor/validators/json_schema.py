@@ -65,6 +65,7 @@ RULE_SCHEMA: Dict[str, Any] = {
         "description": {"type": "string"},
         "metadata": {"type": "object"},
         "enabled": {"type": "boolean"},
+        "scope": {"type": "string", "enum": ["app", "harness", "all"]},
         "aliases": {
             "type": "array",
             "items": {"type": "string"}

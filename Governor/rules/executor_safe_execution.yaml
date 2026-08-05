@@ -1,0 +1,17 @@
+# Executor-Specific Rule: Enforce Safe Execution
+# This rule enforces safe execution patterns
+
+id: executor_safe_execution
+version: "1.0.0"
+tier: blocking
+agent: executor
+domain: execution
+name: Enforce Safe Execution
+description: Blocks unsafe execution patterns
+triggers:
+  - PreToolUse
+check:
+  params:
+    actions:
+      - name: block_command
+        reason: Unsafe execution pattern detected

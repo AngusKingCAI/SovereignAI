@@ -130,6 +130,7 @@ class Rule:
     tier: str = "observational"  # Spec uses "tier" instead of "priority"
     agent: Optional[str] = None
     domain: Optional[str] = None
+    scope: Optional[str] = None
     name: str = ""
     description: str = ""
     triggers: List[str] = None  # Spec says list of strings (hook names)
@@ -201,6 +202,7 @@ def load_rules(force_reload: bool = False) -> List[Rule]:
                 tier=rule_data.get("tier", rule_data.get("priority", "observational")),  # Backward compat
                 agent=rule_data.get("agent"),
                 domain=rule_data.get("domain"),
+                scope=rule_data.get("scope"),
                 name=rule_data.get("name", rule_file.stem),
                 description=rule_data.get("description", ""),
                 triggers=rule_data.get("triggers", []),
@@ -292,6 +294,70 @@ def match_trigger(trigger: str, hook_name: str, payload: Dict[str, Any]) -> bool
     return trigger == hook_name
 
 
+def _detect_agent(payload: Dict[str, Any], context: ActionContext) -> str:
+    """
+    Detect the current agent from payload or context.
+    
+    Args:
+        payload: Hook event payload
+        context: ActionContext
+        
+    Returns:
+        Agent name (architect, planner, executor, reviewer, or all)
+    """
+    # Try to get agent from payload
+    if "agent" in payload:
+        return payload["agent"]
+    
+    # Try to get agent from context state machine
+    if context and context.state_machine:
+        try:
+            state = context.state_machine.get_state()
+            if "agent" in state:
+                return state["agent"]
+        except Exception:
+            pass
+    
+    # Default to "all" if agent cannot be determined
+    return "all"
+
+
+def _detect_scope(payload: Dict[str, Any], context: ActionContext) -> str:
+    """
+    Detect the current scope (app vs harness) from payload or context.
+    
+    Args:
+        payload: Hook event payload
+        context: ActionContext
+        
+    Returns:
+        Scope name (app, harness, or all)
+    """
+    # Try to get scope from payload
+    if "scope" in payload:
+        return payload["scope"]
+    
+    # Try to get scope from context state machine
+    if context and context.state_machine:
+        try:
+            state = context.state_machine.get_state()
+            if "scope" in state:
+                return state["scope"]
+        except Exception:
+            pass
+    
+    # Try to infer scope from file paths in payload
+    if "file_path" in payload:
+        file_path = payload["file_path"]
+        if "App" in file_path or "app" in file_path.lower():
+            return "app"
+        elif "Harness" in file_path or "harness" in file_path.lower():
+            return "harness"
+    
+    # Default to "all" if scope cannot be determined
+    return "all"
+
+
 def evaluate_rules(hook_name: str, payload: Dict[str, Any], context: ActionContext) -> List[ActionResult]:
     """
     Evaluate all rules against the current hook event.
@@ -299,9 +365,11 @@ def evaluate_rules(hook_name: str, payload: Dict[str, Any], context: ActionConte
     This function:
     1. Loads all rules (with caching)
     2. Matches triggers to the current event
-    3. Sorts matched rules by priority
-    4. Executes actions sequentially
-    5. Aggregates results
+    3. Filters by agent (if agent field specified)
+    4. Filters by scope (if scope field specified)
+    5. Sorts matched rules by priority
+    6. Executes actions sequentially
+    7. Aggregates results
     
     Args:
         hook_name: Current hook name
@@ -316,10 +384,22 @@ def evaluate_rules(hook_name: str, payload: Dict[str, Any], context: ActionConte
     # Load rules
     rules = load_rules()
     
-    # Match triggers
+    # Detect current agent and scope from context or payload
+    current_agent = _detect_agent(payload, context)
+    current_scope = _detect_scope(payload, context)
+    
+    # Match triggers and filter by agent and scope
     matched_rules = []
     for rule in rules:
         if not rule.enabled:
+            continue
+        
+        # Filter by agent if rule specifies one
+        if rule.agent and rule.agent != "all" and rule.agent != current_agent:
+            continue
+        
+        # Filter by scope if rule specifies one
+        if hasattr(rule, 'scope') and rule.scope and rule.scope != "all" and rule.scope != current_scope:
             continue
         
         for trigger in rule.triggers:
