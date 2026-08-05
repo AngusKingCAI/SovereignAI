@@ -24,8 +24,11 @@ import json
 import traceback
 from typing import Dict, Any, Optional
 
-# Governor imports (package-relative)
-from .protocol import build_hook_response, to_devin_decision
+# Governor imports (package-relative with fallback for direct execution)
+try:
+    from .protocol import build_hook_response, to_devin_decision
+except ImportError:
+    from protocol import build_hook_response, to_devin_decision
 
 # Hook handler registry (will be populated by auto-discovery in Phase 2)
 _HOOK_HANDLERS = {}

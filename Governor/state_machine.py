@@ -109,7 +109,9 @@ class StateMachine:
             },
             "bypasses": {
                 "runtime": [],
-                "team": []
+                "team": [],
+                "once": [],
+                "session": []
             },
             "violations": [],
             "pending_menus": [],
@@ -136,12 +138,17 @@ class StateMachine:
                 except (json.JSONDecodeError, IOError) as e:
                     print(f"Warning: Failed to load state: {e}, using default state")
                     self.state = self._get_default_state()
+                
+                # Migration: ensure all 4 bypass scopes exist (for legacy state files)
+                for scope in ["runtime", "team", "once", "session"]:
+                    if scope not in self.state.get("bypasses", {}):
+                        self.state.setdefault("bypasses", {})[scope] = []
             else:
                 # No existing state, initialize with defaults
                 self.state = self._get_default_state()
-                self._save_state()
+                self._save_state(_already_locked=True)
     
-    def _save_state(self) -> None:
+    def _save_state(self, _already_locked: bool = False) -> None:
         """
         Save state to disk with atomic write, fsync, and checksum.
         
@@ -151,24 +158,37 @@ class StateMachine:
         3. fsync to ensure data reaches disk
         4. Atomic replace
         5. Update checksum from file contents
+        
+        Args:
+            _already_locked: If True, skip lock acquisition (for re-entrant calls)
         """
-        with exclusive_lock(self.lock_path, timeout=5.0):
-            # Update metadata first
-            self.state["metadata"]["last_updated"] = datetime.utcnow().isoformat()
-            
-            temp_path = f"{self.state_path}.tmp"
-            
-            # Write to temp file
-            with open(temp_path, 'w', newline='\n') as f:
-                json.dump(self.state, f, indent=2)
-                f.flush()
-                os.fsync(f.fileno())
-            
-            # Atomic replace
-            os.replace(temp_path, self.state_path)
-            
-            # Update checksum from file contents (not in-memory state)
-            self._update_checksum_from_file()
+        if _already_locked:
+            self._save_state_unlocked()
+        else:
+            with exclusive_lock(self.lock_path, timeout=5.0):
+                self._save_state_unlocked()
+    
+    def _save_state_unlocked(self) -> None:
+        """
+        Internal save method that does NOT acquire lock.
+        Only call this when already holding the lock.
+        """
+        # Update metadata first
+        self.state["metadata"]["last_updated"] = datetime.utcnow().isoformat()
+        
+        temp_path = f"{self.state_path}.tmp"
+        
+        # Write to temp file
+        with open(temp_path, 'w', newline='\n') as f:
+            json.dump(self.state, f, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        
+        # Atomic replace
+        os.replace(temp_path, self.state_path)
+        
+        # Update checksum from file contents (not in-memory state)
+        self._update_checksum_from_file()
     
     def _compute_checksum(self) -> str:
         """Compute SHA-256 checksum of current state."""

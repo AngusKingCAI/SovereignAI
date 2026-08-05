@@ -314,12 +314,17 @@ def _execute_action(action_config: Dict[str, Any], payload: Dict[str, Any],
         ActionResult from action execution
     """
     action_name = action_config.get("name")  # Spec §3.2 uses "name" key
-    params = action_config.get("params", {})
+    # Spec §3.2: action params are at top level of action config, not nested under params
+    params = {k: v for k, v in action_config.items() if k != "name"}
     
     # Import action class
     try:
-        # Actions are in Governor/actions/ directory
-        action_module = importlib.import_module(f"actions.{action_name}")
+        # Actions are in Governor/actions/ directory (package-relative import)
+        if __package__:
+            action_module = importlib.import_module(f".actions.{action_name}", package=__package__)
+        else:
+            # Fallback for direct execution during development
+            action_module = importlib.import_module(f"actions.{action_name}")
         # Convert snake_case to PascalCase and append "Action" suffix per spec §6.3
         action_class_name = "".join(word.capitalize() for word in action_name.split("_")) + "Action"
         action_class = getattr(action_module, action_class_name)
