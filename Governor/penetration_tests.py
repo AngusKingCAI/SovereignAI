@@ -261,7 +261,7 @@ def test_team_bypasses_validation() -> PenetrationTestResult:
     valid_bypasses = {
         "bypasses": [
             {
-                "key": "bypass:test_rule:exec:uuid",
+                "key": "test_rule:exec:uuid",
                 "rule_id": "test_rule",
                 "tool": "exec",
                 "scope": "team",

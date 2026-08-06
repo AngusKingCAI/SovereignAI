@@ -437,7 +437,7 @@ class StateMachine:
             
             # Generate UUID4 bypass key per spec §1.4
             unique_id = str(uuid.uuid4())
-            bypass_key = f"bypass:{rule_id}:{tool_name}:{unique_id}"
+            bypass_key = f"{rule_id}:{tool_name}:{unique_id}"
             
             # Create spec-compliant bypass entry
             bypass_entry = {

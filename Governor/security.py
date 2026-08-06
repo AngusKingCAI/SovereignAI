@@ -19,11 +19,12 @@ from typing import Union, List, Optional, Tuple
 from datetime import datetime
 
 # Trusted directories (committed to VCS, reviewed via PR)
+# These are relative to governor_root (Governor/ directory)
 TRUSTED_DIRECTORIES = [
-    "Governor/actions",
-    "Governor/hook_handlers",
-    "Governor/templates",
-    "Governor/validators"
+    "actions",
+    "hook_handlers",
+    "templates",
+    "validators"
 ]
 
 # Protected paths (agent cannot write to these)
@@ -57,12 +58,8 @@ def validate_import_path(module_path: str) -> None:
     Raises:
         SecurityError: If path contains .. or resolves outside trusted directory
     """
-    # Convert module path to file path
-    # actions.block_command -> Governor/actions/block_command.py
-    file_path = module_path.replace(".", os.sep) + ".py"
-    
-    # Resolve to absolute path
-    resolved_path = Path(file_path).resolve()
+    # Get Governor package root
+    governor_root = Path(os.path.dirname(os.path.abspath(__file__))).resolve()
     
     # Check for path traversal (.. in path)
     if ".." in module_path:
@@ -70,9 +67,12 @@ def validate_import_path(module_path: str) -> None:
             f"Path traversal detected in module path: {module_path}"
         )
     
-    # Check if resolved path is within trusted directories
-    governor_root = Path(os.path.dirname(os.path.abspath(__file__))).resolve()
+    # Convert module path to file path RELATIVE to governor_root
+    # actions.block_command -> actions/block_command.py
+    file_path = module_path.replace(".", os.sep) + ".py"
+    resolved_path = (governor_root / file_path).resolve()
     
+    # Check if resolved path is within trusted directories
     is_trusted = False
     for trusted_dir in TRUSTED_DIRECTORIES:
         trusted_path = governor_root / trusted_dir
