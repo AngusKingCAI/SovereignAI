@@ -70,8 +70,8 @@ class SessionStartHandler(HookHandler):
         Returns:
             Protocol-compliant allow response with constitution context
         """
-        # Initialize phase to EXECUTE (allow normal operations)
-        state_machine.set_phase("EXECUTE")
+        # Initialize phase to INIT
+        state_machine.set_phase("INIT")
         
         # Reset counters to 0
         state_machine.set_counter("exec", 0)
