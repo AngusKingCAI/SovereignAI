@@ -58,12 +58,9 @@ class PermissionRequestHandler(HookHandler):
         Execute the PermissionRequest handler logic.
         
         This method:
-        1. Logs the permission request for audit purposes
-        2. Exits without output to let Devin CLI show native permission windows
-        3. Does not interfere with Devin CLI's permission management
-        
-        IMPORTANT: Returning no output (sys.exit(0)) allows Devin CLI to show
-        its native permission windows with full persistence options.
+        1. Reads from config.local.json to check saved permission decisions
+        2. Follows Devin CLI's permission pattern format exactly
+        3. Returns "approve" if allowed, "deny" if denied, or "allow" to let CLI handle
         
         Args:
             payload: PermissionRequest hook event payload
@@ -71,28 +68,110 @@ class PermissionRequestHandler(HookHandler):
             engine: Rule engine instance (not used in PermissionRequest)
             
         Returns:
-            None (exits without output to let Devin CLI handle permissions)
+            Protocol-compliant allow response
         """
-        # Log permission request for audit purposes
-        permission_type = payload.get("permission_type", "unknown")
-        resource = payload.get("resource", "unknown")
-        operation = payload.get("operation", "unknown")
+        # Extract permission request details
+        permission_type = payload.get("permission_type", "")
+        resource = payload.get("resource", "")
+        operation = payload.get("operation", "")
         
-        # Log to audit system
-        if hasattr(state_machine, 'audit'):
-            state_machine.audit.log(
-                event_type="permission_request",
-                details={
-                    "permission_type": permission_type,
-                    "resource": resource,
-                    "operation": operation,
-                    "action": "deferred_to_cli"
-                }
+        # Check config.local.json for saved permission decisions
+        user_decision = self._check_config_local_permissions(permission_type, resource, operation)
+        
+        if user_decision == "approve":
+            # Permission is explicitly allowed
+            return self._build_response(
+                internal_decision="allow",
+                reason=f"Permission approved via config.local.json: {permission_type} on {resource}",
+                hook_event_name="PermissionRequest"
             )
+        elif user_decision == "deny":
+            # Permission is explicitly denied
+            return self._build_response(
+                internal_decision="deny",
+                reason=f"Permission denied via config.local.json: {permission_type} on {resource}",
+                hook_event_name="PermissionRequest"
+            )
+        else:
+            # No match in config.local.json, let Devin CLI handle permission window
+            return self._build_response(
+                internal_decision="allow",
+                reason="Governor deferring to Devin CLI native permission system",
+                hook_event_name="PermissionRequest"
+            )
+    
+    def _check_config_local_permissions(self, permission_type: str, resource: str, operation: str) -> str:
+        """
+        Check config.local.json for saved permission decisions.
         
-        # Exit without output to let Devin CLI show native permission windows
-        # This allows users to choose persistence options like "Allow for project (local)"
-        sys.exit(0)
+        Reads the permissions.allow list from config.local.json and matches
+        against the current permission request using Devin CLI's pattern format.
+        
+        Args:
+            permission_type: Type of permission (e.g., "Exec", "FileWrite")
+            resource: Resource being accessed (e.g., "rm", file path)
+            operation: Operation being performed
+            
+        Returns:
+            "approve" if allowed, "deny" if denied, or "unknown" if no match
+        """
+        import json
+        import os
+        
+        config_path = os.path.join(os.path.dirname(__file__), "..", "..", ".devin", "config.local.json")
+        
+        try:
+            if not os.path.exists(config_path):
+                return "unknown"
+            
+            with open(config_path, 'r') as f:
+                config = json.load(f)
+            
+            allowed_permissions = config.get("permissions", {}).get("allow", [])
+            
+            # Build the permission pattern in Devin CLI format
+            # Examples: "Exec(rm)", "FileWrite(/path/to/file)"
+            permission_pattern = f"{permission_type}({resource})"
+            
+            # Check if this pattern is in the allowed list
+            for allowed_pattern in allowed_permissions:
+                if self._match_permission_pattern(permission_pattern, allowed_pattern):
+                    return "approve"
+            
+            return "unknown"
+            
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"Warning: Failed to read config.local.json: {e}")
+            return "unknown"
+    
+    def _match_permission_pattern(self, requested: str, allowed: str) -> bool:
+        """
+        Match a requested permission pattern against an allowed pattern.
+        
+        Implements simple pattern matching where the allowed pattern can be:
+        - Exact match: "Exec(rm)" matches "Exec(rm)"
+        - Type wildcard: "Exec(*)" matches "Exec(rm)", "Exec(git add)"
+        - Resource wildcard: "Exec(rm)" would match if allowed is "Exec(rm)"
+        
+        Args:
+            requested: The requested permission pattern
+            allowed: The allowed permission pattern from config
+            
+        Returns:
+            True if pattern matches, False otherwise
+        """
+        # Exact match
+        if requested == allowed:
+            return True
+        
+        # Check for wildcard patterns in allowed
+        if "*" in allowed:
+            import re
+            # Convert simple wildcard to regex
+            pattern = allowed.replace("*", ".*")
+            return bool(re.match(pattern, requested))
+        
+        return False
     
     def _evaluate_permission(self, permission_type: str, resource: str, 
                            operation: str, current_phase: str,
