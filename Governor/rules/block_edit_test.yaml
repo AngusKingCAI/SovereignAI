@@ -3,17 +3,15 @@ version: "1.0.0"
 tier: blocking
 name: block_edit_test
 description: Blocks editing of Edit test.md for testing rule firing
-triggers:
-  - PreToolUse
-agent: all
+trigger:
+  hook: PreToolUse
+  tool: edit
 check:
   condition:
     field: "tool_input"
     operator: "equals"
-    pattern: "test"
-  params:
-    actions:
-      - type: block_command
-        params:
-          reason: "Editing Edit test.md is blocked by test rule"
-          allow_bypass: true
+    pattern: "Edit test.md"
+action: block_command
+params:
+  reason: "Editing Edit test.md is blocked by test rule"
+  allow_bypass: true

@@ -1,19 +1,6 @@
 """
-SessionStart Hook Handler for Governor.py v1.5
-
-This handler processes the SessionStart hook event, which is triggered
-when a new Devin CLI session begins. It initializes the Governor state
-machine and prepares the session for governance.
-
-Key Responsibilities:
-- Initialize phase to INIT
-- Inject constitution context into agent's prompt
-- Load past errors from state flags
-- Pre-populate bypasses from environment variables
-- Reset counters to 0
-- Return protocol-compliant response
-
-This implements the SessionStart handler specified in v1.5 spec §4.3.
+SessionStart Handler - Initialize session
+Layer 2: Handler. Imports _base.py ONLY.
 """
 
 import os
@@ -22,7 +9,35 @@ import json
 from typing import Dict, Any
 from datetime import datetime
 
-# Import base class (package-relative)
+# Get Governor package root
+GOVERNOR_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def log_execution(component: str, data: Dict[str, Any]):
+    """Log execution to daily JSONL file."""
+    try:
+        log_dir = os.path.join(GOVERNOR_ROOT, "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        today = datetime.utcnow().strftime("%m-%d-%Y")
+        log_file = os.path.join(log_dir, f"Hook-Handler-Log-{today}.jsonl")
+        
+        entry = {
+            "File": "session_start.py",
+            "hook": component,
+            "Time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
+            "data": data
+        }
+        
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(entry) + "\n")
+            f.flush()
+            
+    except Exception as e:
+        sys.stderr.write(f"Logging error: {e}\n")
+        sys.stderr.flush()
+
+
 try:
     from ._base import HookHandler
 except ImportError:
@@ -30,73 +45,37 @@ except ImportError:
 
 
 class SessionStartHandler(HookHandler):
-    """
-    Handler for SessionStart hook events.
-    
-    SessionStart is triggered when a new Devin CLI session begins.
-    This handler initializes the Governor state machine and prepares
-    the session for governance.
-    """
+    """Handler for SessionStart hook events."""
     
     @property
     def hook_name(self) -> str:
-        """Return the hook name this handler processes."""
         return "SessionStart"
     
     @property
     def can_block(self) -> bool:
-        """
-        Indicate if this handler can block operations.
-        
-        SessionStart cannot block - it's always an allow operation.
-        """
         return False
     
     def execute(self, payload: Dict[str, Any], state_machine: Any, 
                engine: Any) -> Dict[str, Any]:
-        """
-        Execute the SessionStart handler logic.
-        
-        This method:
-        1. Initializes the phase to INIT
-        2. Injects constitution context into the agent's prompt
-        3. Loads past errors from state flags
-        4. Pre-populates bypasses from environment variables
-        5. Resets counters to 0
-        6. Returns a protocol-compliant allow response
-        
-        Args:
-            payload: SessionStart hook event payload
-            state_machine: Governor state machine instance
-            engine: Rule engine instance (not used in SessionStart)
-            
-        Returns:
-            Protocol-compliant allow response with constitution context
-        """
-        # Log handler execution
-        log_handler_execution("SessionStart", {
-            "payload_keys": list(payload.keys()),
+        """Execute the SessionStart handler logic."""
+        log_execution("SessionStart", {
+            "event": "session_start",
             "session_id": payload.get("session_id", "")
         })
         
-        # Initialize phase to EXECUTE (allow normal operations)
+        # Initialize phase to EXECUTE
         state_machine.set_phase("EXECUTE")
         
-        # Reset counters to 0
+        # Reset counters
         state_machine.set_counter("exec", 0)
         state_machine.set_counter("validate", 0)
         
-        # Load past errors from flags
-        research_required = state_machine.get_flag("research_required")
-        
-        # Pre-populate bypasses from environment variable
-        # Format: GOVERNOR_BYPASSES="rule_id:tool,rule_id:tool,..."
+        # Load environment bypasses
         bypass_env = os.environ.get("GOVERNOR_BYPASSES", "")
         if bypass_env:
             for bypass_key in bypass_env.split(","):
                 bypass_key = bypass_key.strip()
                 if bypass_key:
-                    # Parse rule_id:tool format or just rule_id
                     parts = bypass_key.split(":")
                     if len(parts) >= 2:
                         rule_id = parts[0]
@@ -109,42 +88,13 @@ class SessionStartHandler(HookHandler):
                         rule_id=rule_id,
                         tool_name=tool_name,
                         scope="session",
-                        reason="Pre-populated from GOVERNOR_BYPASSES environment variable",
+                        reason="Pre-populated from environment",
                         source="environment"
                     )
         
-        # Build constitution context for injection
-        constitution_context = self._build_constitution_context(state_machine)
-        
-        # Build additional context with past errors
-        additional_context = ""
-        if research_required:
-            additional_context += "\n⚠️ PAST ERROR: Research phase was required in previous session."
-        
-        # Return protocol-compliant allow response
-        return self._build_allow_response(
-            reason="Session initialized. Governor is active.",
-            additional_context=constitution_context + additional_context
-        )
-    
-    def _build_constitution_context(self, state_machine: Any) -> str:
-        """
-        Build constitution context for injection into agent's prompt.
-        
-        The constitution context reminds the agent of the governance
-        framework and the current phase requirements.
-        
-        Args:
-            state_machine: Governor state machine instance
-            
-        Returns:
-            Constitution context string
-        """
-        current_phase = state_machine.get_phase()
-        
-        context = f"""
+        constitution_context = f"""
 === GOVERNOR CONSTITUTION ===
-Governor v1.5 is active. Current phase: {current_phase}
+Governor v1.5 is active. Current phase: EXECUTE
 
 Phase Requirements:
 - INIT: Read-only mode for context gathering
@@ -163,4 +113,8 @@ Governance Rules:
 Compliance Status: Active
 === END CONSTITUTION ===
 """
-        return context
+        
+        return self._build_allow_response(
+            reason="Session initialized. Governor is active.",
+            additional_context=constitution_context
+        )

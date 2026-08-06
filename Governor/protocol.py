@@ -29,9 +29,8 @@ def log_execution(component: str, data: Dict[str, Any]):
         log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
         os.makedirs(log_dir, exist_ok=True)
         
-        # Daily log file: Layer2-Python-Execution-Log-MM-DD-YYYY.jsonl
         today = datetime.utcnow()
-        log_filename = f"Layer2-Python-Execution-Log-{today.strftime('%m-%d-%Y')}.jsonl"
+        log_filename = f"Governor-Log-{today.strftime('%m-%d-%Y')}.jsonl"
         log_file = os.path.join(log_dir, log_filename)
         
         log_entry = {
@@ -46,7 +45,6 @@ def log_execution(component: str, data: Dict[str, Any]):
             f.flush()
             
     except Exception as e:
-        # Don't fail if logging fails, but print error to stderr
         sys.stderr.write(f"Logging error: {e}\n")
         sys.stderr.flush()
 
@@ -117,6 +115,7 @@ def build_hook_response(
     updated_input: Optional[dict] = None,
     bypass_menu: Optional[dict] = None,
     permission_decision: Optional[str] = None,
+    permission_decision_reason: Optional[str] = None,
 ) -> dict:
     """
     Build Devin-compatible hook response with explicit keyword-only parameters.
@@ -164,7 +163,7 @@ def build_hook_response(
             "hookSpecificOutput": {
                 "hookEventName": hook_event_name,
                 "permissionDecision": "ask",
-                "permissionDecisionReason": reason
+                "permissionDecisionReason": permission_decision_reason or reason
             }
         }
         # Log response building

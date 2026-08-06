@@ -1,3 +1,0 @@
-"""
-Audit logging and compliance tracking.
-"""

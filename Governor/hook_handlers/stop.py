@@ -1,292 +1,75 @@
 """
-Stop Hook Handler for Governor.py v1.5
-
-This handler processes the Stop hook event, which is triggered when
-the agent requests to stop the session. It is the final gate that checks
-completion requirements before allowing the session to end.
-
-Key Responsibilities:
-- Phase completion checking
-- Un-bypassed violation checking
-- Minimum tool usage checking
-- Bypass validation
-- Block with menu option if requirements not met
-- Protocol-compliant response
-
-This implements the Stop handler specified in v1.5 spec §4.3.
+Stop Handler - Check completion requirements
+Layer 2: Handler. Imports _base.py ONLY.
 """
 
-from typing import Dict, Any, List
+import os
+import sys
+import json
+from typing import Dict, Any
+from datetime import datetime
 
-# Import base class (package-relative)
+# Get Governor package root
+GOVERNOR_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def log_execution(component: str, data: Dict[str, Any]):
+    """Log execution to daily JSONL file."""
+    try:
+        log_dir = os.path.join(GOVERNOR_ROOT, "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        today = datetime.utcnow().strftime("%m-%d-%Y")
+        log_file = os.path.join(log_dir, f"Hook-Handler-Log-{today}.jsonl")
+        
+        entry = {
+            "File": "stop.py",
+            "hook": component,
+            "Time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
+            "data": data
+        }
+        
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(entry) + "\n")
+            f.flush()
+            
+    except Exception as e:
+        sys.stderr.write(f"Logging error: {e}\n")
+        sys.stderr.flush()
+
+
 try:
-    from ._base import HookHandler, log_handler_execution
+    from ._base import HookHandler
 except ImportError:
-    from hook_handlers._base import HookHandler, log_handler_execution
+    from hook_handlers._base import HookHandler
 
 
 class StopHandler(HookHandler):
-    """
-    Handler for Stop hook events.
-    
-    Stop is triggered when the agent requests to stop the session.
-    This handler is the final gate that checks completion requirements
-    before allowing the session to end.
-    """
+    """Handler for Stop hook events."""
     
     @property
     def hook_name(self) -> str:
-        """Return the hook name this handler processes."""
         return "Stop"
     
     @property
     def can_block(self) -> bool:
-        """
-        Indicate if this handler can block operations.
-        
-        Stop can block the session from ending if requirements are not met.
-        """
         return True
     
     def execute(self, payload: Dict[str, Any], state_machine: Any, 
                engine: Any) -> Dict[str, Any]:
-        """
-        Execute the Stop handler logic.
+        """Execute the Stop handler logic."""
+        log_execution("Stop", {"event": "stop"})
         
-        This method:
-        1. Checks phase completion requirements
-        2. Checks for un-bypassed violations
-        3. Validates minimum tool usage
-        4. Validates bypass entries
-        5. Blocks with menu option if requirements not met
-        6. Returns protocol-compliant response
-        
-        Args:
-            payload: Stop hook event payload
-            state_machine: Governor state machine instance
-            engine: Rule engine instance (not used in Stop)
-            
-        Returns:
-            Protocol-compliant allow/deny response
-        """
-        # Log handler execution
-        log_handler_execution("Stop", {
-            "payload_keys": list(payload.keys())
-        })
-        
-        # Get current phase
         current_phase = state_machine.get_phase()
-        
-        # Check completion requirements
-        completion_check = self._check_completion_requirements(state_machine)
-        
-        # Check for un-bypassed violations
-        violation_check = self._check_violations(state_machine)
-        
-        # Check minimum tool usage (disabled for now)
-        # usage_check = self._check_minimum_usage(state_machine)
-        usage_check = {"passed": True, "message": "Minimum usage: N/A (disabled)"}
-        
-        # Validate bypass entries
-        bypass_check = self._validate_bypasses(state_machine)
-        
-        # Aggregate all checks first
-        all_checks = {
-            "completion": completion_check,
-            "violations": violation_check,
-            "usage": usage_check,
-            "bypasses": bypass_check
-        }
-        
-        # Evaluate rules for Stop
-        try:
-            from ..actions._base import ActionContext
-        except ImportError:
-            from actions._base import ActionContext
-        
-        if engine:
-            context = ActionContext(
-                state_machine=state_machine,
-                tool_normalizer=None,  # Fixed: ToolNormalizer class doesn't exist
-                hook_name="Stop",
-                payload=payload,
-                trace_id=payload.get("trace_id", "unknown")
-            )
-            rule_results = engine.evaluate_rules("Stop", payload, context)
-            
-            # Check if any rules returned deny
-            for result in rule_results:
-                if result.decision == "deny":
-                    # Rules can block session stop
-                    return self._build_deny_response(
-                        reason=f"Rule enforcement in Stop: {result.reason}",
-                        additional_context=f"Rule denied: {result.reason}"
-                    )
-                elif result.decision == "warn":
-                    # Add warning to checks
-                    all_checks["rule_warning"] = {
-                        "passed": True,
-                        "message": f"Rule warning: {result.reason}"
-                    }
-        
-        # Determine if session can stop
-        can_stop = all(check["passed"] for check in all_checks.values())
-        
-        if can_stop:
-            # All requirements met, allow stop
-            return self._build_allow_response(
-                reason=f"Session stop approved. Phase: {current_phase}, All requirements met."
-            )
-        else:
-            # Requirements not met, block with menu
-            return self._build_block_response(
-                current_phase=current_phase,
-                checks=all_checks,
-                state_machine=state_machine
-            )
-    
-    def _check_completion_requirements(self, state_machine: Any) -> Dict[str, Any]:
-        """
-        Check phase completion requirements.
-        
-        Args:
-            state_machine: State machine instance
-            
-        Returns:
-            Check result dict with 'passed' boolean and 'message' string
-        """
-        current_phase = state_machine.get_phase()
-        
-        # Phase-specific completion requirements
-        phase_requirements = {
-            "INIT": True,  # INIT has no specific requirements
-            "RESEARCH": True,  # RESEARCH has no specific requirements
-            "PLAN": True,  # PLAN has no specific requirements
-            "EXECUTE": True,  # EXECUTE has no specific requirements (removed counter check)
-            "VALIDATE": True,  # VALIDATE has no specific requirements (removed counter check)
-            "COMMIT": True  # COMMIT has no specific requirements
-        }
-        
-        passed = phase_requirements.get(current_phase, True)
-        message = f"Phase {current_phase} completion: Passed"
-        
-        return {"passed": passed, "message": message}
-    
-    def _check_violations(self, state_machine: Any) -> Dict[str, Any]:
-        """
-        Check for un-bypassed violations.
-        
-        Args:
-            state_machine: State machine instance
-            
-        Returns:
-            Check result dict with 'passed' boolean and 'message' string
-        """
         violations = state_machine.get_violations()
         
-        # All entries in violations are actual violations now (execution logs go to audit trail)
-        passed = len(violations) == 0
-        message = f"Violations: {len(violations)} un-bypassed violations found"
+        # Check for un-bypassed violations
+        if len(violations) > 0:
+            return self._build_deny_response(
+                reason=f"Session stop blocked: {len(violations)} un-bypassed violations",
+                additional_context=f"Violations: {len(violations)}"
+            )
         
-        return {"passed": passed, "message": message, "count": len(violations)}
-    
-    def _check_minimum_usage(self, state_machine: Any) -> Dict[str, Any]:
-        """
-        Check minimum tool usage requirements.
-        
-        Args:
-            state_machine: State machine instance
-            
-        Returns:
-            Check result dict with 'passed' boolean and 'message' string
-        """
-        exec_count = state_machine.get_counter("exec")
-        
-        # Minimum requirement: at least 1 execution in non-INIT phases
-        current_phase = state_machine.get_phase()
-        if current_phase == "INIT":
-            passed = True
-            message = "Minimum usage: N/A (INIT phase)"
-        else:
-            passed = exec_count >= 1
-            message = f"Minimum usage: {exec_count} executions (minimum: 1)"
-        
-        return {"passed": passed, "message": message, "count": exec_count}
-    
-    def _validate_bypasses(self, state_machine: Any) -> Dict[str, Any]:
-        """
-        Validate bypass entries for appropriateness.
-        
-        Args:
-            state_machine: State machine instance
-            
-        Returns:
-            Check result dict with 'passed' boolean and 'message' string
-        """
-        # Count bypass entries
-        total_bypasses = 0
-        for scope in ["runtime", "team", "once", "session"]:
-            total_bypasses += len(state_machine.state["bypasses"][scope])
-        
-        # Validation: excessive bypasses may indicate compliance issues
-        passed = total_bypasses < 10  # Arbitrary threshold
-        message = f"Bypass validation: {total_bypasses} bypass entries"
-        
-        return {"passed": passed, "message": message, "count": total_bypasses}
-    
-    def _build_block_response(self, current_phase: str, checks: Dict[str, Any],
-                             state_machine: Any) -> Dict[str, Any]:
-        """
-        Build a block response with menu options.
-        
-        Args:
-            current_phase: Current phase
-            checks: Dictionary of all check results
-            state_machine: State machine instance
-            
-        Returns:
-            Protocol-compliant block response with menu
-        """
-        # Build failure messages
-        failure_messages = []
-        for check_name, check_result in checks.items():
-            if not check_result["passed"]:
-                failure_messages.append(f"  - {check_result['message']}")
-        
-        # Build bypass menu
-        bypass_menu = {
-            "title": "Session Stop Blocked - Requirements Not Met",
-            "message": f"Cannot stop session in {current_phase} phase. Requirements not met:",
-            "options": [
-                {
-                    "label": "Force Stop (Acknowledge Violations)",
-                    "action": "force_stop",
-                    "warning": "This will acknowledge all violations and allow stop"
-                },
-                {
-                    "label": "Continue Session",
-                    "action": "continue"
-                }
-            ]
-        }
-        
-        # Build additional context
-        additional_context = f"""
-=== STOP REQUIREMENTS CHECK ===
-Phase: {current_phase}
-
-Failed Requirements:
-{chr(10).join(failure_messages)}
-
-To proceed, you must either:
-1. Address the failed requirements
-2. Use the Force Stop option (acknowledges violations)
-=== END REQUIREMENTS ===
-"""
-        
-        return self._build_response(
-            internal_decision="deny",
-            reason=f"Session stop blocked in {current_phase} phase",
-            additional_context=additional_context,
-            bypass_menu=bypass_menu
+        return self._build_allow_response(
+            reason=f"Session stop approved. Phase: {current_phase}"
         )

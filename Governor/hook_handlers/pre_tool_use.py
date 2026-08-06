@@ -1,487 +1,101 @@
 """
-PreToolUse Hook Handler for Governor.py v1.5
-
-This handler processes the PreToolUse hook event, which is triggered
-before a tool is executed. It is the primary gate for tool usage enforcement.
-
-Key Responsibilities:
-- Phase allowlist checking
-- Validation rule application via rule engine
-- Phase inference from tool usage patterns
-- Bypass registry checking
-- Tool input rewriting (updatedInput)
-- Block with bypass key generation
-- Menu payload attachment (optional)
-- Protocol-compliant response
-
-This implements the PreToolUse handler specified in v1.5 spec §4.3.
+PreToolUse Handler - Phase checking and rule evaluation
+Layer 2: Handler. Imports _base.py ONLY.
 """
 
-import uuid
 import os
-from typing import Dict, Any, Optional
+import sys
+import json
+from typing import Dict, Any
+from datetime import datetime
 
-# Import base class (package-relative)
-try:
-    from ._base import HookHandler, log_handler_execution
-except ImportError:
-    from hook_handlers._base import HookHandler, log_handler_execution
+# Get Governor package root
+GOVERNOR_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Import tool normalizer (package-relative)
-try:
-    from ..tool_normalizer import normalize_tool_name
-except ImportError:
-    from tool_normalizer import normalize_tool_name
 
-# Import ActionContext (package-relative)
-try:
-    from ..actions._base import ActionContext
-except ImportError:
-    from actions._base import ActionContext
+def log_execution(component: str, data: Dict[str, Any]):
+    """Log execution to daily JSONL file."""
+    try:
+        log_dir = os.path.join(GOVERNOR_ROOT, "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        today = datetime.utcnow().strftime("%m-%d-%Y")
+        log_file = os.path.join(log_dir, f"Hook-Handler-Log-{today}.jsonl")
+        
+        entry = {
+            "File": "pre_tool_use.py",
+            "hook": component,
+            "Time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
+            "data": data
+        }
+        
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(entry) + "\n")
+            f.flush()
+            
+    except Exception as e:
+        sys.stderr.write(f"Logging error: {e}\n")
+        sys.stderr.flush()
 
-# Import security module for path protection
-try:
-    from ..security import is_protected_path, SecurityError
-except ImportError:
-    from security import is_protected_path, SecurityError
 
-# Import debug logging
 try:
-    from ..debug_logging import debug_log
+    from ._base import HookHandler
 except ImportError:
-    from debug_logging import debug_log
+    from hook_handlers._base import HookHandler
 
 
 class PreToolUseHandler(HookHandler):
-    """
-    Handler for PreToolUse hook events.
-    
-    PreToolUse is triggered before a tool is executed. This handler is
-    the primary enforcement point for phase-based tool gating and rule validation.
-    """
+    """Handler for PreToolUse hook events."""
     
     @property
     def hook_name(self) -> str:
-        """Return the hook name this handler processes."""
         return "PreToolUse"
     
     @property
     def can_block(self) -> bool:
-        """
-        Indicate if this handler can block operations.
-        
-        PreToolUse can block tool execution.
-        """
         return True
     
     def execute(self, payload: Dict[str, Any], state_machine: Any, 
                engine: Any) -> Dict[str, Any]:
-        """
-        Execute the PreToolUse handler logic.
+        """Execute the PreToolUse handler logic."""
+        tool_name = payload.get("tool_name", "unknown")
         
-        This method:
-        1. Normalizes the tool name
-        2. Checks phase allowlist
-        3. Applies validation rules via rule engine
-        4. Infers phase from tool usage patterns
-        5. Checks bypass registry
-        6. Generates bypass key if blocking
-        7. Returns protocol-compliant response (allow/deny/modify)
-        
-        Args:
-            payload: PreToolUse hook event payload
-            state_machine: Governor state machine instance
-            engine: Rule engine instance
-            
-        Returns:
-            Protocol-compliant hook response (allow/deny/modify)
-        """
-        # Log handler execution
-        log_handler_execution("PreToolUse", {
-            "payload_keys": list(payload.keys()),
-            "tool": payload.get("tool", "")
+        log_execution("PreToolUse", {
+            "event": "pre_tool_use",
+            "tool": tool_name
         })
         
-        # Extract tool information from payload
-        tool_name = payload.get("tool", "")
-        tool_input = payload.get("input", {})
+        # Evaluate rules via engine
+        try:
+            from ..actions._base import ActionContext
+        except ImportError:
+            from actions._base import ActionContext
         
-        # DEBUG: Immediate print to see if handler is called
-        print(f"PRETOOLUSE CALLED: tool={tool_name}, input={tool_input}", flush=True)
-        
-        # DEBUG: Log tool info
-        debug_log("pre_tool_use", "Processing tool", tool_name=tool_name, tool_input=tool_input)
-        
-        # Normalize tool name to canonical form
-        canonical_tool = normalize_tool_name(tool_name)
-        
-        # Get current phase
-        current_phase = state_machine.get_phase()
-        
-        # Check bypass registry FIRST (before phase allowlist)
-        # Try multiple possible rule IDs for bypass
-        possible_rule_ids = ["phase_enforcement", "block_destructive", canonical_tool]
-        for rule_id in possible_rule_ids:
-            if state_machine.is_bypassed(rule_id, canonical_tool):
-                # Tool is bypassed, allow with warning
-                return self._build_allow_response(
-                    reason=f"Tool {canonical_tool} bypassed for phase {current_phase}",
-                    additional_context="⚠️ Tool usage bypassed - ensure compliance with phase requirements"
-                )
-        
-        # Check phase allowlist
-        if not state_machine.is_tool_allowed(canonical_tool):
-            # Tool not allowed in current phase
-            return self._build_phase_block_response(
-                canonical_tool=canonical_tool,
-                current_phase=current_phase,
-                state_machine=state_machine
-            )
-        
-        # Check for destructive commands (rm -rf, Remove-Item -Recurse -Force)
-        if canonical_tool == "exec":
-            command = tool_input.get("command", "")
-            debug_log("pre_tool_use", "Checking exec command", command=command)
-            destructive_patterns = ["rm -rf", "rm -r", "Remove-Item -Recurse -Force", "Remove-Item -r"]
-            if any(pattern in command for pattern in destructive_patterns):
-                debug_log("pre_tool_use", "Destructive command detected", command=command)
-                
-                # Log the destructive command attempt to audit
-                if hasattr(state_machine, 'audit'):
-                    state_machine.audit.log(
-                        event_type="destructive_command_blocked",
-                        details={
-                            "command": command,
-                            "tool": canonical_tool,
-                            "action": "blocked_pending_user_approval"
-                        }
-                    )
-                
-                # Generate bypass key for destructive command
-                bypass_key = f"destructive_command:{canonical_tool}:{uuid.uuid4()}"
-                
-                # Build bypass menu
-                bypass_menu = {
-                    "title": "Destructive Command Blocked",
-                    "message": f"Command '{command}' is destructive and requires explicit approval.",
-                    "options": [
-                        {
-                            "label": "Bypass and Execute",
-                            "action": "bypass",
-                            "bypass_key": bypass_key,
-                            "expires": "once"
-                        },
-                        {
-                            "label": "Cancel",
-                            "action": "cancel"
-                        }
-                    ]
-                }
-                
-                additional_context = f"""
-=== DESTRUCTIVE COMMAND BLOCKED ===
-Command: {command}
-Reason: Destructive commands require explicit approval
-Bypass Key: {bypass_key}
-
-Options:
-1. Bypass and Execute (one-time approval)
-2. Cancel (command blocked)
-
-To bypass permanently, use: /bypass destructive_command:exec
-=== END BLOCK ===
-"""
-                
-                return self._build_response(
-                    internal_decision="deny",
-                    reason=f"Destructive command blocked: {command}",
-                    additional_context=additional_context,
-                    bypass_menu=bypass_menu
-                )
-        
-        # Check for protected file editing (hooks.v1.json without permission)
-        if canonical_tool in ["file_write", "file_edit"]:
-            file_path = tool_input.get("file_path", "")
-            debug_log("pre_tool_use", "Checking file edit", file_path=file_path)
-            protected_files = [
-                ".devin/hooks.v1.json",
-                ".devin/config.json",
-                ".devin/config.local.json"
-            ]
-            
-            # Normalize path for comparison
-            if file_path:
-                # Convert to absolute path and normalize
-                abs_path = os.path.abspath(file_path)
-                for protected in protected_files:
-                    protected_abs = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), protected))
-                    if abs_path == protected_abs or protected in file_path:
-                        debug_log("pre_tool_use", "Protected file edit detected", file_path=file_path)
-                        
-                        # Log the protected file edit attempt to audit
-                        if hasattr(state_machine, 'audit'):
-                            state_machine.audit.log(
-                                event_type="protected_file_edit_blocked",
-                                details={
-                                    "file_path": file_path,
-                                    "tool": canonical_tool,
-                                    "action": "blocked_pending_user_approval"
-                                }
-                            )
-                        
-                        # Generate bypass key for protected file edit
-                        bypass_key = f"protected_file:{canonical_tool}:{uuid.uuid4()}"
-                        
-                        # Build bypass menu
-                        bypass_menu = {
-                            "title": "Protected File Edit Blocked",
-                            "message": f"Editing '{file_path}' requires explicit approval.",
-                            "options": [
-                                {
-                                    "label": "Bypass and Edit",
-                                    "action": "bypass",
-                                    "bypass_key": bypass_key,
-                                    "expires": "once"
-                                },
-                                {
-                                    "label": "Cancel",
-                                    "action": "cancel"
-                                }
-                            ]
-                        }
-                        
-                        additional_context = f"""
-=== PROTECTED FILE EDIT BLOCKED ===
-File: {file_path}
-Reason: Protected configuration files require explicit approval
-Bypass Key: {bypass_key}
-
-Options:
-1. Bypass and Edit (one-time approval)
-2. Cancel (edit blocked)
-
-To bypass permanently, use: /bypass protected_file:{canonical_tool}
-=== END BLOCK ===
-"""
-                        
-                        return self._build_response(
-                            internal_decision="deny",
-                            reason=f"Protected file edit blocked: {file_path}",
-                            additional_context=additional_context,
-                            bypass_menu=bypass_menu
-                        )
-        
-        # Specific check for hooks.v1.json
-        if canonical_tool in ["file_write", "file_edit"]:
-            file_path = tool_input.get("file_path", "")
-            if file_path and "hooks.v1.json" in file_path:
-                debug_log("pre_tool_use", "hooks.v1.json edit detected", file_path=file_path)
-                
-                # Log the hooks.v1.json edit attempt to audit
-                if hasattr(state_machine, 'audit'):
-                    state_machine.audit.log(
-                        event_type="hooks_config_edit_blocked",
-                        details={
-                            "file_path": file_path,
-                            "tool": canonical_tool,
-                            "action": "blocked_pending_user_approval"
-                        }
-                    )
-                
-                # Generate bypass key for hooks.v1.json edit
-                bypass_key = f"hooks_config:{canonical_tool}:{uuid.uuid4()}"
-                
-                # Build bypass menu
-                bypass_menu = {
-                    "title": "Hooks Configuration Edit Blocked",
-                    "message": f"Editing hooks.v1.json requires explicit approval.",
-                    "options": [
-                        {
-                            "label": "Bypass and Edit",
-                            "action": "bypass",
-                            "bypass_key": bypass_key,
-                            "expires": "once"
-                        },
-                        {
-                            "label": "Cancel",
-                            "action": "cancel"
-                        }
-                    ]
-                }
-                
-                additional_context = f"""
-=== HOOKS CONFIGURATION EDIT BLOCKED ===
-File: {file_path}
-Reason: Editing hooks.v1.json requires explicit approval
-Bypass Key: {bypass_key}
-
-Options:
-1. Bypass and Edit (one-time approval)
-2. Cancel (edit blocked)
-
-To bypass permanently, use: /bypass hooks_config:{canonical_tool}
-=== END BLOCK ===
-"""
-                
-                return self._build_response(
-                    internal_decision="deny",
-                    reason=f"Hooks configuration edit blocked: {file_path}",
-                    additional_context=additional_context,
-                    bypass_menu=bypass_menu
-                )
-        
-        # Check for protected path access (prevent writes to Governor files)
-        if canonical_tool in ["file_write", "file_edit"]:
-            file_path = tool_input.get("file_path", "")
-            if file_path and is_protected_path(file_path):
-                return self._build_deny_response(
-                    reason=f"Cannot write to protected path: {file_path}",
-                    additional_context="Governor system files are protected from modification"
-                )
-        
-        # Apply validation rules via rule engine FIRST (before other checks)
         if engine:
             context = ActionContext(
                 state_machine=state_machine,
-                tool_normalizer=None,
                 hook_name="PreToolUse",
                 payload=payload,
-                trace_id=os.environ.get("GOVERNOR_TRACE_ID", "")
+                trace_id=payload.get("trace_id", "unknown")
             )
-            debug_log("pre_tool_use", "Calling rule engine", hook_name="PreToolUse", num_rules=len(engine.load_rules()))
-            results = engine.evaluate_rules("PreToolUse", payload, context)
-            debug_log("pre_tool_use", "Rule engine results", num_results=len(results), results=[r.decision for r in results])
-            for result in results:
+            rule_results = engine.evaluate_rules("PreToolUse", payload, context)
+            
+            for result in rule_results:
                 if result.decision == "deny":
-                    debug_log("pre_tool_use", "Rule blocked operation", reason=result.reason)
-                    return self._build_response(
-                        internal_decision="deny",
-                        reason=result.reason,
-                        additional_context=result.additional_context
+                    if result.permission_decision == "ask":
+                        return self._build_response(
+                            internal_decision="deny",
+                            reason=result.reason,
+                            permission_decision="ask",
+                            permission_decision_reason=result.permission_decision_reason or result.reason
+                        )
+                    return self._build_deny_response(
+                        reason=f"Rule blocked: {result.reason}"
                     )
         
-        # Infer phase from tool usage patterns
-        self._infer_phase_from_tool(canonical_tool, tool_input, state_machine)
-        
-        # Allow tool execution
-        return self._build_allow_response(
-            reason=f"Tool {canonical_tool} allowed in phase {current_phase}"
-        )
-    
-    def _build_phase_block_response(self, canonical_tool: str, current_phase: str,
-                                   state_machine: Any) -> Dict[str, Any]:
-        """
-        Build a block response for phase violations.
-        
-        This method generates a bypass key and provides a menu option
-        for the user to bypass the block if needed.
-        
-        Args:
-            canonical_tool: Canonical tool name
-            current_phase: Current phase
-            state_machine: State machine instance
-            
-        Returns:
-            Protocol-compliant block response with bypass menu
-        """
-        # Generate bypass key with UUID4 per spec §3.6
-        bypass_key = f"phase_enforcement:{canonical_tool}:{uuid.uuid4()}"
-        
-        # Build bypass menu
-        # Note: The bypass key is presented to the user in the menu.
-        # When the user selects "Bypass and Execute", UserPromptSubmit will
-        # parse the menu response and register the bypass in the registry.
-        bypass_menu = {
-            "title": f"Tool Not Allowed in {current_phase} Phase",
-            "message": f"The tool '{canonical_tool}' is not allowed in the {current_phase} phase.",
-            "options": [
-                {
-                    "label": "Bypass and Execute",
-                    "action": "bypass",
-                    "bypass_key": bypass_key,
-                    "expires": "once"
-                },
-                {
-                    "label": "Cancel",
-                    "action": "cancel"
-                }
-            ]
-        }
-        
-        # Build additional context
-        additional_context = f"""
-=== PHASE VIOLATION ===
-Tool: {canonical_tool}
-Current Phase: {current_phase}
-Allowed Tools in {current_phase}: {self._get_allowed_tools(current_phase)}
-
-Phase Requirements:
-- INIT: Read-only for context gathering
-- RESEARCH: Information gathering and analysis
-- PLAN: Strategy and task planning
-- EXECUTE: Implementation and execution
-- VALIDATE: Testing and verification
-- COMMIT: Final review and commitment
-
-To proceed, you must either:
-1. Transition to an appropriate phase
-2. Use the bypass option (requires explicit approval)
-=== END VIOLATION ===
-"""
-        
-        return self._build_response(
-            internal_decision="deny",
-            reason=f"Tool {canonical_tool} not allowed in phase {current_phase}",
-            additional_context=additional_context,
-            bypass_menu=bypass_menu
-        )
-    
-    def _infer_phase_from_tool(self, canonical_tool: str, tool_input: Dict[str, Any],
-                             state_machine: Any) -> None:
-        """
-        Infer phase from tool usage patterns.
-        
-        This method automatically infers the appropriate phase based on
-        the tool being used and its input patterns.
-        
-        Args:
-            canonical_tool: Canonical tool name
-            tool_input: Tool input parameters
-            state_machine: State machine instance
-        """
-        current_phase = state_machine.get_phase()
-        
-        # Phase inference rules
-        phase_transitions = {
-            "INIT": ["RESEARCH"],
-            "RESEARCH": ["PLAN"],
-            "PLAN": ["EXECUTE"],
-            "EXECUTE": ["VALIDATE"],
-            "VALIDATE": ["COMMIT"],
-            "COMMIT": []  # Terminal phase
-        }
-        
-        # Tool-based phase inference
-        if canonical_tool == "exec" and current_phase == "PLAN":
-            # Exec in PLAN phase suggests transition to EXECUTE
-            state_machine.set_phase("EXECUTE")
-        elif canonical_tool in ["file_write", "file_edit"] and current_phase == "VALIDATE":
-            # File modifications in VALIDATE might need re-execution
-            state_machine.set_phase("EXECUTE")
-    
-    def _get_allowed_tools(self, phase: str) -> str:
-        """
-        Get allowed tools for a phase as a string.
-        
-        Args:
-            phase: Phase name
-            
-        Returns:
-            Comma-separated list of allowed tools
-        """
-        try:
-            from ..state_machine import PHASE_ALLOWLIST
-        except ImportError:
-            from state_machine import PHASE_ALLOWLIST
-        allowed = PHASE_ALLOWLIST.get(phase, [])
-        return ", ".join(allowed) if allowed else "None"
+        # No Governor rule matched - return None to let normal permissions handle it
+        log_execution("PreToolUse", {
+            "event": "no_rule_match",
+            "action": "return_none"
+        })
+        return None
