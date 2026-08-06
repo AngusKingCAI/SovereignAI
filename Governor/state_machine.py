@@ -10,7 +10,8 @@ State Structure (v1.3 consolidated state.json):
   "phase": "INIT",
   "counters": {"exec": 0, "validate": 0},
   "flags": {"research_required": false},
-  "bypasses": {"runtime": [], "team": []},
+  "bypasses": {"runtime": [], "team": [], "once": [], "session": []},
+  "permissions": {"runtime": [], "session": []},
   "violations": [],
   "pending_menus": []
 }
@@ -134,6 +135,10 @@ class StateMachine:
                 "once": [],
                 "session": []
             },
+            "permissions": {
+                "runtime": [],
+                "session": []
+            },
             "violations": [],
             "pending_menus": [],
             "metadata": {
@@ -164,6 +169,13 @@ class StateMachine:
                 for scope in ["runtime", "team", "once", "session"]:
                     if scope not in self.state.get("bypasses", {}):
                         self.state.setdefault("bypasses", {})[scope] = []
+                
+                # Migration: ensure permissions section exists (for legacy state files)
+                if "permissions" not in self.state:
+                    self.state["permissions"] = {
+                        "runtime": [],
+                        "session": []
+                    }
             else:
                 # No existing state, initialize with defaults
                 self.state = self._get_default_state()
@@ -590,6 +602,93 @@ class StateMachine:
                     stats["by_rule"][rule_id] = stats["by_rule"].get(rule_id, 0) + 1
             
             return stats
+    
+    def add_permission(self, permission_type: str, resource: str, operation: str,
+                      decision: str, scope: str = "session", reason: str = "") -> str:
+        """
+        Add a permission decision to the registry.
+        
+        Args:
+            permission_type: Type of permission (read, write, execute, network)
+            resource: Resource being accessed
+            operation: Operation being performed
+            decision: Permission decision (approve/deny)
+            scope: Permission scope (runtime/session)
+            reason: Human-readable reason
+            
+        Returns:
+            Permission entry key (UUID4 format)
+        """
+        with self._lock:
+            if scope not in ["runtime", "session"]:
+                raise ValueError(f"Invalid permission scope: {scope}")
+            
+            # Generate UUID4 permission key
+            unique_id = str(uuid.uuid4())
+            permission_key = f"permission:{permission_type}:{resource}:{unique_id}"
+            
+            # Create permission entry
+            permission_entry = {
+                "key": permission_key,
+                "permission_type": permission_type,
+                "resource": resource,
+                "operation": operation,
+                "decision": decision,
+                "scope": scope,
+                "reason": reason,
+                "created_at": datetime.utcnow().isoformat()
+            }
+            
+            self.state["permissions"][scope].append(permission_entry)
+            self._save_state()
+            return permission_key
+    
+    def get_permission_decision(self, permission_type: str, resource: str, 
+                             operation: str) -> Optional[str]:
+        """
+        Get saved permission decision for a specific request.
+        
+        Args:
+            permission_type: Type of permission
+            resource: Resource being accessed
+            operation: Operation being performed
+            
+        Returns:
+            Permission decision (approve/deny) or None if not found
+        """
+        with self._lock:
+            # Check both runtime and session permissions
+            for scope in ["runtime", "session"]:
+                for entry in self.state["permissions"][scope]:
+                    if (entry.get("permission_type") == permission_type and
+                        entry.get("resource") == resource and
+                        entry.get("operation") == operation):
+                        return entry.get("decision")
+            
+            return None
+    
+    def clear_permissions(self, scope: Optional[str] = None) -> int:
+        """
+        Clear permissions from the registry.
+        
+        Args:
+            scope: Optional scope to clear (runtime/session), clears all if None
+            
+        Returns:
+            Number of permissions cleared
+        """
+        with self._lock:
+            cleared_count = 0
+            scopes_to_clear = [scope] if scope else ["runtime", "session"]
+            
+            for clear_scope in scopes_to_clear:
+                cleared_count += len(self.state["permissions"][clear_scope])
+                self.state["permissions"][clear_scope] = []
+            
+            if cleared_count > 0:
+                self._save_state()
+            
+            return cleared_count
     
     def add_violation(self, violation: Dict[str, Any]) -> None:
         """Add a violation to the log."""

@@ -3,10 +3,13 @@ PermissionRequest Hook Handler for Governor.py v1.5
 
 This handler processes the PermissionRequest hook event, which is triggered
 when the agent requests permission for an operation. It implements auto-approve/deny
-logic and escalation based on policy rules.
+logic and escalation based on policy rules, with persistence of permission decisions.
 
 Key Responsibilities:
+- Check saved permission decisions from config.local.json
+- Check Governor's permission registry
 - Auto-approve/deny logic based on policy
+- Permission decision persistence to state.json
 - Escalation based on rule-based policies
 - PermissionDecision field implementation
 - Protocol-compliant response
@@ -14,6 +17,8 @@ Key Responsibilities:
 This implements the PermissionRequest handler specified in v1.5 spec §4.3.
 """
 
+import os
+import json
 from typing import Dict, Any, Optional
 
 # Import base class (package-relative)
@@ -53,10 +58,13 @@ class PermissionRequestHandler(HookHandler):
         
         This method:
         1. Extracts permission request details from payload
-        2. Applies auto-approve/deny logic based on policy
-        3. Implements escalation for sensitive operations
-        4. Sets permissionDecision field
-        5. Returns protocol-compliant response
+        2. Checks config.local.json for saved permission decisions
+        3. Checks Governor's permission registry for saved decisions
+        4. Applies auto-approve/deny logic based on policy
+        5. Implements escalation for sensitive operations
+        6. Saves permission decision to Governor's state if user made a choice
+        7. Sets permissionDecision field
+        8. Returns protocol-compliant response
         
         Args:
             payload: PermissionRequest hook event payload
@@ -75,10 +83,31 @@ class PermissionRequestHandler(HookHandler):
         # Get current phase
         current_phase = state_machine.get_phase()
         
-        # Apply auto-approve/deny logic
-        permission_decision = self._evaluate_permission(
-            permission_type, resource, operation, current_phase, state_machine
-        )
+        # Check if user has already made a decision for this request
+        # First check config.local.json (Devin CLI's permission storage)
+        user_decision = self._check_config_local_permissions(permission_type, resource, operation)
+        
+        # Then check Governor's permission registry
+        if user_decision is None:
+            user_decision = state_machine.get_permission_decision(permission_type, resource, operation)
+        
+        # Apply auto-approve/deny logic if no user decision found
+        if user_decision is None:
+            permission_decision = self._evaluate_permission(
+                permission_type, resource, operation, current_phase, state_machine
+            )
+            # This is an auto-decision, don't save to config
+        else:
+            permission_decision = user_decision
+            # This is a user decision from config.local.json, save to Governor state for this session
+            state_machine.add_permission(
+                permission_type=permission_type,
+                resource=resource,
+                operation=operation,
+                decision=permission_decision,
+                scope="session",
+                reason="User decision from config.local.json"
+            )
         
         # Build additional context
         additional_context = self._build_permission_context(
@@ -105,6 +134,10 @@ class PermissionRequestHandler(HookHandler):
         - Current phase
         - Bypass registry
         
+        IMPORTANT: When Governor makes an auto-decision, we should NOT interfere
+        with Devin CLI's normal permission flow. We should return "approve" to let
+        Devin CLI handle the permission window and user choice.
+        
         Args:
             permission_type: Type of permission requested
             resource: Resource being accessed
@@ -120,24 +153,16 @@ class PermissionRequestHandler(HookHandler):
         if state_machine.is_bypassed("permission", permission_type):
             return "approve"
         
-        # Auto-approve for read operations in most phases
-        if permission_type == "read" and current_phase in ["INIT", "RESEARCH", "PLAN", "EXECUTE", "VALIDATE", "COMMIT"]:
-            return "approve"
+        # For most cases, return "approve" to let Devin CLI handle permission windows
+        # Governor's job is to enforce rules, not to replace user permission choices
+        # The only exceptions are cases where we need to deny for security reasons
         
-        # Auto-deny for sensitive operations in early phases
-        if permission_type in ["write", "execute", "network"] and current_phase in ["INIT", "RESEARCH"]:
+        # Auto-deny for dangerous operations in early phases
+        if permission_type in ["network"] and current_phase in ["INIT", "RESEARCH"]:
             return "deny"
         
-        # Auto-approve for write operations in EXECUTE and COMMIT phases
-        if permission_type == "write" and current_phase in ["EXECUTE", "COMMIT"]:
-            return "approve"
-        
-        # Auto-approve for execute operations in EXECUTE and VALIDATE phases
-        if permission_type == "execute" and current_phase in ["EXECUTE", "VALIDATE"]:
-            return "approve"
-        
-        # Default to approve for unknown combinations (fail-open)
-        # Let Devin CLI's config.local.json handle permissions Governor doesn't explicitly manage
+        # For all other cases, approve to let Devin CLI handle permission windows
+        # This allows the user to make their own choices and have them saved to config.local.json
         return "approve"
     
     def _build_permission_context(self, permission_type: str, resource: str,
@@ -162,12 +187,186 @@ Operation: {operation}
 Decision: {permission_decision.upper()}
 
 Permission Policy:
-- Read: Auto-approved in all phases
-- Write: Approved in EXECUTE and COMMIT phases only
-- Execute: Approved in EXECUTE and VALIDATE phases only
-- Network: Requires explicit approval
+- Governor reads from .devin/config.local.json (same format as Devin CLI)
+- Governor checks: permissions.allow and permissions.deny patterns
+- Pattern format: Exec(ls), Read(*.py), Write(src/*), etc.
+- Wildcards supported: Exec(*), Read(*.py), etc.
+- When Governor makes auto-decisions, it approves to let Devin CLI handle permission windows
+- User permission choices are saved to config.local.json by Devin CLI
 
 To bypass: Use /bypass permission:{permission_type}
 === END PERMISSION ===
 """
         return context
+    
+    def _check_config_local_permissions(self, permission_type: str, resource: str, 
+                                       operation: str) -> Optional[str]:
+        """
+        Check if user has already made a permission decision in config.local.json.
+        
+        Devin CLI stores permission decisions in .devin/config.local.json with format:
+        { "permissions": { "allow": ["Exec(ls)", "Read(*.py)", ... ] } }
+        
+        Args:
+            permission_type: Type of permission (read, write, execute, network)
+            resource: Resource being accessed
+            operation: Operation being performed
+            
+        Returns:
+            Permission decision (approve/deny) or None if not found
+        """
+        try:
+            # Try to load config.local.json
+            config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
+                                     ".devin", "config.local.json")
+            
+            if not os.path.exists(config_path):
+                return None
+            
+            with open(config_path, 'r') as f:
+                config = json.load(f)
+            
+            # Check if there's a permissions section
+            if "permissions" not in config:
+                return None
+            
+            permissions = config["permissions"]
+            
+            # Check allow list
+            if "allow" in permissions and isinstance(permissions["allow"], list):
+                allow_patterns = permissions["allow"]
+                
+                # Convert current request to pattern format
+                request_pattern = self._request_to_pattern(permission_type, resource, operation)
+                
+                # Check if any allow pattern matches the request
+                for pattern in allow_patterns:
+                    if self._pattern_matches(request_pattern, pattern):
+                        return "approve"
+            
+            # Check deny list (if exists)
+            if "deny" in permissions and isinstance(permissions["deny"], list):
+                deny_patterns = permissions["deny"]
+                
+                request_pattern = self._request_to_pattern(permission_type, resource, operation)
+                
+                for pattern in deny_patterns:
+                    if self._pattern_matches(request_pattern, pattern):
+                        return "deny"
+            
+            return None
+            
+        except (json.JSONDecodeError, IOError, KeyError):
+            # If config.local.json is malformed or unreadable, continue without it
+            return None
+    
+    def _request_to_pattern(self, permission_type: str, resource: str, operation: str) -> str:
+        """
+        Convert a permission request to Devin CLI pattern format.
+        
+        Args:
+            permission_type: Type of permission (read, write, execute, network)
+            resource: Resource being accessed
+            operation: Operation being performed
+            
+        Returns:
+            Pattern string in Devin CLI format (e.g., "Exec(ls)", "Read(*.py)")
+        """
+        # Map permission types to Devin CLI pattern prefixes
+        type_mapping = {
+            "read": "Read",
+            "write": "Write", 
+            "execute": "Exec",
+            "network": "Network"
+        }
+        
+        prefix = type_mapping.get(permission_type, "Unknown")
+        
+        # Build pattern based on operation/resource
+        if operation and operation != "":
+            # Use operation if available
+            return f"{prefix}({operation})"
+        elif resource and resource != "":
+            # Use resource if operation not available
+            return f"{prefix}({resource})"
+        else:
+            # Fallback to wildcard
+            return f"{prefix}(*)"
+    
+    def _pattern_matches(self, request_pattern: str, stored_pattern: str) -> bool:
+        """
+        Check if a request pattern matches a stored pattern (supports wildcards).
+        
+        Args:
+            request_pattern: Pattern from current request (e.g., "Exec(ls)")
+            stored_pattern: Pattern from config.local.json (e.g., "Exec(*)")
+            
+        Returns:
+            True if patterns match, False otherwise
+        """
+        # Simple wildcard matching
+        if stored_pattern == "*":
+            return True
+        
+        if "*" in stored_pattern:
+            # Convert to regex pattern
+            import re
+            regex_pattern = stored_pattern.replace("*", ".*")
+            return bool(re.match(regex_pattern, request_pattern))
+        
+        # Exact match
+        return request_pattern == stored_pattern
+    
+    def _save_permission_to_config(self, permission_type: str, resource: str, 
+                                   operation: str, decision: str) -> None:
+        """
+        Save a permission decision to config.local.json in Devin CLI format.
+        
+        Args:
+            permission_type: Type of permission (read, write, execute, network)
+            resource: Resource being accessed
+            operation: Operation being performed
+            decision: Permission decision (approve/deny)
+        """
+        try:
+            config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
+                                     ".devin", "config.local.json")
+            
+            # Load existing config or create new
+            if os.path.exists(config_path):
+                with open(config_path, 'r') as f:
+                    config = json.load(f)
+            else:
+                config = {}
+            
+            # Ensure permissions section exists
+            if "permissions" not in config:
+                config["permissions"] = {}
+            
+            # Convert request to pattern
+            pattern = self._request_to_pattern(permission_type, resource, operation)
+            
+            # Save to appropriate list (allow or deny)
+            if decision == "approve":
+                if "allow" not in config["permissions"]:
+                    config["permissions"]["allow"] = []
+                
+                # Add if not already present
+                if pattern not in config["permissions"]["allow"]:
+                    config["permissions"]["allow"].append(pattern)
+            
+            elif decision == "deny":
+                if "deny" not in config["permissions"]:
+                    config["permissions"]["deny"] = []
+                
+                # Add if not already present
+                if pattern not in config["permissions"]["deny"]:
+                    config["permissions"]["deny"].append(pattern)
+            
+            # Write back to file
+            with open(config_path, 'w') as f:
+                json.dump(config, f, indent=2)
+                
+        except (json.JSONDecodeError, IOError):
+            # If config.local.json cannot be written, continue without error
+            pass

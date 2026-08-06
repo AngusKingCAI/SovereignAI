@@ -109,6 +109,9 @@ class SessionEndHandler(HookHandler):
         # Archive state for post-mortem
         self._archive_state(state_machine)
         
+        # Clear session permissions (cleanup)
+        state_machine.clear_permissions(scope="session")
+        
         # Build additional context with compliance report
         additional_context = f"""
 === SESSION COMPLIANCE REPORT ===
