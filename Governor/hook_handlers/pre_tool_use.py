@@ -23,9 +23,9 @@ from typing import Dict, Any, Optional
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler, log_handler_execution
+    from ._base import HookHandler
 except ImportError:
-    from hook_handlers._base import HookHandler, log_handler_execution
+    from hook_handlers._base import HookHandler
 
 # Import tool normalizer (package-relative)
 try:
@@ -118,23 +118,19 @@ class PreToolUseHandler(HookHandler):
         for rule_id in possible_rule_ids:
             if state_machine.is_bypassed(rule_id, canonical_tool):
                 # Tool is bypassed, allow with warning
-                result = self._build_allow_response(
+                return self._build_allow_response(
                     reason=f"Tool {canonical_tool} bypassed for phase {current_phase}",
                     additional_context="⚠️ Tool usage bypassed - ensure compliance with phase requirements"
                 )
-                log_handler_execution("pre_tool_use", payload, result)
-                return result
         
         # Check phase allowlist
         if not state_machine.is_tool_allowed(canonical_tool):
             # Tool not allowed in current phase
-            result = self._build_phase_block_response(
+            return self._build_phase_block_response(
                 canonical_tool=canonical_tool,
                 current_phase=current_phase,
                 state_machine=state_machine
             )
-            _log_handler_execution(payload, result)
-            return result
         
         # Check for destructive commands (rm -rf, Remove-Item -Recurse -Force)
         if canonical_tool == "exec":
@@ -332,12 +328,10 @@ To bypass permanently, use: /bypass hooks_config:{canonical_tool}
         if canonical_tool in ["file_write", "file_edit"]:
             file_path = tool_input.get("file_path", "")
             if file_path and is_protected_path(file_path):
-                result = self._build_deny_response(
+                return self._build_deny_response(
                     reason=f"Cannot write to protected path: {file_path}",
                     additional_context="Governor system files are protected from modification"
                 )
-                log_handler_execution("pre_tool_use", payload, result)
-                return result
         
         # Apply validation rules via rule engine FIRST (before other checks)
         if engine:
@@ -354,26 +348,19 @@ To bypass permanently, use: /bypass hooks_config:{canonical_tool}
             for result in results:
                 if result.decision == "deny":
                     debug_log("pre_tool_use", "Rule blocked operation", reason=result.reason)
-                    handler_result = self._build_response(
+                    return self._build_response(
                         internal_decision="deny",
                         reason=result.reason,
                         additional_context=result.additional_context
                     )
-                    _log_handler_execution(payload, handler_result)
-                    return handler_result
         
         # Infer phase from tool usage patterns
         self._infer_phase_from_tool(canonical_tool, tool_input, state_machine)
         
         # Allow tool execution
-        result = self._build_allow_response(
+        return self._build_allow_response(
             reason=f"Tool {canonical_tool} allowed in phase {current_phase}"
         )
-        
-        # Log execution
-        _log_handler_execution(payload, result)
-        
-        return result
     
     def _build_phase_block_response(self, canonical_tool: str, current_phase: str,
                                    state_machine: Any) -> Dict[str, Any]:

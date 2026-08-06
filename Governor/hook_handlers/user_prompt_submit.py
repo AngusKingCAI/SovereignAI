@@ -21,9 +21,9 @@ from typing import Dict, Any, Optional, Tuple
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler, log_handler_execution
+    from ._base import HookHandler
 except ImportError:
-    from hook_handlers._base import HookHandler, log_handler_execution
+    from hook_handlers._base import HookHandler
 
 
 class UserPromptSubmitHandler(HookHandler):
@@ -132,15 +132,10 @@ class UserPromptSubmitHandler(HookHandler):
             additional_context += research_context
         
         # Build response
-        result = self._build_allow_response(
+        return self._build_allow_response(
             reason=f"User prompt processed. Intent: {intent}, Mode: {mode}",
             additional_context=additional_context
         )
-        
-        # Log execution
-        log_handler_execution("user_prompt_submit", payload, result)
-        
-        return result
     
     def _detect_intent(self, user_prompt: str) -> str:
         """

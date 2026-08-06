@@ -22,9 +22,9 @@ from datetime import datetime
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler, log_handler_execution
+    from ._base import HookHandler
 except ImportError:
-    from hook_handlers._base import HookHandler, log_handler_execution
+    from hook_handlers._base import HookHandler
 
 
 class SessionEndHandler(HookHandler):

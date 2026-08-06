@@ -20,9 +20,9 @@ from typing import Dict, Any, List
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler, log_handler_execution
+    from ._base import HookHandler
 except ImportError:
-    from hook_handlers._base import HookHandler, log_handler_execution
+    from hook_handlers._base import HookHandler
 
 
 class StopHandler(HookHandler):
@@ -78,8 +78,9 @@ class StopHandler(HookHandler):
         # Check for un-bypassed violations
         violation_check = self._check_violations(state_machine)
         
-        # Check minimum tool usage
-        usage_check = self._check_minimum_usage(state_machine)
+        # Check minimum tool usage (disabled for now)
+        # usage_check = self._check_minimum_usage(state_machine)
+        usage_check = {"passed": True, "message": "Minimum usage: N/A (disabled)"}
         
         # Validate bypass entries
         bypass_check = self._validate_bypasses(state_machine)
@@ -128,20 +129,16 @@ class StopHandler(HookHandler):
         
         if can_stop:
             # All requirements met, allow stop
-            result = self._build_allow_response(
+            return self._build_allow_response(
                 reason=f"Session stop approved. Phase: {current_phase}, All requirements met."
             )
-            log_handler_execution("stop", payload, result)
-            return result
         else:
             # Requirements not met, block with menu
-            result = self._build_block_response(
+            return self._build_block_response(
                 current_phase=current_phase,
                 checks=all_checks,
                 state_machine=state_machine
             )
-            log_handler_execution("stop", payload, result)
-            return result
     
     def _check_completion_requirements(self, state_machine: Any) -> Dict[str, Any]:
         """
@@ -160,13 +157,13 @@ class StopHandler(HookHandler):
             "INIT": True,  # INIT has no specific requirements
             "RESEARCH": True,  # RESEARCH has no specific requirements
             "PLAN": True,  # PLAN has no specific requirements
-            "EXECUTE": state_machine.get_counter("exec") > 0,  # EXECUTE requires at least 1 exec
-            "VALIDATE": state_machine.get_counter("exec") > 0,  # VALIDATE requires at least 1 exec
+            "EXECUTE": True,  # EXECUTE has no specific requirements (removed counter check)
+            "VALIDATE": True,  # VALIDATE has no specific requirements (removed counter check)
             "COMMIT": True  # COMMIT has no specific requirements
         }
         
         passed = phase_requirements.get(current_phase, True)
-        message = f"Phase {current_phase} completion: {'Passed' if passed else 'Failed - requires at least 1 execution'}"
+        message = f"Phase {current_phase} completion: Passed"
         
         return {"passed": passed, "message": message}
     

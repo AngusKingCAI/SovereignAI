@@ -53,12 +53,6 @@ try:
 except ImportError:
     from debug_logging import debug_log, is_debug_enabled
 
-# Import centralized logging
-try:
-    from .governor import log_governor_execution
-except ImportError:
-    from governor import log_governor_execution
-
 # Import security module for team bypasses validation
 try:
     from .security import validate_team_bypasses
@@ -148,8 +142,8 @@ class StateMachine:
             "pending_menus": [],
             "metadata": {
                 "version": "1.5.0",
-                "created_at": datetime.utcnow().isoformat(),
-                "last_updated": datetime.utcnow().isoformat()
+                "created_at": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
+                "last_updated": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
             }
         }
     
@@ -250,7 +244,7 @@ class StateMachine:
         Only call this when already holding the lock.
         """
         # Update metadata first
-        self.state["metadata"]["last_updated"] = datetime.utcnow().isoformat()
+        self.state["metadata"]["last_updated"] = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
         
         temp_path = f"{self.state_path}.tmp"
         

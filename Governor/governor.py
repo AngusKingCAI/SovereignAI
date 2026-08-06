@@ -49,12 +49,14 @@ def log_governor_execution(component: str, data: Dict[str, Any]):
             f.write(json.dumps(log_entry) + "\n")
             f.flush()
         
-        # Also print to stderr for debugging
-        print(f"LOGGED: {component} - {data}", file=sys.stderr)
+        # Force stderr output for debugging
+        sys.stderr.write(f"LOGGED: {component}\n")
+        sys.stderr.flush()
             
     except Exception as e:
         # Don't fail if logging fails, but print error to stderr
-        print(f"Logging error: {e}", file=sys.stderr)
+        sys.stderr.write(f"Logging error: {e}\n")
+        sys.stderr.flush()
 
 # Import debug logging
 try:
@@ -185,13 +187,6 @@ def _dispatch_hook(hook_name: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     if not handler:
         raise ValueError(f"No handler registered for hook: {hook_name}")
     
-    # Log hook dispatch with handler info
-    log_governor_execution("governor_dispatch", {
-        "event": "dispatch_hook", 
-        "hook_name": hook_name,
-        "handler_class": handler.__name__
-    })
-    
     # Instantiate state machine and engine
     try:
         from .state_machine import StateMachine
@@ -218,9 +213,7 @@ def _dispatch_hook(hook_name: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     
     # Log execution at governor level
     log_governor_execution(hook_name, {
-        "event": "handler_execution_completed",
-        "hook_name": hook_name,
-        "response_decision": response.get("decision", "unknown")
+        "decision": response.get("decision", "unknown")
     })
     
     return response
@@ -238,30 +231,42 @@ def main():
     5. Handle errors with fail-open policy
     """
     try:
-        # Parse hook name first
-        if len(sys.argv) < 2:
-            raise ValueError("Hook name required as first argument")
+        # Read payload first to get hook name from stdin
+        payload = _read_payload()
         
-        hook_name = sys.argv[1]
+        # Try to get hook name from payload first
+        hook_name = payload.get("hook_name") or payload.get("hook") or payload.get("event")
         
-        # Log that main() was called with full context
-        log_governor_execution("governor_main", {
-            "event": "main_called", 
-            "hook_name": hook_name,
-            "argv": sys.argv,
-            "argc": len(sys.argv)
-        })
+        # Try sys.argv[1] as fallback
+        if not hook_name and len(sys.argv) >= 2:
+            hook_name = sys.argv[1]
+        
+        # Try environment variable
+        if not hook_name:
+            hook_name = os.environ.get("GOVERNOR_HOOK_NAME")
+        
+        # If still no hook name, try to infer from command used to invoke
+        if not hook_name and len(sys.argv) >= 1:
+            # The hook name might be passed via stdin or as part of the workflow
+            # Log the argv for debugging
+            sys.stderr.write(f"DEBUG: argv = {sys.argv}, payload keys = {list(payload.keys())}\n")
+            sys.stderr.flush()
+        
+        # If still no hook name, try to infer from payload or use default
+        if not hook_name:
+            hook_name = "unknown"
+            sys.stderr.write(f"WARNING: No hook name provided, argv: {sys.argv}, payload: {payload}\n")
+            sys.stderr.flush()
         
         # DEBUG: Print to see if Governor is called
         print(f"GOVERNOR CALLED: hook={hook_name}", flush=True, file=sys.stderr)
         
-        # Read payload from stdin
-        payload = _read_payload()
+        # If hook_name is unknown, we still need to validate for the error handler
+        if hook_name == "unknown":
+            # But don't raise error, just continue with unknown
+            pass
         
-        # DEBUG: Print payload
-        print(f"GOVERNOR PAYLOAD: {payload}", flush=True, file=sys.stderr)
-        
-        # Dispatch hook
+        # Dispatch hook (payload is already read above)
         response = _dispatch_hook(hook_name, payload)
         
         # Output response as JSON

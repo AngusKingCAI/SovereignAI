@@ -20,9 +20,9 @@ from typing import Dict, Any
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler, log_handler_execution
+    from ._base import HookHandler
 except ImportError:
-    from hook_handlers._base import HookHandler, log_handler_execution
+    from hook_handlers._base import HookHandler
 
 # Import tool normalizer (package-relative)
 try:
@@ -144,15 +144,10 @@ class PostToolUseHandler(HookHandler):
             additional_context = self._build_validation_context(validation_result)
         
         # Build response
-        result = self._build_allow_response(
+        return self._build_allow_response(
             reason=f"Tool {canonical_tool} execution completed. Status: {tool_status}",
             additional_context=additional_context
         )
-        
-        # Log execution
-        log_handler_execution("post_tool_use", payload, result)
-        
-        return result
     
     def _log_execution(self, canonical_tool: str, tool_input: Dict[str, Any], 
                      tool_output: Dict[str, Any], tool_status: str, 

@@ -121,7 +121,7 @@ def log_event(hook_name: str, payload: Dict[str, Any], response: Dict[str, Any],
     
     # Build event data for hashing (without the hash fields themselves)
     event_data = {
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
         "hook_name": hook_name,
         "trace_id": get_trace_id(),
         "prev_hash": prev_hash,
