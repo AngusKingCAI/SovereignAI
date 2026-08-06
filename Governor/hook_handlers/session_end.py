@@ -22,9 +22,9 @@ from datetime import datetime
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler
+    from ._base import HookHandler, log_handler_execution
 except ImportError:
-    from hook_handlers._base import HookHandler
+    from hook_handlers._base import HookHandler, log_handler_execution
 
 
 class SessionEndHandler(HookHandler):
@@ -71,6 +71,11 @@ class SessionEndHandler(HookHandler):
         Returns:
             Protocol-compliant allow response with compliance report
         """
+        # Log handler execution
+        log_handler_execution("session_end", {
+            "payload_keys": list(payload.keys())
+        })
+        
         # Get current phase and counters
         current_phase = state_machine.get_phase()
         exec_count = state_machine.get_counter("exec")

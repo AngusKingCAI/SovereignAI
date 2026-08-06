@@ -17,7 +17,10 @@ This implements the SessionStart handler specified in v1.5 spec §4.3.
 """
 
 import os
+import sys
+import json
 from typing import Dict, Any
+from datetime import datetime
 
 # Import base class (package-relative)
 try:
@@ -70,6 +73,12 @@ class SessionStartHandler(HookHandler):
         Returns:
             Protocol-compliant allow response with constitution context
         """
+        # Log handler execution
+        log_handler_execution("SessionStart", {
+            "payload_keys": list(payload.keys()),
+            "session_id": payload.get("session_id", "")
+        })
+        
         # Initialize phase to EXECUTE (allow normal operations)
         state_machine.set_phase("EXECUTE")
         

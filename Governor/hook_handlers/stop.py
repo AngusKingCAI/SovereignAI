@@ -20,9 +20,9 @@ from typing import Dict, Any, List
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler
+    from ._base import HookHandler, log_handler_execution
 except ImportError:
-    from hook_handlers._base import HookHandler
+    from hook_handlers._base import HookHandler, log_handler_execution
 
 
 class StopHandler(HookHandler):
@@ -69,6 +69,11 @@ class StopHandler(HookHandler):
         Returns:
             Protocol-compliant allow/deny response
         """
+        # Log handler execution
+        log_handler_execution("Stop", {
+            "payload_keys": list(payload.keys())
+        })
+        
         # Get current phase
         current_phase = state_machine.get_phase()
         

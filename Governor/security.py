@@ -15,8 +15,9 @@ import sys
 import time
 import signal
 from pathlib import Path
-from typing import Union, List, Optional, Tuple
+from typing import Union, List, Optional, Tuple, Dict, Any
 from datetime import datetime
+import json
 
 # Get Governor package root for relative paths
 GOVERNOR_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -46,6 +47,34 @@ ACTION_TIMEOUT_S = 1.0  # Actions must complete within 1 second
 MAX_ACTION_MEMORY_MB = 100  # Maximum memory for action execution
 
 
+def log_execution(component: str, data: Dict[str, Any]):
+    """Log execution to daily JSONL file."""
+    try:
+        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # Daily log file: Layer2-Python-Execution-Log-MM-DD-YYYY.jsonl
+        today = datetime.utcnow()
+        log_filename = f"Layer2-Python-Execution-Log-{today.strftime('%m-%d-%Y')}.jsonl"
+        log_file = os.path.join(log_dir, log_filename)
+        
+        log_entry = {
+            "File": component,
+            "hook": component,
+            "Time": today.strftime('%Y-%m-%dT%H:%M:%S'),
+            "data": data
+        }
+        
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(log_entry) + "\n")
+            f.flush()
+            
+    except Exception as e:
+        # Don't fail if logging fails, but print error to stderr
+        sys.stderr.write(f"Logging error: {e}\n")
+        sys.stderr.flush()
+
+
 class SecurityError(Exception):
     """Raised when a security violation is detected."""
     pass
@@ -63,6 +92,12 @@ def validate_import_path(module_path: str) -> None:
     Raises:
         SecurityError: If path contains .. or resolves outside trusted directory
     """
+    # Log path validation
+    log_execution("Security", {
+        "action": "validate_import_path",
+        "module_path": module_path
+    })
+    
     # Get Governor package root
     governor_root = Path(os.path.dirname(os.path.abspath(__file__))).resolve()
     
@@ -317,6 +352,13 @@ def log_security_violation(violation_type: str, details: dict) -> None:
         violation_type: Type of security violation
         details: Dictionary with violation details
     """
+    # Log security violation to execution log
+    log_execution("Security", {
+        "action": "log_security_violation",
+        "violation_type": violation_type,
+        "details": details
+    })
+    
     # In production, this would log to the audit log
     # For now, print to stderr for debugging
     violation_log = {

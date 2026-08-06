@@ -71,6 +71,11 @@ class PostCompactionHandler(HookHandler):
         Returns:
             Protocol-compliant allow response with state re-injection
         """
+        # Log handler execution
+        log_handler_execution("PostCompaction", {
+            "payload_keys": list(payload.keys())
+        })
+        
         # Get current state
         current_phase = state_machine.get_phase()
         exec_count = state_machine.get_counter("exec")

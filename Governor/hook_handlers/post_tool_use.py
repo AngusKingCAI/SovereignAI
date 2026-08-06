@@ -20,9 +20,9 @@ from typing import Dict, Any
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler
+    from ._base import HookHandler, log_handler_execution
 except ImportError:
-    from hook_handlers._base import HookHandler
+    from hook_handlers._base import HookHandler, log_handler_execution
 
 # Import tool normalizer (package-relative)
 try:
@@ -82,6 +82,13 @@ class PostToolUseHandler(HookHandler):
         Returns:
             Protocol-compliant allow response
         """
+        # Log handler execution
+        log_handler_execution("PostToolUse", {
+            "payload_keys": list(payload.keys()),
+            "tool": payload.get("tool", ""),
+            "status": payload.get("status", "")
+        })
+        
         # Extract tool information from payload
         tool_name = payload.get("tool", "")
         tool_input = payload.get("input", {})

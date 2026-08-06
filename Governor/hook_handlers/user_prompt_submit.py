@@ -21,9 +21,9 @@ from typing import Dict, Any, Optional, Tuple
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler
+    from ._base import HookHandler, log_handler_execution
 except ImportError:
-    from hook_handlers._base import HookHandler
+    from hook_handlers._base import HookHandler, log_handler_execution
 
 
 class UserPromptSubmitHandler(HookHandler):
@@ -72,6 +72,12 @@ class UserPromptSubmitHandler(HookHandler):
         """
         # Extract user prompt from payload
         user_prompt = payload.get("user_prompt", "")
+        
+        # Log handler execution
+        log_handler_execution("UserPromptSubmit", {
+            "payload_keys": list(payload.keys()),
+            "user_prompt_length": len(user_prompt)
+        })
         
         # Detect intent (question vs task)
         intent = self._detect_intent(user_prompt)

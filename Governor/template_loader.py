@@ -14,8 +14,39 @@ This implements the template system specified in v1.5 spec §6.2.
 """
 
 import os
+import sys
+import json
 from typing import Dict, Any, List, Optional
 from pathlib import Path
+from datetime import datetime
+
+
+def log_execution(component: str, data: Dict[str, Any]):
+    """Log execution to daily JSONL file."""
+    try:
+        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # Daily log file: Layer2-Python-Execution-Log-MM-DD-YYYY.jsonl
+        today = datetime.utcnow()
+        log_filename = f"Layer2-Python-Execution-Log-{today.strftime('%m-%d-%Y')}.jsonl"
+        log_file = os.path.join(log_dir, log_filename)
+        
+        log_entry = {
+            "File": component,
+            "hook": component,
+            "Time": today.strftime('%Y-%m-%dT%H:%M:%S'),
+            "data": data
+        }
+        
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(log_entry) + "\n")
+            f.flush()
+            
+    except Exception as e:
+        # Don't fail if logging fails, but print error to stderr
+        sys.stderr.write(f"Logging error: {e}\n")
+        sys.stderr.flush()
 
 # Template directory (package-relative)
 TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
@@ -292,5 +323,12 @@ def render_template(template_id: str, variables: Dict[str, Any]) -> str:
     Returns:
         Rendered template content
     """
+    # Log template rendering
+    log_execution("TemplateLoader", {
+        "action": "render_template",
+        "template_id": template_id,
+        "variables": list(variables.keys())
+    })
+    
     loader = get_template_loader()
     return loader.render_template(template_id, variables)

@@ -19,10 +19,12 @@ This implements the rule engine specified in v1.5 spec §4.1.
 import os
 import importlib
 import time
+import sys
 from typing import Dict, Any, List, Optional, Callable
 from dataclasses import dataclass
 from pathlib import Path
 import json
+from datetime import datetime
 
 # YAML import with safe loader configuration
 try:
@@ -77,6 +79,34 @@ try:
     from .security import validate_import_path, SecurityError, ResourceLimitEnforcer, log_security_violation
 except ImportError:
     from security import validate_import_path, SecurityError, ResourceLimitEnforcer, log_security_violation
+
+
+def log_execution(component: str, data: Dict[str, Any]):
+    """Log execution to daily JSONL file."""
+    try:
+        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # Daily log file: Layer2-Python-Execution-Log-MM-DD-YYYY.jsonl
+        today = datetime.utcnow()
+        log_filename = f"Layer2-Python-Execution-Log-{today.strftime('%m-%d-%Y')}.jsonl"
+        log_file = os.path.join(log_dir, log_filename)
+        
+        log_entry = {
+            "File": component,
+            "hook": component,
+            "Time": today.strftime('%Y-%m-%dT%H:%M:%S'),
+            "data": data
+        }
+        
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(log_entry) + "\n")
+            f.flush()
+            
+    except Exception as e:
+        # Don't fail if logging fails, but print error to stderr
+        sys.stderr.write(f"Logging error: {e}\n")
+        sys.stderr.flush()
 
 # YAML import with safe loader configuration
 try:
@@ -259,6 +289,12 @@ def load_rules(force_reload: bool = False) -> List[Rule]:
     
     debug_log("engine", "load_rules called", force_reload=force_reload)
     
+    # Log rule loading
+    log_execution("Engine", {
+        "action": "load_rules",
+        "force_reload": force_reload
+    })
+    
     rules = []
     
     if not os.path.exists(RULES_DIR):
@@ -434,9 +470,15 @@ def _evaluate_condition(condition: Dict[str, Any], payload: Dict[str, Any]) -> b
     
     debug_log("engine", "Evaluating condition", field=field, pattern=pattern, operator=operator)
     
-    # Get field value from payload
-    field_value = payload.get(field, "")
+    # DEBUG: Log entire payload for troubleshooting
+    print(f"DEBUG: Evaluating condition for field '{field}' with payload keys: {list(payload.keys())}", flush=True)
+    print(f"DEBUG: Full payload: {payload}", flush=True)
+    
+    # Get field value from payload (support nested field access with dot notation)
+    field_value = _get_nested_field(payload, field)
     debug_log("engine", "Field value", field=field, value=field_value)
+    
+    print(f"DEBUG: Field value for '{field}': {field_value}", flush=True)
     
     # Convert to string for pattern matching
     field_str = str(field_value) if field_value is not None else ""
@@ -458,7 +500,29 @@ def _evaluate_condition(condition: Dict[str, Any], payload: Dict[str, Any]) -> b
         result = field_str == pattern
     
     debug_log("engine", "Condition result", result=result)
+    print(f"DEBUG: Condition result: {result}", flush=True)
     return result
+
+
+def _get_nested_field(data: Dict[str, Any], field_path: str) -> Any:
+    """
+    Get a nested field value from a dictionary using dot notation.
+    
+    Args:
+        data: Dictionary to get field from
+        field_path: Dot-separated field path (e.g., "input.file_path")
+        
+    Returns:
+        Field value, or None if not found
+    """
+    keys = field_path.split(".")
+    value = data
+    for key in keys:
+        if isinstance(value, dict):
+            value = value.get(key)
+        else:
+            return None
+    return value
 
 
 def _detect_agent(payload: Dict[str, Any], context: ActionContext) -> str:
@@ -556,6 +620,13 @@ def evaluate_rules(hook_name: str, payload: Dict[str, Any], context: ActionConte
     results = []
     
     debug_log("engine", "evaluate_rules called", hook_name=hook_name, num_rules_total=len(load_rules()), payload_keys=list(payload.keys()))
+    
+    # Log rule evaluation
+    log_execution("Engine", {
+        "action": "evaluate_rules",
+        "hook_name": hook_name,
+        "payload_keys": list(payload.keys())
+    })
     
     # Load rules
     rules = load_rules()

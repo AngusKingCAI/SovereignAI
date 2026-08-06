@@ -28,30 +28,26 @@ import os
 
 # Centralized logging function for all Governor Python files
 def log_governor_execution(component: str, data: Dict[str, Any]):
-    """Log Governor execution to daily JSONL file."""
+    """Log execution to daily JSONL file."""
     try:
         log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
         os.makedirs(log_dir, exist_ok=True)
         
-        # Daily log file: Python-Execution-Log-MM-DD-YYYY.jsonl
+        # Daily log file: Governor-Python-Execution-Log-MM-DD-YYYY.jsonl
         today = datetime.utcnow()
-        log_filename = f"Python-Execution-Log-{today.strftime('%m-%d-%Y')}.jsonl"
+        log_filename = f"Governor-Python-Execution-Log-{today.strftime('%m-%d-%Y')}.jsonl"
         log_file = os.path.join(log_dir, log_filename)
         
         log_entry = {
-            "timestamp": today.isoformat(),
-            "component": component,
+            "File": "Governor",
+            "hook": component,
+            "Time": today.strftime('%Y-%m-%dT%H:%M:%S'),
             "data": data
         }
         
-        # Write with explicit error handling
-        with open(log_file, 'a') as f:
+        with open(log_file, 'a', encoding='utf-8') as f:
             f.write(json.dumps(log_entry) + "\n")
             f.flush()
-        
-        # Force stderr output for debugging
-        sys.stderr.write(f"LOGGED: {component}\n")
-        sys.stderr.flush()
             
     except Exception as e:
         # Don't fail if logging fails, but print error to stderr

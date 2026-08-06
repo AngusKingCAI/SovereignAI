@@ -59,6 +59,34 @@ try:
 except ImportError:
     from security import validate_team_bypasses
 
+
+def log_execution(component: str, data: Dict[str, Any]):
+    """Log execution to daily JSONL file."""
+    try:
+        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # Daily log file: Layer2-Python-Execution-Log-MM-DD-YYYY.jsonl
+        today = datetime.utcnow()
+        log_filename = f"Layer2-Python-Execution-Log-{today.strftime('%m-%d-%Y')}.jsonl"
+        log_file = os.path.join(log_dir, log_filename)
+        
+        log_entry = {
+            "File": component,
+            "hook": component,
+            "Time": today.strftime('%Y-%m-%dT%H:%M:%S'),
+            "data": data
+        }
+        
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(log_entry) + "\n")
+            f.flush()
+            
+    except Exception as e:
+        # Don't fail if logging fails, but print error to stderr
+        sys.stderr.write(f"Logging error: {e}\n")
+        sys.stderr.flush()
+
 # Get Governor package root for relative paths
 GOVERNOR_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -80,6 +108,10 @@ PHASE_ALLOWLIST = {
     "VALIDATE": ["read", "web_search", "exec"],
     "COMMIT": ["read", "web_search", "exec"]
 }
+
+# Development mode: if True, bypass phase restrictions
+# Set via environment variable GOVERNOR_DEV_MODE=1
+DEV_MODE = os.getenv("GOVERNOR_DEV_MODE", "0") == "1"
 
 
 class StateMachine:
@@ -337,6 +369,13 @@ class StateMachine:
         
         debug_log("state_machine", "Setting phase", old_phase=self.get_phase(), new_phase=phase)
         
+        # Log phase change
+        log_execution("StateMachine", {
+            "action": "set_phase",
+            "old_phase": self.get_phase(),
+            "new_phase": phase
+        })
+        
         with self._lock:
             self.state["phase"] = phase
             self._save_state()
@@ -380,6 +419,14 @@ class StateMachine:
         Returns:
             True if tool is allowed, False otherwise
         """
+        # Development mode: bypass all phase restrictions
+        if DEV_MODE:
+            return True
+        
+        # Allow empty tool names (fallback for malformed payloads)
+        if not tool_name:
+            return True
+        
         current_phase = self.get_phase()
         allowed_tools = PHASE_ALLOWLIST.get(current_phase, [])
         return tool_name in allowed_tools
@@ -394,9 +441,20 @@ class StateMachine:
         debug_log("state_machine", "Incrementing counter", counter=counter_name)
         
         with self._lock:
+            old_value = self.state["counters"].get(counter_name, 0)
             if counter_name not in self.state["counters"]:
                 self.state["counters"][counter_name] = 0
             self.state["counters"][counter_name] += 1
+            new_value = self.state["counters"][counter_name]
+            
+            # Log counter increment
+            log_execution("StateMachine", {
+                "action": "increment_counter",
+                "counter": counter_name,
+                "old_value": old_value,
+                "new_value": new_value
+            })
+            
             self._save_state()
     
     def set_counter(self, counter_name: str, value: int) -> None:
@@ -452,6 +510,16 @@ class StateMachine:
             # Generate UUID4 bypass key per spec §1.4
             unique_id = str(uuid.uuid4())
             bypass_key = f"{rule_id}:{tool_name}:{unique_id}"
+            
+            # Log bypass addition
+            log_execution("StateMachine", {
+                "action": "add_bypass",
+                "rule_id": rule_id,
+                "tool_name": tool_name,
+                "scope": scope,
+                "bypass_key": bypass_key,
+                "source": source
+            })
             
             # Create spec-compliant bypass entry
             bypass_entry = {

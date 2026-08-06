@@ -23,9 +23,9 @@ from typing import Dict, Any, Optional
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler
+    from ._base import HookHandler, log_handler_execution
 except ImportError:
-    from hook_handlers._base import HookHandler
+    from hook_handlers._base import HookHandler, log_handler_execution
 
 # Import tool normalizer (package-relative)
 try:
@@ -96,6 +96,12 @@ class PreToolUseHandler(HookHandler):
         Returns:
             Protocol-compliant hook response (allow/deny/modify)
         """
+        # Log handler execution
+        log_handler_execution("PreToolUse", {
+            "payload_keys": list(payload.keys()),
+            "tool": payload.get("tool", "")
+        })
+        
         # Extract tool information from payload
         tool_name = payload.get("tool", "")
         tool_input = payload.get("input", {})

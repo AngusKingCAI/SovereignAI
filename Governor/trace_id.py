@@ -15,8 +15,11 @@ This implements the trace ID system specified in v1.5 spec §4.5.
 
 import uuid
 import os
-from typing import Optional
+import sys
+import json
+from typing import Optional, Dict, Any
 from contextlib import contextmanager
+from datetime import datetime
 
 # Trace ID environment variable
 TRACE_ID_ENV_VAR = "GOVERNOR_TRACE_ID"
@@ -26,6 +29,34 @@ import threading
 _trace_id_local = threading.local()
 
 
+def log_execution(component: str, data: Dict[str, Any]):
+    """Log execution to daily JSONL file."""
+    try:
+        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # Daily log file: Layer2-Python-Execution-Log-MM-DD-YYYY.jsonl
+        today = datetime.utcnow()
+        log_filename = f"Layer2-Python-Execution-Log-{today.strftime('%m-%d-%Y')}.jsonl"
+        log_file = os.path.join(log_dir, log_filename)
+        
+        log_entry = {
+            "File": component,
+            "hook": component,
+            "Time": today.strftime('%Y-%m-%dT%H:%M:%S'),
+            "data": data
+        }
+        
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(log_entry) + "\n")
+            f.flush()
+            
+    except Exception as e:
+        # Don't fail if logging fails, but print error to stderr
+        sys.stderr.write(f"Logging error: {e}\n")
+        sys.stderr.flush()
+
+
 def generate_trace_id() -> str:
     """
     Generate a new UUID4 trace ID.
@@ -33,7 +64,15 @@ def generate_trace_id() -> str:
     Returns:
         UUID4 string trace ID
     """
-    return str(uuid.uuid4())
+    trace_id = str(uuid.uuid4())
+    
+    # Log trace ID generation
+    log_execution("TraceID", {
+        "action": "generate_trace_id",
+        "trace_id": trace_id
+    })
+    
+    return trace_id
 
 
 def get_trace_id() -> str:
@@ -70,6 +109,12 @@ def set_trace_id(trace_id: str) -> None:
     Args:
         trace_id: Trace ID string to set
     """
+    # Log trace ID setting
+    log_execution("TraceID", {
+        "action": "set_trace_id",
+        "trace_id": trace_id
+    })
+    
     _trace_id_local.trace_id = trace_id
 
 

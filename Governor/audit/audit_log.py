@@ -44,6 +44,34 @@ except ImportError:
 # Get Governor package root for relative paths
 GOVERNOR_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+def log_execution(component: str, data: Dict[str, Any]):
+    """Log execution to daily JSONL file."""
+    try:
+        log_dir = os.path.join(GOVERNOR_ROOT, "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # Daily log file: Layer2-Python-Execution-Log-MM-DD-YYYY.jsonl
+        today = datetime.utcnow()
+        log_filename = f"Layer2-Python-Execution-Log-{today.strftime('%m-%d-%Y')}.jsonl"
+        log_file = os.path.join(log_dir, log_filename)
+        
+        log_entry = {
+            "File": component,
+            "hook": component,
+            "Time": today.strftime('%Y-%m-%dT%H:%M:%S'),
+            "data": data
+        }
+        
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(log_entry) + "\n")
+            f.flush()
+            
+    except Exception as e:
+        # Don't fail if logging fails, but print error to stderr
+        sys.stderr.write(f"Logging error: {e}\n")
+        sys.stderr.flush()
+
 # Audit log file path (relative to Governor package root)
 AUDIT_DIR = os.path.join(GOVERNOR_ROOT, "logs")
 AUDIT_FILE = os.path.join(AUDIT_DIR, "audit.jsonl")
@@ -106,6 +134,13 @@ def log_event(hook_name: str, payload: Dict[str, Any], response: Dict[str, Any],
     - Uses current_hash field naming (not event_hash)
     - Includes trace_id for correlation
     """
+    # Log audit event
+    log_execution("AuditLog", {
+        "action": "log_event",
+        "hook_name": hook_name,
+        "level": level
+    })
+    
     # Ensure audit directory exists with secure permissions
     old_umask = os.umask(0o077)  # Restrict to owner-only
     try:

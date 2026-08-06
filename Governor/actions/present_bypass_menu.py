@@ -10,6 +10,37 @@ This implements the present_bypass_menu action specified in v1.5 spec §6.3.
 from typing import Dict, Any, List
 from ._base import RuleAction, ActionResult, ActionContext
 import uuid
+import os
+import sys
+import json
+from datetime import datetime
+
+
+def log_execution(component: str, data: Dict[str, Any]):
+    """Log execution to daily JSONL file."""
+    try:
+        log_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # Daily log file: Layer3-Python-Execution-Log-MM-DD-YYYY.jsonl
+        today = datetime.utcnow()
+        log_filename = f"Layer3-Python-Execution-Log-{today.strftime('%m-%d-%Y')}.jsonl"
+        log_file = os.path.join(log_dir, log_filename)
+        
+        log_entry = {
+            "action": component,
+            "Time": today.strftime('%Y-%m-%dT%H:%M:%S'),
+            "data": data
+        }
+        
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(log_entry) + "\n")
+            f.flush()
+            
+    except Exception as e:
+        # Don't fail if logging fails, but print error to stderr
+        sys.stderr.write(f"Logging error: {e}\n")
+        sys.stderr.flush()
 
 
 class PresentBypassMenuAction(RuleAction):
@@ -55,6 +86,13 @@ class PresentBypassMenuAction(RuleAction):
         Returns:
             ActionResult with deny decision and bypass menu
         """
+        # Log action execution
+        log_execution("PresentBypassMenu", {
+            "action": "present_bypass_menu",
+            "tool": payload.get("tool", "unknown"),
+            "params": params
+        })
+        
         tool_name = payload.get("tool", "unknown")
         # Note: ActionContext doesn't have phase field in current implementation
         # We'll use a placeholder or extract from state_machine if available

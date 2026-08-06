@@ -16,11 +16,42 @@ This implements the circuit breaker specified in v1.5 spec §12.7.
 from collections import deque
 from threading import Lock
 import os
+import sys
+import json
 import time
 from typing import Dict, Tuple, Any
+from datetime import datetime
 
 HALF_OPEN_TIMEOUT_S = 30
 FAILURE_WINDOW_S = 60
+
+
+def log_execution(component: str, data: Dict[str, Any]):
+    """Log execution to daily JSONL file."""
+    try:
+        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # Daily log file: Layer2-Python-Execution-Log-MM-DD-YYYY.jsonl
+        today = datetime.utcnow()
+        log_filename = f"Layer2-Python-Execution-Log-{today.strftime('%m-%d-%Y')}.jsonl"
+        log_file = os.path.join(log_dir, log_filename)
+        
+        log_entry = {
+            "File": component,
+            "hook": component,
+            "Time": today.strftime('%Y-%m-%dT%H:%M:%S'),
+            "data": data
+        }
+        
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(log_entry) + "\n")
+            f.flush()
+            
+    except Exception as e:
+        # Don't fail if logging fails, but print error to stderr
+        sys.stderr.write(f"Logging error: {e}\n")
+        sys.stderr.flush()
 
 
 class CircuitBreakerManager:
@@ -54,7 +85,18 @@ class CircuitBreakerManager:
         with self.lock:
             if key not in self.breakers:
                 self.breakers[key] = CircuitBreaker(self.threshold, self.open_timeout_s)
-            return self.breakers[key].allow()
+            allowed, reason = self.breakers[key].allow()
+            
+            # Log circuit breaker check
+            log_execution("CircuitBreaker", {
+                "action": "allow",
+                "action_name": action_name,
+                "rule_id": rule_id,
+                "allowed": allowed,
+                "reason": reason
+            })
+            
+            return allowed, reason
             
     def record_success(self, action_name: str, rule_id: str) -> None:
         """
@@ -77,6 +119,13 @@ class CircuitBreakerManager:
             action_name: Name of the action
             rule_id: ID of the rule
         """
+        # Log circuit breaker failure
+        log_execution("CircuitBreaker", {
+            "action": "record_failure",
+            "action_name": action_name,
+            "rule_id": rule_id
+        })
+        
         key = (action_name, rule_id)
         with self.lock:
             if key not in self.breakers:

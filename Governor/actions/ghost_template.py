@@ -9,7 +9,7 @@ This implements the ghost_template action specified in v1.5 spec §6.3.
 """
 
 from typing import Dict, Any, List
-from ._base import RuleAction, ActionResult, ActionContext
+from ._base import RuleAction, ActionResult, ActionContext, log_execution
 
 # Import template loader (package-relative)
 try:
@@ -61,6 +61,13 @@ class GhostTemplateAction(RuleAction):
         Returns:
             ActionResult with allow decision and generated code
         """
+        # Log action execution
+        log_execution("GhostTemplate", {
+            "action": "ghost_template",
+            "template_id": params.get("template_id"),
+            "variables": params.get("variables", {})
+        })
+        
         template_id = params.get("template_id")
         template_vars = params.get("variables", {})
         

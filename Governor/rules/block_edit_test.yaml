@@ -7,8 +7,13 @@ triggers:
   - PreToolUse
 agent: all
 check:
+  condition:
+    field: "tool_input"
+    operator: "equals"
+    pattern: "test"
   params:
     actions:
       - type: block_command
         params:
           reason: "Editing Edit test.md is blocked by test rule"
+          allow_bypass: true

@@ -75,6 +75,13 @@ class PermissionRequestHandler(HookHandler):
         resource = payload.get("resource", "")
         operation = payload.get("operation", "")
         
+        # Log handler execution
+        log_handler_execution("PermissionRequest", {
+            "payload_keys": list(payload.keys()),
+            "permission_type": permission_type,
+            "resource": resource
+        })
+        
         # Check config.local.json for saved permission decisions
         user_decision = self._check_config_local_permissions(permission_type, resource, operation)
         
@@ -85,7 +92,6 @@ class PermissionRequestHandler(HookHandler):
                 reason=f"Permission approved via config.local.json: {permission_type} on {resource}",
                 hook_event_name="PermissionRequest"
             )
-            log_handler_execution("permission_request", payload, result)
             return result
         elif user_decision == "deny":
             # Permission is explicitly denied
@@ -94,7 +100,6 @@ class PermissionRequestHandler(HookHandler):
                 reason=f"Permission denied via config.local.json: {permission_type} on {resource}",
                 hook_event_name="PermissionRequest"
             )
-            log_handler_execution("permission_request", payload, result)
             return result
         else:
             # No match in config.local.json, let Devin CLI handle permission window
@@ -103,7 +108,6 @@ class PermissionRequestHandler(HookHandler):
                 reason="Governor deferring to Devin CLI native permission system",
                 hook_event_name="PermissionRequest"
             )
-            log_handler_execution("permission_request", payload, result)
             return result
     
     def _check_config_local_permissions(self, permission_type: str, resource: str, operation: str) -> str:

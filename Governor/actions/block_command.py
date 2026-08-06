@@ -8,8 +8,7 @@ This implements the block_command action specified in v1.5 spec §6.3.
 """
 
 from typing import Dict, Any, List
-from ._base import RuleAction, ActionResult, ActionContext
-
+from ._base import RuleAction, ActionResult, ActionContext, log_execution
 
 class BlockCommandAction(RuleAction):
     """
@@ -54,6 +53,13 @@ class BlockCommandAction(RuleAction):
         Returns:
             ActionResult with deny decision
         """
+        # Log action execution
+        log_execution("BlockCommand", {
+            "action": "block_command",
+            "tool": payload.get("tool", "unknown"),
+            "params": params
+        })
+        
         tool_name = payload.get("tool", "unknown")
         # Note: ActionContext doesn't have phase field in current implementation
         # We'll use a placeholder or extract from state_machine if available
