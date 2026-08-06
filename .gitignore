@@ -1,12 +1,3 @@
-# Audit artifacts (runtime-only, not source)
-.audit/
-.audit/violations.jsonl
-.audit/weekly-reviews/
-.audit/drift-reports/
-
-# Governor runtime state and logs (gitignored per spec)
-Governor/state/
-Governor/logs/
 # Exception: team_bypasses.json is committed (shared team bypasses)
 !Governor/team_bypasses.json
 

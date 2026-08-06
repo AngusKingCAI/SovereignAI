@@ -5,8 +5,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "python3 Governor/governor.py SessionStart",
-          "timeout": 10
+          "command": "python Governor/governor.py"
         }
       ]
     }
@@ -17,8 +16,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "python3 Governor/governor.py UserPromptSubmit",
-          "timeout": 5
+          "command": "python Governor/governor.py"
         }
       ]
     }
@@ -29,8 +27,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "python3 Governor/governor.py PreToolUse",
-          "timeout": 10
+          "command": "python Governor/governor.py"
         }
       ]
     }
@@ -41,8 +38,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "python3 Governor/governor.py PostToolUse",
-          "timeout": 10
+          "command": "python Governor/governor.py"
         }
       ]
     }
@@ -53,8 +49,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "python3 Governor/governor.py PermissionRequest",
-          "timeout": 5
+          "command": "python Governor/governor.py"
         }
       ]
     }
@@ -65,8 +60,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "python3 Governor/governor.py Stop",
-          "timeout": 5
+          "command": "python Governor/governor.py"
         }
       ]
     }
@@ -77,8 +71,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "python3 Governor/governor.py SessionEnd",
-          "timeout": 5
+          "command": "python Governor/governor.py"
         }
       ]
     }
@@ -89,8 +82,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "python3 Governor/governor.py PostCompaction",
-          "timeout": 5
+          "command": "python Governor/governor.py"
         }
       ]
     }
