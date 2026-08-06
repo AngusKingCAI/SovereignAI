@@ -18,6 +18,7 @@ This implements the PermissionRequest handler specified in v1.5 spec §4.3.
 """
 
 import os
+import sys
 import json
 from typing import Dict, Any, Optional
 
@@ -57,10 +58,12 @@ class PermissionRequestHandler(HookHandler):
         Execute the PermissionRequest handler logic.
         
         This method:
-        1. Completely defers to Devin CLI's native permission system
-        2. Does not interfere with permission windows
-        3. Only reads from config.local.json to respect existing choices
-        4. Returns protocol-compliant allow response to let Devin CLI handle permissions
+        1. Logs the permission request for audit purposes
+        2. Exits without output to let Devin CLI show native permission windows
+        3. Does not interfere with Devin CLI's permission management
+        
+        IMPORTANT: Returning no output (sys.exit(0)) allows Devin CLI to show
+        its native permission windows with full persistence options.
         
         Args:
             payload: PermissionRequest hook event payload
@@ -68,15 +71,28 @@ class PermissionRequestHandler(HookHandler):
             engine: Rule engine instance (not used in PermissionRequest)
             
         Returns:
-            Protocol-compliant allow response to let Devin CLI handle permissions
+            None (exits without output to let Devin CLI handle permissions)
         """
-        # Complete defer to Devin CLI's native permission system
-        # Don't make any decisions, don't save anything, just let it through
-        return self._build_response(
-            internal_decision="allow",
-            reason="Governor deferring to Devin CLI native permission system",
-            hook_event_name="PermissionRequest"
-        )
+        # Log permission request for audit purposes
+        permission_type = payload.get("permission_type", "unknown")
+        resource = payload.get("resource", "unknown")
+        operation = payload.get("operation", "unknown")
+        
+        # Log to audit system
+        if hasattr(state_machine, 'audit'):
+            state_machine.audit.log(
+                event_type="permission_request",
+                details={
+                    "permission_type": permission_type,
+                    "resource": resource,
+                    "operation": operation,
+                    "action": "deferred_to_cli"
+                }
+            )
+        
+        # Exit without output to let Devin CLI show native permission windows
+        # This allows users to choose persistence options like "Allow for project (local)"
+        sys.exit(0)
     
     def _evaluate_permission(self, permission_type: str, resource: str, 
                            operation: str, current_phase: str,
