@@ -47,18 +47,6 @@
       ]
     }
   ],
-  "PermissionRequest": [
-    {
-      "matcher": "",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "python3 Governor/governor.py PermissionRequest",
-          "timeout": 5
-        }
-      ]
-    }
-  ],
   "Stop": [
     {
       "matcher": "",
