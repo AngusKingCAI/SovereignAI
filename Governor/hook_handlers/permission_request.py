@@ -96,18 +96,16 @@ class PermissionRequestHandler(HookHandler):
             permission_decision = self._evaluate_permission(
                 permission_type, resource, operation, current_phase, state_machine
             )
-            # This is an auto-decision from Governor's policy
-            # Save to config.local.json for persistence so Governor's decisions are remembered
-            if permission_decision == "approve":
-                self._save_permission_to_config(permission_type, resource, operation, permission_decision)
-            # Also save to Governor state for session tracking
+            # Governor returns "deny" to let Devin CLI show permission windows
+            # User can then choose "Allow for project (local)" which saves to config.local.json
+            # Only save to Governor state for session tracking
             state_machine.add_permission(
                 permission_type=permission_type,
                 resource=resource,
                 operation=operation,
                 decision=permission_decision,
                 scope="session",
-                reason="Governor auto-decision"
+                reason="Governor deferred to Devin CLI permission window"
             )
         else:
             permission_decision = user_decision
@@ -146,9 +144,8 @@ class PermissionRequestHandler(HookHandler):
         - Current phase
         - Bypass registry
         
-        IMPORTANT: When Governor makes an auto-decision, we should NOT interfere
-        with Devin CLI's normal permission flow. We should return "approve" to let
-        Devin CLI handle the permission window and user choice.
+        IMPORTANT: To let Devin CLI show permission windows, we should NOT auto-approve.
+        We should return "deny" or skip the decision to let Devin CLI handle it.
         
         Args:
             permission_type: Type of permission requested
@@ -165,17 +162,15 @@ class PermissionRequestHandler(HookHandler):
         if state_machine.is_bypassed("permission", permission_type):
             return "approve"
         
-        # For most cases, return "approve" to let Devin CLI handle permission windows
-        # Governor's job is to enforce rules, not to replace user permission choices
-        # The only exceptions are cases where we need to deny for security reasons
-        
-        # Auto-deny for dangerous operations in early phases
+        # DON'T auto-approve - let Devin CLI show permission windows
+        # This allows users to choose "Allow for project (local)" which saves to config.local.json
+        # Only auto-deny for dangerous operations in early phases
         if permission_type in ["network"] and current_phase in ["INIT", "RESEARCH"]:
             return "deny"
         
-        # For all other cases, approve to let Devin CLI handle permission windows
-        # This allows the user to make their own choices and have them saved to config.local.json
-        return "approve"
+        # For all other cases, return "deny" to let Devin CLI show permission windows
+        # This allows the user to make choices and have them saved to config.local.json
+        return "deny"
     
     def _build_permission_context(self, permission_type: str, resource: str,
                                 operation: str, permission_decision: str) -> str:
