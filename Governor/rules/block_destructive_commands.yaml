@@ -1,18 +1,14 @@
-# Sample Rule: Block Destructive Commands
-# This rule blocks destructive commands (file deletion, force operations)
-# in early phases to prevent accidental data loss
-
 id: block_destructive_commands
 version: "1.0.0"
 tier: blocking
-agent: all
-domain: execution
-name: Block Destructive Commands
-description: Blocks destructive tool operations in early phases
+name: block_destructive_commands
+description: Blocks destructive commands (rm -rf, Remove-Item -Recurse -Force) and requires explicit bypass
 triggers:
   - PreToolUse
 check:
   params:
     actions:
-      - name: block_command
-        reason: Destructive operations blocked in early phases for safety
+      - type: block_command
+        params:
+          reason: "Destructive command blocked by policy"
+          allow_bypass: true

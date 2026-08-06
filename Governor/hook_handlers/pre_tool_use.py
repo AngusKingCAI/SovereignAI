@@ -94,6 +94,9 @@ class PreToolUseHandler(HookHandler):
         tool_name = payload.get("tool", "")
         tool_input = payload.get("input", {})
         
+        # DEBUG: Log tool info
+        debug_log("pre_tool_use", "Processing tool", tool_name=tool_name, tool_input=tool_input)
+        
         # Normalize tool name to canonical form
         canonical_tool = normalize_tool_name(tool_name)
         
@@ -120,6 +123,198 @@ class PreToolUseHandler(HookHandler):
                 state_machine=state_machine
             )
         
+        # Check for destructive commands (rm -rf, Remove-Item -Recurse -Force)
+        if canonical_tool == "exec":
+            command = tool_input.get("command", "")
+            debug_log("pre_tool_use", "Checking exec command", command=command)
+            destructive_patterns = ["rm -rf", "rm -r", "Remove-Item -Recurse -Force", "Remove-Item -r"]
+            if any(pattern in command for pattern in destructive_patterns):
+                debug_log("pre_tool_use", "Destructive command detected", command=command)
+                
+                # Log the destructive command attempt to audit
+                if hasattr(state_machine, 'audit'):
+                    state_machine.audit.log(
+                        event_type="destructive_command_blocked",
+                        details={
+                            "command": command,
+                            "tool": canonical_tool,
+                            "action": "blocked_pending_user_approval"
+                        }
+                    )
+                
+                # Generate bypass key for destructive command
+                bypass_key = f"destructive_command:{canonical_tool}:{uuid.uuid4()}"
+                
+                # Build bypass menu
+                bypass_menu = {
+                    "title": "Destructive Command Blocked",
+                    "message": f"Command '{command}' is destructive and requires explicit approval.",
+                    "options": [
+                        {
+                            "label": "Bypass and Execute",
+                            "action": "bypass",
+                            "bypass_key": bypass_key,
+                            "expires": "once"
+                        },
+                        {
+                            "label": "Cancel",
+                            "action": "cancel"
+                        }
+                    ]
+                }
+                
+                additional_context = f"""
+=== DESTRUCTIVE COMMAND BLOCKED ===
+Command: {command}
+Reason: Destructive commands require explicit approval
+Bypass Key: {bypass_key}
+
+Options:
+1. Bypass and Execute (one-time approval)
+2. Cancel (command blocked)
+
+To bypass permanently, use: /bypass destructive_command:exec
+=== END BLOCK ===
+"""
+                
+                return self._build_response(
+                    internal_decision="deny",
+                    reason=f"Destructive command blocked: {command}",
+                    additional_context=additional_context,
+                    bypass_menu=bypass_menu
+                )
+        
+        # Check for protected file editing (hooks.v1.json without permission)
+        if canonical_tool in ["file_write", "file_edit"]:
+            file_path = tool_input.get("file_path", "")
+            debug_log("pre_tool_use", "Checking file edit", file_path=file_path)
+            protected_files = [
+                ".devin/hooks.v1.json",
+                ".devin/config.json",
+                ".devin/config.local.json"
+            ]
+            
+            # Normalize path for comparison
+            if file_path:
+                # Convert to absolute path and normalize
+                abs_path = os.path.abspath(file_path)
+                for protected in protected_files:
+                    protected_abs = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), protected))
+                    if abs_path == protected_abs or protected in file_path:
+                        debug_log("pre_tool_use", "Protected file edit detected", file_path=file_path)
+                        
+                        # Log the protected file edit attempt to audit
+                        if hasattr(state_machine, 'audit'):
+                            state_machine.audit.log(
+                                event_type="protected_file_edit_blocked",
+                                details={
+                                    "file_path": file_path,
+                                    "tool": canonical_tool,
+                                    "action": "blocked_pending_user_approval"
+                                }
+                            )
+                        
+                        # Generate bypass key for protected file edit
+                        bypass_key = f"protected_file:{canonical_tool}:{uuid.uuid4()}"
+                        
+                        # Build bypass menu
+                        bypass_menu = {
+                            "title": "Protected File Edit Blocked",
+                            "message": f"Editing '{file_path}' requires explicit approval.",
+                            "options": [
+                                {
+                                    "label": "Bypass and Edit",
+                                    "action": "bypass",
+                                    "bypass_key": bypass_key,
+                                    "expires": "once"
+                                },
+                                {
+                                    "label": "Cancel",
+                                    "action": "cancel"
+                                }
+                            ]
+                        }
+                        
+                        additional_context = f"""
+=== PROTECTED FILE EDIT BLOCKED ===
+File: {file_path}
+Reason: Protected configuration files require explicit approval
+Bypass Key: {bypass_key}
+
+Options:
+1. Bypass and Edit (one-time approval)
+2. Cancel (edit blocked)
+
+To bypass permanently, use: /bypass protected_file:{canonical_tool}
+=== END BLOCK ===
+"""
+                        
+                        return self._build_response(
+                            internal_decision="deny",
+                            reason=f"Protected file edit blocked: {file_path}",
+                            additional_context=additional_context,
+                            bypass_menu=bypass_menu
+                        )
+        
+        # Specific check for hooks.v1.json
+        if canonical_tool in ["file_write", "file_edit"]:
+            file_path = tool_input.get("file_path", "")
+            if file_path and "hooks.v1.json" in file_path:
+                debug_log("pre_tool_use", "hooks.v1.json edit detected", file_path=file_path)
+                
+                # Log the hooks.v1.json edit attempt to audit
+                if hasattr(state_machine, 'audit'):
+                    state_machine.audit.log(
+                        event_type="hooks_config_edit_blocked",
+                        details={
+                            "file_path": file_path,
+                            "tool": canonical_tool,
+                            "action": "blocked_pending_user_approval"
+                        }
+                    )
+                
+                # Generate bypass key for hooks.v1.json edit
+                bypass_key = f"hooks_config:{canonical_tool}:{uuid.uuid4()}"
+                
+                # Build bypass menu
+                bypass_menu = {
+                    "title": "Hooks Configuration Edit Blocked",
+                    "message": f"Editing hooks.v1.json requires explicit approval.",
+                    "options": [
+                        {
+                            "label": "Bypass and Edit",
+                            "action": "bypass",
+                            "bypass_key": bypass_key,
+                            "expires": "once"
+                        },
+                        {
+                            "label": "Cancel",
+                            "action": "cancel"
+                        }
+                    ]
+                }
+                
+                additional_context = f"""
+=== HOOKS CONFIGURATION EDIT BLOCKED ===
+File: {file_path}
+Reason: Editing hooks.v1.json requires explicit approval
+Bypass Key: {bypass_key}
+
+Options:
+1. Bypass and Edit (one-time approval)
+2. Cancel (edit blocked)
+
+To bypass permanently, use: /bypass hooks_config:{canonical_tool}
+=== END BLOCK ===
+"""
+                
+                return self._build_response(
+                    internal_decision="deny",
+                    reason=f"Hooks configuration edit blocked: {file_path}",
+                    additional_context=additional_context,
+                    bypass_menu=bypass_menu
+                )
+        
         # Check for protected path access (prevent writes to Governor files)
         if canonical_tool in ["file_write", "file_edit"]:
             file_path = tool_input.get("file_path", "")
@@ -138,9 +333,12 @@ class PreToolUseHandler(HookHandler):
                 payload=payload,
                 trace_id=os.environ.get("GOVERNOR_TRACE_ID", "")
             )
+            debug_log("pre_tool_use", "Calling rule engine", hook_name="PreToolUse", num_rules=len(engine.load_rules()))
             results = engine.evaluate_rules("PreToolUse", payload, context)
+            debug_log("pre_tool_use", "Rule engine results", num_results=len(results), results=[r.decision for r in results])
             for result in results:
                 if result.decision == "deny":
+                    debug_log("pre_tool_use", "Rule blocked operation", reason=result.reason)
                     return self._build_response(
                         internal_decision="deny",
                         reason=result.reason,

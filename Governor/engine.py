@@ -417,6 +417,50 @@ def _load_scope_config() -> Dict[str, Any]:
     }
 
 
+def _evaluate_condition(condition: Dict[str, Any], payload: Dict[str, Any]) -> bool:
+    """
+    Evaluate a rule condition against the payload.
+    
+    Args:
+        condition: Condition configuration (field, pattern, operator)
+        payload: Hook event payload
+        
+    Returns:
+        True if condition is met, False otherwise
+    """
+    field = condition.get("field", "")
+    pattern = condition.get("pattern", "")
+    operator = condition.get("operator", "equals")
+    
+    debug_log("engine", "Evaluating condition", field=field, pattern=pattern, operator=operator)
+    
+    # Get field value from payload
+    field_value = payload.get(field, "")
+    debug_log("engine", "Field value", field=field, value=field_value)
+    
+    # Convert to string for pattern matching
+    field_str = str(field_value) if field_value is not None else ""
+    
+    # Evaluate based on operator
+    if operator == "equals":
+        result = field_str == pattern
+    elif operator == "contains":
+        result = pattern in field_str
+    elif operator == "regex":
+        import re
+        result = bool(re.search(pattern, field_str))
+    elif operator == "not_equals":
+        result = field_str != pattern
+    elif operator == "not_contains":
+        result = pattern not in field_str
+    else:
+        # Default to equals if operator not recognized
+        result = field_str == pattern
+    
+    debug_log("engine", "Condition result", result=result)
+    return result
+
+
 def _detect_agent(payload: Dict[str, Any], context: ActionContext) -> str:
     """
     Detect the current agent from payload or context.
@@ -511,7 +555,7 @@ def evaluate_rules(hook_name: str, payload: Dict[str, Any], context: ActionConte
     """
     results = []
     
-    debug_log("engine", "evaluate_rules called", hook_name=hook_name, num_rules_total=len(load_rules()))
+    debug_log("engine", "evaluate_rules called", hook_name=hook_name, num_rules_total=len(load_rules()), payload_keys=list(payload.keys()))
     
     # Load rules
     rules = load_rules()
@@ -538,6 +582,12 @@ def evaluate_rules(hook_name: str, payload: Dict[str, Any], context: ActionConte
         
         for trigger in rule.triggers:
             if match_trigger(trigger, hook_name, payload):
+                # Check if rule has conditions and evaluate them
+                if rule.check and "condition" in rule.check:
+                    if not _evaluate_condition(rule.check["condition"], payload):
+                        debug_log("engine", "Rule condition not met", rule_id=rule.id)
+                        continue  # Skip this rule if condition not met
+                
                 matched_rules.append(rule)
                 break  # Only need one trigger to match
     
