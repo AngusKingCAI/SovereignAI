@@ -96,7 +96,19 @@ class PermissionRequestHandler(HookHandler):
             permission_decision = self._evaluate_permission(
                 permission_type, resource, operation, current_phase, state_machine
             )
-            # This is an auto-decision, don't save to config
+            # This is an auto-decision from Governor's policy
+            # Save to config.local.json for persistence so Governor's decisions are remembered
+            if permission_decision == "approve":
+                self._save_permission_to_config(permission_type, resource, operation, permission_decision)
+            # Also save to Governor state for session tracking
+            state_machine.add_permission(
+                permission_type=permission_type,
+                resource=resource,
+                operation=operation,
+                decision=permission_decision,
+                scope="session",
+                reason="Governor auto-decision"
+            )
         else:
             permission_decision = user_decision
             # This is a user decision from config.local.json, save to Governor state for this session
@@ -216,9 +228,13 @@ To bypass: Use /bypass permission:{permission_type}
             Permission decision (approve/deny) or None if not found
         """
         try:
-            # Try to load config.local.json
-            config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                                     ".devin", "config.local.json")
+            # config.local.json is in the project root, not Governor directory
+            # This file is at C:\SovereignAI\Governor\hook_handlers\permission_request.py
+            # Need to go up two levels: hook_handlers -> Governor -> SovereignAI
+            current_file = os.path.abspath(__file__)
+            governor_dir = os.path.dirname(os.path.dirname(current_file))  # Up to Governor
+            project_root = os.path.dirname(governor_dir)  # Up to SovereignAI
+            config_path = os.path.join(project_root, ".devin", "config.local.json")
             
             if not os.path.exists(config_path):
                 return None
@@ -282,13 +298,13 @@ To bypass: Use /bypass permission:{permission_type}
         
         prefix = type_mapping.get(permission_type, "Unknown")
         
-        # Build pattern based on operation/resource
-        if operation and operation != "":
-            # Use operation if available
-            return f"{prefix}({operation})"
-        elif resource and resource != "":
-            # Use resource if operation not available
+        # Build pattern based on resource (prioritize resource over operation)
+        if resource and resource != "":
+            # Use resource if available (e.g., file path, URL)
             return f"{prefix}({resource})"
+        elif operation and operation != "":
+            # Use operation if resource not available (e.g., command name)
+            return f"{prefix}({operation})"
         else:
             # Fallback to wildcard
             return f"{prefix}(*)"
@@ -329,8 +345,13 @@ To bypass: Use /bypass permission:{permission_type}
             decision: Permission decision (approve/deny)
         """
         try:
-            config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                                     ".devin", "config.local.json")
+            # config.local.json is in the project root, not Governor directory
+            # This file is at C:\SovereignAI\Governor\hook_handlers\permission_request.py
+            # Need to go up two levels: hook_handlers -> Governor -> SovereignAI
+            current_file = os.path.abspath(__file__)
+            governor_dir = os.path.dirname(os.path.dirname(current_file))  # Up to Governor
+            project_root = os.path.dirname(governor_dir)  # Up to SovereignAI
+            config_path = os.path.join(project_root, ".devin", "config.local.json")
             
             # Load existing config or create new
             if os.path.exists(config_path):
@@ -367,6 +388,6 @@ To bypass: Use /bypass permission:{permission_type}
             with open(config_path, 'w') as f:
                 json.dump(config, f, indent=2)
                 
-        except (json.JSONDecodeError, IOError):
+        except (json.JSONDecodeError, IOError) as e:
             # If config.local.json cannot be written, continue without error
             pass
