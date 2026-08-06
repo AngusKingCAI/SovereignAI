@@ -59,8 +59,11 @@ try:
 except ImportError:
     from security import validate_team_bypasses
 
-# State file paths
-STATE_DIR = "Governor/state"
+# Get Governor package root for relative paths
+GOVERNOR_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# State file paths (relative to Governor package root)
+STATE_DIR = os.path.join(GOVERNOR_ROOT, "state")
 STATE_FILE = os.path.join(STATE_DIR, "state.json")
 STATE_LOCK_FILE = os.path.join(STATE_DIR, ".state.lock")
 CHECKSUM_FILE = os.path.join(STATE_DIR, "state.json.checksum")

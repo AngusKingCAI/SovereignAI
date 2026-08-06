@@ -41,8 +41,11 @@ try:
 except ImportError:
     from trace_id import get_trace_id, set_trace_id
 
-# Audit log file path
-AUDIT_DIR = "Governor/logs"
+# Get Governor package root for relative paths
+GOVERNOR_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Audit log file path (relative to Governor package root)
+AUDIT_DIR = os.path.join(GOVERNOR_ROOT, "logs")
 AUDIT_FILE = os.path.join(AUDIT_DIR, "audit.jsonl")
 
 

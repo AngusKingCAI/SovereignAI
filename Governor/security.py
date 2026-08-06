@@ -18,6 +18,9 @@ from pathlib import Path
 from typing import Union, List, Optional, Tuple
 from datetime import datetime
 
+# Get Governor package root for relative paths
+GOVERNOR_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 # Trusted directories (committed to VCS, reviewed via PR)
 # These are relative to governor_root (Governor/ directory)
 TRUSTED_DIRECTORIES = [
@@ -28,12 +31,14 @@ TRUSTED_DIRECTORIES = [
 ]
 
 # Protected paths (agent cannot write to these)
+# These are relative to project root (SovereignAI/ directory)
+PROJECT_ROOT = os.path.dirname(GOVERNOR_ROOT)
 PROTECTED_PATHS = [
-    "Governor/state",
-    "Governor/logs",
-    "Governor/rules",
-    "Governor/team_bypasses.json",
-    "Governor/scope_config.json"
+    os.path.join("Governor", "state"),
+    os.path.join("Governor", "logs"),
+    os.path.join("Governor", "rules"),
+    os.path.join("Governor", "team_bypasses.json"),
+    os.path.join("Governor", "scope_config.json")
 ]
 
 # Resource limits for actions (per spec §6.4)
@@ -137,8 +142,12 @@ def is_protected_path(file_path: Union[str, Path]) -> bool:
     """
     path_str = str(file_path)
     
+    # Normalize path for comparison
+    path_str = os.path.normpath(path_str)
+    
     for protected in PROTECTED_PATHS:
-        if path_str.startswith(protected) or protected in path_str:
+        protected_normalized = os.path.normpath(protected)
+        if path_str.startswith(protected_normalized) or protected_normalized in path_str:
             return True
     
     return False
