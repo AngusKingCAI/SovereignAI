@@ -23,8 +23,9 @@ governor-all = [
     "portalocker>=2.0.0",
     "strictyaml>=1.0.0",
     "pydantic>=2.0.0",
-    "structlog>=23.0.0"
+    "structlog>=23.0.0",
 ]
+basic = []
 
 [build-system]
 requires = ["setuptools>=61.0"]

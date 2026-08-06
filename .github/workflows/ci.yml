@@ -1,0 +1,137 @@
+name: Governor CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.10', '3.11', '3.12']
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyyaml jsonschema pytest pytest-cov
+        pip install -e ".[governor-all]"
+    
+    - name: Run penetration tests
+      run: |
+        python -m Governor.penetration_tests
+    
+    - name: Run pytest with coverage
+      run: |
+        pytest tests/ --cov=Governor --cov-report=xml --cov-report=html
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+    
+    - name: Verify hook configuration
+      run: |
+        python -c "import json; json.load(open('.devin/hooks.v1.json'))"
+    
+    - name: Verify pyproject.toml
+      run: |
+        python -c "import tomli; tomli.load(open('pyproject.toml'))"
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run Bandit Security Scan
+      run: |
+        pip install bandit
+        bandit -r Governor/ -f json -o bandit-report.json || true
+    
+    - name: Run Safety Check
+      run: |
+        pip install safety
+        safety check --json || true
+    
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          bandit-report.txt
+
+  cross-platform-validation:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install basic dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyyaml jsonschema
+    
+    - name: Test file locking
+      run: |
+        python -c "from Governor.locking import get_backend, is_portalocker_available; print(f'Backend: {get_backend()}'); print(f'Portalocker: {is_portalocker_available()}')"
+    
+    - name: Test path resolution
+      run: |
+        python -c "from Governor.state_machine import GOVERNOR_ROOT, STATE_DIR; print(f'Governor Root: {GOVERNOR_ROOT}'); print(f'State Dir: {STATE_DIR}')"
+    
+    - name: Test penetration tests
+      run: |
+        python -m Governor.penetration_tests
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install linting tools
+      run: |
+        pip install flake8 black isort mypy
+    
+    - name: Run Flake8
+      run: |
+        flake8 Governor/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 Governor/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Run Black
+      run: |
+        black --check Governor/
+    
+    - name: Run isort
+      run: |
+        isort --check-only Governor/ --profile black
+    
+    - name: Run mypy
+      run: |
+        mypy Governor/ --ignore-missing-imports || true
