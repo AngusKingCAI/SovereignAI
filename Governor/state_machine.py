@@ -17,10 +17,9 @@ State Structure (v1.3 consolidated state.json):
 }
 
 Phases:
-- INIT: Session initialization
+- EXECUTE: Session initialization
 - RESEARCH: Information gathering
 - PLAN: Planning and design
-- EXECUTE: Implementation
 - VALIDATE: Testing and validation
 - COMMIT: Final review and integration
 
@@ -70,16 +69,16 @@ STATE_LOCK_FILE = os.path.join(STATE_DIR, ".state.lock")
 CHECKSUM_FILE = os.path.join(STATE_DIR, "state.json.checksum")
 
 # Valid phases per v1.5 spec
-VALID_PHASES = ["INIT", "RESEARCH", "PLAN", "EXECUTE", "VALIDATE", "COMMIT"]
+VALID_PHASES = ["INIT", "EXECUTE", "RESEARCH", "PLAN", "VALIDATE", "COMMIT"]
 
 # Phase allowlist (tools allowed in each phase)
 PHASE_ALLOWLIST = {
     "INIT": ["read", "web_search"],
+    "EXECUTE": ["read", "web_search", "exec", "file_write", "file_edit"],
     "RESEARCH": ["read", "web_search"],
     "PLAN": ["read", "web_search"],
-    "EXECUTE": ["read", "file_write", "file_edit", "exec"],
-    "VALIDATE": ["read", "exec"],
-    "COMMIT": ["read", "file_write", "file_edit", "exec"]
+    "VALIDATE": ["read", "web_search", "exec"],
+    "COMMIT": ["read", "web_search", "exec"]
 }
 
 
@@ -120,7 +119,7 @@ class StateMachine:
     def _get_default_state(self) -> Dict[str, Any]:
         """Get default initial state."""
         return {
-            "phase": "INIT",
+            "phase": "EXECUTE",
             "mode": "app",
             "counters": {
                 "exec": 0,
@@ -321,7 +320,7 @@ class StateMachine:
     def get_phase(self) -> str:
         """Get current phase."""
         with self._lock:
-            return self.state.get("phase", "INIT")
+            return self.state.get("phase", "EXECUTE")
     
     def set_phase(self, phase: str) -> None:
         """

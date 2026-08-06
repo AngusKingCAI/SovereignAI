@@ -635,9 +635,9 @@ def _execute_action(action_config: Dict[str, Any], payload: Dict[str, Any],
     Returns:
         ActionResult from action execution
     """
-    action_name = action_config.get("name")  # Spec §3.2 uses "name" key
+    action_name = action_config.get("name") or action_config.get("type")  # Support both name: and type:
     # Spec §3.2: action params are at top level of action config, not nested under params
-    params = {k: v for k, v in action_config.items() if k != "name"}
+    params = {k: v for k, v in action_config.items() if k not in ["name", "type"]}
     
     # Get rule ID from context if available
     rule_id = context.payload.get("rule_id", "unknown") if context and context.payload else "unknown"

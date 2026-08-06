@@ -45,6 +45,12 @@ try:
 except ImportError:
     from security import is_protected_path, SecurityError
 
+# Import debug logging
+try:
+    from ..debug_logging import debug_log
+except ImportError:
+    from debug_logging import debug_log
+
 
 class PreToolUseHandler(HookHandler):
     """
