@@ -1,0 +1,14 @@
+id: block_edit_test
+version: "1.0.0"
+tier: blocking
+name: block_edit_test
+description: Blocks editing of Edit test.md for testing rule firing
+triggers:
+  - PreToolUse
+agent: all
+check:
+  params:
+    actions:
+      - type: block_command
+        params:
+          reason: "Editing Edit test.md is blocked by test rule"

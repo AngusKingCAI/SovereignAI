@@ -1,0 +1,1 @@
+This is a test file to test rule blocking. I am trying to edit it to see if the rule fires.
