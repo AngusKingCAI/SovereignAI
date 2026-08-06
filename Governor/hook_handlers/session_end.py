@@ -22,9 +22,9 @@ from datetime import datetime
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler
+    from ._base import HookHandler, log_handler_execution
 except ImportError:
-    from hook_handlers._base import HookHandler
+    from hook_handlers._base import HookHandler, log_handler_execution
 
 
 class SessionEndHandler(HookHandler):
@@ -120,10 +120,15 @@ class SessionEndHandler(HookHandler):
 """
         
         # Build response
-        return self._build_allow_response(
+        result = self._build_allow_response(
             reason=f"Session ended. Phase: {current_phase}, Executions: {exec_count}",
             additional_context=additional_context
         )
+        
+        # Log execution
+        log_handler_execution("session_end", payload, result)
+        
+        return result
     
     def _generate_compliance_report(self, current_phase: str, exec_count: int,
                                   validate_count: int, violations: list,

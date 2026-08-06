@@ -66,6 +66,12 @@ try:
 except ImportError:
     from debug_logging import debug_log, is_debug_enabled
 
+# Import centralized logging
+try:
+    from .governor import log_governor_execution
+except ImportError:
+    from governor import log_governor_execution
+
 # Import circuit breaker
 try:
     from .circuit_breaker import CircuitBreakerManager
@@ -556,6 +562,9 @@ def evaluate_rules(hook_name: str, payload: Dict[str, Any], context: ActionConte
     results = []
     
     debug_log("engine", "evaluate_rules called", hook_name=hook_name, num_rules_total=len(load_rules()), payload_keys=list(payload.keys()))
+    
+    # Log rule evaluation start
+    log_governor_execution("engine", {"event": "evaluate_rules_start", "hook_name": hook_name, "num_rules": len(load_rules())})
     
     # Load rules
     rules = load_rules()

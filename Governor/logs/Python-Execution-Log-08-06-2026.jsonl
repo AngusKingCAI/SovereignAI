@@ -1,0 +1,13 @@
+{"timestamp": "2026-08-06T05:37:49.734184", "component": "governor_main", "data": {"event": "main_called", "argv": []}}
+{"timestamp": "2026-08-06T05:38:51.841292", "component": "governor_main", "data": {"event": "main_called", "argv": []}}
+{"timestamp": "2026-08-06T05:39:52.691910", "component": "governor_main", "data": {"event": "main_called", "argv": []}}
+{"timestamp": "2026-08-06T05:40:54.608698", "component": "governor_main", "data": {"event": "main_called", "argv": []}}
+{"timestamp": "2026-08-06T05:41:27.073581", "component": "governor_main", "data": {"event": "main_called", "argv": []}}
+{"timestamp": "2026-08-06T05:41:41.094653", "component": "governor_main", "data": {"event": "main_called", "argv": []}}
+{"timestamp": "2026-08-06T05:41:48.508242", "component": "governor_main", "data": {"event": "main_called", "argv": []}}
+{"timestamp": "2026-08-06T05:42:05.906853", "component": "governor_main", "data": {"event": "main_called", "argv": []}}
+{"timestamp": "2026-08-06T05:43:09.276875", "component": "governor_main", "data": {"event": "main_called", "argv": ["Governor/governor.py"], "argc": 1}}
+{"timestamp": "2026-08-06T05:43:29.954943", "component": "governor_main", "data": {"event": "main_called", "argv": ["Governor/governor.py"], "argc": 1}}
+{"timestamp": "2026-08-06T05:43:50.981908", "component": "governor_main", "data": {"event": "main_called", "argv": ["Governor/governor.py"], "argc": 1}}
+{"timestamp": "2026-08-06T05:44:07.878591", "component": "governor_main", "data": {"event": "main_called", "hook_name": "unknown", "argv": ["Governor/governor.py"], "argc": 1}}
+{"timestamp": "2026-08-06T05:44:28.623069", "component": "governor_main", "data": {"event": "main_called", "hook_name": "unknown", "argv": ["Governor/governor.py"], "argc": 1}}

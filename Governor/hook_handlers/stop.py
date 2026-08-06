@@ -20,9 +20,9 @@ from typing import Dict, Any, List
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler
+    from ._base import HookHandler, log_handler_execution
 except ImportError:
-    from hook_handlers._base import HookHandler
+    from hook_handlers._base import HookHandler, log_handler_execution
 
 
 class StopHandler(HookHandler):
@@ -128,16 +128,20 @@ class StopHandler(HookHandler):
         
         if can_stop:
             # All requirements met, allow stop
-            return self._build_allow_response(
+            result = self._build_allow_response(
                 reason=f"Session stop approved. Phase: {current_phase}, All requirements met."
             )
+            log_handler_execution("stop", payload, result)
+            return result
         else:
             # Requirements not met, block with menu
-            return self._build_block_response(
+            result = self._build_block_response(
                 current_phase=current_phase,
                 checks=all_checks,
                 state_machine=state_machine
             )
+            log_handler_execution("stop", payload, result)
+            return result
     
     def _check_completion_requirements(self, state_machine: Any) -> Dict[str, Any]:
         """

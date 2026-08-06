@@ -21,9 +21,9 @@ from typing import Dict, Any
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler
+    from ._base import HookHandler, log_handler_execution
 except ImportError:
-    from hook_handlers._base import HookHandler
+    from hook_handlers._base import HookHandler, log_handler_execution
 
 
 class SessionStartHandler(HookHandler):
@@ -113,10 +113,15 @@ class SessionStartHandler(HookHandler):
             additional_context += "\n⚠️ PAST ERROR: Research phase was required in previous session."
         
         # Return protocol-compliant allow response
-        return self._build_allow_response(
+        result = self._build_allow_response(
             reason="Session initialized. Governor is active.",
             additional_context=constitution_context + additional_context
         )
+        
+        # Log execution
+        log_handler_execution("session_start", payload, result)
+        
+        return result
     
     def _build_constitution_context(self, state_machine: Any) -> str:
         """

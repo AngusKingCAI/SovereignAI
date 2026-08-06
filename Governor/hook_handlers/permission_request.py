@@ -24,9 +24,9 @@ from typing import Dict, Any, Optional
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler
+    from ._base import HookHandler, log_handler_execution
 except ImportError:
-    from hook_handlers._base import HookHandler
+    from hook_handlers._base import HookHandler, log_handler_execution
 
 
 class PermissionRequestHandler(HookHandler):
@@ -80,25 +80,31 @@ class PermissionRequestHandler(HookHandler):
         
         if user_decision == "approve":
             # Permission is explicitly allowed
-            return self._build_response(
+            result = self._build_response(
                 internal_decision="allow",
                 reason=f"Permission approved via config.local.json: {permission_type} on {resource}",
                 hook_event_name="PermissionRequest"
             )
+            log_handler_execution("permission_request", payload, result)
+            return result
         elif user_decision == "deny":
             # Permission is explicitly denied
-            return self._build_response(
+            result = self._build_response(
                 internal_decision="deny",
                 reason=f"Permission denied via config.local.json: {permission_type} on {resource}",
                 hook_event_name="PermissionRequest"
             )
+            log_handler_execution("permission_request", payload, result)
+            return result
         else:
             # No match in config.local.json, let Devin CLI handle permission window
-            return self._build_response(
+            result = self._build_response(
                 internal_decision="allow",
                 reason="Governor deferring to Devin CLI native permission system",
                 hook_event_name="PermissionRequest"
             )
+            log_handler_execution("permission_request", payload, result)
+            return result
     
     def _check_config_local_permissions(self, permission_type: str, resource: str, operation: str) -> str:
         """

@@ -21,9 +21,9 @@ from typing import Dict, Any
 
 # Import base class (package-relative)
 try:
-    from ._base import HookHandler
+    from ._base import HookHandler, log_handler_execution
 except ImportError:
-    from hook_handlers._base import HookHandler
+    from hook_handlers._base import HookHandler, log_handler_execution
 
 
 class PostCompactionHandler(HookHandler):
@@ -92,10 +92,15 @@ class PostCompactionHandler(HookHandler):
         )
         
         # Build response
-        return self._build_allow_response(
+        result = self._build_allow_response(
             reason=f"Post-compaction state re-injection complete. Phase: {current_phase}",
             additional_context=state_context
         )
+        
+        # Log execution
+        log_handler_execution("post_compaction", payload, result)
+        
+        return result
     
     def _verify_state_integrity(self, state_machine: Any) -> bool:
         """

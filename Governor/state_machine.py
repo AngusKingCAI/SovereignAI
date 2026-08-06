@@ -53,6 +53,12 @@ try:
 except ImportError:
     from debug_logging import debug_log, is_debug_enabled
 
+# Import centralized logging
+try:
+    from .governor import log_governor_execution
+except ImportError:
+    from governor import log_governor_execution
+
 # Import security module for team bypasses validation
 try:
     from .security import validate_team_bypasses

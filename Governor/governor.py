@@ -23,12 +23,50 @@ import sys
 import json
 import traceback
 from typing import Dict, Any, Optional
+from datetime import datetime
+import os
+
+# Centralized logging function for all Governor Python files
+def log_governor_execution(component: str, data: Dict[str, Any]):
+    """Log Governor execution to daily JSONL file."""
+    try:
+        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # Daily log file: Python-Execution-Log-MM-DD-YYYY.jsonl
+        today = datetime.utcnow()
+        log_filename = f"Python-Execution-Log-{today.strftime('%m-%d-%Y')}.jsonl"
+        log_file = os.path.join(log_dir, log_filename)
+        
+        log_entry = {
+            "timestamp": today.isoformat(),
+            "component": component,
+            "data": data
+        }
+        
+        # Write with explicit error handling
+        with open(log_file, 'a') as f:
+            f.write(json.dumps(log_entry) + "\n")
+            f.flush()
+        
+        # Also print to stderr for debugging
+        print(f"LOGGED: {component} - {data}", file=sys.stderr)
+            
+    except Exception as e:
+        # Don't fail if logging fails, but print error to stderr
+        print(f"Logging error: {e}", file=sys.stderr)
 
 # Import debug logging
 try:
     from .debug_logging import debug_log, is_debug_enabled
 except ImportError:
     from debug_logging import debug_log, is_debug_enabled
+
+# Import handler logging
+try:
+    from .hook_handlers._base import log_handler_execution
+except ImportError:
+    from hook_handlers._base import log_handler_execution
 
 # Import trace ID management
 try:
@@ -147,6 +185,13 @@ def _dispatch_hook(hook_name: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     if not handler:
         raise ValueError(f"No handler registered for hook: {hook_name}")
     
+    # Log hook dispatch with handler info
+    log_governor_execution("governor_dispatch", {
+        "event": "dispatch_hook", 
+        "hook_name": hook_name,
+        "handler_class": handler.__name__
+    })
+    
     # Instantiate state machine and engine
     try:
         from .state_machine import StateMachine
@@ -169,7 +214,16 @@ def _dispatch_hook(hook_name: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     debug_log("governor", f"Dispatching hook: {hook_name}", trace_id=current_trace_id)
     
     # Execute handler
-    return handler.execute(payload, state_machine, engine)
+    response = handler.execute(payload, state_machine, engine)
+    
+    # Log execution at governor level
+    log_governor_execution(hook_name, {
+        "event": "handler_execution_completed",
+        "hook_name": hook_name,
+        "response_decision": response.get("decision", "unknown")
+    })
+    
+    return response
 
 
 def main():
@@ -184,14 +238,28 @@ def main():
     5. Handle errors with fail-open policy
     """
     try:
-        # Parse hook name
+        # Parse hook name first
         if len(sys.argv) < 2:
             raise ValueError("Hook name required as first argument")
         
         hook_name = sys.argv[1]
         
+        # Log that main() was called with full context
+        log_governor_execution("governor_main", {
+            "event": "main_called", 
+            "hook_name": hook_name,
+            "argv": sys.argv,
+            "argc": len(sys.argv)
+        })
+        
+        # DEBUG: Print to see if Governor is called
+        print(f"GOVERNOR CALLED: hook={hook_name}", flush=True, file=sys.stderr)
+        
         # Read payload from stdin
         payload = _read_payload()
+        
+        # DEBUG: Print payload
+        print(f"GOVERNOR PAYLOAD: {payload}", flush=True, file=sys.stderr)
         
         # Dispatch hook
         response = _dispatch_hook(hook_name, payload)
@@ -203,6 +271,9 @@ def main():
         # Fail-open error handling
         hook_name = sys.argv[1] if len(sys.argv) >= 2 else "Unknown"
         payload = {}
+        
+        # DEBUG: Print error
+        print(f"GOVERNOR ERROR: {e}", flush=True, file=sys.stderr)
         
         error_response = _dispatch_error(hook_name, e, payload)
         print(json.dumps(error_response, indent=2))

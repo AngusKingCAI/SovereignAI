@@ -16,6 +16,9 @@ This implements the hook handler system specified in v1.5 spec §4.3.
 
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional
+import os
+import json
+from datetime import datetime
 
 # Import protocol module for response building (package-relative)
 try:
@@ -23,6 +26,31 @@ try:
 except ImportError:
     # Fallback for direct execution during development
     from protocol import build_hook_response
+
+
+def log_handler_execution(handler_name: str, payload: Dict[str, Any], result: Dict[str, Any] = None):
+    """Log handler execution to daily JSONL file for debugging."""
+    try:
+        from datetime import datetime
+        log_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # Daily log file: Python-Execution-Log-MM/DD/YYYY.jsonl
+        today = datetime.utcnow()
+        log_filename = f"Python-Execution-Log-{today.strftime('%m/%d/%Y')}.jsonl"
+        log_file = os.path.join(log_dir, log_filename)
+        
+        log_entry = {
+            "timestamp": today.isoformat(),
+            "handler": handler_name,
+            "payload": payload,
+            "result": result
+        }
+        with open(log_file, 'a') as f:
+            f.write(json.dumps(log_entry) + "\n")
+    except Exception as e:
+        # Don't fail if logging fails
+        pass
 
 
 class HookHandler(ABC):

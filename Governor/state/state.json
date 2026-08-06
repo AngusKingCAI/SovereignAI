@@ -1,0 +1,28 @@
+{
+  "phase": "EXECUTE",
+  "mode": "app",
+  "counters": {
+    "exec": 0,
+    "validate": 0
+  },
+  "flags": {
+    "research_required": false
+  },
+  "bypasses": {
+    "runtime": [],
+    "team": [],
+    "once": [],
+    "session": []
+  },
+  "permissions": {
+    "runtime": [],
+    "session": []
+  },
+  "violations": [],
+  "pending_menus": [],
+  "metadata": {
+    "version": "1.5.0",
+    "created_at": "2026-08-06T05:08:18.128531",
+    "last_updated": "2026-08-06T05:08:18.128542"
+  }
+}
