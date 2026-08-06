@@ -82,14 +82,38 @@ class UserPromptSubmitHandler(HookHandler):
         # Process bypass commands
         additional_context = ""
         for bypass_key in bypass_commands:
-            # Add bypass to registry
-            state_machine.add_bypass(
-                bypass_key=bypass_key,
-                scope="runtime",
-                reason="User requested bypass via command",
-                source="user_command"
-            )
-            additional_context += f"\n✓ Bypass registered: {bypass_key}"
+            # Parse bypass key to extract rule_id and tool_name
+            # Format: "bypass:rule_id:tool:uuid" or just "rule_id" or "all"
+            if bypass_key == "all":
+                # Special case: bypass all for next tool call only
+                state_machine.add_bypass(
+                    rule_id="*",
+                    tool_name="*",
+                    scope="once",
+                    reason="User requested bypass all via command",
+                    source="user_command",
+                    user_prompt_text=user_prompt[:200]
+                )
+                additional_context += "\n✓ Bypass registered: next tool call only"
+            else:
+                # Parse rule_id:tool format or just rule_id
+                parts = bypass_key.split(":")
+                if len(parts) >= 2:
+                    rule_id = parts[0]
+                    tool_name = parts[1]
+                else:
+                    rule_id = bypass_key
+                    tool_name = "*"
+                
+                state_machine.add_bypass(
+                    rule_id=rule_id,
+                    tool_name=tool_name,
+                    scope="session",
+                    reason="User requested bypass via command",
+                    source="user_command",
+                    user_prompt_text=user_prompt[:200]
+                )
+                additional_context += f"\n✓ Bypass registered: {bypass_key}"
         
         # Detect mode (App vs Harness review)
         mode = self._detect_mode(user_prompt, payload)

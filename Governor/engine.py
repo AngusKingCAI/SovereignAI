@@ -72,6 +72,12 @@ try:
 except ImportError:
     from circuit_breaker import CircuitBreakerManager
 
+# Import security module
+try:
+    from .security import validate_import_path, SecurityError, ResourceLimitEnforcer, log_security_violation
+except ImportError:
+    from security import validate_import_path, SecurityError, ResourceLimitEnforcer, log_security_violation
+
 # YAML import with safe loader configuration
 try:
     import yaml
@@ -597,8 +603,11 @@ def _execute_action(action_config: Dict[str, Any], payload: Dict[str, Any],
             reason=f"Circuit breaker: {cb_reason}"
         )
     
-    # Import action class
+    # Import action class with security validation
     try:
+        # Validate import path for security (per spec §6.4)
+        validate_import_path(f"actions.{action_name}")
+        
         # Actions are in Governor/actions/ directory (package-relative import)
         if __package__:
             action_module = importlib.import_module(f".actions.{action_name}", package=__package__)
@@ -608,6 +617,10 @@ def _execute_action(action_config: Dict[str, Any], payload: Dict[str, Any],
         # Convert snake_case to PascalCase and append "Action" suffix per spec §6.3
         action_class_name = "".join(word.capitalize() for word in action_name.split("_")) + "Action"
         action_class = getattr(action_module, action_class_name)
+    except SecurityError as e:
+        # Security violation - fail-open with log
+        debug_log("engine", f"Security violation in action import: {e}", action=action_name)
+        raise ValueError(f"Security violation in action import: {e}")
     except (ImportError, AttributeError) as e:
         raise ValueError(f"Could not load action {action_name}: {e}")
     
@@ -617,9 +630,35 @@ def _execute_action(action_config: Dict[str, Any], payload: Dict[str, Any],
     # Validate parameters
     action.validate_params(params)
     
-    # Execute action
+    # Execute action with resource limit enforcement
+    resource_enforcer = ResourceLimitEnforcer()
+    resource_enforcer.start_action()
+    
     try:
+        # Check resource limits before execution
+        within_limits, limit_reason = resource_enforcer.check_resource_limits()
+        if not within_limits:
+            debug_log("engine", f"Resource limit violation: {limit_reason}", action=action_name)
+            log_security_violation("resource_limit_exceeded", {
+                "action": action_name,
+                "reason": limit_reason
+            })
+            return ActionResult(
+                decision="allow",  # Fail-open
+                reason=f"Resource limit: {limit_reason}"
+            )
+        
         result = action.evaluate(payload, params, context)
+        
+        # Check resource limits after execution
+        within_limits, limit_reason = resource_enforcer.check_resource_limits()
+        if not within_limits:
+            debug_log("engine", f"Resource limit violation after execution: {limit_reason}", action=action_name)
+            log_security_violation("resource_limit_exceeded", {
+                "action": action_name,
+                "reason": limit_reason
+            })
+        
         # Record success
         cb_manager.record_success(action_name, rule_id)
         return result
@@ -628,6 +667,8 @@ def _execute_action(action_config: Dict[str, Any], payload: Dict[str, Any],
         cb_manager.record_failure(action_name, rule_id)
         # Re-raise to be caught by outer try-catch
         raise
+    finally:
+        resource_enforcer.end_action()
 
 
 def clear_rule_cache() -> None:

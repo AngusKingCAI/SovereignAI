@@ -87,9 +87,19 @@ class SessionStartHandler(HookHandler):
             for bypass_key in bypass_env.split(","):
                 bypass_key = bypass_key.strip()
                 if bypass_key:
+                    # Parse rule_id:tool format or just rule_id
+                    parts = bypass_key.split(":")
+                    if len(parts) >= 2:
+                        rule_id = parts[0]
+                        tool_name = parts[1]
+                    else:
+                        rule_id = bypass_key
+                        tool_name = "*"
+                    
                     state_machine.add_bypass(
-                        bypass_key=bypass_key,
-                        scope="team",
+                        rule_id=rule_id,
+                        tool_name=tool_name,
+                        scope="session",
                         reason="Pre-populated from GOVERNOR_BYPASSES environment variable",
                         source="environment"
                     )

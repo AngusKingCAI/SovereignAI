@@ -39,6 +39,12 @@ try:
 except ImportError:
     from actions._base import ActionContext
 
+# Import security module for path protection
+try:
+    from ..security import is_protected_path, SecurityError
+except ImportError:
+    from security import is_protected_path, SecurityError
+
 
 class PreToolUseHandler(HookHandler):
     """
@@ -113,6 +119,15 @@ class PreToolUseHandler(HookHandler):
                 current_phase=current_phase,
                 state_machine=state_machine
             )
+        
+        # Check for protected path access (prevent writes to Governor files)
+        if canonical_tool in ["file_write", "file_edit"]:
+            file_path = tool_input.get("file_path", "")
+            if file_path and is_protected_path(file_path):
+                return self._build_deny_response(
+                    reason=f"Cannot write to protected path: {file_path}",
+                    additional_context="Governor system files are protected from modification"
+                )
         
         # Apply validation rules via rule engine
         if engine:
