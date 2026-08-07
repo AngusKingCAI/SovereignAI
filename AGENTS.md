@@ -26,3 +26,10 @@ When implementing features or fixing issues, follow this iterative workflow:
 4. **If Failed, Back to 1** - If testing fails, return to research and try a different approach
 
 This research-first approach prevents wasted effort on solutions that won't work.
+
+## Git Operations
+- **Never run git push unless the user explicitly requests it**
+- Auto-commit is acceptable, but auto-push is not allowed
+- Only attempt git push when the user uses phrases like "push to git", "git push", or explicitly requests pushing
+- Always assume git push requires explicit user permission
+- If in doubt, ask the user before attempting git push operations
