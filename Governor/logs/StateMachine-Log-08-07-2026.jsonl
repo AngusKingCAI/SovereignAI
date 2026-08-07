@@ -3,3 +3,5 @@
 {"File": "state_machine.py", "component": "StateMachine", "Time": "2026-08-07T07:17:37", "data": {"action": "set_phase", "old_phase": "EXECUTE", "new_phase": "EXECUTE"}}
 {"File": "state_machine.py", "component": "StateMachine", "Time": "2026-08-07T07:17:37", "data": {"action": "discover_agents", "status": "success", "agents": ["architect", "planner", "executor", "researcher", "reviewer"]}}
 {"File": "state_machine.py", "component": "StateMachine", "Time": "2026-08-07T07:17:37", "data": {"action": "set_current_agent", "status": "success", "agent": "architect"}}
+{"File": "state_machine.py", "component": "StateMachine", "Time": "2026-08-07T07:27:40", "data": {"action": "add_bypass", "rule_id": "must", "tool_name": "*", "scope": "session"}}
+{"File": "state_machine.py", "component": "StateMachine", "Time": "2026-08-07T07:27:40", "data": {"action": "add_bypass", "rule_id": "activates", "tool_name": "*", "scope": "session"}}
