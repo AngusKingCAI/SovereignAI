@@ -9,6 +9,7 @@ from typing import Dict, Any, Optional, List
 import os
 import sys
 import json
+import inspect
 from datetime import datetime
 
 # Get Governor package root
@@ -24,8 +25,19 @@ def log_execution(component: str, data: Dict[str, Any]):
         today = datetime.utcnow().strftime("%m-%d-%Y")
         log_file = os.path.join(log_dir, f"Actions-Log-{today}.jsonl")
         
+        # Get actual caller's file information using inspect
+        caller_file = "actions/_base.py"
+        try:
+            frame = inspect.currentframe().f_back
+            if frame:
+                caller_file = frame.f_code.co_filename
+                # Get just the filename for cleaner logs
+                caller_file = os.path.basename(caller_file)
+        except Exception:
+            pass  # Fall back to default if inspect fails
+        
         entry = {
-            "File": "actions/_base.py",
+            "File": caller_file,
             "action": component,
             "Time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
             "data": data
