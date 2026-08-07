@@ -22,11 +22,11 @@ def log_execution(component: str, data: Dict[str, Any]):
         os.makedirs(log_dir, exist_ok=True)
         
         today = datetime.utcnow().strftime("%m-%d-%Y")
-        log_file = os.path.join(log_dir, f"Governor-Log-{today}.jsonl")
+        log_file = os.path.join(log_dir, f"Actions-Log-{today}.jsonl")
         
         entry = {
             "File": "actions/_base.py",
-            "hook": component,
+            "action": component,
             "Time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
             "data": data
         }
