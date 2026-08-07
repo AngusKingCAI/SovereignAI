@@ -60,8 +60,8 @@ class SessionEndHandler(HookHandler):
         """Execute the SessionEnd handler logic."""
         log_execution("SessionEnd", {"event": "session_end"})
 
-        # Clear current agent
-        state_machine.clear_current_agent()
+        # Note: current_agent is NOT cleared here to allow it to persist
+        # It will be re-set at the next SessionStart if needed
 
         current_phase = state_machine.get_phase()
         exec_count = state_machine.get_counter("exec")
