@@ -1,11 +1,11 @@
-id: block_app_edits_architect
+id: block_app_edits
 version: "1.0.0"
 tier: blocking
-name: block_app_edits_architect
+name: block_app_edits
 description: Blocks architect agent from modifying files in App directory
 trigger:
   hook: PreToolUse
-  tool: edit
+  tools: [edit, write]
 check:
   condition:
     field: "tool_input"

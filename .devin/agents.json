@@ -1,0 +1,9 @@
+{
+  "agents": [
+    "architect",
+    "planner",
+    "executor",
+    "researcher",
+    "reviewer"
+  ]
+}

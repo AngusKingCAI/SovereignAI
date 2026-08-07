@@ -134,6 +134,7 @@ class StateMachine:
         """Initialize default state."""
         self._state = {
             "phase": "EXECUTE",
+            "current_agent": None,
             "counters": {"exec": 0, "validate": 0},
             "flags": {"research_required": False},
             "bypasses": {"runtime": [], "team": [], "once": [], "session": []},
@@ -272,6 +273,79 @@ class StateMachine:
             self._state["permissions"][scope] = []
             self._save_state()
     
+    def discover_agents(self) -> List[str]:
+        """Discover available agents from .devin/agents.json."""
+        agents_file = os.path.join(os.path.dirname(GOVERNOR_ROOT), ".devin", "agents.json")
+        
+        if not os.path.exists(agents_file):
+            log_execution("StateMachine", {
+                "action": "discover_agents",
+                "status": "file_not_found",
+                "path": agents_file
+            })
+            return []
+        
+        try:
+            with open(agents_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                agents = data.get("agents", [])
+                
+                log_execution("StateMachine", {
+                    "action": "discover_agents",
+                    "status": "success",
+                    "agents": agents
+                })
+                
+                return agents
+        except (json.JSONDecodeError, KeyError) as e:
+            log_execution("StateMachine", {
+                "action": "discover_agents",
+                "status": "error",
+                "error": str(e)
+            })
+            return []
+    
+    def set_current_agent(self, agent: str) -> bool:
+        """Set current agent with validation against discovered agents."""
+        available_agents = self.discover_agents()
+        
+        if available_agents and agent not in available_agents:
+            log_execution("StateMachine", {
+                "action": "set_current_agent",
+                "status": "invalid_agent",
+                "agent": agent,
+                "available_agents": available_agents
+            })
+            return False
+        
+        log_execution("StateMachine", {
+            "action": "set_current_agent",
+            "status": "success",
+            "agent": agent
+        })
+        
+        with self._lock:
+            self._state["current_agent"] = agent
+            self._save_state()
+        
+        return True
+    
+    def get_current_agent(self) -> Optional[str]:
+        """Get current agent."""
+        with self._lock:
+            return self._state.get("current_agent")
+    
+    def clear_current_agent(self):
+        """Clear current agent."""
+        log_execution("StateMachine", {
+            "action": "clear_current_agent",
+            "status": "success"
+        })
+        
+        with self._lock:
+            self._state["current_agent"] = None
+            self._save_state()
+    
     def set_mode(self, mode: str):
         """Set execution mode."""
         with self._lock:
@@ -287,3 +361,33 @@ class StateMachine:
     def state(self, value: Dict[str, Any]):
         """Set state property for compatibility."""
         self._state = value
+
+
+if __name__ == "__main__":
+    """CLI interface for state machine operations."""
+    if len(sys.argv) > 1:
+        sm = StateMachine()
+        
+        if sys.argv[1] == "set_agent" and len(sys.argv) > 2:
+            agent = sys.argv[2]
+            success = sm.set_current_agent(agent)
+            if success:
+                print(f"Agent set to: {agent}")
+            else:
+                print(f"Failed to set agent: {agent}")
+                sys.exit(1)
+        elif sys.argv[1] == "get_agent":
+            agent = sm.get_current_agent()
+            print(f"Current agent: {agent}")
+        elif sys.argv[1] == "clear_agent":
+            sm.clear_current_agent()
+            print("Agent cleared")
+        elif sys.argv[1] == "list_agents":
+            agents = sm.discover_agents()
+            print(f"Available agents: {agents}")
+        else:
+            print("Usage: python state_machine.py [set_agent|get_agent|clear_agent|list_agents] [agent_name]")
+            sys.exit(1)
+    else:
+        print("Usage: python state_machine.py [set_agent|get_agent|clear_agent|list_agents] [agent_name]")
+        sys.exit(1)

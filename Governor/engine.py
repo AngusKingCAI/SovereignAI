@@ -58,40 +58,69 @@ RULES_DIR = os.path.join(GOVERNOR_ROOT, "rules")
 class Engine:
     """Rule engine for Governor."""
     
-    def __init__(self):
+    def __init__(self, current_agent: str = None):
         """Initialize engine."""
         self.rules: List[Dict[str, Any]] = []
+        self.current_agent = current_agent
         self._load_rules()
     
     def _load_rules(self):
-        """Load rule YAML files."""
-        if not os.path.exists(RULES_DIR):
-            log_execution("Engine", {"action": "load_rules", "status": "no_rules_dir"})
+        """Load rule YAML files from universal and agent-specific directories."""
+        # Load universal rules from Governor/rules/
+        self._load_rules_from_dir(RULES_DIR, "universal")
+        
+        # Load agent-specific rules from Governor/rules/{agent}/ if agent is set
+        if self.current_agent:
+            agent_rules_dir = os.path.join(RULES_DIR, self.current_agent)
+            self._load_rules_from_dir(agent_rules_dir, f"agent_{self.current_agent}")
+        
+        log_execution("Engine", {"action": "load_rules_complete", "total_rules": len(self.rules)})
+    
+    def _load_rules_from_dir(self, rules_dir: str, source: str):
+        """Load rules from a specific directory."""
+        if not os.path.exists(rules_dir):
+            log_execution("Engine", {"action": "load_rules", "status": "no_dir", "source": source, "path": rules_dir})
             return
         
         try:
             import yaml
         except ImportError:
             print("Warning: yaml not installed, rules not loaded", file=sys.stderr)
-            log_execution("Engine", {"action": "load_rules", "status": "yaml_missing"})
+            log_execution("Engine", {"action": "load_rules", "status": "yaml_missing", "source": source})
             return
         
-        for filename in os.listdir(RULES_DIR):
+        for filename in os.listdir(rules_dir):
             if not filename.endswith('.yaml') and not filename.endswith('.yml'):
                 continue
             
-            filepath = os.path.join(RULES_DIR, filename)
+            filepath = os.path.join(rules_dir, filename)
             try:
                 with open(filepath, 'r') as f:
                     rule_data = yaml.safe_load(f)
                     if rule_data:
+                        # Check if rule has agent field and if it matches current agent
+                        rule_agent = rule_data.get("agent")
+                        if rule_agent and rule_agent != self.current_agent:
+                            log_execution("Engine", {
+                                "action": "rule_skipped",
+                                "file": filename,
+                                "rule_id": rule_data.get("id", "unknown"),
+                                "reason": "agent_mismatch",
+                                "rule_agent": rule_agent,
+                                "current_agent": self.current_agent
+                            })
+                            continue
+                        
                         self.rules.append(rule_data)
-                        log_execution("Engine", {"action": "rule_loaded", "file": filename, "rule_id": rule_data.get("id", "unknown")})
+                        log_execution("Engine", {
+                            "action": "rule_loaded",
+                            "file": filename,
+                            "rule_id": rule_data.get("id", "unknown"),
+                            "source": source
+                        })
             except Exception as e:
                 print(f"Warning: Failed to load rule {filename}: {e}", file=sys.stderr)
-                log_execution("Engine", {"action": "rule_load_failed", "file": filename, "error": str(e)})
-        
-        log_execution("Engine", {"action": "load_rules_complete", "total_rules": len(self.rules)})
+                log_execution("Engine", {"action": "rule_load_failed", "file": filename, "error": str(e), "source": source})
     
     def evaluate_rules(self, hook_name: str, payload: Dict[str, Any], 
                       context: ActionContext) -> List[ActionResult]:
@@ -124,11 +153,22 @@ class Engine:
         if trigger.get("hook") != hook_name:
             return False
         
-        # Check tool name if specified
+        # Check tool name(s) if specified
+        tool_name = payload.get("tool_name", "")
+        
+        # Support both single tool and multiple tools
         if "tool" in trigger:
-            tool_name = payload.get("tool_name", "")
             if trigger["tool"] != tool_name:
                 return False
+        elif "tools" in trigger:
+            tools = trigger["tools"]
+            if isinstance(tools, list):
+                if tool_name not in tools:
+                    return False
+            else:
+                # Single tool specified in tools field
+                if tools != tool_name:
+                    return False
         
         # Check file path condition if specified in rule
         tool_input = payload.get("tool_input", {})

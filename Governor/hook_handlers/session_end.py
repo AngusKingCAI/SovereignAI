@@ -60,6 +60,9 @@ class SessionEndHandler(HookHandler):
         """Execute the SessionEnd handler logic."""
         log_execution("SessionEnd", {"event": "session_end"})
         
+        # Clear current agent
+        state_machine.clear_current_agent()
+        
         current_phase = state_machine.get_phase()
         exec_count = state_machine.get_counter("exec")
         validate_count = state_machine.get_counter("validate")

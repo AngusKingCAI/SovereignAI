@@ -5,7 +5,7 @@ name: block_edit_test
 description: Blocks editing of Edit test.md for testing rule firing
 trigger:
   hook: PreToolUse
-  tool: edit
+  tools: [edit, write]
 check:
   condition:
     field: "tool_input"

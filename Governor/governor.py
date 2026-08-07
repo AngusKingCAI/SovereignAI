@@ -79,7 +79,8 @@ def main():
             raise ValueError(f"No handler for: {hook_name}")
         
         state_machine = StateMachine()
-        engine = Engine()
+        current_agent = state_machine.get_current_agent()
+        engine = Engine(current_agent=current_agent)
         response = handler.execute(payload, state_machine, engine)
         
         # If response is None, handler wants to exit with code 0 (let normal permissions handle it)

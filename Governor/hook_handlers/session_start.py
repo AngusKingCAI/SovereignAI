@@ -70,6 +70,16 @@ class SessionStartHandler(HookHandler):
         state_machine.set_counter("exec", 0)
         state_machine.set_counter("validate", 0)
         
+        # Detect and set current agent from environment or default to architect
+        active_agent = os.environ.get("ACTIVE_AGENT", "architect")
+        state_machine.set_current_agent(active_agent)
+        
+        log_execution("SessionStart", {
+            "action": "agent_detection",
+            "detected_agent": active_agent,
+            "source": "environment"
+        })
+        
         # Load environment bypasses
         bypass_env = os.environ.get("GOVERNOR_BYPASSES", "")
         if bypass_env:

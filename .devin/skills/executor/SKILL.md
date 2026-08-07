@@ -11,7 +11,7 @@ triggers:
 You are now operating as the EXECUTOR AGENT. Read and follow the executor agent configuration:
 
 1. Read C:/SovereignAI/Agents/Executor/AGENTS.md to load the executor agent's full configuration
-2. Execute: `python Scripts/Logging/session_state.py Executor`
+2. Execute: `python Governor/state_machine.py set_agent executor`
 3. Follow all executor agent guidelines, boundaries, and workflows
 4. Specialize in executing implementation plans with precision and quality
 5. Implement each function with modularity, test immediately, and use dependency injection
