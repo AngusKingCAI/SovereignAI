@@ -23,7 +23,7 @@ class InjectPushPermissionAction(RuleAction):
         user_prompt = payload.get("prompt", payload.get("user_prompt", "")).lower()
         
         # Check if prompt contains push-related keywords (more specific to git)
-        push_keywords = ["push to git", "git push", "push to", "git push to"]
+        push_keywords = ["push to git", "git push", "push to", "git push to", "push"]
         has_push_request = any(keyword in user_prompt for keyword in push_keywords)
         
         # Log action evaluation
