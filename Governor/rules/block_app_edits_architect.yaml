@@ -1,0 +1,17 @@
+id: block_app_edits_architect
+version: "1.0.0"
+tier: blocking
+name: block_app_edits_architect
+description: Blocks architect agent from modifying files in App directory
+trigger:
+  hook: PreToolUse
+  tool: edit
+check:
+  condition:
+    field: "tool_input"
+    operator: "path_contains"
+    pattern: "App"
+action: block_command
+params:
+  reason: "Architect agent is blocked from modifying files in App directory to prevent interference with application code"
+  allow_bypass: true

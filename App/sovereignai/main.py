@@ -8,6 +8,7 @@ from sovereignai.shared.event_bus import EventBus
 from sovereignai.shared.event_registry import EventRegistry
 from sovereignai.shared.file_trace_subscriber import FileTraceSubscriber
 from sovereignai.shared.trace_emitter import TraceEmitter
+# Architect test debug 2
 from sovereignai.shared.types import (
     TraceLevel,
 )

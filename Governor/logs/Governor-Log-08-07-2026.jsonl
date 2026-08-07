@@ -1,0 +1,798 @@
+{"File": "governor.py", "hook": "SessionStart", "Time": "2026-08-07T03:05:50", "data": {"event": "hook_fired", "trace_id": "cb16d300-aeb5-4af1-aed3-3706066a511e"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:05:50", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:05:50", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:05:50", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:05:50", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "state_machine.py", "hook": "StateMachine", "Time": "2026-08-07T03:05:50", "data": {"action": "set_phase", "old_phase": "EXECUTE", "new_phase": "EXECUTE"}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:05:50", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "SessionStart", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:05:50", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "SessionStart", "Time": "2026-08-07T03:05:50", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "SessionStart", "Time": "2026-08-07T03:06:02", "data": {"event": "hook_fired", "trace_id": "cb7d1a3c-3290-430c-aaef-7e5df063fb3b"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:06:02", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:06:02", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:06:02", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:06:02", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "state_machine.py", "hook": "StateMachine", "Time": "2026-08-07T03:06:02", "data": {"action": "set_phase", "old_phase": "EXECUTE", "new_phase": "EXECUTE"}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:06:02", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "SessionStart", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:06:02", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "SessionStart", "Time": "2026-08-07T03:06:02", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "SessionStart", "Time": "2026-08-07T03:06:10", "data": {"event": "hook_fired", "trace_id": "3066c518-e9c5-47ce-ba8d-e84235f4a5a7"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:06:10", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:06:10", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:06:10", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:06:10", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "state_machine.py", "hook": "StateMachine", "Time": "2026-08-07T03:06:10", "data": {"action": "set_phase", "old_phase": "EXECUTE", "new_phase": "EXECUTE"}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:06:10", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "SessionStart", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:06:10", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "SessionStart", "Time": "2026-08-07T03:06:10", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:07:05", "data": {"event": "hook_fired", "trace_id": "ca9b5506-ace5-4d50-9af2-84bb9bf7d652"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:07:05", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:07:05", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:07:05", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:07:05", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:07:05", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:07:05", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:07:05", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:07:23", "data": {"event": "hook_fired", "trace_id": "37902cab-616b-4014-adcd-9f07f7a02d49"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:07:23", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:07:23", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:07:23", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:07:23", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:07:23", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "Stop", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:07:23", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:07:23", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:11:19", "data": {"event": "hook_fired", "trace_id": "bb93ed80-c0b2-4c8f-a7a2-7f64f496a5c9"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:19", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:19", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:19", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:19", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:11:19", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:11:19", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:11:19", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:11:24", "data": {"event": "hook_fired", "trace_id": "83c97abd-79c0-47f9-93d1-7c97a486e01c"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:24", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:24", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:24", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:24", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:11:24", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:11:24", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:11:24", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:11:30", "data": {"event": "hook_fired", "trace_id": "fcdee19f-4b05-4579-9bd3-2983bcde8223"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:30", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:30", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:30", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:30", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:30", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:30", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:30", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:11:30", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:11:30", "data": {"event": "hook_fired", "trace_id": "59f25e4f-ac1b-4b95-bd5a-b927e0fa097f"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:30", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:30", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:30", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:30", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:11:30", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:11:30", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:11:30", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:11:38", "data": {"event": "hook_fired", "trace_id": "27a6f78e-2e6b-4a2d-9806-dd80b66284a6"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:38", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:38", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:38", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:38", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:38", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:38", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:38", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:11:38", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:11:50", "data": {"event": "hook_fired", "trace_id": "f3e53375-f1a4-40de-98ca-2ed5d299ee62"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:50", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:50", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:50", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:50", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:11:50", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:11:50", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:11:50", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:11:55", "data": {"event": "hook_fired", "trace_id": "8cb96b1a-4515-47bd-94d7-009ea3b9fc70"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:55", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:55", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:55", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:55", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:55", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "glob"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:55", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "glob"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:55", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "glob"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:11:55", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:11:55", "data": {"event": "hook_fired", "trace_id": "3a740a07-8158-4847-9c83-04719d16d14f"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:55", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:55", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:55", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:11:55", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:11:55", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:11:55", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:11:55", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:02", "data": {"event": "hook_fired", "trace_id": "ef121875-6118-47d8-a8d0-7d4d0df9416f"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:02", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:02", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:02", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:02", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:02", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:02", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:02", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:02", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:02", "data": {"event": "hook_fired", "trace_id": "acd314e0-b987-432f-9f5c-8226f5cc648d"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:02", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:02", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:02", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:02", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:02", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:02", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:02", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:05", "data": {"event": "hook_fired", "trace_id": "f8d75b7a-433e-4ad9-94a4-7134f70c6033"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:05", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:05", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:05", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:05", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:05", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "grep"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:05", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "grep"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:05", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "grep"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:05", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:06", "data": {"event": "hook_fired", "trace_id": "b900ef1c-6296-4935-a74a-a80b3b7e8c10"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:06", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:06", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:06", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:06", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:06", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:06", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:06", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:12:18", "data": {"event": "hook_fired", "trace_id": "756f8921-939a-4d2b-a4fe-502bffe2bfc2"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:18", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:18", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:18", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:18", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:18", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:18", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:12:18", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:28", "data": {"event": "hook_fired", "trace_id": "74bc99fd-9805-445a-b9b7-c9000677c5fb"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:28", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:28", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:28", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:28", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:28", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:28", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:28", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:28", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:29", "data": {"event": "hook_fired", "trace_id": "97c64379-c2dd-4738-a593-d0f4053afd25"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:29", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:29", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:29", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:29", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:29", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:29", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:29", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:35", "data": {"event": "hook_fired", "trace_id": "b9fa75a3-7ee3-4c96-b104-5139e0b9bf6e"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:35", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:35", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:35", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:35", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:35", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "glob"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:35", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "glob"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:35", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "glob"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:35", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:36", "data": {"event": "hook_fired", "trace_id": "e3e6a9b3-b239-4ecc-90ea-65d83001d6fc"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:36", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:36", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:36", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:36", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:36", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:36", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:36", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:42", "data": {"event": "hook_fired", "trace_id": "d108912c-5e67-4fa7-b13e-76bc530d72a3"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:42", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:42", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:42", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:42", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:42", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:42", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:42", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:42", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:42", "data": {"event": "hook_fired", "trace_id": "6a9917b3-3a5f-4e00-a776-273740499e34"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:42", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:42", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:42", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:42", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:42", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:42", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:42", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:46", "data": {"event": "hook_fired", "trace_id": "b134886f-f805-41a1-9b16-58cef53f1335"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:46", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:46", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:46", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:46", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:46", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "glob"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:46", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "glob"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:46", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "glob"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:46", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:47", "data": {"event": "hook_fired", "trace_id": "6731fd1c-8f5b-489b-ad00-64f875ea903c"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:47", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:47", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:47", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:47", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:47", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:47", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:47", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:59", "data": {"event": "hook_fired", "trace_id": "e4ffc945-5917-49fc-9367-4c0a9bf0987f"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:59", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:59", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:59", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:59", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:59", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:59", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:59", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:12:59", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:59", "data": {"event": "hook_fired", "trace_id": "12061c8b-bad8-413a-852f-f6195fd8cd75"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:59", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:59", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:59", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:12:59", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:59", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:12:59", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:12:59", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:13:05", "data": {"event": "hook_fired", "trace_id": "0d9c68f5-4bd7-426f-a1fc-7b1b77c0565c"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:05", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:05", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:05", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:05", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:05", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:05", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:05", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:13:05", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:13:05", "data": {"event": "hook_fired", "trace_id": "7ff280e0-13f3-46cc-a535-e37733154a73"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:05", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:05", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:05", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:05", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:13:05", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:13:05", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:13:05", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:13:11", "data": {"event": "hook_fired", "trace_id": "50d9fe94-18e1-44a1-b85d-0e85f6bc9b3b"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:11", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:11", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:11", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:11", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:11", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "web_search"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:11", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "web_search"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:11", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "web_search"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:13:11", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:13:11", "data": {"event": "hook_fired", "trace_id": "fafa0958-cf8c-4dc0-9d70-12ee73334168"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:11", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:11", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:11", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:11", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:13:11", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:13:11", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:13:11", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:13:17", "data": {"event": "hook_fired", "trace_id": "f7489a34-7f8b-4524-bd31-bf4e6b665043"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:17", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:17", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:17", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:17", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:17", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "web_search"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:17", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "web_search"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:17", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "web_search"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:13:17", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:13:18", "data": {"event": "hook_fired", "trace_id": "8e09a8e2-5944-4afa-a25d-9cccb45e7281"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:18", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:18", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:18", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:18", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:13:18", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:13:18", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:13:18", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:13:42", "data": {"event": "hook_fired", "trace_id": "e1c38d60-3d6b-4ba9-92ef-de44b5fe2a08"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:42", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:42", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:42", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:42", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:13:42", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:13:42", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:13:42", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:13:51", "data": {"event": "hook_fired", "trace_id": "3632b36b-aa1f-4b48-93e8-b4f73e2fa21b"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:51", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:51", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:51", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:13:51", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:13:51", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "Stop", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:13:51", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:13:51", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:15:09", "data": {"event": "hook_fired", "trace_id": "f3763501-831a-4af6-8790-27cba0dfcff3"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:09", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:09", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:09", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:09", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:15:09", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:15:09", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:15:09", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PostCompaction", "Time": "2026-08-07T03:15:09", "data": {"event": "hook_fired", "trace_id": "35f29753-4745-471e-8266-b9ef1eedd3cd"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:09", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:09", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:09", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:09", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:15:09", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostCompaction", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:15:09", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostCompaction", "Time": "2026-08-07T03:15:09", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:15:13", "data": {"event": "hook_fired", "trace_id": "cb1790d8-554e-4edd-b43d-4694ee8840ac"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:13", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:13", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:13", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:13", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:13", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:13", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:13", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:15:13", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:15:43", "data": {"event": "hook_fired", "trace_id": "d7075cae-c283-4a50-806d-49b0d58f015f"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:43", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:43", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:43", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:43", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:15:43", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:15:43", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:15:43", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:15:45", "data": {"event": "hook_fired", "trace_id": "7b233637-c91b-4846-acd8-1667fc93f5a9"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:45", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:45", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:45", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:45", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:45", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:45", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:45", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:15:45", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:15:46", "data": {"event": "hook_fired", "trace_id": "26f746f8-200b-4cd2-9ceb-91e32586cb19"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:46", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:46", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:46", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:46", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:15:46", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:15:46", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:15:46", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:15:50", "data": {"event": "hook_fired", "trace_id": "fb34518a-7216-4e02-9d8d-39d7078165b9"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:50", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:50", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:50", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:50", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:50", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:50", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:50", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:15:50", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:15:57", "data": {"event": "hook_fired", "trace_id": "90bada59-603b-4fd9-aaee-40b695e29d1d"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:57", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:57", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:57", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:15:57", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:15:57", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:15:57", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:15:57", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:16:00", "data": {"event": "hook_fired", "trace_id": "4f3507df-02ae-4ade-bff9-680720f20f3d"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:00", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:00", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:00", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:00", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:00", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:00", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:00", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:16:00", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:16:04", "data": {"event": "hook_fired", "trace_id": "39a4951c-9d9d-47db-967f-6f7264d11330"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:04", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:04", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:04", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:04", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:16:04", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:16:04", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:16:04", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:16:13", "data": {"event": "hook_fired", "trace_id": "56ae3ef0-e208-42f3-bcec-d0eb017db470"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:13", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:13", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:13", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:13", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:16:13", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "Stop", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:16:13", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:16:13", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:16:46", "data": {"event": "hook_fired", "trace_id": "08b43791-1a08-4a4e-8608-0185c58e14b9"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:46", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:46", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:46", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:46", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:16:46", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:16:46", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:16:46", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:16:51", "data": {"event": "hook_fired", "trace_id": "33823d30-fa1c-4d09-a9a7-1f76347ec2b5"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:51", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:51", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:51", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:51", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:51", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:51", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:51", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:16:51", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:16:52", "data": {"event": "hook_fired", "trace_id": "e66b274e-c9af-424d-9e6a-dd099ca39563"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:52", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:52", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:52", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:52", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:16:52", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:16:52", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:16:52", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:16:57", "data": {"event": "hook_fired", "trace_id": "f250fa39-b687-400b-951e-58e8c2475a77"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:57", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:57", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:57", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:57", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:57", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:57", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:57", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:16:57", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:16:58", "data": {"event": "hook_fired", "trace_id": "f35cd1c0-501d-40cd-b851-02f659ad2470"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:58", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:58", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:58", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:16:58", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:16:58", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:16:58", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:16:58", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:01", "data": {"event": "hook_fired", "trace_id": "d44aa4d3-4638-4977-8293-67273f454935"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:01", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:01", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:01", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:01", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:01", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:01", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:01", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "read"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:01", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:13", "data": {"event": "hook_fired", "trace_id": "0f5d3d3f-5d0f-4e55-ae73-b56db4e7e1b1"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:13", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:13", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:13", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:13", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:13", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:13", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:13", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:13", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:13", "data": {"event": "hook_fired", "trace_id": "77c1dcf6-c34f-48b1-9f0f-2448530fca73"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:13", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:13", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:13", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:13", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:13", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:13", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:13", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:15", "data": {"event": "hook_fired", "trace_id": "e89bb1b7-c12a-41d1-8456-e4dec7f6724b"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:15", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:15", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:15", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:15", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:15", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:15", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:15", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:15", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:16", "data": {"event": "hook_fired", "trace_id": "127581ca-040d-4d60-a9de-049898e44541"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:16", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:16", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:16", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:16", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:16", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:16", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:16", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:23", "data": {"event": "hook_fired", "trace_id": "5932260d-93a2-4a92-8e2e-3ce55c66f6d1"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:23", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:23", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:23", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:23", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:23", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "glob"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:23", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "glob"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:23", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "glob"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:23", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:23", "data": {"event": "hook_fired", "trace_id": "4e392b73-2ce9-4168-ab9d-3e504ca330db"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:23", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:23", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:23", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:23", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:23", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:23", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:23", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:26", "data": {"event": "hook_fired", "trace_id": "ccbd1b79-9b61-45cc-8afe-df9939ed057d"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:26", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:26", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:26", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:26", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:26", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:26", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:26", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:26", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:27", "data": {"event": "hook_fired", "trace_id": "55bc5b25-fc7d-48ee-88f2-7a5c58b205cc"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:27", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:27", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:27", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:27", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:27", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:27", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:27", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:29", "data": {"event": "hook_fired", "trace_id": "81997c5c-7db3-4da8-944c-cba34553b198"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:29", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:29", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:29", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:29", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:29", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:29", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:29", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:29", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:29", "data": {"event": "hook_fired", "trace_id": "fc9ff36a-77e0-44c2-a391-c04158dead6e"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:29", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:29", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:29", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:29", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:29", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:29", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:29", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:34", "data": {"event": "hook_fired", "trace_id": "3759956c-cf8a-424b-a55e-26702feb9518"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:34", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:34", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:34", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:34", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:34", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:34", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:34", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:34", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:34", "data": {"event": "hook_fired", "trace_id": "4579f308-96e8-4207-8757-bfa01dfdcbc0"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:34", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:34", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:34", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:34", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:34", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:34", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:34", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:44", "data": {"event": "hook_fired", "trace_id": "d858adb2-8248-451b-8c17-31e59337613c"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:44", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:44", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:44", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:44", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:44", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:44", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:44", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:44", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:50", "data": {"event": "hook_fired", "trace_id": "749d13ca-ea53-4f39-95a1-546411739765"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:50", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:50", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:50", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:50", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:50", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:50", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:50", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:53", "data": {"event": "hook_fired", "trace_id": "0fe68b69-c5db-4fe3-802d-41b248b326c8"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:53", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:53", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:53", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:53", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:53", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:53", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:53", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:17:53", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:54", "data": {"event": "hook_fired", "trace_id": "8dd47e12-ac47-4c9e-956f-bb2d7c6d3edd"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:54", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:54", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:54", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:54", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:54", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:54", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:17:54", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:17:59", "data": {"event": "hook_fired", "trace_id": "9169619e-063f-4d24-87ea-27785e1dc4c3"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:59", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:59", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:59", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:17:59", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:59", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "Stop", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:17:59", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:17:59", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:18:27", "data": {"event": "hook_fired", "trace_id": "53f88a68-80ce-468d-b694-02d02c891820"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:27", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:27", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:27", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:27", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:18:27", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:18:27", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:18:27", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:18:44", "data": {"event": "hook_fired", "trace_id": "f06f5a33-4596-4f9d-a72b-628c6c085526"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:44", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:44", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:44", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:44", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:44", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:44", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:44", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:18:44", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:18:45", "data": {"event": "hook_fired", "trace_id": "3f3b7134-6344-4ff2-a002-fe4f06b42e67"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:45", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:45", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:45", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:45", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:18:45", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:18:45", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:18:45", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:18:48", "data": {"event": "hook_fired", "trace_id": "7000e909-6bd8-41cb-8309-733fee7e8e64"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:48", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:48", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:48", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:48", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:48", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:48", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:48", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:18:48", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:18:49", "data": {"event": "hook_fired", "trace_id": "d44506fa-7fe2-48e6-aad0-d25d35fe32d2"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:49", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:49", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:49", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:49", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:18:49", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:18:49", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:18:49", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:18:54", "data": {"event": "hook_fired", "trace_id": "8e152b11-58d7-4b7d-b9f3-da47043e70db"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:54", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:54", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:54", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:54", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:54", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:54", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:54", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:18:54", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:18:55", "data": {"event": "hook_fired", "trace_id": "eb2eb980-0579-4f04-979d-cd4cf2a664bf"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:55", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:55", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:55", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:55", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:18:55", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:18:55", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:18:55", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:18:57", "data": {"event": "hook_fired", "trace_id": "bcc5ea49-6f52-4e79-a67c-fbbe19867922"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:57", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:57", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:57", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:57", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:57", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:57", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:57", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:18:57", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:18:57", "data": {"event": "hook_fired", "trace_id": "ad647663-b491-42a9-8c7a-da54047a99cd"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:57", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:57", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:57", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:18:57", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:18:57", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:18:57", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:18:57", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:19:01", "data": {"event": "hook_fired", "trace_id": "9405a30d-a082-4fbc-9774-98d2c0637d63"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:01", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:01", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:01", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:01", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:01", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:01", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:01", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:19:01", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:19:01", "data": {"event": "hook_fired", "trace_id": "0dfd5768-4fcf-478e-8aec-e094ac624ce5"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:01", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:01", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:01", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:01", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:19:01", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:19:01", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:19:01", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:19:12", "data": {"event": "hook_fired", "trace_id": "a261c121-051a-4ae9-b13b-c3f8d13173f3"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:12", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:12", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:12", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:12", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:19:12", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "Stop", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:19:12", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:19:12", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:19:51", "data": {"event": "hook_fired", "trace_id": "c0677246-27b8-4046-a92a-e4f4e6ec39f5"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:51", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:51", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:51", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:19:51", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:19:51", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:19:51", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:19:51", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:20:01", "data": {"event": "hook_fired", "trace_id": "04f91838-f99a-421f-9e1d-cac3090f5a35"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:20:01", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:20:01", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:20:01", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:20:01", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:20:01", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:20:01", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:20:01", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:20:18", "data": {"event": "hook_fired", "trace_id": "87308bf6-b484-4645-8419-80a2364f930b"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:20:18", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:20:18", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:20:18", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:20:18", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:20:18", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "Stop", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:20:18", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:20:18", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:21:46", "data": {"event": "hook_fired", "trace_id": "3ee39f7e-7b79-46fb-b53a-09a948801771"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:21:46", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:21:46", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:21:46", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:21:46", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:21:46", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:21:46", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:21:46", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:21:54", "data": {"event": "hook_fired", "trace_id": "2e73988e-8230-4b6c-896a-cb8ab23fcc48"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:21:54", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:21:54", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:21:54", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:21:54", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:21:54", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "Stop", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:21:54", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:21:54", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:23:26", "data": {"event": "hook_fired", "trace_id": "47714456-1627-46bf-b250-18902cb25f29"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:23:26", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:23:26", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:23:26", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:23:26", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:23:26", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:23:26", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:23:26", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:23:34", "data": {"event": "hook_fired", "trace_id": "fb8e189a-538c-4571-aeba-518eae3dca64"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:23:34", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:23:34", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:23:34", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:23:34", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:23:34", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "Stop", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:23:34", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:23:34", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:24:08", "data": {"event": "hook_fired", "trace_id": "f411956a-34f8-44d1-8e07-83c99007a0ae"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:24:08", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:24:08", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:24:08", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:24:08", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:24:08", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:24:08", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:24:08", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:24:16", "data": {"event": "hook_fired", "trace_id": "36a22a70-95a9-41c2-92db-3dff5e7a8873"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:24:16", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:24:16", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:24:16", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:24:16", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:24:16", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "Stop", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:24:16", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "Stop", "Time": "2026-08-07T03:24:16", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:24:52", "data": {"event": "hook_fired", "trace_id": "f2a49234-b98b-41ff-ae11-c5045dcb2452"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:24:52", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:24:52", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:24:52", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:24:52", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:24:52", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "UserPromptSubmit", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:24:52", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T03:24:52", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:25:00", "data": {"event": "hook_fired", "trace_id": "27812a52-4b01-4403-ba9c-02f936e72d04"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:25:00", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:25:00", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:25:00", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:25:00", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:25:00", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:25:00", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:25:00", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:25:00", "data": {"event": "hook_complete", "decision": "exit_0"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:26:31", "data": {"event": "hook_fired", "trace_id": "6cb2488a-d781-464b-9650-3f82bca93871"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:26:31", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:26:31", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:26:31", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:26:31", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:26:31", "data": {"action": "build_hook_response", "internal_decision": "allow", "hook_event_name": "PostToolUse", "has_permission_decision": false, "permission_decision": null}}
+{"File": "Protocol", "hook": "Protocol", "Time": "2026-08-07T03:26:31", "data": {"action": "to_devin_decision", "internal_decision": "allow", "permission_decision": null, "devin_decision": "approve"}}
+{"File": "governor.py", "hook": "PostToolUse", "Time": "2026-08-07T03:26:31", "data": {"event": "hook_complete", "decision": "approve"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:26:34", "data": {"event": "hook_fired", "trace_id": "076598f0-c164-4376-90f9-9370650142a4"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:26:34", "data": {"action": "rule_loaded", "file": "block_app_edits_architect.yaml", "rule_id": "block_app_edits_architect"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:26:34", "data": {"action": "rule_loaded", "file": "block_edit_test.yaml", "rule_id": "block_edit_test"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:26:34", "data": {"action": "rule_loaded", "file": "block_hooks_config.yaml", "rule_id": "block_hooks_config"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:26:34", "data": {"action": "load_rules_complete", "total_rules": 3}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:26:34", "data": {"action": "match_trigger_start", "rule_id": "block_app_edits_architect", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:26:34", "data": {"action": "match_trigger_start", "rule_id": "block_edit_test", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "engine.py", "hook": "Engine", "Time": "2026-08-07T03:26:34", "data": {"action": "match_trigger_start", "rule_id": "block_hooks_config", "hook_name": "PreToolUse", "trigger_hook": "PreToolUse", "trigger_tool": "edit", "payload_tool": "exec"}}
+{"File": "governor.py", "hook": "PreToolUse", "Time": "2026-08-07T03:26:34", "data": {"event": "hook_complete", "decision": "exit_0"}}

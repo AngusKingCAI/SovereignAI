@@ -111,6 +111,15 @@ class Engine:
         """Check if rule trigger matches."""
         trigger = rule.get("trigger", {})
         
+        log_execution("Engine", {
+            "action": "match_trigger_start",
+            "rule_id": rule.get("id", "unknown"),
+            "hook_name": hook_name,
+            "trigger_hook": trigger.get("hook"),
+            "trigger_tool": trigger.get("tool"),
+            "payload_tool": payload.get("tool_name")
+        })
+        
         # Check hook name
         if trigger.get("hook") != hook_name:
             return False
@@ -125,6 +134,13 @@ class Engine:
         tool_input = payload.get("tool_input", {})
         file_path = tool_input.get("file_path", "")
         
+        # Log for debugging
+        log_execution("Engine", {
+            "action": "check_condition",
+            "file_path": file_path,
+            "rule_id": rule.get("id", "unknown")
+        })
+        
         # Check if rule has condition for file path
         check = rule.get("check", {})
         if check:
@@ -133,11 +149,30 @@ class Engine:
             operator = condition.get("operator", "")
             pattern = condition.get("pattern", "")
             
-            if field == "tool_input" and operator == "equals" and pattern:
-                # More precise matching - check if filename matches exactly
+            if field == "tool_input" and pattern:
+                # Generic pattern matching for file paths
                 import os
-                filename = os.path.basename(file_path)
-                if filename != pattern:
+                matched = False
+                if operator == "equals":
+                    filename = os.path.basename(file_path)
+                    matched = (filename == pattern)
+                elif operator == "path_contains":
+                    matched = (pattern in file_path)
+                elif operator == "path_starts_with":
+                    matched = file_path.startswith(pattern)
+                elif operator == "path_ends_with":
+                    matched = file_path.endswith(pattern)
+                
+                log_execution("Engine", {
+                    "action": "condition_result",
+                    "rule_id": rule.get("id", "unknown"),
+                    "operator": operator,
+                    "pattern": pattern,
+                    "file_path": file_path,
+                    "matched": matched
+                })
+                
+                if not matched:
                     return False
         
         return True
