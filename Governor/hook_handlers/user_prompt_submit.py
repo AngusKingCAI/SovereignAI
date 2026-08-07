@@ -59,18 +59,32 @@ class UserPromptSubmitHandler(HookHandler):
     def execute(self, payload: Dict[str, Any], state_machine: Any, 
                engine: Any) -> Dict[str, Any]:
         """Execute the UserPromptSubmit handler logic."""
-        user_prompt = payload.get("user_prompt", "")
+        # UserPromptSubmit payload uses 'prompt' field, not 'user_prompt'
+        user_prompt = payload.get("prompt", payload.get("user_prompt", ""))
         
         log_execution("UserPromptSubmit", {
             "event": "user_prompt_submit",
             "prompt_length": len(user_prompt)
         })
         
+        # Evaluate rules via engine (engine handles ActionContext creation)
+        additional_context = ""
+        if engine:
+            rule_results = engine.evaluate_rules("UserPromptSubmit", payload, state_machine)
+            
+            # Collect additional_context from rule results
+            for result in rule_results:
+                if result.additional_context:
+                    additional_context += result.additional_context
+                    log_execution("UserPromptSubmit", {
+                        "action": "context_injected",
+                        "source": result.reason
+                    })
+        
         # Parse bypass commands
         bypass_pattern = r"/bypass\s+(\S+)"
         matches = re.findall(bypass_pattern, user_prompt)
         
-        additional_context = ""
         for bypass_key in matches:
             if bypass_key == "all":
                 state_machine.add_bypass(
