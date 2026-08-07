@@ -63,6 +63,18 @@ class SessionStartHandler(HookHandler):
             "session_id": payload.get("session_id", "")
         })
         
+        # Evaluate rules via engine (engine handles ActionContext creation)
+        if engine:
+            rule_results = engine.evaluate_rules("SessionStart", payload, state_machine)
+            
+            # Log rule evaluation results (SessionStart is non-blocking)
+            for result in rule_results:
+                log_execution("SessionStart", {
+                    "action": "rule_evaluated",
+                    "rule_result": result.decision,
+                    "rule_reason": result.reason
+                })
+        
         # Initialize phase to EXECUTE
         state_machine.set_phase("EXECUTE")
         

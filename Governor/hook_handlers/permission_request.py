@@ -65,20 +65,9 @@ class PermissionRequestHandler(HookHandler):
             "tool": tool_name
         })
         
-        # Evaluate rules via engine
-        try:
-            from ..actions._base import ActionContext
-        except ImportError:
-            from actions._base import ActionContext
-        
+        # Evaluate rules via engine (engine handles ActionContext creation)
         if engine:
-            context = ActionContext(
-                state_machine=state_machine,
-                hook_name="PermissionRequest",
-                payload=payload,
-                trace_id=payload.get("trace_id", "unknown")
-            )
-            rule_results = engine.evaluate_rules("PermissionRequest", payload, context)
+            rule_results = engine.evaluate_rules("PermissionRequest", payload, state_machine)
             
             for result in rule_results:
                 if result.decision == "deny":

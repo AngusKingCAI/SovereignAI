@@ -123,8 +123,25 @@ class Engine:
                 log_execution("Engine", {"action": "rule_load_failed", "file": filename, "error": str(e), "source": source})
     
     def evaluate_rules(self, hook_name: str, payload: Dict[str, Any], 
-                      context: ActionContext) -> List[ActionResult]:
+                      state_machine: Any = None) -> List[ActionResult]:
         """Evaluate rules for hook event."""
+        # Import ActionContext here (Layer 3 can import from Layer 4)
+        try:
+            from .actions._base import ActionContext
+        except ImportError:
+            from actions._base import ActionContext
+        
+        # Create context if state_machine provided
+        if state_machine:
+            context = ActionContext(
+                state_machine=state_machine,
+                hook_name=hook_name,
+                payload=payload,
+                trace_id=payload.get("trace_id", "unknown")
+            )
+        else:
+            context = None
+        
         results = []
         
         for rule in self.rules:
