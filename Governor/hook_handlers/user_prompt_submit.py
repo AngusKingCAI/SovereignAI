@@ -6,11 +6,16 @@ Layer 2: Handler. Imports _base.py ONLY.
 import json
 import os
 import re
+import sys
+import traceback
 from datetime import datetime
 from typing import Any, Dict
 
 # Get Governor package root
 GOVERNOR_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Configuration
+FAIL_CLOSED = os.getenv("GOVERNOR_FAIL_CLOSED", "true").lower() == "true"
 
 
 def log_execution(component: str, data: Dict[str, Any]):
@@ -67,54 +72,89 @@ class UserPromptSubmitHandler(HookHandler):
             {"event": "user_prompt_submit", "prompt_length": len(user_prompt)},
         )
 
-        # Evaluate rules via engine (engine handles ActionContext creation)
-        additional_context = ""
-        if engine:
-            rule_results = engine.evaluate_rules(
-                "UserPromptSubmit", payload, state_machine
+        try:
+            # Evaluate rules via engine (engine handles ActionContext creation)
+            additional_context = ""
+            if engine:
+                rule_results = engine.evaluate_rules(
+                    "UserPromptSubmit", payload, state_machine
+                )
+
+                # Collect additional_context from rule results
+                for result in rule_results:
+                    if result.additional_context:
+                        additional_context += result.additional_context
+                        log_execution(
+                            "UserPromptSubmit",
+                            {"action": "context_injected", "source": result.reason},
+                        )
+
+            # Parse bypass commands
+            bypass_pattern = r"/bypass\s+(\S+)"
+            matches = re.findall(bypass_pattern, user_prompt)
+
+            for bypass_key in matches:
+                if bypass_key == "all":
+                    state_machine.add_bypass(
+                        rule_id="*",
+                        tool_name="*",
+                        scope="once",
+                        reason="User requested bypass all",
+                        source="user_command",
+                    )
+                    additional_context += "\n✓ Bypass registered: next tool call only"
+                else:
+                    parts = bypass_key.split(":")
+                    if len(parts) >= 2:
+                        rule_id = parts[0]
+                        tool_name = parts[1]
+                    else:
+                        rule_id = bypass_key
+                        tool_name = "*"
+
+                    state_machine.add_bypass(
+                        rule_id=rule_id,
+                        tool_name=tool_name,
+                        scope="session",
+                        reason="User requested bypass",
+                        source="user_command",
+                    )
+                    additional_context += f"\n✓ Bypass registered: {bypass_key}"
+
+            return self._build_allow_response(
+                reason="User prompt processed", additional_context=additional_context
             )
 
-            # Collect additional_context from rule results
-            for result in rule_results:
-                if result.additional_context:
-                    additional_context += result.additional_context
-                    log_execution(
-                        "UserPromptSubmit",
-                        {"action": "context_injected", "source": result.reason},
-                    )
+        except Exception as e:
+            # Log the exception
+            log_execution(
+                "UserPromptSubmit",
+                {
+                    "event": "handler_error",
+                    "error": str(e),
+                    "fail_closed": FAIL_CLOSED,
+                    "prompt_length": len(user_prompt),
+                },
+            )
+            traceback.print_exc(file=sys.stderr)
 
-        # Parse bypass commands
-        bypass_pattern = r"/bypass\s+(\S+)"
-        matches = re.findall(bypass_pattern, user_prompt)
-
-        for bypass_key in matches:
-            if bypass_key == "all":
-                state_machine.add_bypass(
-                    rule_id="*",
-                    tool_name="*",
-                    scope="once",
-                    reason="User requested bypass all",
-                    source="user_command",
+            # Apply fail-closed logic
+            if FAIL_CLOSED:
+                # Fail-closed: deny on error to maintain security guarantees
+                log_execution(
+                    "UserPromptSubmit", {"event": "fail_closed_deny", "error": str(e)}
                 )
-                additional_context += "\n✓ Bypass registered: next tool call only"
+                # UserPromptSubmit can't block, so we return an error message in additional_context
+                return self._build_allow_response(
+                    reason="User prompt processed with error",
+                    additional_context=f"\n! Governor error: {e} (fail-closed mode active)",
+                )
             else:
-                parts = bypass_key.split(":")
-                if len(parts) >= 2:
-                    rule_id = parts[0]
-                    tool_name = parts[1]
-                else:
-                    rule_id = bypass_key
-                    tool_name = "*"
-
-                state_machine.add_bypass(
-                    rule_id=rule_id,
-                    tool_name=tool_name,
-                    scope="session",
-                    reason="User requested bypass",
-                    source="user_command",
+                # Fail-open: allow on error for availability (legacy behavior)
+                log_execution(
+                    "UserPromptSubmit", {"event": "fail_open_allow", "error": str(e)}
                 )
-                additional_context += f"\n✓ Bypass registered: {bypass_key}"
-
-        return self._build_allow_response(
-            reason="User prompt processed", additional_context=additional_context
-        )
+                return self._build_allow_response(
+                    reason="User prompt processed",
+                    additional_context=f"\n! Governor error: {e} (fail-open mode - context may be incomplete)",
+                )

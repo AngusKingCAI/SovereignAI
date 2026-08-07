@@ -50,6 +50,14 @@ CHECKSUM_FILE = os.path.join(STATE_DIR, "state.json.checksum")
 # Valid phases
 VALID_PHASES = ["INIT", "EXECUTE", "RESEARCH", "PLAN", "VALIDATE", "COMMIT"]
 
+# Compliance states
+VALID_COMPLIANCE_STATES = [
+    "testing_in_progress",
+    "testing_complete",
+    "blocked",
+    "ready_to_proceed",
+]
+
 # Development mode
 DEV_MODE = os.getenv("GOVERNOR_DEV_MODE", "0") == "1"
 
@@ -150,6 +158,12 @@ class StateMachine:
             "permissions": {"runtime": [], "session": []},
             "violations": [],
             "pending_menus": [],
+            "compliance": {
+                "state": "testing_in_progress",
+                "evidence": [],
+                "last_verification": None,
+                "blocked_reason": None,
+            },
             "metadata": {
                 "version": "1.5.0",
                 "created_at": datetime.utcnow().isoformat(),
@@ -390,6 +404,132 @@ class StateMachine:
         """Set state property for compatibility."""
         self._state = value
 
+    def get_compliance_state(self) -> str:
+        """Get current compliance state."""
+        with self._lock:
+            return self._state.get("compliance", {}).get("state", "testing_in_progress")
+
+    def set_compliance_state(self, new_state: str, reason: str = None) -> bool:
+        """Set compliance state with validation."""
+        if new_state not in VALID_COMPLIANCE_STATES:
+            log_execution(
+                "StateMachine",
+                {
+                    "action": "set_compliance_state",
+                    "error": f"Invalid compliance state: {new_state}",
+                    "valid_states": VALID_COMPLIANCE_STATES,
+                },
+            )
+            return False
+
+        with self._lock:
+            if "compliance" not in self._state:
+                self._state["compliance"] = {
+                    "state": "testing_in_progress",
+                    "evidence": [],
+                    "last_verification": None,
+                    "blocked_reason": None,
+                }
+
+            current_state = self._state["compliance"]["state"]
+
+            # Validate state transitions
+            valid_transitions = {
+                "testing_in_progress": ["testing_complete", "blocked"],
+                "testing_complete": ["ready_to_proceed", "blocked"],
+                "blocked": ["testing_in_progress", "ready_to_proceed"],
+                "ready_to_proceed": ["testing_in_progress"],
+            }
+
+            if new_state not in valid_transitions.get(current_state, []):
+                log_execution(
+                    "StateMachine",
+                    {
+                        "action": "set_compliance_state",
+                        "error": f"Invalid state transition: {current_state} -> {new_state}",
+                        "valid_transitions": valid_transitions.get(current_state, []),
+                    },
+                )
+                return False
+
+            self._state["compliance"]["state"] = new_state
+            if new_state == "blocked" and reason:
+                self._state["compliance"]["blocked_reason"] = reason
+            elif new_state != "blocked":
+                self._state["compliance"]["blocked_reason"] = None
+
+            self._state["metadata"]["last_updated"] = datetime.utcnow().isoformat()
+            self._save_state()
+
+            log_execution(
+                "StateMachine",
+                {
+                    "action": "set_compliance_state",
+                    "previous_state": current_state,
+                    "new_state": new_state,
+                    "reason": reason,
+                },
+            )
+
+            return True
+
+    def add_compliance_evidence(
+        self, evidence_type: str, evidence_data: Dict[str, Any]
+    ) -> bool:
+        """Add evidence to compliance state."""
+        with self._lock:
+            if "compliance" not in self._state:
+                self._state["compliance"] = {
+                    "state": "testing_in_progress",
+                    "evidence": [],
+                    "last_verification": None,
+                    "blocked_reason": None,
+                }
+
+            evidence_entry = {
+                "type": evidence_type,
+                "data": evidence_data,
+                "timestamp": datetime.utcnow().isoformat(),
+            }
+
+            self._state["compliance"]["evidence"].append(evidence_entry)
+            self._state["compliance"]["last_verification"] = (
+                datetime.utcnow().isoformat()
+            )
+            self._state["metadata"]["last_updated"] = datetime.utcnow().isoformat()
+            self._save_state()
+
+            log_execution(
+                "StateMachine",
+                {
+                    "action": "add_compliance_evidence",
+                    "evidence_type": evidence_type,
+                    "evidence_count": len(self._state["compliance"]["evidence"]),
+                },
+            )
+
+            return True
+
+    def get_compliance_status(self) -> Dict[str, Any]:
+        """Get full compliance status for rule checking."""
+        with self._lock:
+            compliance = self._state.get(
+                "compliance",
+                {
+                    "state": "testing_in_progress",
+                    "evidence": [],
+                    "last_verification": None,
+                    "blocked_reason": None,
+                },
+            )
+            return {
+                "state": compliance.get("state", "testing_in_progress"),
+                "can_proceed": compliance.get("state") in ["ready_to_proceed"],
+                "evidence_count": len(compliance.get("evidence", [])),
+                "last_verification": compliance.get("last_verification"),
+                "blocked_reason": compliance.get("blocked_reason"),
+            }
+
 
 if __name__ == "__main__":
     """CLI interface for state machine operations."""
@@ -413,13 +553,46 @@ if __name__ == "__main__":
         elif sys.argv[1] == "list_agents":
             agents = sm.discover_agents()
             print(f"Available agents: {agents}")
+        elif sys.argv[1] == "get_compliance":
+            status = sm.get_compliance_status()
+            print("Compliance Status:")
+            print(f"  State: {status['state']}")
+            print(f"  Can Proceed: {status['can_proceed']}")
+            print(f"  Evidence Count: {status['evidence_count']}")
+            print(f"  Last Verification: {status['last_verification']}")
+            if status["blocked_reason"]:
+                print(f"  Blocked Reason: {status['blocked_reason']}")
+        elif sys.argv[1] == "set_compliance" and len(sys.argv) > 2:
+            new_state = sys.argv[2]
+            reason = sys.argv[3] if len(sys.argv) > 3 else None
+            success = sm.set_compliance_state(new_state, reason)
+            if success:
+                print(f"Compliance state set to: {new_state}")
+            else:
+                print(f"Failed to set compliance state to: {new_state}")
+                sys.exit(1)
+        elif sys.argv[1] == "add_evidence" and len(sys.argv) > 2:
+            evidence_type = sys.argv[2]
+            import json
+
+            try:
+                evidence_data = json.loads(sys.argv[3]) if len(sys.argv) > 3 else {}
+            except json.JSONDecodeError:
+                print("Invalid JSON for evidence data")
+                sys.exit(1)
+            success = sm.add_compliance_evidence(evidence_type, evidence_data)
+            if success:
+                print(f"Evidence added: {evidence_type}")
+            else:
+                print("Failed to add evidence")
+                sys.exit(1)
         else:
             print(
-                "Usage: python state_machine.py [set_agent|get_agent|clear_agent|list_agents] [agent_name]"
+                "Usage: python state_machine.py [set_agent|get_agent|clear_agent|list_agents|get_compliance|set_compliance|add_evidence] [args]"
             )
             sys.exit(1)
     else:
         print(
-            "Usage: python state_machine.py [set_agent|get_agent|clear_agent|list_agents] [agent_name]"
+            "Usage: python state_machine.py [set_agent|get_agent|clear_agent|list_agents|get_compliance|set_compliance|add_evidence] [args]"
         )
         sys.exit(1)

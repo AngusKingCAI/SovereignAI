@@ -13,6 +13,9 @@ from datetime import datetime
 # Get Governor package root
 GOVERNOR_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+# Configuration
+FAIL_CLOSED = os.getenv("GOVERNOR_FAIL_CLOSED", "true").lower() == "true"
+
 
 def log_execution(component: str, data: dict):
     """Write to daily JSONL log file - isolated to governor.py."""
@@ -97,15 +100,27 @@ def main():
         # Re-raise SystemExit to respect exit codes
         raise
     except Exception as e:
-        log_execution("error", {"event": "hook_error", "error": str(e)})
+        log_execution(
+            "error",
+            {"event": "hook_error", "error": str(e), "fail_closed": FAIL_CLOSED},
+        )
         traceback.print_exc(file=sys.stderr)
 
-        # Build error response
-        response = build_hook_response(
-            internal_decision="allow",
-            reason=f"governor_error: {e}",
-            hook_event_name=hook_name if "hook_name" in dir() else "Unknown",
-        )
+        # Build error response based on fail-closed configuration
+        if FAIL_CLOSED:
+            # Fail-closed: deny on error to maintain security guarantees
+            response = build_hook_response(
+                internal_decision="deny",
+                reason=f"governor_error: {e} (fail-closed mode active)",
+                hook_event_name=hook_name if "hook_name" in dir() else "Unknown",
+            )
+        else:
+            # Fail-open: allow on error for availability (legacy behavior)
+            response = build_hook_response(
+                internal_decision="allow",
+                reason=f"governor_error: {e} (fail-open mode active)",
+                hook_event_name=hook_name if "hook_name" in dir() else "Unknown",
+            )
         print(json.dumps(response, indent=2))
         sys.exit(1)
 

@@ -11,7 +11,7 @@ check:
     field: "tool_input"
     operator: "equals"
     pattern: "hooks.v1.json"
-action: block_command
+action: block_hooks_config
 params:
   reason: "Editing hooks.v1.json configuration is blocked to prevent hook disruption"
   allow_bypass: true

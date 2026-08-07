@@ -279,6 +279,7 @@ class Engine:
         """Execute rule action."""
         action_name = rule.get("action", "block_command")
         action_params = rule.get("params", {})
+        allow_bypass = action_params.get("allow_bypass", False)
 
         log_execution(
             "Engine",
@@ -286,6 +287,7 @@ class Engine:
                 "action": "execute_rule",
                 "rule": rule.get("id", "unknown"),
                 "action_name": action_name,
+                "allow_bypass": allow_bypass,
             },
         )
 
@@ -298,6 +300,22 @@ class Engine:
 
         # Execute action
         try:
-            return action.evaluate(payload, action_params, context)
+            result = action.evaluate(payload, action_params, context)
+
+            # Framework-level bypass handling: transform deny to ask if rule allows bypass
+            if result.decision == "deny" and allow_bypass:
+                result.permission_decision = "ask"
+                result.permission_decision_reason = result.reason
+                log_execution(
+                    "Engine",
+                    {
+                        "action": "bypass_allowed",
+                        "rule": rule.get("id", "unknown"),
+                        "original_decision": "deny",
+                        "transformed_to": "ask",
+                    },
+                )
+
+            return result
         except Exception as e:
             return ActionResult(decision="allow", reason=f"Action execution error: {e}")

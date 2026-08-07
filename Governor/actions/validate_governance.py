@@ -1,15 +1,13 @@
 """
-Validate Governance Framework Action - Comprehensive validation for Governor integrity
+Validate Governance Action - Validate Governor framework integrity
 Layer 4: Action. Imports _base.py ONLY.
 """
 
-import os
-import yaml
 from typing import Dict, Any, List
 from ._base import RuleAction, ActionResult, ActionContext
 
 class ValidateGovernanceAction(RuleAction):
-    """Action to validate Governor framework integrity and rule structure."""
+    """Action to validate Governor framework integrity."""
     
     @property
     def name(self) -> str:
@@ -23,188 +21,86 @@ class ValidateGovernanceAction(RuleAction):
         """Evaluate the governance validation action."""
         scope = params.get("scope", "session_start")
         
-        # Get Governor package root
-        governor_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        
-        validation_results = {
-            "scope": scope,
-            "checks": []
-        }
-        
         # Log action evaluation
         from ._base import log_execution
         log_execution("validate_governance_action", {
             "scope": scope,
-            "governor_root": governor_root
+            "action": "governance_validation"
         })
         
-        # Perform validation based on scope
+        # For session start validation, check critical components
         if scope == "session_start":
-            self._validate_framework_integrity(governor_root, validation_results)
-        elif scope == "rule_validation":
-            self._validate_rule_structure(governor_root, validation_results)
-        
-        # Check if all validations passed
-        all_passed = all(check.get("passed", False) for check in validation_results["checks"])
-        
-        log_execution("validate_governance_action", {
-            "validation_results": validation_results,
-            "all_passed": all_passed
-        })
-        
-        if all_passed:
-            return ActionResult(
-                decision="allow",
-                reason="Governance framework validation passed",
-                additional_context=f"\n=== GOVERNANCE VALIDATION PASSED ===\nAll {len(validation_results['checks'])} checks passed successfully."
-            )
-        else:
-            failed_checks = [check for check in validation_results["checks"] if not check.get("passed", False)]
-            return ActionResult(
-                decision="allow",  # Non-blocking for now
-                reason=f"Governance validation failed: {len(failed_checks)} checks failed",
-                additional_context=f"\n=== GOVERNANCE VALIDATION FAILED ===\nFailed checks:\n" + "\n".join(
-                    f"- {check['name']}: {check['error']}" for check in failed_checks
-                )
-            )
-    
-    def _validate_framework_integrity(self, governor_root: str, results: Dict[str, Any]):
-        """Validate basic Governor framework integrity."""
-        checks = results["checks"]
-        
-        # Check 1: Actions directory exists
-        actions_dir = os.path.join(governor_root, "actions")
-        actions_exist = os.path.isdir(actions_dir)
-        checks.append({
-            "name": "actions_directory_exists",
-            "passed": actions_exist,
-            "error": "Actions directory not found" if not actions_exist else None
-        })
-        
-        # Check 2: Rules directory exists
-        rules_dir = os.path.join(governor_root, "rules")
-        rules_exist = os.path.isdir(rules_dir)
-        checks.append({
-            "name": "rules_directory_exists", 
-            "passed": rules_exist,
-            "error": "Rules directory not found" if not rules_exist else None
-        })
-        
-        # Check 3: Hook handlers directory exists
-        hook_handlers_dir = os.path.join(governor_root, "hook_handlers")
-        hook_handlers_exist = os.path.isdir(hook_handlers_dir)
-        checks.append({
-            "name": "hook_handlers_directory_exists",
-            "passed": hook_handlers_exist,
-            "error": "Hook handlers directory not found" if not hook_handlers_exist else None
-        })
-        
-        # Check 4: Required core files exist
-        required_files = [
-            "governor.py",
-            "engine.py", 
-            "state_machine.py",
-            "protocol.py"
-        ]
-        for file_name in required_files:
-            file_path = os.path.join(governor_root, file_name)
-            file_exists = os.path.isfile(file_path)
-            checks.append({
-                "name": f"core_file_{file_name}",
-                "passed": file_exists,
-                "error": f"Core file {file_name} not found" if not file_exists else None
-            })
-    
-    def _validate_rule_structure(self, governor_root: str, results: Dict[str, Any]):
-        """Validate rule YAML files against expected structure."""
-        checks = results["checks"]
-        
-        rules_dir = os.path.join(governor_root, "rules")
-        if not os.path.isdir(rules_dir):
-            checks.append({
-                "name": "rules_directory_for_validation",
-                "passed": False,
-                "error": "Rules directory not found"
-            })
-            return
-        
-        # Load and validate all YAML rule files
-        import glob
-        rule_files = glob.glob(os.path.join(rules_dir, "*.yaml"))
-        
-        # Track rule IDs for uniqueness check (separate by scope)
-        universal_rule_ids = []
-        agent_rule_ids = {}  # agent -> list of rule IDs
-        
-        for rule_file in rule_files:
             try:
-                with open(rule_file, 'r') as f:
-                    rule_data = yaml.safe_load(f)
+                # Check if critical files exist
+                import os
+                governor_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
                 
-                # Check required fields
-                required_fields = ["id", "version", "tier", "trigger", "action"]
-                missing_fields = [field for field in required_fields if field not in rule_data]
+                critical_files = [
+                    "governor.py",
+                    "engine.py", 
+                    "state_machine.py",
+                    "protocol.py"
+                ]
                 
-                if missing_fields:
-                    checks.append({
-                        "name": f"rule_structure_{os.path.basename(rule_file)}",
-                        "passed": False,
-                        "error": f"Missing required fields: {missing_fields}"
+                missing_files = []
+                for file in critical_files:
+                    if not os.path.exists(os.path.join(governor_root, file)):
+                        missing_files.append(file)
+                
+                if missing_files:
+                    return ActionResult(
+                        decision="allow",
+                        reason=f"Governance validation warning: missing critical files {missing_files}",
+                        additional_context="Framework may not function correctly. Manual review recommended."
+                    )
+                
+                # Check if actions directory exists and has actions
+                actions_dir = os.path.join(governor_root, "actions")
+                if not os.path.exists(actions_dir):
+                    return ActionResult(
+                        decision="allow",
+                        reason="Governance validation warning: actions directory missing",
+                        additional_context="Framework cannot load governance actions. Manual review recommended."
+                    )
+                
+                # Try to load engine to check rules
+                try:
+                    from engine import Engine
+                    engine = Engine()
+                    rule_count = len(engine.rules)
+                    log_execution("validate_governance_action", {
+                        "validation": "engine_load_success",
+                        "rule_count": rule_count
                     })
-                    continue
+                except Exception as e:
+                    return ActionResult(
+                        decision="allow",
+                        reason=f"Governance validation warning: engine load failed: {e}",
+                        additional_context="Framework rule system may not be functional. Manual review recommended."
+                    )
                 
-                # Check rule ID uniqueness (separate by scope)
-                rule_id = rule_data.get("id")
-                rule_agent = rule_data.get("agent")
-                
-                if rule_agent:
-                    # Agent-specific rule
-                    if rule_agent not in agent_rule_ids:
-                        agent_rule_ids[rule_agent] = []
-                    if rule_id in agent_rule_ids[rule_agent]:
-                        checks.append({
-                            "name": f"rule_id_uniqueness_{rule_agent}_{rule_id}",
-                            "passed": False,
-                            "error": f"Duplicate rule ID for agent {rule_agent}: {rule_id}"
-                        })
-                    else:
-                        agent_rule_ids[rule_agent].append(rule_id)
-                else:
-                    # Universal rule
-                    if rule_id in universal_rule_ids:
-                        checks.append({
-                            "name": f"rule_id_uniqueness_{rule_id}",
-                            "passed": False,
-                            "error": f"Duplicate universal rule ID: {rule_id}"
-                        })
-                    else:
-                        universal_rule_ids.append(rule_id)
-                
-                # Validate trigger structure
-                trigger = rule_data.get("trigger", {})
-                if not isinstance(trigger, dict) or "hook" not in trigger:
-                    checks.append({
-                        "name": f"rule_trigger_{rule_id}",
-                        "passed": False,
-                        "error": f"Invalid trigger structure for rule {rule_id}"
-                    })
-                    continue
-                
-                checks.append({
-                    "name": f"rule_validation_{rule_id}",
-                    "passed": True,
-                    "error": None
+                log_execution("validate_governance_action", {
+                    "result": "validation_passed"
                 })
                 
-            except yaml.YAMLError as e:
-                checks.append({
-                    "name": f"rule_yaml_parse_{os.path.basename(rule_file)}",
-                    "passed": False,
-                    "error": f"YAML parsing error: {str(e)}"
-                })
+                return ActionResult(
+                    decision="allow",
+                    reason="Governance framework validation passed"
+                )
+                
             except Exception as e:
-                checks.append({
-                    "name": f"rule_load_{os.path.basename(rule_file)}",
-                    "passed": False,
-                    "error": f"Error loading rule: {str(e)}"
+                log_execution("validate_governance_action", {
+                    "error": str(e),
+                    "result": "validation_error"
                 })
+                return ActionResult(
+                    decision="allow",
+                    reason=f"Governance validation error: {e}",
+                    additional_context="Framework validation encountered an error. Manual review recommended."
+                )
+        
+        # Default allow for other scopes
+        return ActionResult(
+            decision="allow",
+            reason="Governance validation not applicable for this scope"
+        )

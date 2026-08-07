@@ -11,7 +11,7 @@ check:
     field: "tool_input"
     operator: "equals"
     pattern: "Edit test.md"
-action: block_command
+action: block_edit_test
 params:
   reason: "Editing Edit test.md is blocked by test rule"
   allow_bypass: true

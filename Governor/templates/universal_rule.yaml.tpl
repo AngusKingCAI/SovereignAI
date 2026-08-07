@@ -16,3 +16,8 @@ trigger:
 action: action_name  # The action name from Governor/actions/
 params:
   reason: reason
+  # allow_bypass: true  # OPTIONAL: Set to true to enable bypass menu for blocking rules
+                      # USE CASES:
+                      # - true: For optional blocking rules where user can override (e.g., workflow gates, testing blocks)
+                      # - false/omit: For mandatory security rules where bypass should never be allowed (e.g., credential protection, critical security)
+                      # FRAMEWORK BEHAVIOR: When allow_bypass=true, framework transforms deny decision to ask (bypass menu)

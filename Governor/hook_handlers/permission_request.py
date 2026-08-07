@@ -5,11 +5,16 @@ Layer 2: Handler. Imports _base.py ONLY.
 
 import json
 import os
+import sys
+import traceback
 from datetime import datetime
 from typing import Any, Dict
 
 # Get Governor package root
 GOVERNOR_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Configuration
+FAIL_CLOSED = os.getenv("GOVERNOR_FAIL_CLOSED", "true").lower() == "true"
 
 
 def log_execution(component: str, data: Dict[str, Any]):
@@ -64,28 +69,61 @@ class PermissionRequestHandler(HookHandler):
             "PermissionRequest", {"event": "permission_request", "tool": tool_name}
         )
 
-        # Evaluate rules via engine (engine handles ActionContext creation)
-        if engine:
-            rule_results = engine.evaluate_rules(
-                "PermissionRequest", payload, state_machine
-            )
+        try:
+            # Evaluate rules via engine (engine handles ActionContext creation)
+            if engine:
+                rule_results = engine.evaluate_rules(
+                    "PermissionRequest", payload, state_machine
+                )
 
-            for result in rule_results:
-                if result.decision == "deny":
-                    if result.permission_decision == "ask":
-                        return self._build_response(
-                            internal_decision="deny",
-                            reason=result.reason,
-                            permission_decision="ask",
-                            permission_decision_reason=result.permission_decision_reason
-                            or result.reason,
+                for result in rule_results:
+                    if result.decision == "deny":
+                        if result.permission_decision == "ask":
+                            return self._build_response(
+                                internal_decision="deny",
+                                reason=result.reason,
+                                permission_decision="ask",
+                                permission_decision_reason=result.permission_decision_reason
+                                or result.reason,
+                            )
+                        return self._build_deny_response(
+                            reason=f"Rule blocked: {result.reason}"
                         )
-                    return self._build_deny_response(
-                        reason=f"Rule blocked: {result.reason}"
-                    )
 
-        # No Governor rule matched - return None to let normal permissions handle it
-        log_execution(
-            "PermissionRequest", {"event": "no_rule_match", "action": "return_none"}
-        )
-        return None
+            # No Governor rule matched - return None to let normal permissions handle it
+            log_execution(
+                "PermissionRequest", {"event": "no_rule_match", "action": "return_none"}
+            )
+            return None
+
+        except Exception as e:
+            # Log the exception
+            log_execution(
+                "PermissionRequest",
+                {
+                    "event": "handler_error",
+                    "error": str(e),
+                    "fail_closed": FAIL_CLOSED,
+                    "tool": tool_name,
+                },
+            )
+            traceback.print_exc(file=sys.stderr)
+
+            # Apply fail-closed logic
+            if FAIL_CLOSED:
+                # Fail-closed: deny on error to maintain security guarantees
+                log_execution(
+                    "PermissionRequest",
+                    {"event": "fail_closed_deny", "error": str(e), "tool": tool_name},
+                )
+                return self._build_deny_response(
+                    reason=f"Governor error in PermissionRequest handler: {e} (fail-closed mode active)"
+                )
+            else:
+                # Fail-open: allow on error for availability (legacy behavior)
+                log_execution(
+                    "PermissionRequest",
+                    {"event": "fail_open_allow", "error": str(e), "tool": tool_name},
+                )
+                # Return None to let normal permissions handle it
+                return None

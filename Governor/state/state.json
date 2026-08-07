@@ -1,8 +1,8 @@
 {
   "phase": "EXECUTE",
-  "current_agent": null,
+  "current_agent": "architect",
   "counters": {
-    "exec": 97,
+    "exec": 246,
     "validate": 0
   },
   "flags": {
@@ -14,22 +14,13 @@
     "once": [],
     "session": [
       {
-        "key": "must:*:f1a44775-138a-4f48-b56c-c9dea0844095",
-        "rule_id": "must",
+        "key": "is:*:4bfced3b-347b-445b-a929-e8f6fb95866a",
+        "rule_id": "is",
         "tool_name": "*",
         "scope": "session",
         "reason": "User requested bypass",
         "source": "user_command",
-        "created_at": "2026-08-07T07:27:40.968421"
-      },
-      {
-        "key": "activates:*:20fcffc9-dec8-400d-a26c-d009f65a652b",
-        "rule_id": "activates",
-        "tool_name": "*",
-        "scope": "session",
-        "reason": "User requested bypass",
-        "source": "user_command",
-        "created_at": "2026-08-07T07:27:40.974786"
+        "created_at": "2026-08-07T08:11:30.589480"
       }
     ]
   },
@@ -39,9 +30,72 @@
   },
   "violations": [],
   "pending_menus": [],
+  "compliance": {
+    "state": "ready_to_proceed",
+    "evidence": [
+      {
+        "type": "test_results",
+        "data": {
+          "passed": true
+        },
+        "timestamp": "2026-08-07T07:47:53.805829"
+      },
+      {
+        "type": "test_results",
+        "data": {
+          "passed": true
+        },
+        "timestamp": "2026-08-07T07:48:41.083161"
+      },
+      {
+        "type": "fail_closed_testing",
+        "data": {
+          "tested": true,
+          "handlers": [
+            "pre_tool_use",
+            "permission_request",
+            "user_prompt_submit",
+            "session_start"
+          ],
+          "mode": "fail_closed"
+        },
+        "timestamp": "2026-08-07T07:55:42.177419"
+      },
+      {
+        "type": "test_type",
+        "data": {
+          "passed": true
+        },
+        "timestamp": "2026-08-07T07:58:44.598664"
+      },
+      {
+        "type": "test_type",
+        "data": {
+          "passed": true
+        },
+        "timestamp": "2026-08-07T07:59:34.131746"
+      },
+      {
+        "type": "test_completed",
+        "data": {
+          "success": true
+        },
+        "timestamp": "2026-08-07T07:59:34.196352"
+      },
+      {
+        "type": "template_testing",
+        "data": {
+          "test_passed": true
+        },
+        "timestamp": "2026-08-07T09:00:58.009716"
+      }
+    ],
+    "last_verification": "2026-08-07T09:00:58.009744",
+    "blocked_reason": null
+  },
   "metadata": {
     "version": "1.5.0",
-    "created_at": "2026-08-07T07:25:30.798248",
-    "last_updated": "2026-08-07T07:31:10.934575"
+    "created_at": "2026-08-07T07:47:53.796762",
+    "last_updated": "2026-08-07T09:17:19.394014"
   }
 }
