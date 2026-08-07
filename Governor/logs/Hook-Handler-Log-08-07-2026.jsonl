@@ -1078,3 +1078,403 @@
 {"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:54:12", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
 {"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:54:17", "data": {"event": "pre_tool_use", "tool": "exec"}}
 {"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:54:17", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:54:17", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:54:23", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:54:23", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:54:24", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "stop.py", "hook": "Stop", "Time": "2026-08-07T06:54:34", "data": {"event": "stop"}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T06:55:00", "data": {"event": "user_prompt_submit", "prompt_length": 79}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T06:55:00", "data": {"action": "context_injected", "source": "Question detected - research guidance injected"}}
+{"File": "stop.py", "hook": "Stop", "Time": "2026-08-07T06:55:10", "data": {"event": "stop"}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T06:55:42", "data": {"event": "user_prompt_submit", "prompt_length": 76}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T06:55:42", "data": {"action": "context_injected", "source": "Git push explicitly requested by user"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:55:46", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:55:46", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:55:50", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:55:54", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:55:54", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:55:54", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:56:03", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:56:03", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:56:03", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:56:10", "data": {"event": "pre_tool_use", "tool": "web_search"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:56:10", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:56:12", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "stop.py", "hook": "Stop", "Time": "2026-08-07T06:56:30", "data": {"event": "stop"}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T06:57:00", "data": {"event": "user_prompt_submit", "prompt_length": 30}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T06:57:00", "data": {"action": "context_injected", "source": "Question detected - research guidance injected"}}
+{"File": "stop.py", "hook": "Stop", "Time": "2026-08-07T06:57:20", "data": {"event": "stop"}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T06:57:46", "data": {"event": "user_prompt_submit", "prompt_length": 74}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T06:57:46", "data": {"action": "context_injected", "source": "Question detected - research guidance injected"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:58:02", "data": {"event": "pre_tool_use", "tool": "glob"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:58:02", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:58:02", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:58:10", "data": {"event": "pre_tool_use", "tool": "glob"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:58:10", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:58:10", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:58:19", "data": {"event": "pre_tool_use", "tool": "glob"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:58:19", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:58:19", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:58:54", "data": {"event": "pre_tool_use", "tool": "write"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:58:54", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:58:55", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:00", "data": {"event": "pre_tool_use", "tool": "write"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:00", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:59:00", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:04", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:04", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:59:04", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:10", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:10", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:59:10", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:16", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:16", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:59:16", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:22", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:22", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:59:22", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:29", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:29", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:59:29", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:40", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T06:59:40", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T06:59:40", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:00:04", "data": {"event": "pre_tool_use", "tool": "write"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:00:04", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:00:04", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:00:10", "data": {"event": "pre_tool_use", "tool": "write"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:00:10", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:00:10", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:00:14", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:00:14", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:00:14", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:00:23", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:00:23", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:00:23", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:00:24", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\hook_handlers\\post_tool_use.py"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:00:29", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:00:29", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:00:29", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:00:33", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:00:33", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:00:33", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "stop.py", "hook": "Stop", "Time": "2026-08-07T07:00:39", "data": {"event": "stop"}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T07:01:11", "data": {"event": "user_prompt_submit", "prompt_length": 59}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T07:01:11", "data": {"action": "context_injected", "source": "Question detected - research guidance injected"}}
+{"File": "stop.py", "hook": "Stop", "Time": "2026-08-07T07:01:30", "data": {"event": "stop"}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T07:02:18", "data": {"event": "user_prompt_submit", "prompt_length": 138}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:02:32", "data": {"event": "pre_tool_use", "tool": "web_search"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:02:32", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:02:34", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T07:03:36", "data": {"event": "user_prompt_submit", "prompt_length": 176}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T07:03:36", "data": {"action": "context_injected", "source": "Question detected - research guidance injected"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:03:41", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:03:41", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:03:41", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:03:51", "data": {"event": "pre_tool_use", "tool": "web_search"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:03:51", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:03:53", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "stop.py", "hook": "Stop", "Time": "2026-08-07T07:04:12", "data": {"event": "stop"}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T07:04:32", "data": {"event": "user_prompt_submit", "prompt_length": 59}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:04:36", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:04:36", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:04:37", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:04:43", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:04:43", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:04:43", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:05:02", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:05:02", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:05:03", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:05:10", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:05:10", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:05:17", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:05:28", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:05:28", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:05:40", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:05:40", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:05:41", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:05:49", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:05:49", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:05:55", "data": {"event": "pre_tool_use", "tool": "write"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:05:55", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:05:55", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:06:00", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:06:00", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:06:33", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:06:36", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:06:36", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:06:37", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:06:41", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:06:41", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:06:45", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:06:45", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:06:45", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:06:50", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:06:50", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:06:58", "data": {"event": "pre_tool_use", "tool": "write"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:06:58", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:06:58", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:07:08", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:07:08", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:07:23", "data": {"event": "pre_tool_use", "tool": "write"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:07:23", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:07:23", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:07:34", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:07:34", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:07:34", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:07:40", "data": {"event": "pre_tool_use", "tool": "write"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:07:40", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:07:40", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T07:08:22", "data": {"event": "user_prompt_submit", "prompt_length": 8}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T07:08:26", "data": {"event": "user_prompt_submit", "prompt_length": 8}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T07:08:28", "data": {"event": "user_prompt_submit", "prompt_length": 8}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T07:08:30", "data": {"event": "user_prompt_submit", "prompt_length": 8}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T07:08:33", "data": {"event": "user_prompt_submit", "prompt_length": 8}}
+{"File": "session_start.py", "hook": "SessionStart", "Time": "2026-08-07T07:08:42", "data": {"event": "session_start", "session_id": "alabaster-icicle"}}
+{"File": "session_start.py", "hook": "SessionStart", "Time": "2026-08-07T07:08:43", "data": {"action": "rule_evaluated", "rule_result": "allow", "rule_reason": "Successfully installed missing dependencies: pyyaml."}}
+{"File": "session_start.py", "hook": "SessionStart", "Time": "2026-08-07T07:08:43", "data": {"action": "rule_evaluated", "rule_result": "allow", "rule_reason": "Governance framework validation passed"}}
+{"File": "session_start.py", "hook": "SessionStart", "Time": "2026-08-07T07:08:43", "data": {"action": "agent_detection", "detected_agent": "architect", "source": "environment"}}
+{"File": "session_start.py", "hook": "SessionStart", "Time": "2026-08-07T07:08:52", "data": {"event": "session_start", "session_id": "married-cesium"}}
+{"File": "session_start.py", "hook": "SessionStart", "Time": "2026-08-07T07:08:52", "data": {"action": "rule_evaluated", "rule_result": "allow", "rule_reason": "Successfully installed missing dependencies: pyyaml."}}
+{"File": "session_start.py", "hook": "SessionStart", "Time": "2026-08-07T07:08:52", "data": {"action": "rule_evaluated", "rule_result": "allow", "rule_reason": "Governance framework validation passed"}}
+{"File": "session_start.py", "hook": "SessionStart", "Time": "2026-08-07T07:08:52", "data": {"action": "agent_detection", "detected_agent": "architect", "source": "environment"}}
+{"File": "user_prompt_submit.py", "hook": "UserPromptSubmit", "Time": "2026-08-07T07:08:57", "data": {"event": "user_prompt_submit", "prompt_length": 8}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:09:15", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:09:15", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:09:15", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:09:16", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\governor.py"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:09:24", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:09:24", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:09:25", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:09:25", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\engine.py"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:09:35", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:09:35", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:09:35", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:09:35", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\state_machine.py"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:09:53", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:09:53", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:09:53", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:09:53", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\protocol.py"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:10:00", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:10:00", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:10:00", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:10:04", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:10:04", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:10:04", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:10:11", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:10:11", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:10:12", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:10:12", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\protocol.py"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:10:16", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:10:16", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:10:17", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:10:32", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:10:32", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:10:32", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:10:32", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\protocol.py"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:11:03", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:11:03", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:11:03", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:11:03", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\hook_handlers\\_base.py"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:11:23", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:11:23", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:11:24", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:11:24", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\hook_handlers\\user_prompt_submit.py"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:11:52", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:11:52", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:11:55", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:11:55", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "hook": "PostToolUse", "Time": "2026-08-07T07:11:55", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:06", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:06", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:12:06", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:12:06", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\hook_handlers\\post_tool_use.py"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:11", "data": {"event": "pre_tool_use", "tool": "glob"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:11", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:12:11", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:20", "data": {"event": "pre_tool_use", "tool": "grep"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:20", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:12:20", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:26", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:26", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:12:26", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:36", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:36", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:12:36", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:12:36", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\hook_handlers\\permission_request.py"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:42", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:42", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:12:42", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:53", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "hook": "PreToolUse", "Time": "2026-08-07T07:12:53", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:12:54", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:12:54", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\hook_handlers\\pre_tool_use.py"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:12:59", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:12:59", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:12:59", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:08", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:08", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:13:08", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:13:08", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\hook_handlers\\session_start.py"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:14", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:14", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:13:14", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:22", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:22", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:13:22", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:13:22", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\hook_handlers\\session_end.py"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:27", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:27", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:13:27", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:33", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:33", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:13:33", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:13:33", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\hook_handlers\\stop.py"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:38", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:38", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:13:39", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:50", "data": {"event": "pre_tool_use", "tool": "edit"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:50", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:13:50", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:13:50", "data": {"action": "context_injected", "source": "Auto-formatted Python file: C:\\SovereignAI\\Governor\\hook_handlers\\post_compaction.py"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:55", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:13:55", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:13:55", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:03", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:03", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:14:03", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:10", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:10", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:14:11", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:18", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:18", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:14:18", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:25", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:25", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:14:25", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:32", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:32", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:14:33", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:37", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:37", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:14:38", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:44", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:44", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:14:44", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:56", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:14:56", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:14:57", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "stop.py", "component": "Stop", "Time": "2026-08-07T07:15:08", "data": {"event": "stop"}}
+{"File": "user_prompt_submit.py", "component": "UserPromptSubmit", "Time": "2026-08-07T07:15:26", "data": {"event": "user_prompt_submit", "prompt_length": 48}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:15:41", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:15:41", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:15:41", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:15:47", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:15:47", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:15:48", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:15:53", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:15:53", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:15:53", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:15:58", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:15:58", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:15:59", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:03", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:03", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:16:04", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "post_compaction.py", "component": "PostCompaction", "Time": "2026-08-07T07:16:04", "data": {"event": "post_compaction"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:09", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:09", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:16:10", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:19", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:19", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:16:19", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:22", "data": {"event": "pre_tool_use", "tool": "read"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:22", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:16:22", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:26", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:26", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:16:26", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:29", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:29", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:16:29", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:31", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:31", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:16:32", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:34", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:34", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:16:35", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:39", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:39", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:16:39", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:43", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:43", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:16:43", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:48", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:48", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:16:48", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:54", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:16:54", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:16:55", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:00", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:00", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:17:09", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:12", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:12", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:17:13", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:29", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:29", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:17:30", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:32", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:32", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:17:33", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:36", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:36", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "session_start.py", "component": "SessionStart", "Time": "2026-08-07T07:17:36", "data": {"event": "session_start", "session_id": "test-session"}}
+{"File": "session_start.py", "component": "SessionStart", "Time": "2026-08-07T07:17:37", "data": {"action": "rule_evaluated", "rule_result": "allow", "rule_reason": "Successfully installed missing dependencies: pyyaml."}}
+{"File": "session_start.py", "component": "SessionStart", "Time": "2026-08-07T07:17:37", "data": {"action": "rule_evaluated", "rule_result": "allow", "rule_reason": "Governance framework validation passed"}}
+{"File": "session_start.py", "component": "SessionStart", "Time": "2026-08-07T07:17:37", "data": {"action": "agent_detection", "detected_agent": "architect", "source": "environment"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:17:37", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:39", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:39", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:17:39", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:43", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:43", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:17:43", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:47", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:47", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:17:47", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:50", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:17:50", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:17:50", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:00", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:00", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:18:01", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:03", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:03", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:18:03", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:07", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:07", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:18:07", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:11", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:11", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:18:12", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:16", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:16", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:18:16", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:18", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:18", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:18:19", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:22", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:22", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:18:23", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:28", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:28", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:18:28", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "stop.py", "component": "Stop", "Time": "2026-08-07T07:18:40", "data": {"event": "stop"}}
+{"File": "user_prompt_submit.py", "component": "UserPromptSubmit", "Time": "2026-08-07T07:18:45", "data": {"event": "user_prompt_submit", "prompt_length": 18}}
+{"File": "user_prompt_submit.py", "component": "UserPromptSubmit", "Time": "2026-08-07T07:18:45", "data": {"action": "context_injected", "source": "Git push explicitly requested by user"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:49", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:49", "data": {"event": "no_rule_match", "action": "return_none"}}
+{"File": "post_tool_use.py", "component": "PostToolUse", "Time": "2026-08-07T07:18:49", "data": {"event": "post_tool_use", "tool": "unknown", "status": "success"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:51", "data": {"event": "pre_tool_use", "tool": "exec"}}
+{"File": "pre_tool_use.py", "component": "PreToolUse", "Time": "2026-08-07T07:18:51", "data": {"event": "no_rule_match", "action": "return_none"}}

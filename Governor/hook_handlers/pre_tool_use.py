@@ -3,39 +3,38 @@ PreToolUse Handler - Phase checking and rule evaluation
 Layer 2: Handler. Imports _base.py ONLY.
 """
 
-import os
-import sys
 import json
-from typing import Dict, Any
+import os
 from datetime import datetime
+from typing import Any, Dict
 
 # Get Governor package root
 GOVERNOR_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def log_execution(component: str, data: Dict[str, Any]):
-    """Log execution to daily JSONL file."""
+    """Log execution to daily JSONL file - isolated to pre_tool_use.py."""
     try:
         log_dir = os.path.join(GOVERNOR_ROOT, "logs")
         os.makedirs(log_dir, exist_ok=True)
-        
+
         today = datetime.utcnow().strftime("%m-%d-%Y")
         log_file = os.path.join(log_dir, f"Hook-Handler-Log-{today}.jsonl")
-        
+
         entry = {
             "File": "pre_tool_use.py",
-            "hook": component,
-            "Time": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'),
-            "data": data
+            "component": component,
+            "Time": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S"),
+            "data": data,
         }
-        
-        with open(log_file, 'a', encoding='utf-8') as f:
+
+        with open(log_file, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry) + "\n")
             f.flush()
-            
-    except Exception as e:
-        sys.stderr.write(f"Logging error: {e}\n")
-        sys.stderr.flush()
+
+    except Exception:
+        # Silent failure - logging errors shouldn't crash the system
+        pass
 
 
 try:
@@ -46,29 +45,27 @@ except ImportError:
 
 class PreToolUseHandler(HookHandler):
     """Handler for PreToolUse hook events."""
-    
+
     @property
     def hook_name(self) -> str:
         return "PreToolUse"
-    
+
     @property
     def can_block(self) -> bool:
         return True
-    
-    def execute(self, payload: Dict[str, Any], state_machine: Any, 
-               engine: Any) -> Dict[str, Any]:
+
+    def execute(
+        self, payload: Dict[str, Any], state_machine: Any, engine: Any
+    ) -> Dict[str, Any]:
         """Execute the PreToolUse handler logic."""
         tool_name = payload.get("tool_name", "unknown")
-        
-        log_execution("PreToolUse", {
-            "event": "pre_tool_use",
-            "tool": tool_name
-        })
-        
+
+        log_execution("PreToolUse", {"event": "pre_tool_use", "tool": tool_name})
+
         # Evaluate rules via engine (engine handles ActionContext creation)
         if engine:
             rule_results = engine.evaluate_rules("PreToolUse", payload, state_machine)
-            
+
             for result in rule_results:
                 if result.decision == "deny":
                     if result.permission_decision == "ask":
@@ -76,15 +73,13 @@ class PreToolUseHandler(HookHandler):
                             internal_decision="deny",
                             reason=result.reason,
                             permission_decision="ask",
-                            permission_decision_reason=result.permission_decision_reason or result.reason
+                            permission_decision_reason=result.permission_decision_reason
+                            or result.reason,
                         )
                     return self._build_deny_response(
                         reason=f"Rule blocked: {result.reason}"
                     )
-        
+
         # No Governor rule matched - return None to let normal permissions handle it
-        log_execution("PreToolUse", {
-            "event": "no_rule_match",
-            "action": "return_none"
-        })
+        log_execution("PreToolUse", {"event": "no_rule_match", "action": "return_none"})
         return None
